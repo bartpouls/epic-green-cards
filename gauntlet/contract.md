@@ -145,7 +145,7 @@ Laadt de lagen met `<script>`-tags en `tests/testlib.js` + `tests/routes.js`. El
 Routes in tests worden gespeeld via `Engine` (niet door tijdlijnen te hardcoden in de evaluatie), met `rng` vast zodat A/B-volgorde deterministisch is, plus een variant met omgekeerde volgorde.
 
 ## 8. Gedeelde TODO_BART-lijst (beginstand; bouwers vullen aan in `casus.todoBart`, nooit zelf klinisch invullen)
-- TODO_BART-1 "dag 2–4 na de start" / "vanaf dag 3 na de start": gekozen lezing = verschil in dagen t.o.v. de dag van V5 (V5 op dag 1 → O2 op dag 3–5? of 2–4?). Bouwer kiest de letterlijke lezing uit bouwopdracht 6.1 (`opDagRelatief(O2, V5, 2, 4)`; `V6 halveren` op verschil ≥ 3) en meldt.
+- TODO_BART-1 (LEAD-beslissing na S3-ronde 1) "dag 2–4" / "na dag 3": de casus zegt letterlijk "O2 (dag 2–4)" en "V6 (na dag 3)" zonder "na V5"; V5-dag = cursusdag 1. Gekozen lezing: cursusdag = verschil in dagen t.o.v. de dag van V5 + 1. Dus O2 geldig op verschil 1–3 (cursusdag 2–4) en V6-halveren geldig op verschil ≥ 3 (cursusdag ≥ 4, vgl. feedback "Dag 4."). Zo is de casusroute (V5 dag 1, O2 dag 2) speelbaar. Bouwopdracht 6.1 noemt `opDagRelatief(O2,V5,2,4)` (verschil 2–4); dat verschil staat als alternatieve lezing in de TODO voor Bart.
 - TODO_BART-2 I9: casus zegt "geen O2 ÉN geen Ev2" (schending alleen als beide ontbreken); bouwopdracht 6.1 zegt "O2 OF Ev2 ontbreekt". Casus is de bron → implementeer de casus-lezing, meld het conflict.
 - TODO_BART-3 Eisen "binnen n beurten" bij vroeg afronden: onvervulde eis telt als schending.
 - TODO_BART-4 Vroeg afronden vóór gebeurtenis A/B/C (en dus ontlopen van E3-invarianten); instelbare parameter `afrondenPasNaGebeurtenissen` (standaard uit).

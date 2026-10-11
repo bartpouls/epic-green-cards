@@ -1,0 +1,116 @@
+[
+ {
+  "paar": 1,
+  "titel": "Patiëntkaart, eerste regel",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 2,
+  "titel": "Patiëntkaart, medicatie",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 3,
+  "titel": "Patiëntkaart, lab op de kaart",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 4,
+  "titel": "Patiëntkaart, eerdere UWI",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 5,
+  "titel": "Verborgen achter G2 (na het spelen van G2)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 6,
+  "titel": "Gebeurtenis kweekuitslag",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 7,
+  "titel": "Feedback I5",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 8,
+  "titel": "Feedback I6, geen kweek",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 9,
+  "titel": "Feedback I6, afwachten",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 10,
+  "titel": "Feedback I7, geen kalium",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 11,
+  "titel": "Feedback I7, niet gehalveerd",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 12,
+  "titel": "Feedback I8",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 13,
+  "titel": "Feedback Verouderde eGFR niet opgemerkt",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 14,
+  "titel": "Feedback Onnodig gewisseld",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 15,
+  "titel": "Zichtbaar: Nitrofurantoïne zonder G2",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 16,
+  "titel": "Zichtbaar: V5 zonder O2",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 17,
+  "titel": "Route Fosfomycine: profiel",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 18,
+  "titel": "Route Trimethoprim 7 dagen: profiel",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 19,
+  "titel": "Wat de patiënt laat zien (trimethoprim / fosfomycine)",
+  "X": "spel",
+  "Y": "bron"
+ }
+]

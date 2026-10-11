@@ -93,10 +93,18 @@
     Test.waar(Array.isArray(casus().todoBart), "todoBart is een array");
   });
 
-  Test.registreer(G, "K0 data bevat alleen data: geen functies, geen markdown-sterretjes, JSON-rond", function () {
-    var json = JSON.stringify(casus());
-    Test.gelijk(JSON.parse(json), casus(), "functies of undefined in de data");
-    Test.is(json.indexOf("**"), -1, "markdown ** hoort niet in de data");
+  Test.registreer(G, "K0 data bevat alleen data: nergens een functie, undefined, NaN of markdown-sterretjes", function () {
+    var aantal = 0;
+    (function loop(x, pad) {
+      aantal++;
+      var t = typeof x;
+      Test.waar(t !== "function" && t !== "undefined" && t !== "symbol", pad + ": " + t + " in de data");
+      Test.waar(!(t === "number" && !isFinite(x)), pad + ": NaN of oneindig in de data");
+      if (t === "string") Test.is(x.indexOf("**"), -1, pad + ": markdown ** hoort niet in de data");
+      if (x && t === "object") Object.keys(x).forEach(function (k) { loop(x[k], pad + "." + k); });
+    })(window.CASUSSEN, "CASUSSEN");
+    Test.waar(aantal > 500, "de data is nauwelijks doorlopen");
+    Test.gelijk(JSON.parse(JSON.stringify(casus())), casus(), "JSON-rondreis");
   });
 
   Test.registreer(G, "K1 casus.rollen wijst B1/B2/B3/B5 aan als wissel/stop/pauzeer/hervat; ids bestaan en zijn Bijsturen", function () {
@@ -214,6 +222,110 @@
     Test.waar(kaart("O1").TODO_BART.indexOf("voorvoegsel") >= 0 && kaart("O1").TODO_BART.indexOf("G2") >= 0, "O1 mist K2+K3-TODO");
   });
 
+  // Pin van ALLE TODO_BART-markeringen in S1: welke plek welke TODO(s) draagt, en dat het er precies zoveel zijn.
+  var REF_TODO_PLEKKEN = {
+    "kaarten.G2": ["K3"], "kaarten.O1": ["K2", "K3"], "kaarten.V3": ["K2"], "kaarten.V5": ["K2"],
+    "kaarten.V6": ["K4"], "kaarten.B1": ["K4"], "kaarten.B2": ["K4"], "kaarten.B3": ["K4"], "kaarten.B5": ["K4"], "kaarten.B4": ["K4"],
+    "kaarten.N1": ["K1"], "kaarten.N2": ["K1", "K4"], "kaarten.N3": ["K1"], "kaarten.Ev1": ["K1", "K3"], "kaarten.Ev2": ["K4"],
+    "raadplegen": ["K5"]
+  };
+  var REF_TODO_PLEK_TEKST = {
+    K1: "kaarten[N1,N2,N3,Ev1].downside",
+    K2: "kaarten[V3,V5].effect; kaarten[O1].downside",
+    K3: "kaarten[O1,Ev1,G2].effect",
+    K4: "kaarten[V6,B1,B2,B3,B5,B4,N2,Ev2].doelen",
+    K5: "raadplegen.bronnen"
+  };
+
+  var REF_TODO_TEKST = {
+    K1: { vraag: "De casus noemt bij elke kaart een verplichte downside, maar geeft bij N1, N2, N3 en Ev1 \"—\". Is dat bedoeld (geen downside) of ontbreekt er een tekst?",
+      gekozenLezing: "Letterlijk \"—\" overgenomen; geen downside verzonnen." },
+    K2: { vraag: "De casus geeft het effect van V3 en V5 en de downside van O1 alleen met het voorvoegsel \"E1:\". Geldt dat ook voor E2 en E3?",
+      gekozenLezing: "Effect van V3 en V5: de hele casuscel staat letterlijk, inclusief het voorvoegsel \"E1: \", in effect.alle (geldt voor elke episode waarin de kaart in het repertoire zit); geen tekst voor E2 of E3 toegevoegd. Downside van O1: alleen E1 (\"niet geïndiceerd\" geldt niet vanzelf in E2 en E3, waar een kweek wel nodig is); E2 en E3 hebben dus geen downside." },
+    K3: { vraag: "Het effect van O1 en Ev1 en de G2-tekst bevatten zinnen die per episode of situatie verschillen, zonder voorvoegsel per episode (G2 E2: \"(verborgen)\"). Moeten die per episode gesplitst worden?",
+      gekozenLezing: "O1 en Ev1: niet gesplitst, de volledige casuscel staat letterlijk in effect.alle (geldt voor elke episode vanaf de eerste). G2: gesplitst in drie teksten (E1, E2 met \"(verborgen)\", E3), omdat de casus de varianten per episode noemt." },
+    K4: { vraag: "De casus noemt niet expliciet welke doelen een doelkaart per episode mag krijgen. Zijn de gekozen lijsten (V6: V5/V7/V8/lisinopril; B1 en B2: alle antibiotica van de episode, B1-doel = het nieuwe middel; B3 en B5: lisinopril, spironolacton, calcium; B4: V7; N2: de voorgeschreven middelen; Ev2: lisinopril en spironolacton) juist?",
+      gekozenLezing: "Doelen afgeleid uit de routes, invarianten en kaarteffecten van de casus en uit bouwopdracht 6.1/6.2; geen enkel doel zonder aanleiding in de casus. De V6-opties zijn letterlijk bouwopdracht 6.2 (door Bart gevalideerd)." },
+    K5: { vraag: "De casus noemt voor het raadplegen alleen \"een eigen naslagkaart met verwijzing naar de bronnen\", zonder te zeggen welke bronnen erop staan. Zijn de vier bronnen uit de casuskop (NHG, SIDRIK, Kompas, KNMP) de bedoelde keuze, en blijft de naslagkaart voor alle episodes hetzelfde?",
+      gekozenLezing: "Alle vier de bronnen uit de casuskop, in kopvolgorde, als verwijzing op casusniveau (casus.raadplegen), voor elke episode gelijk; geen richtlijntekst toegevoegd." }
+  };
+
+  Test.registreer(G, "S-TODO pin: vraag en gekozenLezing van K1 t/m K5 exact vastgelegd", function () {
+    var k = casus().todoBart.filter(function (t) { return /^TODO_BART-K\d+$/.test(t.id); });
+    Test.is(k.length, 5, "aantal S1-TODO's");
+    k.forEach(function (t) {
+      var r = REF_TODO_TEKST[t.id.slice(10)];
+      Test.waar(r, t.id + " onbekend");
+      Test.gelijk(Object.keys(t), ["id", "vraag", "gekozenLezing", "plek"], t.id + " velden");
+      Test.is(t.vraag, r.vraag, t.id + " vraag");
+      Test.is(t.gekozenLezing, r.gekozenLezing, t.id + " gekozenLezing");
+    });
+  });
+
+  // Sleutelverzamelingen: geen stray velden (bv. "aanbevolen": true) op kop, kaarten, doelen, opties of raadplegen.
+  Test.registreer(G, "K0 exacte sleutelverzamelingen: kop, kaarten, doelen, opties en raadplegen hebben geen onbekende velden", function () {
+    function sleutels(o) { return Object.keys(o).sort(); }
+    Test.gelijk(sleutels(casus()), ["bronnen","episodes","id","kaarten","raadplegen","rollen","titel","todoBart","versie"], "casuskop");
+    var basis = ["bron","categorie","doelen","doelkaart","downside","effect","id","label","opties","vanafEpisode"];
+    casus().kaarten.forEach(function (k) {
+      var verwacht = basis.slice();
+      if (REF_TODO_PLEKKEN["kaarten." + k.id]) verwacht.push("TODO_BART");
+      Test.gelijk(sleutels(k), verwacht.sort(), k.id + " sleutels");
+      if (k.doelen) Object.keys(k.doelen).forEach(function (e) {
+        k.doelen[e].forEach(function (d) {
+          Test.gelijk(sleutels(d), k.id === "Ev2" ? ["id","label"] : ["id","label","vereist"], k.id + " " + e + " " + d.id + " doelsleutels");
+        });
+      });
+      if (k.opties) Object.keys(k.opties).forEach(function (d) {
+        k.opties[d].forEach(function (o) { Test.waar(o.goed === true ? sleutels(o).join() === "goed,tekst" : sleutels(o).join() === "tekst", k.id + " " + d + ": vreemde optiesleutels " + sleutels(o).join()); });
+      });
+    });
+    Test.gelijk(Object.keys(casus().raadplegen), ["titel", "bronnen", "TODO_BART"], "raadplegen");
+  });
+
+  Test.registreer(G, "S-TODO pin: elke TODO_BART-markering op de plek zelf (kaarten en raadplegen) is afgedwongen, aantal precies 16 (19 verwijzingen), elk naar een K-regel in casus.todoBart", function () {
+    var k = casus().todoBart.filter(function (t) { return /^TODO_BART-K\d+$/.test(t.id); });
+    var per = {};
+    k.forEach(function (t) { per[t.id.slice(10)] = t; });
+    Test.gelijk(k.map(function (t) { return t.id; }), ["TODO_BART-K1", "TODO_BART-K2", "TODO_BART-K3", "TODO_BART-K4", "TODO_BART-K5"], "S1-TODO's in casus.todoBart");
+    Object.keys(REF_TODO_PLEK_TEKST).forEach(function (n) { Test.is(per[n].plek, REF_TODO_PLEK_TEKST[n], "plek van " + n); });
+
+    // Verzamel alle markeringen overal in S1-data (kaarten en raadplegen en de casuskop), op sleutelnaam.
+    var gevonden = {}, totaal = 0, verwijzingen = 0;
+    function zoek(x, pad) {
+      if (!x || typeof x !== "object") return;
+      Object.keys(x).forEach(function (sl) {
+        if (sl === "TODO_BART") { gevonden[pad] = x[sl]; totaal++; return; }
+        if (/^TODO_BART/.test(sl)) Test.waar(false, pad + ": vreemde TODO-sleutel " + sl);
+        zoek(x[sl], pad + "." + sl);
+      });
+    }
+    var kop = {}; Object.keys(casus()).forEach(function (sl) { if (sl !== "episodes" && sl !== "todoBart") kop[sl] = casus()[sl]; });
+    casus().kaarten.forEach(function (kk) { zoek(kk, "kaarten." + kk.id); });
+    zoek(casus().raadplegen, "raadplegen");
+    Test.waar(!kop.hasOwnProperty("TODO_BART"), "TODO_BART hoort niet op de casuskop");
+    Test.gelijk(Object.keys(gevonden).sort(), Object.keys(REF_TODO_PLEKKEN).sort(), "plekken met een TODO_BART");
+    Test.is(totaal, 16, "aantal TODO_BART-markeringen");
+    Object.keys(REF_TODO_PLEKKEN).forEach(function (pad) {
+      var verwacht = REF_TODO_PLEKKEN[pad].map(function (n) { return per[n].vraag; }).join(" | ");
+      Test.is(gevonden[pad], verwacht, pad + ": TODO_BART-tekst (vragen " + REF_TODO_PLEKKEN[pad].join("+") + ")");
+      verwijzingen += REF_TODO_PLEKKEN[pad].length;
+    });
+    Test.is(verwijzingen, 19, "aantal TODO-verwijzingen");
+    // Omgekeerd: elke K-regel noemt in zijn plek precies de kaarten die hem dragen.
+    Object.keys(per).forEach(function (n) {
+      var dragers = Object.keys(REF_TODO_PLEKKEN).filter(function (pad) { return REF_TODO_PLEKKEN[pad].indexOf(n) >= 0; });
+      Test.waar(dragers.length > 0, "K" + n + " wordt door niets gebruikt");
+      dragers.forEach(function (pad) {
+        var id = pad.replace("kaarten.", "");
+        Test.waar(per[n].plek.indexOf(id) >= 0 || pad === "raadplegen" && per[n].plek.indexOf("raadplegen") === 0, "K" + n + ": plek noemt " + pad + " niet");
+      });
+    });
+    // De vier bronnen van het raadplegen: de TODO noemt de gekozen lezing.
+    Test.waar(/casuskop/.test(per.K5.gekozenLezing) && /NHG, SIDRIK, Kompas, KNMP/.test(per.K5.vraag) && /naslagkaart met verwijzing naar de bronnen/.test(per.K5.vraag), "K5 beschrijft de keuze van de vier bronnen");
+    Test.gelijk(casus().raadplegen.bronnen, ["NHG", "SIDRIK", "Kompas", "KNMP"]);
+  });
+
   Test.registreer(G, "K2 bronnen letterlijk uit de casuskop (volledige bronbeschrijving)", function () {
     var verwacht = {};
     REF_KOP.split(" · ").forEach(function (s) {
@@ -316,16 +428,56 @@
     });
   });
 
-  Test.registreer(G, "K3 doelen per episode volgens de casus (episodegrenzen: geen E3-middelen in E1/E2)", function () {
-    function ids(k, e) { return kaart(k).doelen[e].map(function (d) { return d.id; }); }
-    Test.gelijk(ids("N2", "E1"), ["V3","V4","V5"]);
-    Test.gelijk(ids("B1", "E2"), ["V3","V4","V5"]);
-    Test.gelijk(ids("B2", "E2"), ["V3","V4","V5"]);
-    Test.gelijk(ids("V6", "E2"), ["V5","lisinopril"]);
-    Test.gelijk(ids("B1", "E3"), ["V3","V4","V5","V7","V8","V9","V10"]);
-    Test.gelijk(ids("B3", "E3"), ["lisinopril","spironolacton","calcium"]);
-    Test.gelijk(ids("Ev2", "E3"), ["lisinopril","spironolacton"]);
-    Test.waar(!kaart("Ev2").doelen.E3.some(function (d) { return d.vereist; }), "Ev2 mag ook op een gepauzeerd middel (overleg vóór hervatten)");
+  // Volledige pin van ALLE doelenlijsten van ALLE doelkaarten in ALLE episodes, inclusief label en vereist-predicaat.
+  // De verwachte lijsten staan hier uitgeschreven (niet uit de data afgeleid).
+  var AB = { E1: ["V3","V4","V5"], E2: ["V3","V4","V5"], E3: ["V3","V4","V5","V7","V8","V9","V10"] };
+  var COMED = ["lisinopril","spironolacton","calcium"];
+  function lab(id) { var r = refKaarten().filter(function (x) { return x.id === id; })[0]; return r ? r.label : REF_COMED[id]; }
+  function doelen(ids, vereist) {
+    return ids.map(function (id) {
+      var d = { id: id, label: lab(id) };
+      if (vereist) d.vereist = vereist(id);
+      return d;
+    });
+  }
+  var REF_DOELEN = {
+    V6: { E2: doelen(["V5","lisinopril"], function (id) { return id === "lisinopril" ? { p: "medicatieActief", id: id } : { p: "gestart", middel: id }; }),
+          E3: doelen(["V5","V7","V8","lisinopril"], function (id) { return id === "lisinopril" ? { p: "medicatieActief", id: id } : { p: "gestart", middel: id }; }) },
+    B1: { E2: doelen(AB.E2, function (id) { return { p: "en", args: [{ p: "actief" }, { p: "niet", arg: { p: "actief", middel: id } }] }; }),
+          E3: doelen(AB.E3, function (id) { return { p: "en", args: [{ p: "actief" }, { p: "niet", arg: { p: "actief", middel: id } }] }; }) },
+    B2: { E2: doelen(AB.E2, function (id) { return { p: "actief", middel: id }; }),
+          E3: doelen(AB.E3, function (id) { return { p: "actief", middel: id }; }) },
+    B3: { E3: doelen(COMED, function (id) { return { p: "medicatieActief", id: id }; }) },
+    B5: { E3: doelen(COMED, function (id) { return { p: "niet", arg: { p: "medicatieActief", id: id } }; }) },
+    B4: { E3: doelen(["V7"], function (id) { return { p: "actief", middel: id }; }) },
+    N2: { E1: doelen(AB.E1, function (id) { return { p: "gestart", middel: id }; }),
+          E2: doelen(AB.E2, function (id) { return { p: "gestart", middel: id }; }),
+          E3: doelen(AB.E3, function (id) { return { p: "gestart", middel: id }; }) },
+    Ev2: { E3: doelen(["lisinopril","spironolacton"], null) }
+  };
+
+  Test.registreer(G, "K3 doelen: alle 8 doelkaarten x alle episodes: id-lijst, label en vereist-predicaat exact gelijk aan de uitgeschreven referentie", function () {
+    var doelkaarten = Object.keys(REF_DOELEN);
+    Test.gelijk(casus().kaarten.filter(function (k) { return k.doelkaart; }).map(function (k) { return k.id; }).sort(), doelkaarten.slice().sort(), "set doelkaarten");
+    var aantalLijsten = 0, aantalDoelen = 0;
+    doelkaarten.forEach(function (id) {
+      var k = kaart(id);
+      Test.gelijk(Object.keys(k.doelen), Object.keys(REF_DOELEN[id]), id + ": episodes met doelen");
+      Object.keys(REF_DOELEN[id]).forEach(function (e) {
+        var data = k.doelen[e], ref = REF_DOELEN[id][e];
+        Test.gelijk(data.map(function (d) { return d.id; }), ref.map(function (d) { return d.id; }), id + " " + e + " id-lijst");
+        Test.is(data.length, ref.length, id + " " + e + " aantal doelen");
+        ref.forEach(function (d, i) {
+          Test.gelijk(Object.keys(data[i]), Object.keys(d), id + " " + e + " " + d.id + " velden (Ev2 heeft geen vereist)");
+          Test.gelijk(data[i], d, id + " " + e + " " + d.id);
+          aantalDoelen++;
+        });
+        aantalLijsten++;
+      });
+    });
+    Test.is(aantalLijsten, 13, "aantal doelenlijsten (doelkaart x episode)");
+    Test.is(aantalDoelen, 48, "aantal doelen in totaal");
+    Test.gelijk(kaart("Ev2").doelen.E3.map(function (d) { return d.hasOwnProperty("vereist"); }), [false, false], "Ev2 mag ook op een gepauzeerd middel (overleg vóór hervatten)");
   });
 
   Test.registreer(G, "K3 opties van V6 letterlijk uit bouwopdracht 6.2, met goed gemarkeerd", function () {
@@ -352,6 +504,7 @@
     var r = casus().raadplegen;
     Test.waar(typeof r.titel === "string" && r.titel.length > 0, "titel");
     Test.gelijk(r.bronnen, Object.keys(casus().bronnen));
-    Test.waar(JSON.stringify(r).length < 200, "raadplegen bevat te veel tekst");
+    Test.gelijk(Object.keys(r), ["titel", "bronnen", "TODO_BART"], "raadplegen heeft precies titel, bronnen en de TODO_BART-markering");
+    Test.waar(JSON.stringify({ titel: r.titel, bronnen: r.bronnen }).length < 200, "raadplegen bevat te veel tekst");
   });
 })();

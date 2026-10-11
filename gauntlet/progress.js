@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:16",
+ "updated": "2026-10-11 20:21",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -25,8 +25,8 @@ window.GAUNTLET = {
   {
    "name": "S3 data-e2",
    "round": 1,
-   "verdict": "PENDING",
-   "evidence": "r1 gebouwd (14 TODO_BART-E2); criticus bezig",
+   "verdict": "FAIL",
+   "evidence": "r1 FAIL, 6 punten, BLIND=BRON; ronde 2 bouwer bezig",
    "artifact": ""
   },
   {
@@ -133,6 +133,12 @@ window.GAUNTLET = {
    "unit": "S1 data-kaarten",
    "verdict": "FAIL",
    "note": "data letterlijk correct (0 afwijkingen), maar doelenlijsten V6-E3/B2-E3/B5-E3/N2-E2/N2-E3 niet door tests bewaakt (F1, 13 overlevende mutanten); functie in data en verwijderde G2-TODO onopgemerkt (F2). BLIND=ONS → ronde 3"
+  },
+  {
+   "round": 1,
+   "unit": "S3 data-e2",
+   "verdict": "FAIL",
+   "note": "kop ontbreekt; episode.raadplegen nog aanwezig; brug hoofdletter; 3 TODO ontbreken (route zonder antibioticum, vroeg afronden vs I8, I7 bij vroege wissel); tests missen mutaties; verzonnen ontwerpnoot. BLIND=BRON → ronde 2"
   }
  ],
  "open": [
@@ -142,7 +148,8 @@ window.GAUNTLET = {
   "S4 (E3-data): gebeurtenis A mist zet.statusNaBeurten:2 → geenVerbetering48 (I14/I16) werkt niet (gemeld door S7-criticus)",
   "S9 moet bewaarUitSpel aanroepen, Logging.opslagStatus() melden ('Resultaten staan alleen in dit tabblad: exporteer nu.') en lege pseudoniem afvangen",
   "Let op: bouwers mogen NIET git stash/pull/checkout gebruiken (gebeurde één keer, conflict hersteld door LEAD)",
-  "tests/data-e2.tests.js regel ~110 gebruikt k.effect.E2 → moet effect[ep] ?? effect.alle worden (S3 ronde 2); idem controleren in data-e1/e3, engine, UI, overzicht"
+  "tests/data-e2.tests.js regel ~110 gebruikt k.effect.E2 → moet effect[ep] ?? effect.alle worden (S3 ronde 2); idem controleren in data-e1/e3, engine, UI, overzicht",
+  "TODO_BART-1 (I7 dag-lezing): LEAD koos cursusdag-lezing (O2 verschil 1–3; V6 halveren verschil ≥3) omdat de casusroute anders niet speelbaar is; Bart bevestigt"
  ],
  "belowBar": []
 };
