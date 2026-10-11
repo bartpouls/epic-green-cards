@@ -6,7 +6,7 @@
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 21:30",
+ "updated": "2026-10-11 21:31",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -18,8 +18,8 @@
   {
    "name": "S2 data-e1",
    "round": 3,
-   "verdict": "PENDING",
-   "evidence": "r3 gebouwd (26 eigen tests groen); criticus r3 bezig",
+   "verdict": "FAIL",
+   "evidence": "r3 FAIL op E1-6 (LEAD wijzigde criterium) + risicogroep-lek naar meta; ronde 4 bouwer bezig",
    "artifact": ""
   },
   {
@@ -199,6 +199,12 @@
    "unit": "S5 predicaten",
    "verdict": "FAIL",
    "note": "null als id stil geaccepteerd (F1); evalueer met lege ctx stil false (F2); 14 overlevende mutanten waaronder alsDan.als (F3); prestatie run-node 110 s was runner-probleem (vm-context) → door LEAD opgelost, suite nu 14 s / 479 groen. BLIND=ONS → ronde 5 (laatste)"
+  },
+  {
+   "round": 3,
+   "unit": "S2 data-e1",
+   "verdict": "FAIL",
+   "note": "data 0 afwijkingen, 20.000 reeksen 0 afwijkingen, BLIND=ONS; enige punt: eigen oracle in datatests (E1-6) — LEAD wijzigde E1-6 (oracle toegestaan als kruiscontrole). Nieuw gedetecteerd: risicogroep-uitleg staat in zichtbaar (E1, E3) → naar meta (ronde 4)"
   }
  ],
  "open": [

@@ -21,7 +21,7 @@ Bestanden: `casussen/uwi-e1.js`, `tests/data-e1.tests.js`.
 - E1-3 Invarianten I1, I3, I4 met predicaat (JSON-AST uit `contract.md`), ernst (5,5,5; bouwopdracht 6.1), geldtIn, letterlijke Socratische vraag, bron. "Altijd fout" van de casus weerspiegeld.
 - E1-4 Score: duurzaamheid (V1=3, V2=2, direct=1), doelmatigheid (3, −1 O1, −1 O2). Profielen Terughoudend / Gedeelde regie / Direct behandelen mét de reflectievragen die in de casus staan; ontbrekende reflectievragen = `null` + TODO_BART.
 - E1-5 feedbackExtra (O1 gespeeld), zichtbaarAlsOntbreekt (N1, V1-zonder-Ev1) letterlijk.
-- E1-6 werkzaamheid (V3,V4,V5 werkzaam) + statusTeksten. Geldige routes uit de casus leveren de poort en het juiste profiel: aantoonbaar via de evaluatie (zodra S6 bestaat); tot dan met een eigen mini-evaluator in de test is NIET toegestaan — alleen datavorm-tests.
+- E1-6 werkzaamheid (V3,V4,V5 werkzaam) + statusTeksten. Geldige routes uit de casus leveren de poort en het juiste profiel: aantoonbaar via de evaluatie (zodra S6 bestaat); LEAD-wijziging na S2/S3-criticus: een eigen, door de bouwer onafhankelijk uit de casus geschreven oracle (mini-evaluator) in de datatests is TOEGESTAAN als gedragscontrole, mits duidelijk gemarkeerd; zodra S6 bestaat draait die oracle als kruiscontrole naast `Evaluatie.beoordeel` (beide moeten dezelfde uitkomst geven).
 
 ## S3 `data-e2` — Episode 2 (casus sectie 5)
 Bestanden: `casussen/uwi-e2.js`, `tests/data-e2.tests.js`. Zelfde criteria als S2, plus:

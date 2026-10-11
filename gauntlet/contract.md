@@ -122,6 +122,8 @@ Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat
 
 - Conventies voor ALLE episodedata (S2/S3/S4 gelijktrekken): (1) tekst die de speler nooit mag zien (toelichting, reden, ontwerpnoten) staat onder `meta` (niet `toelichting` direct op het object); (2) TODO_BART-teksten zijn zelfstandig leesbaar voor Bart: GEEN verwijzing naar `contract`, `rapport`, ronde- of stuknummers; ze citeren de casuszin en de twee lezingen; (3) slotpunten en leestekens volgen per veld exact de casus-bron; (4) `TODO_BART*`-sleutels op de plek zelf mogen als `TODO_BART` of `TODO_BART_<naam>` (iteraties slaan alles over dat met `TODO_BART` begint).
 
+- LEAD-beslissing (uit S2-criticus ronde 3): tekst die UITLEG voor de ontwerper is en de student zou helpen of voorzeggen staat NOOIT in `patient.zichtbaar`: dat geldt voor de risicogroep-uitleg ("Geen risicogroep. De eGFR is ≥ 30 [NHG]. De leeftijd ligt bewust onder 75 …", "Risicogroep [NHG].") in E1 en E3 net als in E2: onder `patient.meta.risicogroep`. De student ziet alleen kop, klachten, medicatie, lab en eerdere UWI-gegevens zoals de casus ze noemt. Een TODO_BART vraagt Bart of de risicogroepmelding zichtbaar mag zijn.
+
 ## 5. Evaluatie (`regels/evaluatie.js`)
 `Evaluatie.beoordeel(casus, episodeId, state)` → 
 ```
