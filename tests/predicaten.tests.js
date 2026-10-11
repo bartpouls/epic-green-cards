@@ -865,4 +865,267 @@
     T.is(P.tel({ t: "gespeeld", kaart: "X" }, zonder), 1);
   });
 
+
+  /* ---------- ronde 3: eager validatie, onafhankelijk van de spelstand ---------- */
+  var GD = [{ id: "E" }, { id: "G", zet: { resistent: ["Q1"] } }];            // E en G zijn bekend, maar nog niet geweest
+  function leeg(o) { o = o || {}; o.gebdef = GD; return mk([], o); }
+  function eenRegel(o) { o = o || {}; o.gebdef = GD; return mk([R(1, "Z", 1)], o); }
+  // Elk van deze predicaten bevat een fout in de data. De fout moet ALTIJD komen: bij lege tijdlijn, bij
+  // een tijdlijn die er niet op matcht en als de gebeurtenis of het anker er niet is.
+  var DATAFOUTEN = [
+    [{ p: "gespeeld", kaartUit: "typo" }, /Onbekende set 'typo'/],
+    [{ p: "gespeeld", K: { kaart: "Z", kaartUit: "typo" } }, /Onbekende set 'typo'/],
+    [{ p: "nietGespeeld", kaartUit: "toString" }, /Onbekende set 'toString'/],
+    [{ p: "gespeeld", kaartUit: "constructor" }, /Onbekende set 'constructor'/],
+    [{ p: "gespeeld", kaartUit: "__proto__" }, /Onbekende set/],
+    [{ p: "gespeeld", kaartUit: "sets" }, /Onbekende set 'sets'/],     // bestaat wel, maar is geen lijst
+    [{ p: "voor", a: { kaartUit: "typo" }, b: { kaart: "Z" } }, /Onbekende set/],
+    [{ p: "na", a: { kaart: "Z" }, b: { kaartUit: "typo" } }, /Onbekende set/],
+    [{ p: "opDagRelatief", K: { kaart: "Z" }, anker: { kaart: "X9" }, van: 0 }, null],  // geldig: anker bestaat niet, geen fout
+    [{ p: "opDagRelatief", K: { kaartUit: "typo" }, anker: { kaart: "X9" }, van: 0 }, /Onbekende set 'typo'/],
+    [{ p: "opDagRelatief", K: { kaart: "Z" }, anker: { kaartUit: "typo" }, van: 0 }, /Onbekende set 'typo'/],
+    [{ p: "opDagRelatief", K: { kaart: "Z" }, anker: { kaart: "X9" }, van: "0" }, /'van' moet een getal/],
+    [{ p: "opDagRelatief", K: { kaart: "Z" }, anker: { kaart: "X9" }, van: 0, tot: "3" }, /'tot' moet een getal/],
+    [{ p: "binnenBeurtenNaKaart", K: { kaartUit: "typo" }, naKaart: { kaart: "X9" }, n: 2 }, /Onbekende set 'typo'/],
+    [{ p: "binnenBeurtenNaKaart", K: { kaart: "Z" }, naKaart: { kaartUit: "typo" }, n: 2 }, /Onbekende set 'typo'/],
+    [{ p: "binnenBeurten", K: { kaartUit: "typo" }, naGebeurtenis: "E", n: 2 }, /Onbekende set 'typo'/],
+    [{ p: "binnenBeurten", kaart: "Z", naGebeurtenis: "E", n: "2" }, /'n' moet een getal/],
+    [{ p: "binnenBeurten", kaart: "Z", naGebeurtenis: "Nooit", n: 2 }, /Onbekende gebeurtenis 'Nooit'/],
+    [{ p: "gespeeld", start: "Q1" }, /casus mist 'rollen'/, true],
+    [{ p: "gespeeld", K: { kaart: "Z", start: "Q1" } }, /casus mist 'rollen'/, true],
+    [{ p: "gestart", middel: "Q1" }, /casus mist 'rollen'/, true],
+    [{ p: "gestart", middel: 5 }, /'middel' moet een id/],
+    [{ p: "binnenBeurtenNaKaart", K: { kaart: "Z" }, naKaart: { start: "Q1" }, n: 1 }, /casus mist 'rollen'/, true],
+    [{ p: "actief", middel: "Q1" }, /casus mist 'rollen'/, true],
+    [{ p: "actief", uitSet: "resistant", op: { eindeBeurtNaGebeurtenis: "E" } }, /Onbekende set 'resistant'/],
+    [{ p: "actief", uitSet: "toString", op: { eindeBeurtNaGebeurtenis: "E" } }, /Onbekende set 'toString'/],
+    [{ p: "actief", uitSet: "constructor" }, /Onbekende set 'constructor'/],
+    [{ p: "actief", middel: "Q1", op: { eindeBeurtNaGebeurtenis: "E", offset: "1" } }, /'offset' moet een getal/],
+    [{ p: "actief", middel: "Q1", op: { eindeBeurtNaGebeurtenis: "E", offset: NaN } }, /'offset' moet een getal/],
+    [{ p: "actief", middel: "Q1", op: { eindeBeurtNaGebeurtenis: "Nooit" } }, /Onbekende gebeurtenis 'Nooit'/],
+    [{ p: "actief", middel: "Q1", op: { dag: "3" } }, /'op.dag' moet een getal/],
+    [{ p: "actief", middel: "Q1", op: { naKaart: { kaartUit: "typo" } } }, /Onbekende set 'typo'/],
+    [{ p: "actief", middel: "Q1", op: { naKaart: { kaart: "Z", start: "Q1" } } }, /casus mist 'rollen'/, true],
+    [{ p: "actief", middel: "Q1", op: { dag: 2, eindeBeurtNaGebeurtenis: "E" } }, /Kies precies één/],
+    [{ p: "actief", middel: "Q1", op: { offset: 1 } }, /Kies precies één|Onbekend moment/],
+    [{ p: "actief", middel: "Q1", op: { dag: 2, offset: 1 } }, /'offset' hoort alleen bij/],
+    [{ p: "actief", middel: "Q1", op: "laatste" }, /Onbekend moment/],
+    [{ p: "actief", middel: "N1" }, /geen antibioticum/],
+    [{ p: "actief", middel: ["Q1", "N1"] }, /geen antibioticum/],
+    [{ p: "medicatieActief", id: "m1", op: { eindeBeurtNaGebeurtenis: "E", offset: "1" } }, /'offset' moet een getal/],
+    [{ p: "medicatieActief", id: "onbekend", op: { eindeBeurtNaGebeurtenis: "E" } }, /Onbekende medicatie/],
+    [{ p: "medicatieActief", id: "m1", op: { eindeBeurtNaGebeurtenis: "Nooit" } }, /Onbekende gebeurtenis/],
+    [{ p: "medicatieActief", id: "m1" }, /casus mist 'rollen'/, true],
+    [{ p: "aantalActieveAntibiotica", op: "~", n: 1 }, /Onbekende vergelijkingsoperator/],
+    [{ p: "aantalActieveAntibiotica", op: ">", n: "1" }, /'n' moet een getal/],
+    [{ p: "waar", veld: "w", op: "<", waarde: "30" }, /vergelijkt alleen getallen/],
+    [{ p: "waar", veld: "tekst", op: ">", waarde: 3 }, /vergelijkt alleen getallen/],
+    [{ p: "gebeurtenisGeweest", id: "Nooit" }, /Onbekende gebeurtenis 'Nooit'/],
+    [{ p: "inToestand", t: 5 }, /'t' moet een toestand-id/],
+    [{ p: "klachten", waarde: "aan", op: { eindeBeurtNaGebeurtenis: "E", offset: "1" } }, /'offset' moet een getal/],
+    [{ p: "klachten", waarde: "aan", op: { eindeBeurtNaGebeurtenis: "Nooit" } }, /Onbekende gebeurtenis/],
+    [{ p: "klachten", waarde: "aan", op: { dag: "1" } }, /'op.dag' moet een getal/],
+    [{ p: "klachten", waarde: "aan", op: { dag: 1, offset: 1 } }, /'offset' hoort alleen bij/],
+    [{ p: "klachten", waarde: "aan", op: "gisteren" }, /Onbekend moment/],
+    [{ p: "tel", teller: { t: "gespeeld", kaartUit: "typo" }, op: ">", waarde: 1 }, /Onbekende set 'typo'/],
+    [{ p: "tel", teller: { t: "gespeeld", start: "Q1" }, op: ">", waarde: 1 }, /casus mist 'rollen'/, true],
+    [{ p: "tel", teller: { t: "gespeeld", kaart: "Z" }, op: ">", waarde: "1" }, /'waarde' moet een getal/],
+    [{ p: "tel", teller: { t: "aantalActieveAntibiotica", op: "max" }, op: ">", waarde: 1 }, /casus mist 'rollen'/, true],
+    [{ p: "kaartUit" }, /Onbekend predicaat/]
+  ];
+  function ctxVoor(zonderRollen, kind) {
+    var o = { waar: { w: 5, tekst: "x" }, zonderRollen: zonderRollen, extra: { sets: "geen lijst" } };
+    return kind === "leeg" ? leeg(o) : eenRegel(o);
+  }
+  t("eager validatie: een datafout geeft ALTIJD een fout, ook bij lege tijdlijn of als gebeurtenis/anker er niet is", function () {
+    DATAFOUTEN.forEach(function (d) {
+      var zr = d[2] === true;
+      ["leeg", "regel"].forEach(function (kind) {
+        var ctx = ctxVoor(zr, kind), naam = JSON.stringify(d[0]) + " (" + kind + ")";
+        if (d[1] === null) { ev(d[0], ctx); return; }
+        gooitNL(function () { ev(d[0], ctx); }, d[1], naam);
+        // en dezelfde fout als de fout diep in een niet-bereikte tak zit
+        gooitNL(function () { ev({ p: "en", args: [{ p: "waarheid", waarde: false }, { p: "niet", arg: d[0] }] }, ctx); }, d[1], "diep " + naam);
+        gooitNL(function () { ev({ p: "alsDan", als: { p: "waarheid", waarde: false }, dan: d[0] }, ctx); }, d[1], "alsDan " + naam);
+        gooitNL(function () { P.valideer(d[0], ctx); }, d[1], "valideer " + naam);
+      });
+    });
+  });
+  t("eager validatie: de fout hangt niet af van de spelstand (voor en na de gebeurtenis geeft dezelfde fout)", function () {
+    var p = { p: "actief", uitSet: "resistant", op: { eindeBeurtNaGebeurtenis: "E" } };
+    var voor = leeg({}), na = mk([R(1, "Q1", 1)], { gebdef: GD, geb: [{ id: "E", dag: 1 }] });
+    gooitNL(function () { ev(p, voor); }, /Onbekende set 'resistant'/, "voor E");
+    gooitNL(function () { ev(p, na); }, /Onbekende set 'resistant'/, "na E");
+    var q = { p: "medicatieActief", id: "m1", op: { eindeBeurtNaGebeurtenis: "E", offset: "1" } };
+    gooitNL(function () { ev(q, voor); }, /'offset'/, "voor E");
+    gooitNL(function () { ev(q, na); }, /'offset'/, "na E");
+  });
+  t("eager validatie: geldige predicaten geven geen fout bij lege tijdlijn (en de juiste waarde)", function () {
+    var c = leeg({ waar: { w: 5 } });
+    T.is(ev({ p: "gespeeld", kaartUit: "antibiotica" }, c), false);
+    T.is(ev({ p: "gestart", middel: "Q1" }, c), false);
+    T.is(ev({ p: "actief", uitSet: "resistent", op: { eindeBeurtNaGebeurtenis: "E", offset: 1 } }, c), false);
+    T.is(ev({ p: "opDagRelatief", kaart: "Z", anker: { kaartUit: "antibiotica" }, van: 0 }, c), false);
+    T.is(ev({ p: "binnenBeurten", kaart: "Z", naGebeurtenis: "E", n: 2 }, c), false);
+    T.is(ev({ p: "medicatieActief", id: "m1", op: { eindeBeurtNaGebeurtenis: "G" } }, c), false);
+  });
+  t("valideer: werkt met ctx, met (casus, episode-id) en met (casus, episode-object); zonder spelstand", function () {
+    var ep = { id: "EX", antibiotica: ["Q1"], patient: { waar: { w: 1 }, medicatie: ["m1"] }, gebeurtenissen: [{ id: "E" }] };
+    var casus = { rollen: ROLLEN, episodes: [ep] };
+    P.valideer({ p: "actief", middel: "Q1", op: { eindeBeurtNaGebeurtenis: "E", offset: 1 } }, casus, "EX");
+    P.valideer({ p: "actief", middel: "Q1", op: { eindeBeurtNaGebeurtenis: "E", offset: 1 } }, casus, ep);
+    P.valideer({ p: "gespeeld", kaartUit: "antibiotica" }, mk([], {}));
+    T.is(P.valideer({ p: "waarheid", waarde: true }, casus, ep), undefined);
+    gooitNL(function () { P.valideer({ p: "gespeeld", kaartUit: "typo" }, casus, "EX"); }, /Onbekende set 'typo'/);
+    gooitNL(function () { P.valideer({ p: "gespeeld", kaartUit: "typo" }, casus, ep); }, /Onbekende set 'typo'/);
+    gooitNL(function () { P.valideer({ p: "gespeeld", kaartUit: "antibiotica" }, casus, "NEE"); }, /Onbekende episode/);
+    gooitNL(function () { P.valideer({ p: "gestart", middel: "Q1" }, { episodes: [ep] }, "EX"); }, /casus mist 'rollen'/);
+    // een teller (object met 't') wordt ook gevalideerd
+    P.valideer({ t: "gespeeld", kaart: "Q1" }, casus, "EX");
+    gooitNL(function () { P.valideer({ t: "gespeeld", kaartUit: "typo" }, casus, "EX"); }, /Onbekende set 'typo'/);
+    gooitNL(function () { P.valideer({ t: "onbekend" }, casus, "EX"); }, /Onbekende teller/);
+    gooitNL(function () { P.valideer({ t: "aantalActieveAntibiotica", op: "min" }, casus, "EX"); }, /kent alleen op/);
+    gooitNL(function () { P.valideer({ p: "en", args: [{ p: "waarheid", waarde: true }, { p: "gespeeld" }] }, casus, "EX"); }, /mist het veld 'K'|kaartverwijzing/);
+    T.waar(typeof P.valideer === "function");
+  });
+  t("valideer: een casus zonder gebeurtenis-definities laat gebeurtenis-id's door (alleen een gevulde lijst wordt gecontroleerd)", function () {
+    var ep = { id: "EX", antibiotica: ["Q1"], patient: { waar: {}, medicatie: [] } };
+    P.valideer({ p: "gebeurtenisGeweest", id: "wat-dan-ook" }, { rollen: ROLLEN, episodes: [ep] }, "EX");
+  });
+
+  /* ---------- ronde 3: ongebeurde gebeurtenis, predicaatnamen, n, ==, niet-antibiotica ---------- */
+  t("actief/medicatieActief met eindeBeurtNaGebeurtenis: gebeurtenis nog niet geweest = false (niet de eindstand)", function () {
+    var tl = [R(1, "Q1", 1), R(2, "B3", 1, "m1")];
+    var voor = mk(tl, { gebdef: GD }), na = mk(tl, { gebdef: GD, geb: [{ id: "E", dag: 1 }] });
+    var a = { p: "actief", middel: "Q1", op: { eindeBeurtNaGebeurtenis: "E" } };
+    T.is(ev(a, voor), false, "Q1 is actief in de eindstand, maar E is niet geweest");
+    T.is(ev(a, na), true);
+    T.is(ev({ p: "actief", middel: "Q1", op: { eindeBeurtNaGebeurtenis: "E", offset: 2 } }, voor), false);
+    T.is(ev({ p: "actief", op: { eindeBeurtNaGebeurtenis: "E" } }, voor), false, "zonder middel ook false");
+    T.is(ev({ p: "actief", middel: "Q1", uitSet: "resistent", op: { eindeBeurtNaGebeurtenis: "E" } }, voor), false);
+    var m = { p: "medicatieActief", id: "m1", op: { eindeBeurtNaGebeurtenis: "E" } };
+    T.is(ev({ p: "medicatieActief", id: "m1" }, voor), false, "gepauzeerd in de eindstand");
+    T.is(ev({ p: "medicatieActief", id: "m2", op: { eindeBeurtNaGebeurtenis: "E" } }, voor), false, "m2 is nooit gepauzeerd, maar E is niet geweest");
+    T.is(ev(m, voor), false);
+    T.is(ev(m, na), false, "na E is m1 gepauzeerd");
+    T.is(ev({ p: "medicatieActief", id: "m2", op: { eindeBeurtNaGebeurtenis: "E" } }, na), true);
+    // naKaart die niet gespeeld is: ook false
+    T.is(ev({ p: "actief", middel: "Q1", op: { naKaart: { kaart: "Nooit" } } }, voor), false);
+    T.is(ev({ p: "medicatieActief", id: "m2", op: { naKaart: { kaart: "Nooit" } } }, voor), false);
+  });
+  t("predicaatnaam toString/constructor/__proto__/hasOwnProperty/valueOf: Onbekend predicaat (evalueer én valideer)", function () {
+    var c = mk([R(1, "X", 1)]);
+    ["toString", "constructor", "__proto__", "hasOwnProperty", "valueOf", "isPrototypeOf"].forEach(function (n) {
+      gooitNL(function () { ev({ p: n }, c); }, new RegExp("Onbekend predicaat '" + n + "'"), n);
+      gooitNL(function () { P.valideer({ p: n }, c); }, new RegExp("Onbekend predicaat '" + n + "'"), "valideer " + n);
+      gooitNL(function () { ev({ p: "niet", arg: { p: n } }, c); }, /Onbekend predicaat/, "genest " + n);
+    });
+    // zelfde voor tellers
+    ["toString", "constructor", "__proto__"].forEach(function (n) {
+      gooitNL(function () { P.tel({ t: n }, c); }, /Onbekende teller/, n);
+    });
+    T.gelijk(P.namen.indexOf("toString"), -1);
+  });
+  t("binnenBeurtenNaKaart: n moet een getal zijn (string, NaN, Infinity, ontbrekend), zoals bij binnenBeurten", function () {
+    var c = mk([R(1, "A", 1), R(2, "X", 2)]);
+    var basis = { p: "binnenBeurtenNaKaart", K: { kaart: "X" }, naKaart: { kaart: "A" } };
+    function met(n) { var q = JSON.parse(JSON.stringify(basis)); if (n !== undefined) q.n = n; return q; }
+    T.is(ev(met(2), c), true); T.is(ev(met(1), c), false);
+    gooitNL(function () { ev(met("2"), c); }, /'n' moet een getal/, "string");
+    gooitNL(function () { ev(met(NaN), c); }, /'n' moet een getal/, "NaN");
+    gooitNL(function () { ev(met(Infinity), c); }, /'n' moet een getal/, "Infinity");
+    gooitNL(function () { ev(met(null), c); }, /'n' moet een getal/, "null");
+    gooitNL(function () { ev(met(), c); }, /mist het veld 'n'/, "ontbreekt");
+    // ook als het anker er niet is
+    gooitNL(function () { ev({ p: "binnenBeurtenNaKaart", K: { kaart: "X" }, naKaart: { kaart: "Nooit" }, n: "2" }, c); }, /'n' moet een getal/, "zonder anker");
+    gooitNL(function () { ev({ p: "binnenBeurten", K: { kaart: "X" }, naGebeurtenis: "E", n: "2" }, mk([], { geb: [] })); }, /'n' moet een getal/, "binnenBeurten zonder gebeurtenis");
+  });
+  t("waar: == en = vergelijken strikt (string tegen getal, true tegen 1, null tegen 0), != is het omgekeerde", function () {
+    var c = mk([], { waar: { w: 5, b: true, nul: 0, s: "5" } });
+    T.is(ev({ p: "waar", veld: "w", op: "==", waarde: "5" }, c), false);
+    T.is(ev({ p: "waar", veld: "w", op: "=", waarde: "5" }, c), false);
+    T.is(ev({ p: "waar", veld: "w", op: "!=", waarde: "5" }, c), true);
+    T.is(ev({ p: "waar", veld: "s", op: "==", waarde: 5 }, c), false);
+    T.is(ev({ p: "waar", veld: "s", op: "==", waarde: "5" }, c), true);
+    T.is(ev({ p: "waar", veld: "b", op: "==", waarde: 1 }, c), false);
+    T.is(ev({ p: "waar", veld: "b", op: "==", waarde: true }, c), true);
+    T.is(ev({ p: "waar", veld: "b", op: "!=", waarde: 1 }, c), true);
+    T.is(ev({ p: "waar", veld: "nul", op: "==", waarde: false }, c), false);
+    T.is(ev({ p: "waar", veld: "nul", op: "==", waarde: null }, c), false);
+    T.is(ev({ p: "waar", veld: "w", op: "==", waarde: 5 }, c), true);
+    T.is(ev({ p: "waar", veld: "w", op: "=", waarde: 5 }, c), true);
+    T.is(ev({ p: "waar", veld: "w", op: "!=", waarde: 5 }, c), false);
+    // ook de teller-vergelijking in 'tel'
+    T.is(ev({ p: "tel", teller: { t: "gespeeld", kaart: "Z" }, op: "==", waarde: 0 }, c), true);
+  });
+  t("actief en tellers gelden alleen voor antibiotica: een kaart zonder doel buiten episode.antibiotica wordt nooit actief", function () {
+    var c = mk([R(1, "N1", 1), R(2, "Q1", 1)]);
+    T.is(ev({ p: "actief", middel: "Q1" }, c), true);
+    gooitNL(function () { ev({ p: "actief", middel: "N1" }, c); }, /geen antibioticum/, "N1 is gespeeld maar geen antibioticum");
+    gooitNL(function () { ev({ p: "actief", middel: "N1" }, mk([])); }, /geen antibioticum/, "ook zonder N1 gespeeld");
+    T.is(ev({ p: "actief" }, mk([R(1, "N1", 1)])), false, "zonder middel: alleen antibiotica tellen");
+    T.is(ev({ p: "aantalActieveAntibiotica", op: ">=", n: 1 }, mk([R(1, "N1", 1), R(2, "N2", 1)])), false);
+    T.is(P.tel({ t: "aantalActieveAntibiotica", op: "max" }, mk([R(1, "N1", 1), R(2, "Q1", 1)])), 1);
+    // een wissel naar een niet-antibioticum maakt dat niet actief voor 'actief' (het wist wel de lopende antibiotica)
+    var w = mk([R(1, "Q1", 1), R(2, "B1", 2, "N1")]);
+    T.is(ev({ p: "actief", middel: "Q1" }, w), false);
+    T.is(ev({ p: "actief" }, w), false);
+    T.is(P.tel({ t: "aantalActieveAntibiotica", op: "max" }, w), 1);
+    // regel zonder doel: een antibioticum blijft actief bij andere kaarten
+    T.is(P.tel({ t: "aantalActieveAntibiotica", op: "max" }, mk([R(1, "Q1", 1), R(2, "Q2", 1), R(3, "N1", 1)])), 2);
+  });
+
+
+  /* ---------- ronde 3: restgaten uit de mutatieset ---------- */
+  t("uitSet: een set die alleen via de 'zet' van een gebeurtenisdefinitie bestaat is bekend; een andere naam niet", function () {
+    var c = mk([R(1, "Q1", 1)], { gebdef: [{ id: "G", zet: { gewijzigd: ["Q1"] } }, null], geb: [{ id: "G", dag: 1 }] });
+    T.is(ev({ p: "actief", middel: "Q1", uitSet: "gewijzigd" }, c), true);
+    T.is(ev({ p: "actief", middel: "Q1", uitSet: "gewijzigd", op: { dag: 0 } }, c), false);
+    gooitNL(function () { ev({ p: "actief", middel: "Q1", uitSet: "andere" }, c); }, /Onbekende set 'andere'/);
+    var zonder = mk([R(1, "Q1", 1)], { gebdef: [{ id: "G", zet: {} }, { id: "H" }] });
+    gooitNL(function () { ev({ p: "actief", middel: "Q1", uitSet: "gewijzigd" }, zonder); }, /Onbekende set/);
+    // basis uit waar[naam] of episode[naam]
+    T.is(ev({ p: "actief", middel: "Q1", uitSet: "lijstje" }, mk([R(1, "Q1", 1)], { waar: { lijstje: ["Q1"] } })), true);
+    T.is(ev({ p: "actief", middel: "Q1", uitSet: "lijstje" }, mk([R(1, "Q1", 1)], { extra: { lijstje: ["Q2"] } })), false);
+    gooitNL(function () { ev({ p: "actief", middel: "Q1", uitSet: "" }, c); }, /moet de naam van een set zijn/);
+    gooitNL(function () { ev({ p: "actief", middel: "Q1", uitSet: 5 }, c); }, /moet de naam van een set zijn/);
+  });
+  t("kaartverwijzing: typen van kaart, doel, optie, optieNiet, naGebeurtenis en voorGebeurtenis worden eager gecontroleerd", function () {
+    var c = leeg({});
+    gooitNL(function () { ev({ p: "gespeeld", kaart: 5 }, c); }, /'kaart' moet een id/);
+    gooitNL(function () { ev({ p: "gespeeld", kaart: ["Z", 5] }, c); }, /'kaart' moet een id/);
+    gooitNL(function () { ev({ p: "gespeeld", kaart: "Z", doel: 5 }, c); }, /'doel' moet een id/);
+    gooitNL(function () { ev({ p: "gespeeld", kaart: "Z", optie: 5 }, c); }, /'optie' moet een tekst/);
+    gooitNL(function () { ev({ p: "gespeeld", kaart: "Z", optieNiet: [5] }, c); }, /'optieNiet' moet een id/);
+    gooitNL(function () { ev({ p: "gespeeld", kaart: "Z", naGebeurtenis: "Nooit" }, c); }, /Onbekende gebeurtenis 'Nooit' in 'naGebeurtenis'/);
+    gooitNL(function () { ev({ p: "gespeeld", kaart: "Z", naGebeurtenis: 5 }, c); }, /'naGebeurtenis' moet een gebeurtenis-id/);
+    gooitNL(function () { ev({ p: "gespeeld", kaart: "Z", voorGebeurtenis: "Nooit" }, c); }, /Onbekende gebeurtenis 'Nooit' in 'voorGebeurtenis'/);
+    gooitNL(function () { ev({ p: "gespeeld", K: { kaart: "Z", naGebeurtenis: "Nooit" } }, c); }, /Onbekende gebeurtenis/);
+    T.is(ev({ p: "gespeeld", kaart: "Z", doel: null, optie: null, optieNiet: "a", naGebeurtenis: "E", voorGebeurtenis: "G" }, c), false);
+  });
+  t("maakContext en valideer: null in de lijsten, lege state en null in gebeurtenisdefinities geven geen vreemde fout", function () {
+    var ep = { id: "EX", antibiotica: ["Q1"], patient: { waar: {}, medicatie: [] } };
+    var c = P.maakContext({ rollen: ROLLEN }, ep, { tijdlijn: [null], klachten: [null, { dag: 4, status: "af" }], dag: 1 });
+    T.is(c.laatsteDag, 4); T.is(c.status(4), "af"); T.is(c.status(9), null);
+    var c2 = P.maakContext({ rollen: ROLLEN }, ep, { klachten: [{ dag: 2, status: "af" }, { dag: 3, status: "aan" }, { dag: 5, status: "af" }] });
+    T.is(c2.status(5), "af");
+    gooitNL(function () { ev({ p: "gespeeld", kaart: "Q1" }, c); }, /Ongeldige tijdlijnregel op positie 1/);
+    var leegState = P.maakContext({ rollen: ROLLEN }, ep, {});
+    T.gelijk(leegState.tijdlijn, []); T.gelijk(leegState.gebeurtenissen, []); T.gelijk(leegState.klachten, []); T.gelijk(leegState.toestanden, []);
+    T.is(ev({ p: "gespeeld", kaart: "Q1" }, leegState), false);
+    T.is(ev({ p: "gebeurtenisGeweest", id: "x" }, leegState), false);
+    var met = P.maakContext({ rollen: ROLLEN }, { id: "EX", antibiotica: ["Q1"], patient: { waar: {} }, gebeurtenissen: [null, { id: "E" }] },
+      { tijdlijn: [R(1, "Q1", 1)], gebeurtenissen: [null, { id: "E", dag: 1 }] });
+    T.is(ev({ p: "gebeurtenisGeweest", id: "E" }, met), true);
+    T.is(ev({ p: "actief", middel: "Q1", op: { eindeBeurtNaGebeurtenis: "E" } }, met), true);
+  });
+  t("teller: geen object of een 't' dat geen tekst is geeft een Nederlandse fout", function () {
+    var c = mk([]);
+    [null, undefined, 5, "gespeeld", [], { t: 5 }, {}, { t: null }].forEach(function (x) {
+      gooitNL(function () { P.tel(x, c); }, /Een teller moet een object met een veld 't' zijn/, JSON.stringify(x));
+      gooitNL(function () { P.valideer(x, c); }, /Een teller moet|Een predicaat moet|Een predicaat mist/, "valideer " + JSON.stringify(x));
+    });
+    gooitNL(function () { ev({ p: "tel", teller: null, op: ">", waarde: 1 }, c); }, /Een teller moet een object/);
+  });
+
 })();

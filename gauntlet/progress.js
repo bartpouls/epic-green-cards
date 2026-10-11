@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:25",
+ "updated": "2026-10-11 20:27",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -32,8 +32,8 @@ window.GAUNTLET = {
   {
    "name": "S4 data-e3",
    "round": 1,
-   "verdict": "PENDING",
-   "evidence": "r1 gebouwd (36 eigen tests groen; 19 TODO_BART-E3); criticus bezig",
+   "verdict": "FAIL",
+   "evidence": "r1 FAIL, 5 punten, BLIND=BRON; ronde 2 bouwer bezig",
    "artifact": ""
   },
   {
@@ -145,6 +145,12 @@ window.GAUNTLET = {
    "unit": "S5 predicaten",
    "verdict": "FAIL",
    "note": "r1-punten weg; nieuw: validatie van verwijzingen hangt van spelstand af (stil false) (F1); PREDICATEN.md klopt daardoor niet (F2); testgaten (F3). Geen afwijking op casusdata. BLIND=ONS → ronde 3"
+  },
+  {
+   "round": 1,
+   "unit": "S4 data-e3",
+   "verdict": "FAIL",
+   "note": "medicatieregel slotpunt/medicatieTekst (F1); TODO-E3-8 laat (hypertensie) weg (F2); vroeg-afronden-TODO (F3); 4 TODO ontbreken (F4); 5 van 69 mutaties overleven (F5). Routes + invarianten I1,I4–I16 en 48-uursroute kloppen. BLIND=BRON → ronde 2"
   }
  ],
  "open": [

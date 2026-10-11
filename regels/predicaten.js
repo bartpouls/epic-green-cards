@@ -232,9 +232,9 @@
     if (basis) bekend = true;
     var defs = lijst(ctx.episode && ctx.episode.gebeurtenissen);
     defs.forEach(function (d) {
-      if (d && isObj(d.zet) && (heeft(d.zet, naam) || (tegen !== null && heeft(d.zet, tegen)))) bekend = true;
+      if (d && isObj(d.zet) && heeft(d.zet, naam)) bekend = true;
     });
-    if (tegen !== null) bekend = true;
+    if (tegen !== null) bekend = true;   // een set met een tegenset (resistent/gevoelig) is altijd bekend
     if (!bekend) fout("Onbekende set '" + naam + "' (niet in de data van de episode).");
     return { basis: basis, tegen: tegen, defs: defs };
   }
@@ -255,10 +255,9 @@
 
   /* ---------- vergelijken ---------- */
   function vergelijk(op, a, b) {
-    if (VERGELIJK.indexOf(op) < 0) fout("Onbekende vergelijkingsoperator '" + op + "'.");
+    // operator en types zijn al gevalideerd (valOperator, valGetal, waar-validatie)
     if (op === "==" || op === "=") return a === b;
     if (op === "!=") return a !== b;
-    if (!isGetal(a) || !isGetal(b)) fout("De operator '" + op + "' vergelijkt alleen getallen (kreeg " + JSON.stringify(a) + " en " + JSON.stringify(b) + ").");
     if (op === "<") return a < b;
     if (op === "<=") return a <= b;
     if (op === ">") return a > b;
