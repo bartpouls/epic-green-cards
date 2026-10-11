@@ -124,6 +124,8 @@ Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat
 
 - LEAD-beslissing (uit S2-criticus ronde 3): tekst die UITLEG voor de ontwerper is en de student zou helpen of voorzeggen staat NOOIT in `patient.zichtbaar`: dat geldt voor de risicogroep-uitleg ("Geen risicogroep. De eGFR is ≥ 30 [NHG]. De leeftijd ligt bewust onder 75 …", "Risicogroep [NHG].") in E1 en E3 net als in E2: onder `patient.meta.risicogroep`. De student ziet alleen kop, klachten, medicatie, lab en eerdere UWI-gegevens zoals de casus ze noemt. Een TODO_BART vraagt Bart of de risicogroepmelding zichtbaar mag zijn.
 
+- LEAD-beslissing (na S4-ronde 3): BEIDE predicaatvormen (plat: `{p:"gespeeld", kaart:"V1"}`; en genest: `{p:"gespeeld", K:{kaart:"V1"}}`) zijn geldig; `regels/predicaten.js` valideert beide gelijk. Een databestand hoeft niet te worden omgezet; S8/S6/UI behandelen beide gelijk (geen eigen parser: gebruik Predicaten).
+
 ## 5. Evaluatie (`regels/evaluatie.js`)
 `Evaluatie.beoordeel(casus, episodeId, state)` → 
 ```

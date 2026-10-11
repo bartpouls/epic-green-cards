@@ -6,7 +6,7 @@
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 21:33",
+ "updated": "2026-10-11 21:39",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -32,8 +32,8 @@
   {
    "name": "S4 data-e3",
    "round": 3,
-   "verdict": "PENDING",
-   "evidence": "r3 gebouwd (59 eigen tests; 494 nieuwe mutaties 0 overlevers; TODO_BART-E3-1…24; I7 gelijkgetrokken met E2); criticus r3 bezig",
+   "verdict": "FAIL",
+   "evidence": "r3 FAIL, vorm/conventies + 56 gedragsmutanten zonder pin, BLIND=ONS; ronde 4 bouwer bezig",
    "artifact": ""
   },
   {
@@ -205,6 +205,12 @@
    "unit": "S2 data-e1",
    "verdict": "FAIL",
    "note": "data 0 afwijkingen, 20.000 reeksen 0 afwijkingen, BLIND=ONS; enige punt: eigen oracle in datatests (E1-6) — LEAD wijzigde E1-6 (oracle toegestaan als kruiscontrole). Nieuw gedetecteerd: risicogroep-uitleg staat in zichtbaar (E1, E3) → naar meta (ronde 4)"
+  },
+  {
+   "round": 3,
+   "unit": "S4 data-e3",
+   "verdict": "FAIL",
+   "note": "inhoud/gedrag correct (letterlijk 100%, 100.000 fuzz-plays 0 verschillen, 52 routes ok); vorm: geneste K (door LEAD toegestaan), TODO_BART-8 ontbreekt in data, risicogroep in zichtbaar, ontwerpnoten buiten meta, interne verwijzingen in TODO-teksten, slotpunt onthult; zonder pin 56 gedragsmutanten over. BLIND=ONS → ronde 4"
   }
  ],
  "open": [

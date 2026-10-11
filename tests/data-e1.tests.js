@@ -361,6 +361,87 @@
     });
   });
 
+  // Exacte sleutelwhitelist: elk object in de episode heeft PRECIES de sleutels hieronder (TODO_BART* wordt apart gepind in S-TODO).
+  // Een extra veld (bv. een hint voor de student) of een ontbrekend veld in welk object ook geeft rood.
+  var SLEUTELS = {
+    "E1": ["id", "level", "startToestanden", "knoppen", "antibiotica", "patient", "repertoire", "gebeurtenissen", "werkzaamheid", "statusTeksten", "invarianten", "score", "profielen", "feedbackExtra", "zichtbaarAlsOntbreekt"],
+    "E1.knoppen": ["actiesPerBeurt", "aantalDagen", "raadplegenKost"],
+    "E1.patient": ["zichtbaar", "waar", "medicatie", "verborgen", "meta"],
+    "E1.patient.zichtbaar": ["kop", "naam", "leeftijd", "klachten", "medicatie", "medicatieTekst", "lab", "labTekst"],
+    "E1.patient.zichtbaar.lab": ["eGFR", "datum"],
+    "E1.patient.waar": ["eGFR", "risicogroep"],
+    "E1.patient.medicatie[]": ["id", "label"],
+    "E1.patient.meta": ["risicogroep"],
+    "E1.werkzaamheid": ["cystitis"],
+    "E1.werkzaamheid.cystitis": ["werkzaam", "nietWerkzaam"],
+    "E1.werkzaamheid.cystitis.werkzaam[]": ["kaart"],
+    "E1.statusTeksten": ["af", "aan", "geenVerbetering48"],
+    "E1.invarianten[]": ["id", "ernst", "geldtIn", "predicaat", "vraag", "bron"],
+    "E1.score": ["duurzaamheid", "doelmatigheid"],
+    "E1.score.duurzaamheid": ["regels"],
+    "E1.score.duurzaamheid.regels[]": ["als", "punten"],
+    "E1.score.doelmatigheid": ["start", "regels"],
+    "E1.score.doelmatigheid.regels[]": ["als", "delta"],
+    "E1.profielen[]": ["naam", "als", "reflectievraag"],
+    "E1.feedbackExtra[]": ["trigger", "vraag", "wanneer"],
+    "E1.zichtbaarAlsOntbreekt[]": ["trigger", "tekst"]
+  };
+  var PRED_SLEUTELS = { gespeeld: ["p", "kaart"], nietGespeeld: ["p", "kaart"], en: ["p", "args"], of: ["p", "args"], niet: ["p", "arg"], aantalActieveAntibiotica: ["p", "op", "n"], waarheid: ["p", "waarde"] };
+  function sleutelFouten(e) {
+    var f = [];
+    function gelijkSet(pad, keys, verwacht) {
+      var k = keys.filter(function (x) { return !/^TODO_BART/.test(x); }).sort(), v = verwacht.slice().sort();
+      if (JSON.stringify(k) !== JSON.stringify(v)) f.push(pad + " heeft sleutels [" + k + "] i.p.v. [" + v + "]");
+    }
+    function pred(x, pad) {
+      if (!x || typeof x !== "object" || Array.isArray(x)) { f.push(pad + " is geen predicaat"); return; }
+      var w = PRED_SLEUTELS[x.p];
+      if (!w) { f.push(pad + " onbekend predicaat " + x.p); return; }
+      gelijkSet(pad, Object.keys(x), w);
+      if (x.args) x.args.forEach(function (a, i) { pred(a, pad + ".args[" + i + "]"); });
+      if (x.arg) pred(x.arg, pad + ".arg");
+    }
+    var PRED_VELD = { "E1.invarianten[]": "predicaat", "E1.score.duurzaamheid.regels[]": "als", "E1.score.doelmatigheid.regels[]": "als", "E1.profielen[]": "als", "E1.feedbackExtra[]": "trigger", "E1.zichtbaarAlsOntbreekt[]": "trigger" };
+    function walk(x, pad, pad0) {
+      if (Array.isArray(x)) { x.forEach(function (v, i) { walk(v, pad + "[" + i + "]", pad0 + "[]"); }); return; }
+      if (!x || typeof x !== "object") return;
+      var w = SLEUTELS[pad0];
+      if (!w) { f.push(pad + " (" + pad0 + ") komt niet voor in de toegestane structuur"); return; }
+      gelijkSet(pad, Object.keys(x), w);
+      Object.keys(x).forEach(function (k) {
+        if (/^TODO_BART/.test(k)) return;
+        if (PRED_VELD[pad0] === k) { pred(x[k], pad + "." + k); return; }
+        walk(x[k], pad + "." + k, pad0 + "." + k);
+      });
+    }
+    walk(e, "E1", "E1");
+    return f;
+  }
+  reg("E1-W exacte sleutelwhitelist: geen enkel object in episode 1 heeft een extra of ontbrekend veld", function (e) {
+    T.gelijk(sleutelFouten(e), []);
+  });
+  reg("E1-W mutatiecontrole: extra velden (ook met hint) en ontbrekende velden in elk objecttype worden opgemerkt", function (e) {
+    var paden = [];
+    (function walk(x, pad, pad0) {
+      if (Array.isArray(x)) x.forEach(function (v, i) { walk(v, pad + "[" + i + "]", pad0 + "[]"); });
+      else if (x && typeof x === "object") { paden.push({ pad: pad, pad0: pad0 }); Object.keys(x).forEach(function (k) { walk(x[k], pad + "." + k, pad0 + "." + k); }); }
+    })(e, "E1", "E1");
+    T.waar(paden.length >= 40, "te weinig objecten: " + paden.length);
+    function hier(c, pad) { var o = c; pad.replace(/^E1\.?/, "").split(".").filter(Boolean).forEach(function (d) { var m = /^(\w+)\[(\d+)\]$/.exec(d); o = m ? o[m[1]][+m[2]] : o[d]; }); return o; }
+    paden.forEach(function (x) {
+      var c = kloon(e), o = hier(c, x.pad);
+      o.tip = "Kies nitrofurantoine";
+      T.waar(sleutelFouten(c).length > 0, "extra veld 'tip' ongemerkt in " + x.pad);
+      c = kloon(e); o = hier(c, x.pad);
+      var k0 = Object.keys(o)[0]; delete o[k0];
+      T.waar(sleutelFouten(c).length > 0, "ontbrekend veld '" + k0 + "' ongemerkt in " + x.pad);
+    });
+    ["af", "aan", "geenVerbetering48"].forEach(function (k) {
+      var c = kloon(e); c.statusTeksten.toeneemt = "klachten nemen toe";
+      T.waar(sleutelFouten(c).length > 0, "extra statustekst ongemerkt");
+    });
+  });
+
   // Vorm-/tekstvelden die het gedrag niet raakt (ernst, geldtIn, bron, vraag, reflectievraag, wanneer, raadplegen, kop).
   function vormFouten(c) {
     var f = [];
@@ -377,7 +458,15 @@
       ["Je schreef niets voor. Bij welke patiënt zou dat niet mogen?", null, "Het werkt. Was het nodig, en koos zíj ervoor?"], "reflectievragen");
     is("raadplegen" in c, false, "episode.raadplegen");
     var ref = casusRef();
-    Object.keys(ref).forEach(function (k) { is(c.patient.zichtbaar[k], ref[k], "patient.zichtbaar." + k); });
+    Object.keys(ref).forEach(function (k) { if (k !== "risicogroep") is(c.patient.zichtbaar[k], ref[k], "patient.zichtbaar." + k); });
+    is(c.patient.meta.risicogroep, ref.risicogroep, "patient.meta.risicogroep");
+    is("risicogroep" in c.patient.zichtbaar, false, "risicogroep in zichtbaar");
+    is(c.statusTeksten.af + "|" + c.statusTeksten.aan + "|" + c.statusTeksten.geenVerbetering48, "klachten nemen af|klachten houden aan|Na 48 uur geen verbetering.", "statusTeksten");
+    is(c.startToestanden, ["cystitis"], "startToestanden");
+    is(c.patient.waar, { eGFR: 42, risicogroep: false }, "waar");
+    is(c.score.duurzaamheid.regels.map(function (r) { return r.punten; }), [3, 2, 1], "punten");
+    is(c.score.doelmatigheid.start, 3, "start");
+    sleutelFouten(c).forEach(function (x) { f.push("sleutels: " + x); });
     return f;
   }
   reg("E1-M vorm: ernst, geldtIn, bron, vraag, reflectievragen, wanneer, raadplegen en kop kloppen", function (e) {
@@ -395,7 +484,26 @@
       ["reflectievraag Gedeelde regie niet meer null", function (c) { c.profielen[1].reflectievraag = "?"; }],
       ["episode.raadplegen terug", function (c) { c.raadplegen = { titel: "x", bronnen: [] }; }],
       ["medicatieTekst zonder slotpunt", function (c) { c.patient.zichtbaar.medicatieTekst = c.patient.zichtbaar.medicatieTekst.slice(0, -1); }],
-      ["kop", function (c) { c.patient.zichtbaar.kop = "Mevrouw V., 72 jaar"; }]
+      ["kop", function (c) { c.patient.zichtbaar.kop = "Mevrouw V., 72 jaar"; }],
+      ["risicogroep terug in zichtbaar", function (c) { c.patient.zichtbaar.risicogroep = c.patient.meta.risicogroep; }],
+      ["risicogroep alleen in zichtbaar", function (c) { c.patient.zichtbaar.risicogroep = c.patient.meta.risicogroep; delete c.patient.meta.risicogroep; }],
+      ["meta.risicogroep teken", function (c) { c.patient.meta.risicogroep = c.patient.meta.risicogroep.replace("[NHG]", "[NGH]"); }],
+      ["meta.risicogroep slotpunt", function (c) { c.patient.meta.risicogroep = c.patient.meta.risicogroep.slice(0, -1); }],
+      ["extra veld met hint in zichtbaar", function (c) { c.patient.zichtbaar.tip = "Kies nitrofurantoine"; }],
+      ["extra veld met hint in een invariant", function (c) { c.invarianten[0].hint = "N1"; }],
+      ["extra veld met hint in een kaartverwijzing", function (c) { c.invarianten[1].predicaat.args[0].label = "Aanbevolen"; }],
+      ["extra veld in knoppen", function (c) { c.knoppen.hint = 1; }],
+      ["extra sleutel in statusTeksten", function (c) { c.statusTeksten.toeneemt = "klachten nemen toe"; }],
+      ["statusTekst af gewijzigd", function (c) { c.statusTeksten.af = "Klachten nemen af"; }],
+      ["statusTekst geenVerbetering48 gewijzigd", function (c) { c.statusTeksten.geenVerbetering48 = "Na 48 uur geen verbetering"; }],
+      ["extra veld in werkzaamheid", function (c) { c.werkzaamheid.cystitis.werkzaam[0].toelichting = "eerste keus"; }],
+      ["extra veld in waar", function (c) { c.patient.waar.leeftijd = 72; }],
+      ["extra veld in meta", function (c) { c.patient.meta.tip = "x"; }],
+      ["extra veld in een profiel", function (c) { c.profielen[2].label = "1e keus"; }],
+      ["extra veld in score", function (c) { c.score.extra = 1; }],
+      ["extra veld in medicatie", function (c) { c.patient.medicatie[0].start = "2020"; }],
+      ["extra veld in episode", function (c) { c.toelichting = "x"; }],
+      ["toelichting direct op object i.p.v. onder meta", function (c) { c.invarianten[2].toelichting = "x"; }]
     ].forEach(function (m) {
       var c = kloon(e); m[1](c);
       T.waar(vormFouten(c).length > 0, "vormmutatie ongemerkt: " + m[0]);
@@ -410,69 +518,122 @@
     });
   });
 
-  // TODO_BART vastgepind: per id de vraag, de gekozen lezing (kernzinnen) en de plek in de data waar de markering moet staan.
-  // Het weghalen of leegmaken van een markering, vraag of lezing geeft rood.
+  // TODO_BART vastgepind: per id de vraag, de gekozen lezing (exact), de plek (exact) en de plek in de data waar de markering moet staan.
+  // Het weghalen, verplaatsen, verdubbelen of wijzigen van een markering, vraag, lezing of plek geeft rood.
   var TODO_PLEKKEN = [
-    { id: "TODO_BART-E1-1", pad: function (e) { return vindInv(e, "I1"); }, plek: "I1", kern: ["zonder N1", "geen V1"] },
-    { id: "TODO_BART-E1-2", pad: function (e) { return e.statusTeksten; }, plek: "statusTeksten", kern: ["klachten nemen af", "Na 48 uur geen verbetering."] },
-    { id: "TODO_BART-E1-3", pad: function (e) { return e.profielen[1]; }, plek: "profielen[Gedeelde regie]", kern: ["null"] },
-    { id: "TODO_BART-E1-4", pad: function (e) { return e.profielen[2]; }, plek: "profielen[Direct behandelen]", kern: ["Eén profiel"] },
-    { id: "TODO_BART-E1-5", pad: function (e) { return e.feedbackExtra[0]; }, plek: "feedbackExtra[0]", kern: ["gehaalde poort"] },
-    { id: "TODO_BART-E1-6", pad: function (e) { return e.score.duurzaamheid.regels[1]; }, plek: "score.duurzaamheid.regels[1]", kern: ["V2", "= 2"] }
+    { id: "TODO_BART-E1-1", pad: function (e) { return vindInv(e, "I1"); }, plek: "E1.invarianten.I1", kern: ["zonder N1","geen V1"],
+      vraag: "De casus noemt als invariant I1 'Een route zonder N1'. Telt een episode zonder enige route (niets gespeeld) ook als 'een route zonder N1', en telt afronden zonder gekozen route (geen V1, V2, V3, V4 of V5), ook mét N1, als geschonden?",
+      lezing: "Strengste lezing: elke afronding zonder N1 schendt I1, ook als er helemaal geen route is gekozen. Ook afronden mét N1 maar zonder route-kaart (geen V1 t/m V5) schendt I1; de casus noemt dit geval niet, maar zonder deze lezing haalt een lege route de poort zonder profiel of duurzaamheidsscore." },
+    { id: "TODO_BART-E1-2", pad: function (e) { return e.statusTeksten; }, plek: "E1.statusTeksten", kern: ["klachten nemen af","Na 48 uur geen verbetering."],
+      vraag: "In episode 1 kunnen de klachten af, aan of na 48 uur niet verbeterd zijn, maar de casus geeft bij episode 1 geen statusteksten. Welke tekst hoort bij welke klachtenstatus?",
+      lezing: "Status af = 'klachten nemen af', status aan = 'klachten houden aan', status na 48 uur geen verbetering = 'Na 48 uur geen verbetering.' (letterlijke fragmenten uit episode 2 en 3 van de casus). In episode 1 komen de laatste twee statussen niet voor." },
+    { id: "TODO_BART-E1-3", pad: function (e) { return e.profielen[1]; }, plek: "E1.profielen.Gedeelde regie", kern: ["Geen reflectievraag"],
+      vraag: "De casus geeft bij het profiel Gedeelde regie (uitgesteld recept) geen reflectievraag, wel bij Terughoudend en Direct behandelen. Welke reflectievraag hoort bij Gedeelde regie?",
+      lezing: "Geen reflectievraag (leeg); er wordt niets verzonnen." },
+    { id: "TODO_BART-E1-4", pad: function (e) { return e.profielen[2]; }, plek: "E1.profielen.Direct behandelen", kern: ["Eén profiel"],
+      vraag: "De casus noemt bij de geldige routes 'Direct behandelen, 1e keus' (nitrofurantoïne), '2e keus' (fosfomycine) en '3e keus' (trimethoprim 3 dagen), maar geeft één reflectievraag. Is dat één profiel of drie?",
+      lezing: "Eén profiel 'Direct behandelen' (V3, V4 of V5) met de ene reflectievraag uit de casus." },
+    { id: "TODO_BART-E1-5", pad: function (e) { return e.feedbackExtra[0]; }, plek: "E1.feedbackExtra[O1]", kern: ["gehaalde poort"],
+      vraag: "De casus noemt bij O1 gespeeld de vraag 'Wat doe je bij welke uitslag anders?'. Komt die vraag ook bij een poortschending?",
+      lezing: "Alleen bij gehaalde poort; bij een schending verschijnt maar één vraag, die van de ernstigste schending." },
+    { id: "TODO_BART-E1-6", pad: function (e) { return e.score.duurzaamheid.regels[1]; }, plek: "E1.score.duurzaamheid", kern: ["V2","= 2"],
+      vraag: "De casus geeft als route 'V2 (+ middel) + N1 + N2 + Ev1' en rangschikt de duurzaamheid 'afwachten > uitgesteld recept > direct een antibioticum'. Telt uitgesteld recept met een middel erbij, of met V1 erbij, nog als 2 (uitgesteld recept)?",
+      lezing: "Gespeeld V2 (ook met V1 of met een middel erbij) = 2, in lijn met profiel Gedeelde regie; V1 zonder V2 en zonder antibioticum = 3; een antibioticum zonder V2 = 1 (ook met V1 erbij, profiel Direct behandelen). Zonder gekozen route is er geen score (de poort is dan geschonden)." },
+    { id: "TODO_BART-E1-7", pad: function (e) { return e.patient.meta; }, plek: "E1.patient.meta.risicogroep", kern: ["Nee","niet"],
+      vraag: "Mag de student de risicogroepmelding zien? De casus zet bij de patiëntkaart de regel 'Geen risicogroep. De eGFR is ≥ 30 [NHG]. De leeftijd ligt bewust onder 75, de grens die de NHG noemt als factor bij verminderde weerstand [NHG].' Die regel legt de drempels (eGFR 30, leeftijd 75) vooraf uit. Mag hij bij de patiëntkaart getoond worden, of alleen in het overzicht voor de docent?",
+      lezing: "Nee: de student ziet de risicogroepmelding niet. De regel staat in de data onder patient.meta.risicogroep (voor Bart en het overzicht); de student ziet alleen de kop, de klachten, de medicatie en het lab. Alternatief: de regel wel bij de patiëntkaart tonen." }
   ];
+  var TODO_PADEN = ["E1.patient.meta.TODO_BART", "E1.statusTeksten.TODO_BART", "E1.invarianten[0].TODO_BART", "E1.score.duurzaamheid.regels[1].TODO_BART",
+    "E1.profielen[1].TODO_BART", "E1.profielen[2].TODO_BART", "E1.feedbackExtra[0].TODO_BART"];
+  var VERBODEN_IN_TODO = /contract|bouwopdracht|\bronde\b|\bronde\s?\d|\bstuk(ken)?\b|\bS\d\b|rapport|criticus|\bLEAD\b|TODO_BART|\bsectie\b|\bA\d\b|\btests?\b/i;
   function niet_leeg(x) { return typeof x === "string" && x.trim().length > 0; }
-  reg("S-TODO: elke TODO_BART in E1 staat op de plek zelf én in casus.todoBart (id, niet-lege vraag, niet-lege gekozenLezing met kernzinnen, plek)", function (e) {
-    var lijst = casus().todoBart || [];
-    var mijn = lijst.filter(function (t) { return /^TODO_BART-E1-/.test(t.id); });
-    T.gelijk(mijn.map(function (t) { return t.id; }), TODO_PLEKKEN.map(function (p) { return p.id; }), "de E1-TODO's in casus.todoBart (exact deze ids, deze volgorde)");
-    TODO_PLEKKEN.forEach(function (p) {
-      var t = mijn.filter(function (x) { return x.id === p.id; })[0];
-      T.waar(niet_leeg(t.vraag), p.id + ": vraag is leeg");
-      T.waar(niet_leeg(t.gekozenLezing), p.id + ": gekozenLezing is leeg");
-      T.waar(niet_leeg(t.plek), p.id + ": plek is leeg");
-      p.kern.forEach(function (k) { T.waar(t.gekozenLezing.indexOf(k) >= 0, p.id + ": gekozenLezing mist kernzin '" + k + "'"); });
-      var obj = p.pad(e);
-      T.waar(obj && typeof obj === "object", p.id + ": de plek (" + p.plek + ") bestaat niet in de data");
-      T.waar(niet_leeg(obj.TODO_BART), p.id + ": TODO_BART ontbreekt of is leeg op de plek zelf (" + p.plek + ")");
-      T.is(obj.TODO_BART, t.vraag, p.id + ": de TODO_BART op " + p.plek + " moet gelijk zijn aan de vraag in casus.todoBart");
-    });
-    var ids = mijn.map(function (t) { return t.id; });
-    T.is(ids.filter(function (v, i) { return ids.indexOf(v) === i; }).length, ids.length, "dubbele TODO-ids");
-  });
-  reg("S-TODO: elke TODO_BART-markering in de data hoort bij een TODO in casus.todoBart (geen losse of verweesde markeringen)", function (e) {
-    var vragen = (casus().todoBart || []).map(function (t) { return t.vraag; });
-    var markeringen = [];
+  // Alle sleutels die met TODO_BART beginnen, met pad; de episode mag er precies de vaste zeven hebben, elk één keer.
+  function todoSleutels(e) {
+    var uit = [];
     (function walk(x, pad) {
       if (Array.isArray(x)) x.forEach(function (v, i) { walk(v, pad + "[" + i + "]"); });
-      else if (x && typeof x === "object") Object.keys(x).forEach(function (k) { if (k === "TODO_BART") markeringen.push({ pad: pad, v: x[k] }); else walk(x[k], pad + "." + k); });
+      else if (x && typeof x === "object") Object.keys(x).forEach(function (k) { if (/^TODO_BART/.test(k)) uit.push(pad + "." + k); else walk(x[k], pad + "." + k); });
     })(e, "E1");
-    T.is(markeringen.length, TODO_PLEKKEN.length, "aantal TODO_BART-markeringen in E1");
-    markeringen.forEach(function (m) { T.waar(niet_leeg(m.v) && vragen.indexOf(m.v) >= 0, "TODO_BART op " + m.pad + " staat niet in casus.todoBart: " + m.v); });
+    return uit.sort();
+  }
+  function todoFouten(e, lijst) {
+    var f = [], mijn = lijst.filter(function (t) { return /^TODO_BART-E1-/.test(t.id); });
+    if (JSON.stringify(mijn.map(function (t) { return t.id; })) !== JSON.stringify(TODO_PLEKKEN.map(function (p) { return p.id; }))) f.push("ids/volgorde");
+    if (JSON.stringify(todoSleutels(e)) !== JSON.stringify(TODO_PADEN.slice().sort())) f.push("TODO_BART-sleutels in de data: " + todoSleutels(e).join(", "));
+    TODO_PLEKKEN.forEach(function (p) {
+      var t = mijn.filter(function (x) { return x.id === p.id; })[0];
+      if (!t) { f.push(p.id + " ontbreekt"); return; }
+      if (!niet_leeg(t.vraag) || t.vraag !== p.vraag) f.push(p.id + " vraag");
+      if (!niet_leeg(t.gekozenLezing) || t.gekozenLezing !== p.lezing) f.push(p.id + " gekozenLezing");
+      if (t.plek !== p.plek) f.push(p.id + " plek");
+      if (JSON.stringify(Object.keys(t).sort()) !== JSON.stringify(["gekozenLezing", "id", "plek", "vraag"])) f.push(p.id + " extra of ontbrekende velden");
+      p.kern.forEach(function (k) { if (String(t.gekozenLezing).indexOf(k) < 0) f.push(p.id + " kernzin " + k); });
+      var obj = p.pad(e);
+      if (!obj || typeof obj !== "object" || !niet_leeg(obj.TODO_BART) || obj.TODO_BART !== t.vraag) f.push(p.id + " markering op de plek");
+      if (VERBODEN_IN_TODO.test(String(t.vraag)) || VERBODEN_IN_TODO.test(String(t.gekozenLezing))) f.push(p.id + " verwijst naar contract/ronde/stuk");
+    });
+    return f;
+  }
+  reg("S-TODO: elke TODO_BART in E1 staat op de plek zelf én in casus.todoBart (exacte id, vraag, gekozenLezing en plek; zelfstandig leesbaar)", function (e) {
+    T.gelijk(todoFouten(e, casus().todoBart || []), []);
+    var ids = (casus().todoBart || []).map(function (t) { return t.id; });
+    T.is(ids.filter(function (v, i) { return ids.indexOf(v) === i; }).length, ids.length, "dubbele TODO-ids in casus.todoBart");
   });
-  reg("S-TODO: mutaties op de markeringen worden opgemerkt (weghalen, leegmaken, lezing/vraag leegmaken)", function (e) {
-    var gevangen = 0;
-    function check(mut, naam) {
-      var c = kloon(e), t = kloon(casus().todoBart.filter(function (x) { return /^TODO_BART-E1-/.test(x.id); }));
-      mut(c, t);
-      var ok = true;
-      TODO_PLEKKEN.forEach(function (p) {
-        var tt = t.filter(function (x) { return x.id === p.id; })[0], o = p.pad(c);
-        if (!tt || !niet_leeg(tt.vraag) || !niet_leeg(tt.gekozenLezing) || !o || !niet_leeg(o.TODO_BART) || o.TODO_BART !== tt.vraag) ok = false;
-        else p.kern.forEach(function (k) { if (tt.gekozenLezing.indexOf(k) < 0) ok = false; });
-      });
-      T.waar(!ok, "mutatie ongemerkt: " + naam);
-      gevangen++;
-    }
-    check(function (c) { delete vindInv(c, "I1").TODO_BART; }, "TODO_BART van I1 weg");
-    check(function (c) { c.profielen[1].TODO_BART = ""; }, "TODO_BART Gedeelde regie leeg");
-    check(function (c) { delete c.feedbackExtra[0].TODO_BART; }, "TODO_BART feedbackExtra weg");
-    check(function (c) { delete c.profielen[2].TODO_BART; }, "TODO_BART Direct weg");
-    check(function (c) { delete c.score.duurzaamheid.regels[1].TODO_BART; }, "TODO_BART duurzaamheid weg");
-    check(function (c) { delete c.statusTeksten.TODO_BART; }, "TODO_BART statusTeksten weg");
-    check(function (c, t) { t[0].gekozenLezing = "x"; }, "gekozenLezing E1-1 vervangen");
-    check(function (c, t) { t[3].gekozenLezing = ""; }, "gekozenLezing E1-4 leeg");
-    check(function (c, t) { t[2].vraag = ""; }, "vraag E1-3 leeg");
-    check(function (c, t) { t.pop(); }, "TODO E1-6 weggehaald");
-    T.is(gevangen, 10);
+  reg("S-TODO: elke TODO_BART-markering in de data hoort bij een TODO in casus.todoBart; precies zeven sleutels, geen TODO_BART_<naam>-extra's", function (e) {
+    var vragen = (casus().todoBart || []).map(function (t) { return t.vraag; });
+    T.gelijk(todoSleutels(e), TODO_PADEN.slice().sort());
+    TODO_PADEN.forEach(function (pad) {
+      var o = e, delen = pad.replace(/^E1\./, "").split(".");
+      delen.forEach(function (d) { var m = /^(\w+)\[(\d+)\]$/.exec(d); o = m ? o[m[1]][+m[2]] : o[d]; });
+      T.waar(niet_leeg(o) && vragen.indexOf(o) >= 0, "TODO_BART op " + pad + " staat niet in casus.todoBart");
+    });
+  });
+  reg("S-TODO: TODO-teksten verwijzen niet naar contract, rondes, stukken of tests (alle E1-TODO's in casus.todoBart en in de data)", function (e) {
+    todoSleutels(e).forEach(function (pad) {
+      var o = e, delen = pad.replace(/^E1\./, "").split(".");
+      delen.forEach(function (d) { var m = /^(\w+)\[(\d+)\]$/.exec(d); o = m ? o[m[1]][+m[2]] : o[d]; });
+      T.waar(!VERBODEN_IN_TODO.test(o), "TODO op " + pad + " verwijst naar intern materiaal: " + o);
+    });
+    (casus().todoBart || []).filter(function (t) { return /^TODO_BART-E1-/.test(t.id); }).forEach(function (t) {
+      T.waar(!VERBODEN_IN_TODO.test(t.vraag) && !VERBODEN_IN_TODO.test(t.gekozenLezing), t.id + " verwijst naar intern materiaal");
+    });
+  });
+  reg("S-TODO: mutaties op de markeringen worden opgemerkt (weghalen, verplaatsen, verdubbelen, extra TODO-veld, wijzigen van vraag/lezing/plek)", function (e) {
+    var lijst0 = casus().todoBart.filter(function (x) { return /^TODO_BART-E1-/.test(x.id); });
+    var muts = [
+      ["TODO van I1 weg", function (c) { delete c.invarianten[0].TODO_BART; }],
+      ["TODO Gedeelde regie leeg", function (c) { c.profielen[1].TODO_BART = ""; }],
+      ["TODO feedbackExtra weg", function (c) { delete c.feedbackExtra[0].TODO_BART; }],
+      ["TODO Direct weg", function (c) { delete c.profielen[2].TODO_BART; }],
+      ["TODO duurzaamheid weg", function (c) { delete c.score.duurzaamheid.regels[1].TODO_BART; }],
+      ["TODO statusTeksten weg", function (c) { delete c.statusTeksten.TODO_BART; }],
+      ["TODO risicogroep weg", function (c) { delete c.patient.meta.TODO_BART; }],
+      ["TODO risicogroep verplaatst naar zichtbaar", function (c) { c.patient.zichtbaar.TODO_BART = c.patient.meta.TODO_BART; delete c.patient.meta.TODO_BART; }],
+      ["tweede TODO-veld op I3", function (c) { c.invarianten[1].TODO_BART_extra = "Hint"; }],
+      ["tweede TODO-veld op een profiel naast de eerste", function (c) { c.profielen[0].TODO_BART = c.profielen[1].TODO_BART; }],
+      ["TODO_BART_naam naast TODO_BART op I1", function (c) { c.invarianten[0].TODO_BART_lezing = "x"; }],
+      ["TODO_BART_naam in de zichtbare patiëntkaart", function (c) { c.patient.zichtbaar.TODO_BART_x = "x"; }],
+      ["TODO op knoppen", function (c) { c.knoppen.TODO_BART = "x"; }],
+      ["TODO-markering verwijst naar interne tekst", function (c) { c.patient.meta.TODO_BART = c.patient.meta.TODO_BART + " Zie het contract."; }],
+      ["TODO_BART-sleutel als array-element", function (c) { c.zichtbaarAlsOntbreekt[0].TODO_BART_y = "y"; }]
+    ];
+    var tmuts = [
+      ["lezing E1-1 vervangen", function (t) { t[0].gekozenLezing = "x"; }],
+      ["lezing E1-1 hoofdletter", function (t) { t[0].gekozenLezing = t[0].gekozenLezing.replace("Strengste", "strengste"); }],
+      ["lezing E1-4 leeg", function (t) { t[3].gekozenLezing = ""; }],
+      ["lezing E1-7 leesteken", function (t) { t[6].gekozenLezing = t[6].gekozenLezing.replace("Nee:", "Nee."); }],
+      ["vraag E1-3 leeg", function (t) { t[2].vraag = ""; }],
+      ["vraag E1-2 teken", function (t) { t[1].vraag = t[1].vraag.replace("Welke", "Welk"); }],
+      ["plek E1-5 gewijzigd", function (t) { t[4].plek = "E1.feedbackExtra"; }],
+      ["plek E1-6 gewijzigd", function (t) { t[5].plek = "E1.score"; }],
+      ["TODO E1-6 weggehaald", function (t) { t.pop(); }],
+      ["TODO E1-7 weggehaald", function (t) { t.splice(6, 1); }],
+      ["extra veld in een TODO-object", function (t) { t[0].toelichting = "x"; }],
+      ["verwijzing naar ronde in lezing", function (t) { t[2].gekozenLezing += " (ronde 3)"; }]
+    ];
+    var n = 0;
+    muts.forEach(function (m) { var c = kloon(e); m[1](c); T.waar(todoFouten(c, kloon(lijst0)).length > 0 || todoSleutels(c).length !== 7, "mutatie ongemerkt: " + m[0]); n++; });
+    tmuts.forEach(function (m) { var t = kloon(lijst0); m[1](t); T.waar(todoFouten(kloon(e), t).length > 0, "mutatie ongemerkt: " + m[0]); n++; });
+    T.is(n, muts.length + tmuts.length);
   });
 })(typeof window !== "undefined" ? window : globalThis);
