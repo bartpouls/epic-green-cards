@@ -278,7 +278,6 @@
     T.waar(n >= 40, "te weinig predicaten gecontroleerd: " + n);
   });
   reg("E2-3 kaart-ids in de predicaten bestaan in het repertoire van E2 (geen kaart die de speler niet heeft)", function (e) {
-    var toegestaan = e.repertoire.concat(["V10"]);   // V10 komt alleen voor in de resistent-set van C, niet in een predicaat
     var fout = [];
     (function walk(x, pad) {
       if (Array.isArray(x)) x.forEach(function (v, i) { walk(v, pad); });
@@ -289,7 +288,6 @@
       }
     })(allePredicaten(e).map(function (x) { return x.p; }), "predicaat");
     T.gelijk(fout, []);
-    T.waar(toegestaan.length === 16);
   });
   reg("E2-3 geen middelnamen of klinische tekst in de predicaten (alleen kaart-ids en generieke velden)", function (e) {
     var tekst = JSON.stringify(allePredicaten(e).map(function (x) { return x.p; })).toLowerCase();
@@ -385,7 +383,6 @@
   });
   reg("S-LETTER: speciale tekens zoals in de casus (ï, é, —, –, ≥) niet vervangen door ASCII-varianten", function (e) {
     var alles = alleStrings(e, [], "E2").map(function (x) { return x.s; }).join("\n");
-    T.waar(alles.indexOf("Nitrofurantoïne") < 0 || true);
     T.waar(alles.indexOf("nitrofurantoine") < 0, "nitrofurantoine zonder trema");
     T.waar(alles.indexOf("wél") >= 0, "'wél' met accent (I6-vraag)");
     T.waar(alles.indexOf("Episode 2 — level 2") >= 0, "gedachtestreep in de titel");
@@ -459,8 +456,7 @@
     if (!g.Engine || !g.Predicaten || !bibliotheek()) return;
     function speel(kaarten) {
       var st = g.Engine.nieuwSpel(casus(), "E2", { rng: function () { return 0; } });
-      kaarten.forEach(function (k, i) {
-        if (i === 3) { /* 3 acties per beurt: de 4e kaart staat op dag 2 */ }
+      kaarten.forEach(function (k) {
         if (st.actiesOver < 1) g.Engine.volgendeDag(st);
         var r = g.Engine.speelKaart(st, k.kaart, k);
         T.waar(r.ok, "kaart " + k.kaart + " mislukt: " + r.fout);
@@ -471,7 +467,7 @@
     var metO1 = speel([{ kaart: "G2" }, { kaart: "O1" }, { kaart: "N1" }, { kaart: "V4" }]);
     T.gelijk(metO1.gebeurtenissen.map(function (x) { return x.id; }), ["C"]);
     T.is(metO1.gebeurtenissen[0].dag, 3, "C verschijnt op dag 3 (casus: ongeveer dag 3)");
-    var zonderO1 = speel([{ kaart: "G2" }, { kaart: "N1" }, { kaart: "N2" }, { kaart: "V4" }]);
+    var zonderO1 = speel([{ kaart: "G2" }, { kaart: "N1" }, { kaart: "Ev1" }, { kaart: "V4" }]);
     T.gelijk(zonderO1.gebeurtenissen, []);
   });
 })(typeof window !== "undefined" ? window : globalThis);

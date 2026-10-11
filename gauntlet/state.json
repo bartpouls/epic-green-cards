@@ -74,8 +74,8 @@
   {
    "name": "S10 logging",
    "round": 2,
-   "verdict": "PENDING",
-   "evidence": "r2 gebouwd (35 eigen tests groen); criticus r2 bezig",
+   "verdict": "FAIL",
+   "evidence": "r2 FAIL, 3 nieuwe punten, BLIND=BRON; ronde 3 bouwer bezig",
    "artifact": ""
   }
  ],
@@ -97,6 +97,12 @@
    "unit": "S1 data-kaarten",
    "verdict": "FAIL",
    "note": "V3/V5 E2/E3-effect niet uit casus (F1); gekozenLezing K3 onjuist (F2); tests missen titel/labels/todo-inhoud (F3). BLIND=BRON → ronde 2"
+  },
+  {
+   "round": 2,
+   "unit": "S10 logging",
+   "verdict": "FAIL",
+   "note": "r1-punten weg; nieuw: tests.html rood in Chromium (download-test), kapotte velden crashen exportCSV, quota-verlies niet gemeld. BLIND=BRON → ronde 3"
   }
  ],
  "open": [

@@ -30,9 +30,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E1": "Toont de actuele medicatielijst",
-    "E2": "Toont de actuele medicatielijst",
-    "E3": "Toont de actuele medicatielijst"
+    "alle": "Toont de actuele medicatielijst"
    },
    "downside": "Kost een actie",
    "bron": "—"
@@ -63,7 +61,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E3": "Toont de kweek uit episode 2"
+    "alle": "Toont de kweek uit episode 2"
    },
    "downside": "Kost een actie",
    "bron": "NHG: kweken tot ongeveer 1 jaar terug meewegen"
@@ -77,9 +75,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E1": "Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag in E2 na de 4e gespeelde kaart, in E3 drie kaarten na O1.",
-    "E2": "Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag in E2 na de 4e gespeelde kaart, in E3 drie kaarten na O1.",
-    "E3": "Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag in E2 na de 4e gespeelde kaart, in E3 drie kaarten na O1."
+    "alle": "Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag in E2 na de 4e gespeelde kaart, in E3 drie kaarten na O1."
    },
    "downside": {
     "E1": "niet geïndiceerd, kost doelmatigheid"
@@ -96,9 +92,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E1": "Bepaalt de kaliumspiegel",
-    "E2": "Bepaalt de kaliumspiegel",
-    "E3": "Bepaalt de kaliumspiegel"
+    "alle": "Bepaalt de kaliumspiegel"
    },
    "downside": "Alleen zinvol bij een indicatie; anders kost het doelmatigheid",
    "bron": "NHG, KNMP"
@@ -112,9 +106,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E1": "Geen antibioticum; ruim drinken, zo nodig pijnstilling",
-    "E2": "Geen antibioticum; ruim drinken, zo nodig pijnstilling",
-    "E3": "Geen antibioticum; ruim drinken, zo nodig pijnstilling"
+    "alle": "Geen antibioticum; ruim drinken, zo nodig pijnstilling"
    },
    "downside": "Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger",
    "bron": "NHG"
@@ -128,9 +120,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E1": "De patiënt start zelf als de klachten aanhouden of toenemen",
-    "E2": "De patiënt start zelf als de klachten aanhouden of toenemen",
-    "E3": "De patiënt start zelf als de klachten aanhouden of toenemen"
+    "alle": "De patiënt start zelf als de klachten aanhouden of toenemen"
    },
    "downside": "Ze moet weten wanneer ze moet starten",
    "bron": "NHG"
@@ -144,9 +134,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E1": "5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen.",
-    "E2": "5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen.",
-    "E3": "5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen."
+    "alle": "E1: 5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen."
    },
    "downside": "Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G].",
    "bron": "NHG",
@@ -161,9 +149,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E1": "Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht",
-    "E2": "Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht",
-    "E3": "Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht"
+    "alle": "Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht"
    },
    "downside": "Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.",
    "bron": "NHG"
@@ -177,9 +163,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E1": "3 dagen 1 dd 300 mg. Risicogroep: 7 dagen.",
-    "E2": "3 dagen 1 dd 300 mg. Risicogroep: 7 dagen.",
-    "E3": "3 dagen 1 dd 300 mg. Risicogroep: 7 dagen."
+    "alle": "E1: 3 dagen 1 dd 300 mg. Risicogroep: 7 dagen."
    },
    "downside": "Naast een RAS-remmer of kaliumsparend diureticum stijgt het kalium (controle nodig bij een 7-daagse kuur). Bij eGFR 10–30: na dag 3 halveren en kans op therapiefalen. Hoge resistentie bij E. coli.",
    "bron": "NHG, KNMP",
@@ -297,8 +281,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "E2": "Past dosis of interval aan van een nieuw of bestaand middel (ook lisinopril halveren bij sick day)",
-    "E3": "Past dosis of interval aan van een nieuw of bestaand middel (ook lisinopril halveren bij sick day)"
+    "alle": "Past dosis of interval aan van een nieuw of bestaand middel (ook lisinopril halveren bij sick day)"
    },
    "downside": "Een verkeerde aanpassing geeft onder- of overdosering",
    "bron": "NHG, SIDRIK",
@@ -313,7 +296,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E3": "7 dagen 2 dd 500 mg"
+    "alle": "7 dagen 2 dd 500 mg"
    },
    "downside": "Bij ouderen: kans op peesschade, QT-verlenging, aneurysma. Minder opname naast calcium. NHG: terughoudend bij ouderen en bij een nierfunctiestoornis.",
    "bron": "NHG, Kompas"
@@ -327,7 +310,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E3": "10 dagen 3 dd 500/125 mg"
+    "alle": "10 dagen 3 dd 500/125 mg"
    },
    "downside": "Bij eGFR < 30 stapelt clavulaanzuur: dan alleen 875/125 mg 2 dd",
    "bron": "NHG"
@@ -341,7 +324,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E3": "10 dagen 2 dd 960 mg"
+    "alle": "10 dagen 2 dd 960 mg"
    },
    "downside": "Gecontra-indiceerd bij een ernstige nierfunctiestoornis. Met spironolacton kans op ernstige hyperkaliëmie.",
    "bron": "NHG, Kompas"
@@ -355,7 +338,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E3": "3 dd 500 mg, alleen bij aangetoonde gevoeligheid"
+    "alle": "3 dd 500 mg, alleen bij aangetoonde gevoeligheid"
    },
    "downside": "De kweek laat resistentie zien: geen werking",
    "bron": "NHG"
@@ -564,8 +547,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "E2": "Vervangt het lopende antibioticum",
-    "E3": "Vervangt het lopende antibioticum"
+    "alle": "Vervangt het lopende antibioticum"
    },
    "downside": "Onnodig wisselen kost duurzaamheid",
    "bron": "NHG",
@@ -665,8 +647,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "E2": "Stopt het lopende antibioticum",
-    "E3": "Stopt het lopende antibioticum"
+    "alle": "Stopt het lopende antibioticum"
    },
    "downside": "Te vroeg stoppen geeft therapiefalen",
    "bron": "—",
@@ -708,7 +689,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "E3": "Pauzeert een bestaand middel (sick day)"
+    "alle": "Pauzeert een bestaand middel (sick day)"
    },
    "downside": "Vraagt een afspraak over herstart",
    "bron": "SIDRIK",
@@ -759,7 +740,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "E3": "Hervat een eerder gestopt middel. Volgens SIDRIK: herstarten zodra de klachten weg zijn."
+    "alle": "Hervat een eerder gestopt middel. Volgens SIDRIK: herstarten zodra de klachten weg zijn."
    },
    "downside": "Hervatten zonder herbeoordeling kan dezelfde schade herhalen",
    "bron": "SIDRIK",
@@ -785,7 +766,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "E3": "Ciprofloxacine 1–2 uur vóór of ten minste 4 uur ná calcium"
+    "alle": "Ciprofloxacine 1–2 uur vóór of ten minste 4 uur ná calcium"
    },
    "downside": "Vraagt uitleg aan de patiënt",
    "bron": "Kompas",
@@ -800,9 +781,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E1": "Bij koorts of ziek worden direct contact opnemen",
-    "E2": "Bij koorts of ziek worden direct contact opnemen",
-    "E3": "Bij koorts of ziek worden direct contact opnemen"
+    "alle": "Bij koorts of ziek worden direct contact opnemen"
    },
    "downside": "—",
    "bron": "NHG",
@@ -928,9 +907,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "E1": "Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg",
-    "E2": "Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg",
-    "E3": "Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg"
+    "alle": "Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg"
    },
    "downside": "—",
    "bron": "NHG",
@@ -945,7 +922,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E3": "2–2,5 liter per dag"
+    "alle": "2–2,5 liter per dag"
    },
    "downside": "—",
    "bron": "SIDRIK",
@@ -960,9 +937,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E1": "Afwachten: na 1 week alsnog starten. Na een kuur: als de klachten 24–48 uur na afloop niet duidelijk minder zijn, opnieuw urineonderzoek. Weefselinvasie: contact binnen 48 uur. Sick day: monitoring na 1–3 dagen.",
-    "E2": "Afwachten: na 1 week alsnog starten. Na een kuur: als de klachten 24–48 uur na afloop niet duidelijk minder zijn, opnieuw urineonderzoek. Weefselinvasie: contact binnen 48 uur. Sick day: monitoring na 1–3 dagen.",
-    "E3": "Afwachten: na 1 week alsnog starten. Na een kuur: als de klachten 24–48 uur na afloop niet duidelijk minder zijn, opnieuw urineonderzoek. Weefselinvasie: contact binnen 48 uur. Sick day: monitoring na 1–3 dagen."
+    "alle": "Afwachten: na 1 week alsnog starten. Na een kuur: als de klachten 24–48 uur na afloop niet duidelijk minder zijn, opnieuw urineonderzoek. Weefselinvasie: contact binnen 48 uur. Sick day: monitoring na 1–3 dagen."
    },
    "downside": "—",
    "bron": "NHG, SIDRIK",
@@ -988,7 +963,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "E3": "Legt een bestaand middel voor aan de voorschrijver"
+    "alle": "Legt een bestaand middel voor aan de voorschrijver"
    },
    "downside": "Kost een actie",
    "bron": "Bart; CVRM-richtlijn via Mistral, niet zelf gecheckt",
@@ -1003,7 +978,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "E3": "Verlaat de kaart: de patiënt gaat naar de tweede lijn"
+    "alle": "Verlaat de kaart: de patiënt gaat naar de tweede lijn"
    },
    "downside": "Onnodig verwijzen kost doelmatigheid",
    "bron": "NHG"
@@ -1019,13 +994,13 @@ window.CASUSSEN = [
   {
    "id": "TODO_BART-K2",
    "vraag": "De casus geeft het effect van V3 en V5 en de downside van O1 alleen met het voorvoegsel \"E1:\". Geldt dat ook voor E2 en E3?",
-   "gekozenLezing": "Effect van V3 en V5: de E1-tekst is ook voor E2 en E3 overgenomen (dosering van de kaart verandert niet). Downside van O1: alleen E1 (\"niet geïndiceerd\" geldt niet vanzelf in E2 en E3, waar een kweek wel nodig is); E2 en E3 hebben dus geen downside.",
+   "gekozenLezing": "Effect van V3 en V5: de hele casuscel staat letterlijk, inclusief het voorvoegsel \"E1: \", in effect.alle (geldt voor elke episode waarin de kaart in het repertoire zit); geen tekst voor E2 of E3 toegevoegd. Downside van O1: alleen E1 (\"niet geïndiceerd\" geldt niet vanzelf in E2 en E3, waar een kweek wel nodig is); E2 en E3 hebben dus geen downside.",
    "plek": "kaarten[V3,V5].effect; kaarten[O1].downside"
   },
   {
    "id": "TODO_BART-K3",
    "vraag": "Het effect van O1 en Ev1 en de G2-tekst bevatten zinnen die per episode of situatie verschillen, zonder voorvoegsel per episode (G2 E2: \"(verborgen)\"). Moeten die per episode gesplitst worden?",
-   "gekozenLezing": "Niet gesplitst: de casustekst staat letterlijk en volledig in elke episode vanaf de eerste. Bij G2 staat \"(verborgen)\" letterlijk in de E2-tekst.",
+   "gekozenLezing": "O1 en Ev1: niet gesplitst, de volledige casuscel staat letterlijk in effect.alle (geldt voor elke episode vanaf de eerste). G2: gesplitst in drie teksten (E1, E2 met \"(verborgen)\", E3), omdat de casus de varianten per episode noemt.",
    "plek": "kaarten[O1,Ev1,G2].effect"
   },
   {

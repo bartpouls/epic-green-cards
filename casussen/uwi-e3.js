@@ -36,6 +36,7 @@ window.CASUSSEN[0].episodes.push({
         kaart: "G3",
         sleutel: "eerdereKweek",
         onthult: "de kweek uit episode 2, met trimethoprim resistent",
+        zichtbaar: { eerdereKweek: "de kweek uit episode 2, met trimethoprim resistent" },
         toelichting: "Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG]."
       }
     ],
@@ -75,6 +76,7 @@ window.CASUSSEN[0].episodes.push({
       groep: "AB",
       trigger: { type: "naKaart", n: 4 },
       toestand: "weefselinvasie",
+      zet: { statusNaBeurten: 2 },
       tekst: "Weefselinvasie: koorts 38,6 °C en flankpijn",
       opmerking: "De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.",
       TODO_BART: "Vroeg afronden vóór gebeurtenis A of B (en dus ontlopen van I10, I11, I15, I16)? (TODO_BART-4)"
@@ -348,7 +350,7 @@ window.CASUSSEN[0].episodes.push({
       predicaat: { p: "actief", middel: ["V3", "V4"], op: { eindeBeurtNaGebeurtenis: "A", offset: 0 } },
       vraag: "Fosfomycine werkt in de blaas. Waar zit de infectie nu?",
       bron: "NHG",
-      TODO_BART: "I9, I10, I11, I13, I15, I16: wat is 'dezelfde beurt', 'de beurt na A' en 'tussen A en de wissel'?"
+      TODO_BART: "I10, I11, I13, I14, I15, I16: wat is 'dezelfde beurt', 'de beurt na A' en 'tussen A en de wissel'?"
     },
     {
       id: "I11",
@@ -658,7 +660,7 @@ window.CASUSSEN[0].todoBart.push(
   },
   {
     id: "TODO_BART-E3-5",
-    vraag: "I9, I10, I11, I13, I15, I16: wat is 'dezelfde beurt', 'de beurt na A' en 'tussen A en de wissel'?",
+    vraag: "I10, I11, I13, I14, I15, I16: wat is 'dezelfde beurt', 'de beurt na A' en 'tussen A en de wissel'?",
     gekozenLezing: "De beurt van een gebeurtenis is de dag waarop de banner verscheen (begin van de volgende dag). 'Eind van de beurt na A' = einde van die dag (offset 0); 'binnen 2 beurten' = die dag en de dag erna; 'na A' = kaarten gespeeld vanaf die dag.",
     plek: "E3.invarianten.I10, I11, I13, I14, I15, I16"
   },
