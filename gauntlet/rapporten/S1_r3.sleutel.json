@@ -1,0 +1,92 @@
+[
+ {
+  "paar": 1,
+  "situatie": "G2 effect in E2 (kaart tonen na spelen)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 2,
+  "situatie": "V3 effect in E3",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 3,
+  "situatie": "V5 effect in E2",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 4,
+  "situatie": "O1 effect in E3",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 5,
+  "situatie": "O1 downside in E1",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 6,
+  "situatie": "O1 downside in E2 (casus: alleen E1)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 7,
+  "situatie": "Ev1 effect in E1",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 8,
+  "situatie": "V6 effect in E3",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 9,
+  "situatie": "B5 effect in E3",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 10,
+  "situatie": "Ev2 bron",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 11,
+  "situatie": "V7 downside",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 12,
+  "situatie": "N2 downside",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 13,
+  "situatie": "bronnen KNMP (casuskop)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 14,
+  "situatie": "titel",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 15,
+  "situatie": "label calcium (casus sectie 5/6 Medicatie)",
+  "X": "spel",
+  "Y": "bron"
+ }
+]

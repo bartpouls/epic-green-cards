@@ -1,0 +1,10 @@
+const {chromium}=require('/opt/node-tools/node_modules/playwright');
+(async()=>{process.env.PLAYWRIGHT_BROWSERS_PATH=process.env.PLAYWRIGHT_BROWSERS_PATH||'/opt/pw-browsers';
+const b=await chromium.launch();const p=await b.newPage({viewport:{width:1300,height:900}});
+const errs=[];p.on('pageerror',e=>errs.push(String(e)));p.on('console',m=>{if(m.type()==='error')errs.push(m.text());});
+await p.goto('file:///home/user/epic-green-cards/tests/tests.html');await p.waitForTimeout(1500);
+const txt=await p.evaluate(()=>document.body.innerText);
+console.log(txt.split('\n').filter(l=>/data-kaarten|groen|rood|FAIL/i.test(l)).slice(0,40).join('\n'));
+console.log('pageerrors',errs.slice(0,5));
+await p.screenshot({path:'/tmp/claude-0/-home-user-epic-green-cards/b9f5dc07-fd1d-5bf9-b208-00447555559b/scratchpad/s1r3_tests.png',fullPage:false});
+await b.close();})();

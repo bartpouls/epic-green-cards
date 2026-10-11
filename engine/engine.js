@@ -305,16 +305,38 @@
     return { dag: d, status: status, tekst: status && teksten[status] != null ? teksten[status] : null };
   }
 
+  // Momentopname van alles wat volgendeDag kan wijzigen; bij een fout wordt het exact teruggezet (atomisch).
+  function neemMoment(state) {
+    return {
+      dag: state.dag, actiesOver: state.actiesOver, dagenVoorbij: state.dagenVoorbij,
+      toestanden: state.toestanden.slice(), gebeurtenissen: state.gebeurtenissen.slice(), wachtend: state.wachtend.slice(),
+      resistent: state.sets.resistent.slice(), gevoelig: state.sets.gevoelig.slice(), klachten: state.klachten.slice()
+    };
+  }
+  function zetTerug(lijst, oud) { lijst.length = 0; Array.prototype.push.apply(lijst, oud); }
+  function herstel(state, m) {
+    state.dag = m.dag; state.actiesOver = m.actiesOver; state.dagenVoorbij = m.dagenVoorbij;
+    zetTerug(state.toestanden, m.toestanden); zetTerug(state.gebeurtenissen, m.gebeurtenissen); zetTerug(state.wachtend, m.wachtend);
+    zetTerug(state.sets.resistent, m.resistent); zetTerug(state.sets.gevoelig, m.gevoelig); zetTerug(state.klachten, m.klachten);
+  }
+
   function volgendeDag(state) {
     if (state.afgerond) throw new Error("Deze episode is al afgerond.");
     if (state.dagenVoorbij) throw new Error("De laatste dag is al voorbij.");
     var ep = episodeVan(state);
     if (state.dag >= state.aantalDagen) { state.dagenVoorbij = true; return state; }
-    var nieuw = state.dag + 1;
-    pasGebeurtenissenToe(state, ep, nieuw);
-    state.dag = nieuw;
-    state.actiesOver = ep.knoppen.actiesPerBeurt;
-    state.klachten[nieuw] = berekenKlachten(state, ep, nieuw);
+    // Atomisch: gaat er halverwege iets mis (bv. een kapot predicaat in de data), dan blijft de state precies zoals hij was.
+    var moment = neemMoment(state);
+    try {
+      var nieuw = state.dag + 1;
+      pasGebeurtenissenToe(state, ep, nieuw);
+      state.dag = nieuw;
+      state.actiesOver = ep.knoppen.actiesPerBeurt;
+      state.klachten[nieuw] = berekenKlachten(state, ep, nieuw);
+    } catch (e) {
+      herstel(state, moment);
+      throw e;
+    }
     return state;
   }
 
@@ -340,12 +362,16 @@
 
   /* ---------- ontgrendelen ---------- */
 
-  function gehaaldSet(gehaald) {
+  // Ontgrendelen kijkt naar de EPISODES van de meegegeven casus. Een Logging-record van een andere casus (casusId) telt niet mee.
+  // Filteren op pseudoniem doet de aanroeper (UI): geef alleen de records van de huidige speler mee (Logging.alle() gefilterd);
+  // de API heeft bewust geen pseudoniem-parameter.
+  function gehaaldSet(gehaald, casusId) {
     var set = {};
     if (Array.isArray(gehaald)) {
       gehaald.forEach(function (x) {
         if (typeof x === "string") { set[x] = true; return; }
         if (!x || !x.episodeId) return;
+        if (x.casusId != null && x.casusId !== casusId) return;
         var u = x.uitkomst && typeof x.uitkomst === "object" ? x.uitkomst : null;
         // Gehaald: poortGehaald===true; of, zonder veld poortGehaald (Logging-record, contract 6), een lege geschonden-lijst.
         if (x.poortGehaald === true || (u && u.poortGehaald === true)) set[x.episodeId] = true;
@@ -357,7 +383,7 @@
     return set;
   }
   function ontgrendeld(casus, episodeId, gehaald) {
-    var eps = casus.episodes || [], set = gehaaldSet(gehaald);
+    var eps = casus.episodes || [], set = gehaaldSet(gehaald, casus.id);
     for (var i = 0; i < eps.length; i++) {
       if (eps[i].id === episodeId) return i === 0 || !!set[eps[i - 1].id];
     }
@@ -382,6 +408,6 @@
   Object.defineProperty(g.Engine, "_functies", { enumerable: false, value: [
     fout, kopie, P, zoekEpisode, casusVan, episodeVan, kaartVan, ctxVan, lijstVan, bevat, trekVolgorde, nieuwSpel, herkansing,
     zetPad, meng, onthul, triggerVan, eersteVolg, triggertNu, controleerGebeurtenissen, pasGebeurtenissenToe, speelKaart,
-    raadpleeg, werkzaamheidVan, eindeDag, berekenKlachten, volgendeDag, eindeBereikt, rondAf, gehaaldSet, ontgrendeld, ontgrendeldeEpisodes
+    raadpleeg, werkzaamheidVan, eindeDag, berekenKlachten, neemMoment, zetTerug, herstel, volgendeDag, eindeBereikt, rondAf, gehaaldSet, ontgrendeld, ontgrendeldeEpisodes
   ] });
 })(typeof window !== "undefined" ? window : globalThis);

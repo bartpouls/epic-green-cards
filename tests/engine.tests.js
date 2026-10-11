@@ -1,5 +1,11 @@
 // Tests van de spelmotor (groep 'engine'). Gebruikt een kleine synthetische casus (NIET UWI) en een eigen
 // eenvoudige stub van Predicaten/Evaluatie, zodat de engine los van de echte regeltaal en casusdata getest wordt.
+//
+// STUB-GRENS (expliciet): de beoordeling (regels/evaluatie.js, stuk S6) bestaat nog niet. De engine roept alleen
+// Evaluatie.beoordeel(casus, episodeId, state) aan en geeft de uitkomst ongewijzigd terug (contract 2 en 5). Hier wordt
+// uitsluitend dat AANROEPCONTRACT getest, met StubEvaluatie. Poort, score, profiel en routes worden NIET door deze
+// tests bewezen; dat doen de tests van S6 (tests/evaluatie.tests.js, tests/routes.js) via de echte Engine.
+// Predicaten (regeltaal) bestaat wel: de tests die "echt:" heten gebruiken de echte regeltaal en de echte UWI-data.
 (function (g) {
   var T = g.Test, GROEP = "engine";
 
@@ -16,6 +22,8 @@
         case "gespeeld": return ctx.tijdlijn.some(function (r) { return tekstWaar(p.K, r); });
         case "nietGespeeld": return !ctx.tijdlijn.some(function (r) { return tekstWaar(p.K, r); });
         case "niet": return !StubPredicaten.evalueer(p.arg, ctx);
+        case "gebeurtenisGeweest": return ctx.gebeurtenissen.some(function (x) { return x.id === p.id; });
+        case "klachtenNu": { var kl = ctx.state.klachten[ctx.state.dag]; return !!kl && kl.status === p.waarde; }
         case "actief": {
           var dag = p.op && p.op.dag;
           var start = ctx.tijdlijn.some(function (r) { return r.kaart === p.middel && (dag == null || r.dag <= dag); });
@@ -83,6 +91,7 @@
       } ]
     };
   }
+  function lijstVanTest(x) { return x == null ? [] : (Array.isArray(x) ? x : [x]); }
   function rngVast(w) { return function () { return w; }; }
   function speel(s, k, o) { var r = g.Engine.speelKaart(s, k, o); T.waar(r.ok, "speelKaart " + k + " mislukte: " + r.fout); return r; }
   function nieuw(w) { return g.Engine.nieuwSpel(maakFixture(), "X1", { rng: rngVast(w == null ? 0 : w) }); }
@@ -393,6 +402,30 @@
       if (re.test(bron.replace(/\/\/[^\n]*/g, ""))) gevonden.push(n);
     });
     T.gelijk(gevonden, [], "casusnamen in engine.js: " + gevonden.join(", "));
+    // Episode-id's en gebeurtenis-id's (ook 1-letterige) en alle andere id's uit de echte data mogen nergens als tekstconstante in de code staan.
+    var ids = {};
+    (g.CASUSSEN || []).forEach(function (c) {
+      ids[c.id] = 1;
+      (c.kaarten || []).forEach(function (k) { ids[k.id] = 1; });
+      (c.episodes || []).forEach(function (e) {
+        ids[e.id] = 1;
+        (e.gebeurtenissen || []).forEach(function (x) { ids[x.id] = 1; if (x.groep) ids[x.groep] = 1; });
+        (e.antibiotica || []).forEach(function (m) { ids[m] = 1; });
+        ((e.patient && e.patient.medicatie) || []).forEach(function (m) { ids[m.id] = 1; });
+        (e.startToestanden || []).forEach(function (m) { ids[m] = 1; });
+        Object.keys(e.werkzaamheid || {}).forEach(function (m) { ids[m] = 1; });
+        (e.gebeurtenissen || []).forEach(function (x) { lijstVanTest(x.toestand).forEach(function (t) { ids[t] = 1; }); });
+        (e.invarianten || []).forEach(function (x) { ids[x.id] = 1; });
+      });
+    });
+    T.waar(Object.keys(ids).length > 30, "id-lijst uit de echte data is gevuld (anders bewijst deze scan niets)");
+    T.waar(ids.E2 && ids.C && ids.A && ids.B, "episode-id's en gebeurtenis-id's zitten in de scan");
+    var kaalBron = bron.replace(/\/\/[^\n]*/g, "");
+    var literalGevonden = Object.keys(ids).filter(function (n) {
+      if (!n || n === "TODO_BART") return false;
+      return new RegExp("[\"']" + n.replace(/[.*+?^${}()|[\]\\\/]/g, "\\$&") + "[\"']").test(kaalBron);
+    });
+    T.gelijk(literalGevonden, [], "id's uit de echte data als tekstconstante in engine.js: " + literalGevonden.join(", "));
     var kaal = bron.replace(/"[^"]*"/g, '""');
     [/<\s*30\b/, /\b38[,.]5\b/, /\b75\b/, /[<>]=?\s*(?:2|3|4|5|7)\d?\b(?!\s*[;)])/ ].slice(0, 3).forEach(function (re) { T.waar(!re.test(kaal), "drempel-patroon in engine.js: " + re); });
     T.waar(!/\b48\b/.test(kaal), "getal 48 in code (buiten tekstconstanten)");
@@ -439,7 +472,9 @@
   /* ---------- echte regeltaal + echte UWI-data (geen stubs) ---------- */
   function echt(naam, fn) {
     T.registreer(GROEP, "echt: " + naam, function () {
-      if (!g.Predicaten || !g.CASUSSEN || !g.CASUSSEN[0] || !g.CASUSSEN[0].episodes) return;
+      // Nooit stil terugkeren: ontbreekt de echte regeltaal of de echte data, dan is deze test ROOD (niet groen zonder bewijs).
+      T.waar(!!g.Predicaten && typeof g.Predicaten.evalueer === "function", "echte regeltaal (regels/predicaten.js, window.Predicaten) ontbreekt: deze test bewijst niets en is daarom rood");
+      T.waar(!!g.CASUSSEN && !!g.CASUSSEN[0] && Array.isArray(g.CASUSSEN[0].episodes) && g.CASUSSEN[0].episodes.length > 0, "echte casusdata (window.CASUSSEN[0].episodes uit casussen/uwi*.js) ontbreekt: deze test bewijst niets en is daarom rood");
       fn(g.CASUSSEN[0]);
     });
   }

@@ -6,13 +6,13 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:32",
+ "updated": "2026-10-11 20:34",
  "units": [
   {
    "name": "S1 data-kaarten",
    "round": 3,
-   "verdict": "PENDING",
-   "evidence": "r3 gebouwd (27 eigen tests groen, 4050 mutaties 0 overlevers); criticus r3 bezig",
+   "verdict": "PASS",
+   "evidence": "r3 PASS (min 3 rondes gehaald), BLIND=ONS, 0 letterlijke afwijkingen, 26 kaarten + doelen + V6-opties",
    "artifact": ""
   },
   {
@@ -31,9 +31,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S4 data-e3",
-   "round": 1,
-   "verdict": "FAIL",
-   "evidence": "r1 FAIL, 5 punten, BLIND=BRON; ronde 2 bouwer bezig",
+   "round": 2,
+   "verdict": "PENDING",
+   "evidence": "r2 gebouwd (57 eigen tests; 178 benoemde mutaties 0 overlevers; TODO_BART-E3-1…23); criticus r2 bezig",
    "artifact": ""
   },
   {
@@ -157,6 +157,12 @@ window.GAUNTLET = {
    "unit": "S7 engine",
    "verdict": "FAIL",
    "note": "ontgrendeld negeert casusId (F1); volgendeDag niet atomisch (F2); >10 contractgedragingen ongetest, 27 overlevende mutaties (F3). Engine rekent correct in 9000 fuzz-spellen. BLIND=ONS → ronde 3"
+  },
+  {
+   "round": 3,
+   "unit": "S1 data-kaarten",
+   "verdict": "PASS",
+   "note": "230 controles 0 afwijkingen; 4637 mutaties, 1 equivalente overlever; 345 groen Node/371 Chromium; BLIND=ONS (15/15 paren byte-identiek)"
   }
  ],
  "open": [
@@ -167,7 +173,8 @@ window.GAUNTLET = {
   "S9 moet bewaarUitSpel aanroepen, Logging.opslagStatus() melden ('Resultaten staan alleen in dit tabblad: exporteer nu.') en lege pseudoniem afvangen",
   "Let op: bouwers mogen NIET git stash/pull/checkout gebruiken (gebeurde één keer, conflict hersteld door LEAD)",
   "tests/data-e2.tests.js regel ~110 gebruikt k.effect.E2 → moet effect[ep] ?? effect.alle worden (S3 ronde 2); idem controleren in data-e1/e3, engine, UI, overzicht",
-  "TODO_BART-1 (I7 dag-lezing): LEAD koos cursusdag-lezing (O2 verschil 1–3; V6 halveren verschil ≥3) omdat de casusroute anders niet speelbaar is; Bart bevestigt"
+  "TODO_BART-1 (I7 dag-lezing): LEAD koos cursusdag-lezing (O2 verschil 1–3; V6 halveren verschil ≥3) omdat de casusroute anders niet speelbaar is; Bart bevestigt",
+  "N2 (Gebruik en verwachting uitleggen) kan niet op V2/V1; route 'V2 (+ middel)' speelbaar alleen met extra V3/V4/V5 (hangt aan TODO_BART-5) — Bart"
  ],
  "belowBar": []
 };

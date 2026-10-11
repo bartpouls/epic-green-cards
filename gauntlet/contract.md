@@ -86,7 +86,7 @@ komt in `regels/PREDICATEN.md` (naam, velden, betekenis, voorbeeld).
 ## 4. Data — vaste sleutels
 **Bestandsindeling tijdens de bouw** (zodat stukken parallel kunnen; LEAD voegt ze aan het eind met `cat` samen tot ÉÉN `casussen/uwi.js`, conform de bouwopdracht):
 - `casussen/uwi.js` — casuskop + `kaarten` (bibliotheek, 26 kaarten) + `todoBart: []` + `episodes: []`. Definieert `window.CASUSSEN = [ {...} ]`.
-- `casussen/uwi-e1.js`, `uwi-e2.js`, `uwi-e3.js` — elk precies één statement: `window.CASUSSEN[0].episodes.push({...});` en eventueel `window.CASUSSEN[0].todoBart.push({...});`. Alleen data.
+- `casussen/uwi-e1.js`, `uwi-e2.js`, `uwi-e3.js` — elk één `if (window.CASUSSEN && window.CASUSSEN[0]) { ... }`-blok met `window.CASUSSEN[0].episodes.push({...});` en eventueel `window.CASUSSEN[0].todoBart.push({...});`. Alleen data.
 Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat:
 - `casus.antibiotica` is NIET nodig op casusniveau; per episode: `episode.antibiotica: ["V3","V4","V5"]`.
 - `kaart.doelen`: `{ E1: [ { id, label, vereist?: <predicaat> } ], E2: [...], E3: [...] }` voor doelkaarten. Label van een antibioticum-doel = kaartlabel; comedicatie-labels staan in `episode.patient.medicatie: [ { id, label } ]`.
