@@ -83,7 +83,8 @@ window.CASUSSEN[0].episodes.push({
       geldtIn: ["*"],
       predicaat: { p: "aantalActieveAntibiotica", op: ">", n: 1 },
       vraag: "Wat lost het tweede middel op dat het eerste niet oplost?",
-      bron: "[G]"
+      bron: "[G]",
+      TODO_BART: "De ernst-volgorde van de invarianten is een voorstel van Claude (bouwopdracht 6.1) en niet door Bart bevestigd."
     },
     {
       id: "I5",
@@ -94,7 +95,8 @@ window.CASUSSEN[0].episodes.push({
         args: [{ p: "gestart", middel: "V3" }, { p: "waar", veld: "eGFR", op: "<", waarde: 30 }]
       },
       vraag: "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?",
-      bron: "NHG"
+      bron: "NHG",
+      TODO_BART: "Terugkoppeling van weggelaten kaarten: de casus noemt niet welke weggelaten kaart welke downside toont."
     },
     {
       id: "I6",
@@ -172,7 +174,8 @@ window.CASUSSEN[0].episodes.push({
         }
       ],
       bron: "NHG",
-      TODO_BART: "Casus geeft bij I6 twee verschillende vragen (geen kweek / afwachten). Welke vraag verschijnt als beide spelen?"
+      TODO_BART: "Casus geeft bij I6 twee verschillende vragen (geen kweek / afwachten). Welke vraag verschijnt als beide spelen?",
+      TODO_BART_geenAntibioticum: "Een route zonder enig antibioticum (geen V3, V4, V5, ook geen wissel ernaartoe) in de risicogroep: de casus zegt 'een antibioticum is nodig', maar I6 noemt alleen 'afwachten (V1/V2)'. Telt niets voorschrijven als afwachten?"
     },
     {
       id: "I7",
@@ -231,7 +234,8 @@ window.CASUSSEN[0].episodes.push({
         }
       ],
       bron: "NHG, KNMP",
-      TODO_BART: "Lezing van 'O2 (dag 2–4)' en 'V6 (na dag 3)' (I7, episode 2): de casus zegt niet 'na V5'. Lezing A (gekozen): cursusdag = verschil in dagen t.o.v. de dag van V5 plus 1, dus O2 op verschil 1 t/m 3 (V5 op dag 1: O2 op dag 2–4) en V6-halveren op verschil vanaf 3 (dag 4 of later). Lezing B (bouwopdracht 6.1, opDagRelatief(O2,V5,2,4)): O2 op verschil 2 t/m 4 (V5 op dag 1: O2 op dag 3–5). Bij lezing B faalt de casusroute 'V5 dag 1, O2 dag 2'. Welke lezing bedoel je?"
+      TODO_BART: "Lezing van 'O2 (dag 2–4)' en 'V6 (na dag 3)' (I7, episode 2): de casus zegt niet 'na V5'. Lezing A (gekozen): cursusdag = verschil in dagen t.o.v. de dag van V5 plus 1, dus O2 op verschil 1 t/m 3 (V5 op dag 1: O2 op dag 2–4) en V6-halveren op verschil vanaf 3 (dag 4 of later). Lezing B (bouwopdracht 6.1, opDagRelatief(O2,V5,2,4)): O2 op verschil 2 t/m 4 (V5 op dag 1: O2 op dag 3–5). Bij lezing B faalt de casusroute 'V5 dag 1, O2 dag 2'. Welke lezing bedoel je?",
+      TODO_BART_vroegeWissel: "I7 bij een middel dat al vóór dag 3 is vervangen (V5, dan B1 naar V4, O2 en V6 halveren op het al gestopte V5): de casus zegt 'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3'. Geldt I7 nog als trimethoprim niet 7 dagen loopt?"
     },
     {
       id: "I8",
@@ -247,7 +251,8 @@ window.CASUSSEN[0].episodes.push({
       },
       vraag: "De kweek is binnen en de klachten blijven. Waar wacht je nog op?",
       bron: "NHG; hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten",
-      TODO_BART: "I8 (episode 2): casus zegt 'hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten'. Hoeveel beurten na de kweekuitslag (C) mag het resistente middel nog doorlopen, en vanaf wanneer 'houden de klachten aan'?"
+      TODO_BART: "I8 (episode 2): casus zegt 'hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten'. Hoeveel beurten na de kweekuitslag (C) mag het resistente middel nog doorlopen, en vanaf wanneer 'houden de klachten aan'?",
+      TODO_BART_vroegAfronden: "Vroeg afronden vóór de kweekuitslag (gebeurtenis C) ontloopt I8: de uitslag is dan nog niet gemeld, dus het resistente middel telt niet als doorgelopen. Moet afronden pas kunnen nadat C geweest is (parameter afrondenPasNaGebeurtenissen)?"
     }
   ],
   score: {
@@ -347,7 +352,8 @@ window.CASUSSEN[0].episodes.push({
         ]
       },
       reflectievraag: null,
-      TODO_BART: "Reflectievraag voor profiel ontbreekt in de casus (episode 2 geeft alleen de profielnamen, geen reflectievragen)."
+      TODO_BART: "Reflectievraag voor profiel ontbreekt in de casus (episode 2 geeft alleen de profielnamen, geen reflectievragen).",
+      TODO_BART_geenProfiel: "Een route die de poort haalt maar geen van beide profielen matcht (trimethoprim gevolgd door stoppen zonder wissel) heeft in de casus geen profiel."
     }
   ],
   feedbackExtra: [
@@ -419,27 +425,21 @@ window.CASUSSEN[0].episodes.push({
       tekst: "De kaliumspiegel is onbekend."
     }
   ],
-  open: [
-    {
-      TODO_BART: "Een route zonder enig antibioticum (geen V3, V4, V5, ook geen wissel ernaartoe) in de risicogroep: de casus zegt 'een antibioticum is nodig', maar I6 noemt alleen 'afwachten (V1/V2)'. Telt niets voorschrijven als afwachten?",
-      plek: "E2.invarianten.I6"
-    },
-    {
-      TODO_BART: "Vroeg afronden vóór de kweekuitslag (gebeurtenis C) ontloopt I8: de uitslag is dan nog niet gemeld, dus het resistente middel telt niet als doorgelopen. Moet afronden pas kunnen nadat C geweest is (parameter afrondenPasNaGebeurtenissen)?",
-      plek: "E2.invarianten.I8"
-    },
-    {
-      TODO_BART: "I7 bij een middel dat al vóór dag 3 is vervangen (V5, dan B1 naar V4, O2 en V6 halveren op het al gestopte V5): de casus zegt 'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3'. Geldt I7 nog als trimethoprim niet 7 dagen loopt?",
-      plek: "E2.invarianten.I7"
-    },
-    {
-      TODO_BART: "Een route die de poort haalt maar geen van beide profielen matcht (trimethoprim gevolgd door stoppen zonder wissel) heeft in de casus geen profiel.",
-      plek: "E2.profielen"
-    }
-  ],
   brug: "de kweek uit deze episode is het verborgen gegeven in episode 3 (G3)."
 });
 window.CASUSSEN[0].todoBart.push(
+  {
+    id: "TODO_BART-E2-18",
+    vraag: "De ernst-volgorde van de invarianten is een voorstel van Claude (bouwopdracht 6.1) en niet door Bart bevestigd.",
+    gekozenLezing: "Ernst overgenomen uit bouwopdracht 6.1: I5=2; I7=3; I6, I8=4; I1, I4=5. Instelbaar in de data.",
+    plek: "E2.invarianten[].ernst"
+  },
+  {
+    id: "TODO_BART-E2-19",
+    vraag: "Terugkoppeling van weggelaten kaarten: de casus noemt niet welke weggelaten kaart welke downside toont.",
+    gekozenLezing: "Geen `weglaatDownside` in episode 2 (zelfde lezing als episode 3); de teksten bij ontbrekende kaarten staan in zichtbaarAlsOntbreekt.",
+    plek: "E2.invarianten[].weglaatDownside"
+  },
   {
     id: "TODO_BART-E2-1",
     vraag: "I1 in episode 2: telt een episode zonder enige route (niets gespeeld) ook als 'een route zonder N1'?",

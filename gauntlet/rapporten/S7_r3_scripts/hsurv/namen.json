@@ -1,0 +1,17 @@
+[
+ "onthul: dag = 1 vast",
+ "onthul: dedupe alleen op kaart",
+ "raadpleeg: bronnen geen kopie",
+ "ontgrendeld: voorganger i-2",
+ "gehaaldSet: object-vorm telt false ook",
+ "herkansing: nieuwe episode",
+ "klachten: sticky altijd (ook zonder vorige geenV)",
+ "klachten: eindeDag van d i.p.v. d-1",
+ "gebeurtenis: toestand dubbel",
+ "gebeurtenis: 'gehad' negeert wachtend",
+ "gebeurtenis: 'gehad' negeert gebeurtenissen",
+ "groep: sorteer op datavolgorde",
+ "rng: state.rng niet bewaard",
+ "volgordeAB: alias op groepen (geen kopie)",
+ "nieuwSpel: _casus enumerable (komt in JSON)"
+]

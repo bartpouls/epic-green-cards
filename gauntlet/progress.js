@@ -4,9 +4,9 @@ window.GAUNTLET = {
  "budget": "per stuk min 3 / max 5 rondes; stop ook bij 2 rondes zonder verbetering",
  "level": "blind (verse criticus per ronde; A/B-labels procedureel verborgen, niet door aparte context)",
  "status": "running",
- "round": 3,
+ "round": 4,
  "maxRounds": 5,
- "updated": "2026-10-11 20:46",
+ "updated": "2026-10-11 20:53",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -38,9 +38,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S5 predicaten",
-   "round": 3,
-   "verdict": "FAIL",
-   "evidence": "r3 FAIL, 5 punten (nog kleine validatie/testgaten), BLIND=ONS; ronde 4 bouwer bezig",
+   "round": 4,
+   "verdict": "PENDING",
+   "evidence": "r4 gebouwd (142 eigen tests; 385 predicaten in data foutloos); criticus r4 bezig",
    "artifact": ""
   },
   {
@@ -188,7 +188,8 @@ window.GAUNTLET = {
   "TODO_BART-1 (I7 dag-lezing): LEAD koos cursusdag-lezing (O2 verschil 1–3; V6 halveren verschil ≥3) omdat de casusroute anders niet speelbaar is; Bart bevestigt",
   "N2 (Gebruik en verwachting uitleggen) kan niet op V2/V1; route 'V2 (+ middel)' speelbaar alleen met extra V3/V4/V5 (hangt aan TODO_BART-5) — Bart",
   "S9 geeft Logging.alle() gefilterd op pseudoniem mee aan Engine.ontgrendeld (API heeft bewust geen pseudoniem-parameter)",
-  "Opruimen bij integratie: mini-evaluators in tests/data-e1/e2/e3.tests.js vervangen door Evaluatie (S6); tests/data-e2: C komt niet als O1 de 5e kaart is (TODO_BART-E2-6, literale lezing)"
+  "Opruimen bij integratie: mini-evaluators in tests/data-e1/e2/e3.tests.js vervangen door Evaluatie (S6); tests/data-e2: C komt niet als O1 de 5e kaart is (TODO_BART-E2-6, literale lezing)",
+  "Prestatie: testgroep data-e1 duurt >100 s sinds eager validatie in S5 (valideert bij elke evaluatie); wordt in S5 r4-criticus/r5 opgelost (validatie cachen)"
  ],
  "belowBar": []
 };

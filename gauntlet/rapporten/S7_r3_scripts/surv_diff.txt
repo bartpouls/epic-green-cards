@@ -1,0 +1,195 @@
+s01 fuzz=OVERLEEFT  r31 [===->!==@31]
+    - for (var i = 0; i < lijst.length; i++) if (lijst[i].id === state.casusId) return lijst[i];
+    + for (var i = 0; i < lijst.length; i++) if (lijst[i].id !== state.casusId) return lijst[i];
+s02 fuzz=OVERLEEFT  r114 [===->!==@114]
+    - if (typeof cur[delen[i]] !== "object" || cur[delen[i]] === null) cur[delen[i]] = {};
+    + if (typeof cur[delen[i]] !== "object" || cur[delen[i]] !== null) cur[delen[i]] = {};
+s03 fuzz=OVERLEEFT  r155 [===->!==@155]
+    - var na = a.t && typeof a.t.n === "number" ? a.t.n : Infinity, nb = b.t && typeof b.t.n === "number" ? b.t.n : Infinity;
+    + var na = a.t && typeof a.t.n !== "number" ? a.t.n : Infinity, nb = b.t && typeof b.t.n === "number" ? b.t.n : Infinity;
+s04 fuzz=OVERLEEFT  r54 [>=->>@54]
+    - if (!(j >= i)) j = i;
+    + if (!(j > i)) j = i;
+s05 fuzz=OVERLEEFT  r111 [>=->>@111]
+    - if (sleutel.indexOf(".") >= 0) {
+    + if (sleutel.indexOf(".") > 0) {
+s06 fuzz=OVERLEEFT  r29 [&&->||@29]
+    - if (state && state._casus) return state._casus;
+    + if (state || state._casus) return state._casus;
+s07 fuzz=OVERLEEFT  r121 [&&->||@121]
+    - if (obj[k] && typeof obj[k] === "object" && !Array.isArray(obj[k]) && Object.prototype.hasOwnProperty.call(obj[k], sleutel)) { obj[k][sleutel] = waard
+    + if (obj[k] && typeof obj[k] === "object" && !Array.isArray(obj[k]) || Object.prototype.hasOwnProperty.call(obj[k], sleutel)) { obj[k][sleutel] = waard
+s08 fuzz=OVERLEEFT  r127 [&&->||@127]
+    - if (patch[k] && typeof patch[k] === "object" && !Array.isArray(patch[k]) && doel[k] && typeof doel[k] === "object" && !Array.isArray(doel[k])) meng(do
+    + if (patch[k] && typeof patch[k] === "object" && !Array.isArray(patch[k]) && doel[k] || typeof doel[k] === "object" && !Array.isArray(doel[k])) meng(do
+s09 fuzz=OVERLEEFT  r136 [&&->||@136]
+    - var al = state.onthuld.some(function (o) { return o.kaart === kaartId && o.tekst === v.onthult && o.sleutel === (v.sleutel || null); });
+    + var al = state.onthuld.some(function (o) { return o.kaart === kaartId || o.tekst === v.onthult && o.sleutel === (v.sleutel || null); });
+s10 fuzz=OVERLEEFT  r136 [&&->||@136]
+    - var al = state.onthuld.some(function (o) { return o.kaart === kaartId && o.tekst === v.onthult && o.sleutel === (v.sleutel || null); });
+    + var al = state.onthuld.some(function (o) { return o.kaart === kaartId && o.tekst === v.onthult || o.sleutel === (v.sleutel || null); });
+s11 fuzz=OVERLEEFT  r141 [&&->||@141]
+    - if (v.sleutel && waarde !== undefined) zetPad(state.zichtbaar, v.sleutel, kopie(waarde));
+    + if (v.sleutel || waarde !== undefined) zetPad(state.zichtbaar, v.sleutel, kopie(waarde));
+s12 fuzz=OVERLEEFT  r142 [&&->||@142]
+    - if (v.zichtbaar && typeof v.zichtbaar === "object") meng(state.zichtbaar, v.zichtbaar);
+    + if (v.zichtbaar || typeof v.zichtbaar === "object") meng(state.zichtbaar, v.zichtbaar);
+s13 fuzz=OVERLEEFT  r155 [&&->||@155]
+    - var na = a.t && typeof a.t.n === "number" ? a.t.n : Infinity, nb = b.t && typeof b.t.n === "number" ? b.t.n : Infinity;
+    + var na = a.t || typeof a.t.n === "number" ? a.t.n : Infinity, nb = b.t && typeof b.t.n === "number" ? b.t.n : Infinity;
+s14 fuzz=OVERLEEFT  r155 [&&->||@155]
+    - var na = a.t && typeof a.t.n === "number" ? a.t.n : Infinity, nb = b.t && typeof b.t.n === "number" ? b.t.n : Infinity;
+    + var na = a.t && typeof a.t.n === "number" ? a.t.n : Infinity, nb = b.t || typeof b.t.n === "number" ? b.t.n : Infinity;
+s15 fuzz=gedood  r298 [&&->||@298]
+    - if (d >= gb.dag + n && (d === gb.dag + n || vorigeStatus === "geenVerbetering48")) override = true;
+    + if (d >= gb.dag + n || (d === gb.dag + n || vorigeStatus === "geenVerbetering48")) override = true;
+s16 fuzz=OVERLEEFT  r304 [&&->||@304]
+    - var teksten = ep.statusTeksten || (ep.werkzaamheid && ep.werkzaamheid.statusTeksten) || {};
+    + var teksten = ep.statusTeksten || (ep.werkzaamheid || ep.werkzaamheid.statusTeksten) || {};
+s17 fuzz=OVERLEEFT  r305 [&&->||@305]
+    - return { dag: d, status: status, tekst: status && teksten[status] != null ? teksten[status] : null };
+    + return { dag: d, status: status, tekst: status || teksten[status] != null ? teksten[status] : null };
+s18 fuzz=OVERLEEFT  r375 [&&->||@375]
+    - var u = x.uitkomst && typeof x.uitkomst === "object" ? x.uitkomst : null;
+    + var u = x.uitkomst || typeof x.uitkomst === "object" ? x.uitkomst : null;
+s19 fuzz=OVERLEEFT  r380 [&&->||@380]
+    - } else if (gehaald && typeof gehaald === "object") {
+    + } else if (gehaald || typeof gehaald === "object") {
+s20 fuzz=OVERLEEFT  r30 [||->&&@30]
+    - var lijst = g.CASUSSEN || [];
+    + var lijst = g.CASUSSEN && [];
+s21 fuzz=OVERLEEFT  r156 [||->&&@156]
+    - return na - nb || a.i - b.i;
+    + return na - nb && a.i - b.i;
+s22 fuzz=OVERLEEFT  r160 [||->&&@160]
+    - return pos < 0 || !triggers[pos] ? e.trigger : triggers[pos].t;
+    + return pos < 0 && !triggers[pos] ? e.trigger : triggers[pos].t;
+s23 fuzz=OVERLEEFT  r181 [||->&&@181]
+    - var gehad = state.gebeurtenissen.some(function (x) { return x.id === e.id; }) ||
+    + var gehad = state.gebeurtenissen.some(function (x) { return x.id === e.id; }) &&
+s24 fuzz=OVERLEEFT  r212 [||->&&@212]
+    - if (typeof kaartId !== "string" || !kaartId) return fout("Kies eerst een kaart om te spelen.");
+    + if (typeof kaartId !== "string" && !kaartId) return fout("Kies eerst een kaart om te spelen.");
+s25 fuzz=OVERLEEFT  r220 [||->&&@220]
+    - var doelkaart = !!kaart.doelkaart || !!doelen || !!kaart.opties;
+    + var doelkaart = !!kaart.doelkaart && !!doelen || !!kaart.opties;
+s26 fuzz=OVERLEEFT  r220 [||->&&@220]
+    - var doelkaart = !!kaart.doelkaart || !!doelen || !!kaart.opties;
+    + var doelkaart = !!kaart.doelkaart || !!doelen && !!kaart.opties;
+s27 fuzz=OVERLEEFT  r221 [||->&&@221]
+    - var label = kaart.label || kaartId;
+    + var label = kaart.label && kaartId;
+s28 fuzz=OVERLEEFT  r304 [||->&&@304]
+    - var teksten = ep.statusTeksten || (ep.werkzaamheid && ep.werkzaamheid.statusTeksten) || {};
+    + var teksten = ep.statusTeksten || (ep.werkzaamheid && ep.werkzaamheid.statusTeksten) && {};
+s29 fuzz=OVERLEEFT  r356 [||->&&@356]
+    - if (!g.Evaluatie || typeof g.Evaluatie.beoordeel !== "function") throw new Error("De beoordeling (Evaluatie) is niet geladen.");
+    + if (!g.Evaluatie && typeof g.Evaluatie.beoordeel !== "function") throw new Error("De beoordeling (Evaluatie) is niet geladen.");
+s30 fuzz=OVERLEEFT  r373 [||->&&@373]
+    - if (!x || !x.episodeId) return;
+    + if (!x && !x.episodeId) return;
+s31 fuzz=OVERLEEFT  r97 [true->false@97]
+    - Object.defineProperty(state, "_casus", { value: casus, enumerable: false, writable: true, configurable: true });
+    + Object.defineProperty(state, "_casus", { value: casus, enumerable: false, writable: false, configurable: true });
+s32 fuzz=OVERLEEFT  r97 [true->false@97]
+    - Object.defineProperty(state, "_casus", { value: casus, enumerable: false, writable: true, configurable: true });
+    + Object.defineProperty(state, "_casus", { value: casus, enumerable: false, writable: true, configurable: false });
+s33 fuzz=OVERLEEFT  r97 [false->true@97]
+    - Object.defineProperty(state, "_casus", { value: casus, enumerable: false, writable: true, configurable: true });
+    + Object.defineProperty(state, "_casus", { value: casus, enumerable: true, writable: true, configurable: true });
+s34 fuzz=OVERLEEFT  r169 [false->true@169]
+    - if (!t) return false;
+    + if (!t) return true;
+s35 fuzz=OVERLEEFT  r176 [false->true@176]
+    - return false;
+    + return true;
+s36 fuzz=OVERLEEFT  r278 [false->true@278]
+    - var entry = werkzaamheidVan(state, ep), werkzaam = false;
+    + var entry = werkzaamheidVan(state, ep), werkzaam = true;
+s37 fuzz=OVERLEEFT  r25 [<-><=@25]
+    - for (var i = 0; i < eps.length; i++) if (eps[i].id === episodeId) return eps[i];
+    + for (var i = 0; i <= eps.length; i++) if (eps[i].id === episodeId) return eps[i];
+s38 fuzz=OVERLEEFT  r31 [<-><=@31]
+    - for (var i = 0; i < lijst.length; i++) if (lijst[i].id === state.casusId) return lijst[i];
+    + for (var i = 0; i <= lijst.length; i++) if (lijst[i].id === state.casusId) return lijst[i];
+s39 fuzz=gedood  r52 [<-><=@52]
+    - for (var i = 0; i < n - 1; i++) {
+    + for (var i = 0; i <= n - 1; i++) {
+s40 fuzz=OVERLEEFT  r55 [>->>=@55]
+    - if (j > n - 1) j = n - 1;
+    + if (j >= n - 1) j = n - 1;
+s41 fuzz=OVERLEEFT  r31 [<->>@31]
+    - for (var i = 0; i < lijst.length; i++) if (lijst[i].id === state.casusId) return lijst[i];
+    + for (var i = 0; i > lijst.length; i++) if (lijst[i].id === state.casusId) return lijst[i];
+s42 fuzz=OVERLEEFT  r31 [getal0->1@31]
+    - for (var i = 0; i < lijst.length; i++) if (lijst[i].id === state.casusId) return lijst[i];
+    + for (var i = 1; i < lijst.length; i++) if (lijst[i].id === state.casusId) return lijst[i];
+s43 fuzz=gedood  r52 [getal1->0@52]
+    - for (var i = 0; i < n - 1; i++) {
+    + for (var i = 0; i < n - 0; i++) {
+s44 fuzz=OVERLEEFT  r55 [getal1->2@55]
+    - if (j > n - 1) j = n - 1;
+    + if (j > n - 2) j = n - 1;
+s45 fuzz=OVERLEEFT  r55 [getal1->0@55]
+    - if (j > n - 1) j = n - 1;
+    + if (j > n - 0) j = n - 1;
+s46 fuzz=OVERLEEFT  r55 [getal1->2@55]
+    - if (j > n - 1) j = n - 1;
+    + if (j > n - 1) j = n - 2;
+s47 fuzz=OVERLEEFT  r55 [getal1->0@55]
+    - if (j > n - 1) j = n - 1;
+    + if (j > n - 1) j = n - 0;
+s48 fuzz=OVERLEEFT  r92 [getal0->1@92]
+    - klachten: [{ dag: 0, status: null, tekst: null }, { dag: 1, status: null, tekst: null }],
+    + klachten: [{ dag: 1, status: null, tekst: null }, { dag: 1, status: null, tekst: null }],
+s49 fuzz=OVERLEEFT  r111 [getal0->1@111]
+    - if (sleutel.indexOf(".") >= 0) {
+    + if (sleutel.indexOf(".") >= 1) {
+s50 fuzz=OVERLEEFT  r199 [getal1->2@199]
+    - var ix = state.sets.resistent.indexOf(m); if (ix >= 0) state.sets.resistent.splice(ix, 1);
+    + var ix = state.sets.resistent.indexOf(m); if (ix >= 0) state.sets.resistent.splice(ix, 2);
+s51 fuzz=OVERLEEFT  r269 [getal0->1@269]
+    - if (t !== "statusTeksten" && t.indexOf("TODO_BART") !== 0 && w[t] && typeof w[t] === "object" && bevat(state.toestanden, t)) return w[t];
+    + if (t !== "statusTeksten" && t.indexOf("TODO_BART") !== 1 && w[t] && typeof w[t] === "object" && bevat(state.toestanden, t)) return w[t];
+s52 fuzz=OVERLEEFT  r290 [getal1->0@290]
+    - var ctx = ctxVan(state), vorige = eindeDag(state, ep, ctx, d - 1), status;
+    + var ctx = ctxVan(state), vorige = eindeDag(state, ep, ctx, d - 0), status;
+s53 fuzz=OVERLEEFT  r291 [getal1->2@291]
+    - var vorigeStatus = state.klachten[d - 1] ? state.klachten[d - 1].status : null;
+    + var vorigeStatus = state.klachten[d - 2] ? state.klachten[d - 1].status : null;
+s54 fuzz=OVERLEEFT  r53 [op-@53]
+    - var j = i + Math.floor(rng() * (n - i));
+    + var j = i + Math.floor(rng() * (n + i));
+s55 fuzz=OVERLEEFT  r55 [op-@55]
+    - if (j > n - 1) j = n - 1;
+    + if (j > n + 1) j = n - 1;
+s56 fuzz=OVERLEEFT  r55 [op-@55]
+    - if (j > n - 1) j = n - 1;
+    + if (j > n - 1) j = n + 1;
+s57 fuzz=OVERLEEFT  r64 [op+@64]
+    - if (!ep) throw new Error("Onbekende episode: " + episodeId + ".");
+    + if (!ep) throw new Error("Onbekende episode: " - episodeId + ".");
+s58 fuzz=OVERLEEFT  r156 [op-@156]
+    - return na - nb || a.i - b.i;
+    + return na + nb || a.i - b.i;
+s59 fuzz=OVERLEEFT  r156 [op-@156]
+    - return na - nb || a.i - b.i;
+    + return na - nb || a.i + b.i;
+s60 fuzz=OVERLEEFT  r224 [op+@224]
+    - if (doel != null || optie != null) return fout("De kaart “" + label + "” heeft geen doel of optie.");
+    + if (doel != null || optie != null) return fout("De kaart “" - label + "” heeft geen doel of optie.");
+s61 fuzz=OVERLEEFT  r227 [op+@227]
+    - if (!toegestaan.length) return fout("De kaart “" + label + "” kan in deze episode op geen enkel doel worden gespeeld.");
+    + if (!toegestaan.length) return fout("De kaart “" - label + "” kan in deze episode op geen enkel doel worden gespeeld.");
+s62 fuzz=OVERLEEFT  r235 [op+@235]
+    - if (!opl.length) return fout("Voor dit doel zijn bij de kaart “" + label + "” geen opties beschikbaar.");
+    + if (!opl.length) return fout("Voor dit doel zijn bij de kaart “" - label + "” geen opties beschikbaar.");
+s63 fuzz=OVERLEEFT  r239 [op+@239]
+    - } else if (optie != null) return fout("De kaart “" + label + "” heeft geen opties.");
+    + } else if (optie != null) return fout("De kaart “" - label + "” heeft geen opties.");
+s64 fuzz=gedood  r290 [op-@290]
+    - var ctx = ctxVan(state), vorige = eindeDag(state, ep, ctx, d - 1), status;
+    + var ctx = ctxVan(state), vorige = eindeDag(state, ep, ctx, d + 1), status;
+s65 fuzz=gedood  r298 [op+@298]
+    - if (d >= gb.dag + n && (d === gb.dag + n || vorigeStatus === "geenVerbetering48")) override = true;
+    + if (d >= gb.dag - n && (d === gb.dag + n || vorigeStatus === "geenVerbetering48")) override = true;

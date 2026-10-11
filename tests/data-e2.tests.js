@@ -90,6 +90,7 @@
     T.is(v.waarde, e.patient.waar.eGFR, "onthulde waarde = ware waarde");
     T.is(v.onthult, "eGFR 29 uit de jaarlijkse controle");
     T.is(v.zichtbaar.labTekst, "eGFR 29 uit de jaarlijkse controle");
+    T.gelijk(v.zichtbaar.lab, { datum: "uit de jaarlijkse controle" });
     T.is(v.meta.toelichting, "Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG].");
     T.waar(typeof v.TODO_BART === "string", "toelichting-vraag heeft TODO_BART op de plek zelf");
   });
@@ -310,6 +311,8 @@
     T.gelijk(w.werkzaam, [{ kaart: "V4" }]);
     T.gelijk(w.nietWerkzaam.map(function (x) { return x.kaart; }), ["V3", "V5"]);
     w.nietWerkzaam.forEach(function (x) { T.is(typeof x.meta.reden, "string"); T.waar(x.reden === undefined, "reden hoort onder meta"); });
+    T.is(w.nietWerkzaam[0].meta.reden, "geen bactericide concentratie bij eGFR < 30");
+    T.is(w.nietWerkzaam[1].meta.reden, "resistent");
     T.gelijk(Object.keys(e.werkzaamheid), ["cystitis"], "alleen de toestand cystitis in E2");
   });
   reg("E2-4 statusTeksten: klachten nemen af / houden aan (casus-fragmenten) en TODO_BART", function (e) {
@@ -419,7 +422,7 @@
     var markeringen = [];
     (function walk(x, pad) {
       if (Array.isArray(x)) x.forEach(function (v, i) { walk(v, pad + "[" + i + "]"); });
-      else if (x && typeof x === "object") Object.keys(x).forEach(function (k) { if (k === "TODO_BART") markeringen.push({ pad: pad, v: x[k] }); else walk(x[k], pad + "." + k); });
+      else if (x && typeof x === "object") Object.keys(x).forEach(function (k) { if (k.indexOf("TODO_BART") === 0) markeringen.push({ pad: pad, v: x[k] }); else walk(x[k], pad + "." + k); });
     })(e, "E2");
     T.waar(markeringen.length >= 10, "te weinig TODO_BART-markeringen in de data: " + markeringen.length);
     markeringen.forEach(function (m) { T.waar(vragen.indexOf(m.v) >= 0, "TODO_BART op " + m.pad + " staat niet in casus.todoBart: " + m.v); });
@@ -440,7 +443,7 @@
     T.waar(e.ontwerpnoot === undefined && e.patient.ontwerpnoot === undefined, "ontwerpnoot is verzonnen tekst");
     T.gelijk(e.patient.meta, { medicatieNoot: "afleider, bereidt episode 3 voor" });
     e.patient.verborgen.forEach(function (v) { T.waar(v.toelichting === undefined, "toelichting hoort onder meta"); });
-    T.gelijk(Object.keys(e).sort(), ["antibiotica", "brug", "feedbackExtra", "gebeurtenissen", "id", "invarianten", "knoppen", "level", "open", "patient", "profielen", "repertoire", "score", "startToestanden", "statusTeksten", "titel", "werkzaamheid", "zichtbaarAlsOntbreekt"]);
+    T.gelijk(Object.keys(e).sort(), ["antibiotica", "brug", "feedbackExtra", "gebeurtenissen", "id", "invarianten", "knoppen", "level", "patient", "profielen", "repertoire", "score", "startToestanden", "statusTeksten", "titel", "werkzaamheid", "zichtbaarAlsOntbreekt"]);
   });
   reg("S-TODO: de drie extra onduidelijkheden zijn gemeld (route zonder antibioticum, vroeg afronden vs I8, I7 bij vroege wissel) en de dag-lezing noemt beide lezingen", function (e) {
     var lijst = casus().todoBart.filter(function (t) { return /^TODO_BART-E2-/.test(t.id); });
@@ -452,7 +455,13 @@
     var dag = vind("o2 (dag 2–4)")[0];
     T.waar(dag && dag.vraag.indexOf("Lezing A") >= 0 && dag.vraag.indexOf("Lezing B") >= 0, "beide dag-lezingen staan in de vraag aan Bart");
     T.waar(dag.vraag.indexOf("verschil 2 t/m 4") >= 0 && dag.vraag.indexOf("verschil 1 t/m 3") >= 0, "beide verschillen genoemd");
-    T.waar(e.open.length >= 4, "open-lijst");
+    T.waar(e.open === undefined, "geen eigen 'open'-vorm: open vragen staan alleen in casus.todoBart (zoals E1/E3)");
+    T.is(vind("ernst-volgorde").length, 1);
+    T.is(vind("weggelaten kaarten").length, 1);
+    var tekstLijst = JSON.stringify(lijst);
+    T.waar(tekstLijst.indexOf("voorstel van Claude") >= 0 && tekstLijst.indexOf("niet door Bart bevestigd") >= 0, "ernst-volgorde is als voorstel van Claude gemeld");
+    T.waar(lijst.filter(function (t) { return t.plek === "E2.invarianten[].weglaatDownside"; })[0].gekozenLezing.indexOf("Geen `weglaatDownside`") === 0, "gekozen lezing: geen weglaatDownside");
+    e.invarianten.forEach(function (i) { T.waar(i.weglaatDownside === undefined, "weglaatDownside op " + i.id); });
     T.waar(lijst.every(function (t) { return t.vraag.indexOf("rapport") < 0 && t.gekozenLezing.indexOf("rapport") < 0; }), "TODO verwijst naar een rapport dat Bart niet heeft");
   });
 
@@ -468,7 +477,7 @@
     });
     return st;
   }
-  // Mini-evaluatie volgens contract §5 (alleen data + Predicaten): geschonden ids en gekozen vraag van de ernstigste.
+  // TIJDELIJK (LEAD ruimt dit op zodra S6 `Evaluatie` bestaat): mini-evaluator volgens contract §5 (alleen data + Predicaten): geschonden ids en gekozen vraag van de ernstigste.
   function schending(st, e) {
     var ctx = g.Predicaten.maakContext(casus(), e, st);
     var gesch = e.invarianten.filter(function (i) {
@@ -531,6 +540,35 @@
     T.gelijk(schending(route([[["G2"], ["O1"], ["V3"]], [["N1"]]]), e).ids, ["I5"], "nitrofurantoïne");
     T.gelijk(schending(route([[["G2"], ["O1"], ["V4"]], [["V5"], ["N1"]], [["O2"]], [], [["V6", "V5", "halveren"]]]), e).ids, ["I4"], "twee antibiotica");
   });
+  var VR_I8 = "De kweek is binnen en de klachten blijven. Waar wacht je nog op?";
+  // C verschijnt op dag 3 (4e kaart = O2 op dag 2, O1 gespeeld); V6 halveren op dag 4 houdt I7 buiten beeld.
+  function i8(dag3, dag4, dag5) { return route([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], dag3, [["V6", "V5", "halveren"]].concat(dag4), dag5 || [], []]); }
+  reg("E2-route (I8): V5 blijft actief na de kweekuitslag C: precies I8 met de I8-vraag", function (e) {
+    if (!engineKlaar()) return;
+    var st = i8([["Ev1"]], []);
+    T.is(st.gebeurtenissen.filter(function (b) { return b.id === "C"; })[0].dag, 3, "C komt op dag 3");
+    var r = schending(st, e); T.gelijk(r.ids, ["I8"]); T.is(r.vraag, VR_I8);
+  });
+  reg("E2-route (I8, rand van het venster): wissel naar V4 op dag C (3) of dag C+1 (4) slaagt; op dag C+2 (5) faalt; V5 stoppen op dag 4 slaagt", function (e) {
+    if (!engineKlaar()) return;
+    T.gelijk(schending(i8([["B1", "V4"]], []), e).ids, [], "B1 op dag 3");
+    T.gelijk(schending(i8([], [["B1", "V4"]]), e).ids, [], "B1 op dag 4");
+    var laat = schending(i8([], [], [["B1", "V4"]]), e); T.gelijk(laat.ids, ["I8"], "B1 op dag 5"); T.is(laat.vraag, VR_I8);
+    T.gelijk(schending(i8([], [["B2", "V5"]]), e).ids, [], "B2 op V5 op dag 4");
+    T.gelijk(schending(i8([["B2", "V5"]], []), e).ids, [], "B2 op V5 op dag 3");
+  });
+  reg("E2-route (I8): fosfomycine met kweekuitslag C schendt I8 niet", function (e) {
+    if (!engineKlaar()) return;
+    var st = route([[["G2"], ["O1"], ["V4"]], [["N1"], ["N2", "V4"]], [["Ev1"]], []]);
+    T.waar(st.gebeurtenissen.some(function (b) { return b.id === "C"; }), "C moet geweest zijn");
+    T.gelijk(schending(st, e).ids, []);
+  });
+  reg("E2-route (I7, rand): O2 op dezelfde dag als V5 (verschil 0) faalt met de kalium-vraag; op de dag erna slaagt", function (e) {
+    if (!engineKlaar()) return;
+    var zelfde = schending(route([[["G2"], ["O1"], ["N1"]], [["V5"], ["O2"]], [["B1", "V4"]], [], [["V6", "V5", "halveren"]]]), e);
+    T.gelijk(zelfde.ids, ["I7"]); T.is(zelfde.vraag, VR_KALIUM);
+    T.gelijk(schending(route([[["G2"], ["O1"], ["N1"]], [["V5"]], [["B1", "V4"], ["O2"]], [], [["V6", "V5", "halveren"]]]), e).ids, [], "O2 een dag na V5");
+  });
   reg("E2-route (A5): regels rekenen met de ware eGFR 29, ook zonder G2", function (e) {
     if (!engineKlaar()) return;
     T.gelijk(schending(route([[["O1"], ["V3"], ["N1"]]]), e).ids, ["I5"]);
@@ -567,6 +605,7 @@
     T.is(r.onthuld[0].tekst, "eGFR 29 uit de jaarlijkse controle");
     T.is(st.zichtbaar.lab.eGFR, 29, "na G2 is de zichtbare eGFR 29");
     T.is(st.zichtbaar.labTekst, "eGFR 29 uit de jaarlijkse controle");
+    T.is(st.zichtbaar.lab.datum, "uit de jaarlijkse controle");
     T.is(e.patient.waar.eGFR, 29, "de ware waarde is nooit veranderd");
   });
   reg("E2-compat: kweekuitslag C komt na de 4e kaart alleen als O1 gespeeld is (zelfde trigger als de data)", function (e) {
