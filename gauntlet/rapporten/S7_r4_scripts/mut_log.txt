@@ -1,3 +1,7 @@
 gegenereerd: 483 gekozen: 400
 50 gedraaid, overleefd 6
 100 gedraaid, overleefd 9
+150 gedraaid, overleefd 13
+200 gedraaid, overleefd 16
+250 gedraaid, overleefd 17
+300 gedraaid, overleefd 20

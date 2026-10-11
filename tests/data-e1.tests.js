@@ -198,9 +198,9 @@
   reg("E1-6 werkzaamheid: V3, V4, V5 werkzaam; statusTeksten aanwezig", function (e) {
     T.gelijk(e.werkzaamheid.cystitis, { werkzaam: [{ kaart: "V3" }, { kaart: "V4" }, { kaart: "V5" }], nietWerkzaam: [] });
     var s = e.statusTeksten;
-    T.is(s.af, "klachten nemen af");
-    T.is(s.aan, "klachten houden aan");
-    T.is(s.geenVerbetering48, "Na 48 uur geen verbetering.");
+    T.is(s.af, "klachten nemen af.");
+    T.is(s.aan, "klachten houden aan.");
+    T.is(s.geenVerbetering48, null, "E1: de casus geeft hier geen tekst (null)");
   });
 
   // ---- ORACLE (KRUISCONTROLE): eigen, door de bouwer onafhankelijk uit casus sectie 4 geschreven mini-evaluator.
@@ -436,7 +436,7 @@
       var k0 = Object.keys(o)[0]; delete o[k0];
       T.waar(sleutelFouten(c).length > 0, "ontbrekend veld '" + k0 + "' ongemerkt in " + x.pad);
     });
-    ["af", "aan", "geenVerbetering48"].forEach(function (k) {
+    [1].forEach(function () {
       var c = kloon(e); c.statusTeksten.toeneemt = "klachten nemen toe";
       T.waar(sleutelFouten(c).length > 0, "extra statustekst ongemerkt");
     });
@@ -461,7 +461,7 @@
     Object.keys(ref).forEach(function (k) { if (k !== "risicogroep") is(c.patient.zichtbaar[k], ref[k], "patient.zichtbaar." + k); });
     is(c.patient.meta.risicogroep, ref.risicogroep, "patient.meta.risicogroep");
     is("risicogroep" in c.patient.zichtbaar, false, "risicogroep in zichtbaar");
-    is(c.statusTeksten.af + "|" + c.statusTeksten.aan + "|" + c.statusTeksten.geenVerbetering48, "klachten nemen af|klachten houden aan|Na 48 uur geen verbetering.", "statusTeksten");
+    is(c.statusTeksten.af + "|" + c.statusTeksten.aan + "|" + c.statusTeksten.geenVerbetering48, "klachten nemen af.|klachten houden aan.|null", "statusTeksten");
     is(c.startToestanden, ["cystitis"], "startToestanden");
     is(c.patient.waar, { eGFR: 42, risicogroep: false }, "waar");
     is(c.score.duurzaamheid.regels.map(function (r) { return r.punten; }), [3, 2, 1], "punten");
@@ -526,7 +526,7 @@
       lezing: "Strengste lezing: elke afronding zonder N1 schendt I1, ook als er helemaal geen route is gekozen. Ook afronden mét N1 maar zonder route-kaart (geen V1 t/m V5) schendt I1; de casus noemt dit geval niet, maar zonder deze lezing haalt een lege route de poort zonder profiel of duurzaamheidsscore." },
     { id: "TODO_BART-E1-2", pad: function (e) { return e.statusTeksten; }, plek: "E1.statusTeksten", kern: ["klachten nemen af","Na 48 uur geen verbetering."],
       vraag: "In episode 1 kunnen de klachten af, aan of na 48 uur niet verbeterd zijn, maar de casus geeft bij episode 1 geen statusteksten. Welke tekst hoort bij welke klachtenstatus?",
-      lezing: "Status af = 'klachten nemen af', status aan = 'klachten houden aan', status na 48 uur geen verbetering = 'Na 48 uur geen verbetering.' (letterlijke fragmenten uit episode 2 en 3 van de casus). In episode 1 komen de laatste twee statussen niet voor." },
+      lezing: "Status af = 'klachten nemen af.', status aan = 'klachten houden aan.' (casusfragmenten uit episode 2, met slotpunt). Voor de status na 48 uur geen verbetering geeft de casus in episode 1 geen tekst: leeg (geen tekst); de casus geeft die zin alleen in episode 3. In episode 1 komen aan en na 48 uur niet verbeterd niet voor." },
     { id: "TODO_BART-E1-3", pad: function (e) { return e.profielen[1]; }, plek: "E1.profielen.Gedeelde regie", kern: ["Geen reflectievraag"],
       vraag: "De casus geeft bij het profiel Gedeelde regie (uitgesteld recept) geen reflectievraag, wel bij Terughoudend en Direct behandelen. Welke reflectievraag hoort bij Gedeelde regie?",
       lezing: "Geen reflectievraag (leeg); er wordt niets verzonnen." },

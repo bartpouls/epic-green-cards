@@ -316,8 +316,9 @@
     T.gelijk(Object.keys(e.werkzaamheid), ["cystitis"], "alleen de toestand cystitis in E2");
   });
   reg("E2-4 statusTeksten: klachten nemen af / houden aan (casus-fragmenten) en TODO_BART", function (e) {
-    T.is(e.statusTeksten.af, "klachten nemen af");
-    T.is(e.statusTeksten.aan, "klachten houden aan");
+    // Casus: "Trimethoprim: klachten houden aan." en "Fosfomycine: klachten nemen af." De fragmenten staan met slotpunt en kleine letter in de data.
+    T.is(e.statusTeksten.af, "klachten nemen af.");
+    T.is(e.statusTeksten.aan, "klachten houden aan.");
     T.is(e.statusTeksten.geenVerbetering48, null, "komt in E2 niet voor");
     T.waar(typeof e.statusTeksten.TODO_BART === "string");
   });
@@ -620,6 +621,166 @@
     vereisEngine();
     var r = schending(route([[["G2"], ["O1"], ["V4"]], [["N1"], ["B1", "V5"], ["O2"]]]), e);
     T.gelijk(r.ids, ["I7"]); T.is(r.vraag, VR_KALIUM);
+  });
+  /* ---------- extra routetests: V3 in I4, I4 per moment, O2 zonder V5, B1 als start, score en triggers ---------- */
+  var DAG1 = [["G2"], ["O1"]];
+  function dag1(k) { return DAG1.concat([k]); }
+  reg("E2-route (I4): nitrofurantoïne (V3, eerste in de antibioticalijst) telt mee als actief antibioticum: V3 + V4 schendt I4 én I5, de I5-vraag wint", function (e) {
+    vereisEngine();
+    var r = schending(route([dag1(["V3"]), [["N1"], ["V4"]]]), e);
+    T.gelijk(r.ids, ["I5", "I4"]);
+    T.is(r.vraag, "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?");
+    T.gelijk(schending(route([dag1(["V4"]), [["N1"], ["V3"]]]), e).ids, ["I5", "I4"], "V3 als tweede middel");
+  });
+  reg("E2-route (I4, op enig moment): twee antibiotica tegelijk blijft een schending ook als er daarna één wordt gestopt", function (e) {
+    vereisEngine();
+    // V4 dag 1, V5 dag 2 (twee actief), dag 3 V5 gestopt (B2), dag 5 V6 halveren: aan het eind nog één antibioticum.
+    var r = schending(route([dag1(["V4"]), [["N1"], ["V5"]], [["O2"], ["B2", "V5"]], [], [["V6", "V5", "halveren"]]]), e);
+    T.gelijk(r.ids, ["I4"]);
+    T.is(r.vraag, "Wat lost het tweede middel op dat het eerste niet oplost?");
+    // Tegenproef: eerst V5 stoppen en dan pas een ander middel starten is geen tweede middel op hetzelfde moment.
+    T.gelijk(schending(route([dag1(["V5"]), [["O2"], ["N1"]], [["B1", "V4"]], [["V6", "V5", "halveren"]]]), e).ids, [], "wissel (B1) is geen tweede middel");
+  });
+  reg("E2-route (I7, geen crash): O2 zonder dat V5 ooit gespeeld is, bij fosfomycine, is een geldige route", function (e) {
+    vereisEngine();
+    var st = route([dag1(["V4"]), [["N1"], ["O2"]], [["Ev1"]]]);
+    T.gelijk(schending(st, e).ids, []);
+    T.waar(st.gebeurtenissen.some(function (b) { return b.id === "C"; }), "C moet geweest zijn");
+    // De predicaten die op V5 ankeren geven false (geen fout) zonder V5.
+    var ctx = g.Predicaten.maakContext(casus(), e, st);
+    T.is(g.Predicaten.evalueer(vindInv(e, "I7").predicaat, ctx), false);
+    vindInv(e, "I7").vraagVarianten.forEach(function (v) { T.is(typeof g.Predicaten.evalueer(v.als, ctx), "boolean"); });
+  });
+  reg("E2-route (I8, wissel als start): V4, dan B1 naar V5, V5 blijft na C actief: precies I8; wissel terug naar V4 op tijd slaagt", function (e) {
+    vereisEngine();
+    // Dag 2 B1 naar V5, O2 dag 3, C verschijnt dag 3; op dag 5 (C+2) V6 halveren en pas dan terug naar V4: te laat.
+    var laat = schending(route([dag1(["V4"]), [["N1"], ["B1", "V5"]], [["O2"]], [], [["V6", "V5", "halveren"], ["B1", "V4"]]]), e);
+    T.gelijk(laat.ids, ["I8"]); T.is(laat.vraag, VR_I8);
+    var op = schending(route([dag1(["V4"]), [["N1"], ["B1", "V5"]], [["O2"], ["B1", "V4"]], [], [["V6", "V5", "halveren"]]]), e);
+    T.gelijk(op.ids, [], "B1 terug naar V4 op de dag van de uitslag");
+  });
+  reg("E2-route (I6, wissel als start): fosfomycine zonder O1 vooraf (G2, V4, daarna O1) gevolgd door een wissel naar V5 en terug schendt precies I6 met de kweek-vraag", function (e) {
+    vereisEngine();
+    var r = schending(route([[["G2"], ["V4"], ["O1"]], [["N1"], ["B1", "V5"]], [["O2"], ["B1", "V4"]], [], [["V6", "V5", "halveren"]]]), e);
+    T.gelijk(r.ids, ["I6"]); T.is(r.vraag, VR_KWEEK);
+    // Met O1 vooraf is dezelfde route geldig.
+    T.gelijk(schending(route([dag1(["V4"]), [["N1"], ["B1", "V5"]], [["O2"], ["B1", "V4"]], [], [["V6", "V5", "halveren"]]]), e).ids, [], "zelfde route met O1 vooraf");
+  });
+
+  // Onafhankelijke oracle (EIGEN uitwerking uit de casus, bewust zonder Predicaten): klachtenstatus en onnodige wissels rechtstreeks uit de tijdlijn.
+  // Wie een route kiest, ziet: een wissel (B1) op een dag waarop de klachten afnemen (werkzaam middel V4 aan het eind van de vorige dag) kost een punt.
+  function oracleOnnodig(st) {
+    var ACT = ["V3", "V4", "V5"], actief = [], dagen = {}, onnodig = 0;
+    function status(d) { // aan het einde van dag d-1
+      var a = actief.filter(function (x) { return x.einde === undefined; });
+      return a.length ? (a.some(function (x) { return x.m === "V4"; }) ? "af" : "aan") : null;
+    }
+    var maxDag = 0; st.tijdlijn.forEach(function (r) { maxDag = Math.max(maxDag, r.dag); });
+    for (var d = 1; d <= maxDag; d++) {
+      var voor = status(d);
+      st.tijdlijn.filter(function (r) { return r.dag === d; }).forEach(function (r) {
+        if (ACT.indexOf(r.kaart) >= 0) actief.push({ m: r.kaart });
+        if (r.kaart === "B1" && ACT.indexOf(r.doel) >= 0) {
+          if (voor === "af") onnodig++;
+          actief.forEach(function (x) { if (x.einde === undefined) x.einde = d; });
+          actief.push({ m: r.doel });
+        }
+        if (r.kaart === "B2") actief.forEach(function (x) { if (x.m === r.doel && x.einde === undefined) x.einde = d; });
+      });
+    }
+    return onnodig;
+  }
+  function duurzaamheid(st, e) {
+    var ctx = g.Predicaten.maakContext(casus(), e, st), w = e.score.duurzaamheid.start;
+    e.score.duurzaamheid.regels.forEach(function (r) { w += r.delta * g.Predicaten.tel(r.perKeer, ctx); });
+    return w;
+  }
+  function doelmatigheid(st, e) {
+    var ctx = g.Predicaten.maakContext(casus(), e, st), pt = null;
+    e.score.doelmatigheid.regels.some(function (r) { if (g.Predicaten.evalueer(r.als, ctx)) { pt = r.punten; return true; } return false; });
+    return pt;
+  }
+  function triggers(st, e) {
+    var ctx = g.Predicaten.maakContext(casus(), e, st);
+    return {
+      profielen: e.profielen.filter(function (p) { return g.Predicaten.evalueer(p.als, ctx); }).map(function (p) { return p.naam; }),
+      feedback: e.feedbackExtra.filter(function (f) { return g.Predicaten.evalueer(f.trigger, ctx); }).map(function (f) { return f.vraag.slice(0, 12); }),
+      zichtbaar: e.zichtbaarAlsOntbreekt.filter(function (z) { return g.Predicaten.evalueer(z.trigger, ctx); }).map(function (z) { return z.tekst.slice(0, 12); })
+    };
+  }
+  var R_AF = function () { return route([dag1(["V4"]), [["N1"], ["B1", "V5"]]]); };                 // V4 werkt (af), dan wissel: onnodig
+  reg("E2-5 score duurzaamheid (route): een wissel terwijl de klachten afnemen kost 1 punt (3 -> 2); wissel terwijl de klachten aanhouden of zonder wissel kost niets", function (e) {
+    vereisEngine();
+    var onnodig = R_AF();
+    T.is(g.Predicaten.tel(e.score.duurzaamheid.regels[0].perKeer, g.Predicaten.maakContext(casus(), e, onnodig)), 1, "tel: onnodige wissel");
+    T.is(duurzaamheid(onnodig, e), 2);
+    var terecht = route([dag1(["V5"]), [["O2"], ["N1"]], [["B1", "V4"]]]);   // V5 werkt niet (aan), wissel is terecht
+    T.is(g.Predicaten.tel(e.score.duurzaamheid.regels[0].perKeer, g.Predicaten.maakContext(casus(), e, terecht)), 0, "tel: terechte wissel");
+    T.is(duurzaamheid(terecht, e), 3);
+    var geen = route([dag1(["V4"]), [["N1"], ["N2", "V4"]]]);
+    T.is(duurzaamheid(geen, e), 3);
+    // Twee onnodige wissels (V4 -> V5 -> V4 terwijl het eerste en tweede middel werkt: tweede wissel is op 'aan', dus alleen de eerste telt)
+    var twee = route([dag1(["V4"]), [["N1"], ["B1", "V5"]], [["O2"], ["B1", "V4"]]]);
+    T.is(duurzaamheid(twee, e), 2, "alleen de wissel vanuit 'af' telt");
+  });
+  reg("E2-5 score (oracle): onnodige wissels en doelmatigheid uit een eigen berekening gelijk aan de data, op een reeks routes", function (e) {
+    vereisEngine();
+    var routes = [
+      [dag1(["V4"]), [["N1"], ["B1", "V5"]]],
+      [dag1(["V5"]), [["O2"], ["N1"]], [["B1", "V4"]]],
+      [dag1(["V4"]), [["N1"], ["N2", "V4"]]],
+      [dag1(["V4"]), [["N1"], ["B1", "V5"]], [["O2"], ["B1", "V4"]]],
+      [dag1(["V4"]), [["N1"], ["B1", "V3"]], [["B1", "V4"]]],
+      [dag1(["V3"]), [["N1"], ["B1", "V4"]], [["B1", "V5"]]],
+      [[["O1"], ["V4"], ["G2"]], [["N1"]]],
+      [[["V4"], ["G2"], ["O1"]], [["N1"]]]
+    ];
+    routes.forEach(function (r, k) {
+      var st = route(r), mijn = oracleOnnodig(st);
+      T.is(g.Predicaten.tel(e.score.duurzaamheid.regels[0].perKeer, g.Predicaten.maakContext(casus(), e, st)), mijn, "route " + k + ": onnodige wissels");
+      T.is(duurzaamheid(st, e), 3 - mijn, "route " + k + ": duurzaamheid");
+    });
+    // Doelmatigheid: 3 alleen als G2 vóór de eerste voorschrijfkaart (V1-V5) ligt, anders 2 (ook zonder G2).
+    T.is(doelmatigheid(route([dag1(["V4"]), [["N1"]]]), e), 3, "G2 vóór V4");
+    T.is(doelmatigheid(route([[["O1"], ["V4"], ["G2"]], [["N1"]]]), e), 2, "G2 ná V4");
+    T.is(doelmatigheid(route([[["O1"], ["V4"]], [["N1"]]]), e), 2, "geen G2");
+    T.is(doelmatigheid(route([[["G2"], ["O1"], ["N1"]]]), e), 3, "G2, geen voorschrijfkaart");
+    T.is(doelmatigheid(route([[["G2"], ["V5"], ["O1"]], [["N1"]]]), e), 3, "G2 vóór V5, O1 daarna (kweek is geen voorschrijfkaart)");
+    T.is(doelmatigheid(route([[["G2"], ["O1"], ["V4"]], [["N1"], ["V3"]]]), e), 3, "G2 vóór beide middelen");
+  });
+  reg("E2-5 profielen (route): Kweekgestuurd, smal bij V4 zonder wissel; Bijgestuurd bij V5 gevolgd door B1; anders geen profiel", function (e) {
+    vereisEngine();
+    T.gelijk(triggers(route([dag1(["V4"]), [["N1"], ["N2", "V4"]]]), e).profielen, ["Kweekgestuurd, smal"]);
+    T.gelijk(triggers(route([dag1(["V5"]), [["O2"], ["N1"]], [["B1", "V4"]], [["V6", "V5", "halveren"]]]), e).profielen, ["Bijgestuurd"]);
+    T.gelijk(triggers(route([dag1(["V4"]), [["N1"], ["B1", "V5"]]]), e).profielen, [], "V4 met wissel naar V5: geen van beide");
+    T.gelijk(triggers(route([dag1(["V5"]), [["O2"], ["N1"]], [["B2", "V5"]]]), e).profielen, [], "trimethoprim, stoppen zonder wissel: geen profiel (TODO_BART-E2-10)");
+    T.gelijk(triggers(route([dag1(["V5"]), [["O2"], ["N1"]], [["V6", "V5", "halveren"]]]), e).profielen, [], "alleen V5, geen wissel");
+    T.gelijk(triggers(route([dag1(["V4"]), [["N1"], ["B1", "V5"]], [["O2"], ["B1", "V4"]]]), e).profielen, [], "V4, B1 naar V5 en terug: B1 gespeeld, V5 ervóór B1 niet");
+  });
+  reg("E2-3 feedbackExtra (route): 'Verouderde eGFR' bij een voorschrijfkaart zonder G2 ervoor; 'Onnodig gewisseld' bij een wissel terwijl de klachten afnemen", function (e) {
+    vereisEngine();
+    var VE = "Hoe oud was ", OG = "Het werkte e";
+    T.gelijk(triggers(route([dag1(["V4"]), [["N1"]]]), e).feedback, [], "G2 vooraf, geen wissel");
+    T.gelijk(triggers(route([[["O1"], ["V4"], ["G2"]], [["N1"]]]), e).feedback, [VE], "G2 na V4");
+    T.gelijk(triggers(route([[["O1"], ["V4"]], [["N1"]]]), e).feedback, [VE], "nooit G2");
+    T.gelijk(triggers(route([[["O1"], ["V1"]], [["N1"]]]), e).feedback, [VE], "V1 zonder G2");
+    T.gelijk(triggers(route([[["O1"], ["V2"]], [["N1"]]]), e).feedback, [VE], "V2 zonder G2");
+    T.gelijk(triggers(route([[["O1"], ["V3"]], [["N1"]]]), e).feedback, [VE], "V3 zonder G2");
+    T.gelijk(triggers(route([[["O1"], ["V5"]], [["N1"]]]), e).feedback, [VE], "V5 zonder G2");
+    T.gelijk(triggers(route([dag1(["V4"]), [["N1"], ["B1", "V5"]]]), e).feedback, [OG], "onnodige wissel");
+    T.gelijk(triggers(route([[["O1"], ["V4"]], [["N1"], ["B1", "V5"]]]), e).feedback, [VE, OG], "beide");
+    T.gelijk(triggers(route([dag1(["V5"]), [["O2"], ["N1"]], [["B1", "V4"]]]), e).feedback, [], "terechte wissel");
+  });
+  reg("E2-3 zichtbaarAlsOntbreekt (route): nierfunctie-zin bij nitrofurantoïne zonder G2; kalium-zin bij trimethoprim zonder O2; niet als de kaart gespeeld is", function (e) {
+    vereisEngine();
+    var NF = "De nierfunct", KA = "De kaliumspi";
+    T.gelijk(triggers(route([[["O1"], ["V3"], ["N1"]]]), e).zichtbaar, [NF]);
+    T.gelijk(triggers(route([dag1(["V3"]), [["N1"]]]), e).zichtbaar, [], "V3 mét G2");
+    T.gelijk(triggers(route([[["O1"], ["V4"], ["N1"]]]), e).zichtbaar, [], "zonder G2 maar geen V3");
+    T.gelijk(triggers(route([dag1(["V5"]), [["N1"]]]), e).zichtbaar, [KA]);
+    T.gelijk(triggers(route([dag1(["V5"]), [["O2"], ["N1"]]]), e).zichtbaar, [], "V5 mét O2");
+    T.gelijk(triggers(route([dag1(["V4"]), [["N1"], ["O2"]]]), e).zichtbaar, [], "geen V5");
+    T.gelijk(triggers(route([[["O1"], ["V3"], ["N1"]], [["B1", "V5"]]]), e).zichtbaar, [NF, KA], "beide");
   });
   reg("E2-route (vereisten): zonder Engine, Predicaten of bibliotheek faalt een route-test luid (nooit leeg groen)", function (e) {
     var bewaard = { E: g.Engine, P: g.Predicaten };

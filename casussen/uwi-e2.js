@@ -62,10 +62,10 @@ window.CASUSSEN[0].episodes.push({
     }
   },
   statusTeksten: {
-    af: "klachten nemen af",
-    aan: "klachten houden aan",
+    af: "klachten nemen af.",
+    aan: "klachten houden aan.",
     geenVerbetering48: null,
-    TODO_BART: "Statusteksten in episode 2: de casus geeft alleen de fragmenten 'klachten houden aan' (trimethoprim) en 'klachten nemen af' (fosfomycine). Welke hoofdletter/punt, en is 'Na 48 uur geen verbetering.' ook in episode 2 bedoeld?"
+    TODO_BART: "Statusteksten in episode 2: de casus geeft alleen de regels 'Trimethoprim: klachten houden aan.' en 'Fosfomycine: klachten nemen af.' Moet de tekst die de speler ziet het casusfragment zijn (met slotpunt, kleine letter) of een volledige zin met hoofdletter, en is 'Na 48 uur geen verbetering.' ook in episode 2 bedoeld?"
   },
   invarianten: [
     {
@@ -490,8 +490,8 @@ window.CASUSSEN[0].todoBart.push(
   },
   {
     id: "TODO_BART-E2-9",
-    vraag: "Statusteksten in episode 2: de casus geeft alleen de fragmenten 'klachten houden aan' (trimethoprim) en 'klachten nemen af' (fosfomycine). Welke hoofdletter/punt, en is 'Na 48 uur geen verbetering.' ook in episode 2 bedoeld?",
-    gekozenLezing: "af = 'klachten nemen af', aan = 'klachten houden aan' (letterlijke fragmenten); geenVerbetering48 = null (komt in episode 2 niet voor, er is geen gebeurtenis A).",
+    vraag: "Statusteksten in episode 2: de casus geeft alleen de regels 'Trimethoprim: klachten houden aan.' en 'Fosfomycine: klachten nemen af.' Moet de tekst die de speler ziet het casusfragment zijn (met slotpunt, kleine letter) of een volledige zin met hoofdletter, en is 'Na 48 uur geen verbetering.' ook in episode 2 bedoeld?",
+    gekozenLezing: "af = 'klachten nemen af.', aan = 'klachten houden aan.': de casusfragmenten letterlijk, met het slotpunt van de casusregel en met een kleine letter (het fragment staat na de dubbele punt); geenVerbetering48 = null (komt in episode 2 niet voor, er is geen gebeurtenis A). Alternatief: een volledige zin met hoofdletter, bijvoorbeeld 'Klachten nemen af.' en 'Klachten houden aan.', of 'Na 48 uur geen verbetering.' ook in episode 2.",
     plek: "E2.statusTeksten"
   },
   {

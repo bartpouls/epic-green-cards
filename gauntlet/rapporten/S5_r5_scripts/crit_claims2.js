@@ -1,0 +1,27 @@
+const sb=require("../S5_r3_scripts/load.js");const P=sb.Predicaten;
+let bad=0;function eis(n,f){try{const r=f();if(r!==true){bad++;console.log("FAIL",n,r)}else console.log("ok  ",n)}catch(e){bad++;console.log("FAIL(exc)",n,e.message)}}
+const casus={rollen:{wissel:"B1",stop:"B2",pauzeer:"B3",hervat:"B5"}};
+const epGeen={id:"G",antibiotica:["Q1"],patient:{waar:{},medicatie:[]}};
+const epLeeg={id:"L",antibiotica:["Q1"],patient:{waar:{},medicatie:[]},gebeurtenissen:[]};
+const tl=[{volg:1,kaart:"Q1",dag:1,doel:null,optie:null}];
+eis("gebeurtenis-id niet gecontroleerd zonder lijst",()=>P.evalueer({p:"gebeurtenisGeweest",id:"Zzz"},P.maakContext(casus,epGeen,{}))===false);
+eis("gebeurtenis-id niet gecontroleerd bij lege lijst",()=>P.evalueer({p:"gebeurtenisGeweest",id:"Zzz"},P.maakContext(casus,epLeeg,{}))===false);
+eis("resistent bekend zonder data",()=>P.evalueer({p:"actief",uitSet:"resistent"},P.maakContext(casus,epGeen,{tijdlijn:tl}))===false);
+eis("gevoelig bekend zonder data",()=>P.evalueer({p:"actief",uitSet:"gevoelig"},P.maakContext(casus,epGeen,{tijdlijn:tl}))===false);
+eis("waar boven episode: ctx.waar[naam] gaat voor",()=>{const e={id:"W",antibiotica:["Q1","Q2"],patient:{waar:{resistent:["Q1"]}},resistent:["Q2"],gebeurtenissen:[]};
+  const c=P.maakContext(casus,e,{tijdlijn:[{volg:1,kaart:"Q1",dag:1},{volg:2,kaart:"Q2",dag:1}]});
+  return P.evalueer({p:"actief",middel:"Q1",uitSet:"resistent"},c)===true&&P.evalueer({p:"actief",middel:"Q2",uitSet:"resistent"},c)===false;});
+eis("terwijlKlachten dag 1 null telt niet",()=>P.tel({t:"gespeeld",kaart:"Q1",terwijlKlachten:"af"},P.maakContext(casus,epGeen,{tijdlijn:tl,klachten:[{dag:1,status:null}]}))===0);
+eis("tel terwijlKlachten=geenVerbetering48",()=>P.tel({t:"gespeeld",kaart:"Q1",terwijlKlachten:"geenVerbetering48"},P.maakContext(casus,epGeen,{tijdlijn:tl,klachten:[{dag:1,status:"geenVerbetering48"}]}))===1);
+eis("Engine-achtige klachten met dag 0",()=>P.evalueer({p:"klachten",waarde:"af",op:{dag:0}},P.maakContext(casus,epGeen,{klachten:[{dag:0,status:"af"}]}))===true);
+eis("pauze twee meds, hervat een",()=>{const e={id:"M",antibiotica:["Q1"],patient:{waar:{},medicatie:["a","b"]}};
+ const c=P.maakContext(casus,e,{tijdlijn:[{volg:1,kaart:"B3",dag:1,doel:"a"},{volg:2,kaart:"B3",dag:1,doel:"b"},{volg:3,kaart:"B5",dag:2,doel:"a"}]});
+ return P.evalueer({p:"medicatieActief",id:"a"},c)===true&&P.evalueer({p:"medicatieActief",id:"b"},c)===false;});
+eis("pauze blijft na wissel",()=>{const e={id:"M",antibiotica:["Q1","Q2"],patient:{waar:{},medicatie:["a"]}};
+ const c=P.maakContext(casus,e,{tijdlijn:[{volg:1,kaart:"Q1",dag:1},{volg:2,kaart:"B3",dag:1,doel:"a"},{volg:3,kaart:"B1",dag:2,doel:"Q2"}]});
+ return P.evalueer({p:"medicatieActief",id:"a"},c)===false;});
+eis("zet met meerdere ids",()=>{const e={id:"Z",antibiotica:["Q1","Q2","Q3"],patient:{waar:{},medicatie:[]},gebeurtenissen:[{id:"E",zet:{resistent:["Q1","Q2","Q3"]}}]};
+ const c=P.maakContext(casus,e,{tijdlijn:[{volg:1,kaart:"Q3",dag:1}],gebeurtenissen:[{id:"E",dag:2}]});
+ return P.evalueer({p:"actief",middel:"Q3",uitSet:"resistent"},c)===true;});
+eis("opDag: K vóór anker met van:0 is onwaar",()=>P.evalueer({p:"opDagRelatief",K:{kaart:"Q2"},anker:{kaart:"Q1"},van:0,tot:1},P.maakContext(casus,{id:"x",antibiotica:["Q1","Q2"],patient:{waar:{}}},{tijdlijn:[{volg:1,kaart:"Q2",dag:1},{volg:2,kaart:"Q1",dag:3}]}))===false);
+console.log("bad",bad);

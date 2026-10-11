@@ -662,6 +662,275 @@
     T.waar(/op welke dag/.test(l("TODO_BART-E3-23").vraag) && /I8/.test(l("TODO_BART-E3-23").vraag), "E3-23 (klachten-dag van I8)");
   });
 
+  /* ---------- gedragstests via de Engine: routes en kruiscontrole met een EIGEN oracle ---------- */
+  // KRUISCONTROLE: het oracle hieronder is onafhankelijk van de predicaten in de data. Het leest alleen de tijdlijn, de gebeurtenissen en de
+  // klachtenstatus uit de Engine-state, en is geschreven uit casus-uwi.md sectie 4–6 (en de gekozen lezingen in casus.todoBart).
+  // Zo is de vastgepinde stand hieronder niet de enige bescherming van de logica (invarianten, score, profiel, vragen, zichtbaar-zinnen).
+  var SP = "spironolacton", V6L = "V6:lisinopril:halveren", V6A = "V6:V8:875/125 mg 2 dd", ANTI = ["V3", "V4", "V5", "V7", "V8", "V9", "V10"];
+  function eng() { return g.Engine && g.Predicaten && casus() && e3() ? g.Engine : null; }
+  function spec(x) { var p = x.split(":"); return { k: p[0], o: { doel: p[1] || undefined, optie: p[2] || undefined } }; }
+  function speelPlan(plan, volgorde) {
+    var E = g.Engine, s = E.nieuwSpel(casus(), "E3", { rng: volgorde === "BA" ? function () { return 0.999; } : function () { return 0; } });
+    for (var d = 0; d < plan.length; d++) {
+      if (d > 0) E.volgendeDag(s);
+      plan[d].forEach(function (x) { var q = spec(x), r = E.speelKaart(s, q.k, q.o); if (!r.ok) throw new Error("kaart geweigerd: " + x + " dag " + s.dag + ": " + r.fout); });
+    }
+    while (!s.dagenVoorbij) E.volgendeDag(s);
+    return s;
+  }
+  function speelPlanVrij(plan, volgorde) { // weigert niet: negeert geweigerde kaarten (voor het willekeurige corpus)
+    var E = g.Engine, s = E.nieuwSpel(casus(), "E3", { rng: volgorde === "BA" ? function () { return 0.999; } : function () { return 0; } });
+    for (var d = 0; d < plan.length; d++) {
+      if (d > 0) { if (s.dagenVoorbij) break; E.volgendeDag(s); }
+      plan[d].forEach(function (x) { var q = spec(x); E.speelKaart(s, q.k, q.o); });
+    }
+    while (!s.dagenVoorbij) E.volgendeDag(s);
+    return s;
+  }
+  function gelden(e, s, inv) {
+    return inv.geldtIn.some(function (x) {
+      if (x === "*") return true;
+      if (typeof x === "string") return s.toestanden.indexOf(x) >= 0;
+      return s.gebeurtenissen.some(function (b) { return b.id === x.gebeurtenis; });
+    });
+  }
+  function dataSchendingen(e, s) {
+    var ctx = g.Predicaten.maakContext(casus(), e, s);
+    return e.invarianten.filter(function (i) { return gelden(e, s, i) && g.Predicaten.evalueer(i.predicaat, ctx); }).map(function (i) { return i.id; });
+  }
+  // Eigen oracle (tijdlijn-gebaseerd)
+  function oracle(s) {
+    var t = s.tijdlijn.slice().sort(function (a, b) { return a.volg - b.volg; });
+    var geb = function (id) { return s.gebeurtenissen.filter(function (x) { return x.id === id; })[0]; };
+    var dA = geb("A") && geb("A").dag, dB = geb("B") && geb("B").dag, dC = geb("C") && geb("C").dag;
+    var uit = {};
+    function eerste(f) { return t.filter(f)[0]; }
+    function heeft(f) { return t.some(f); }
+    function sim(maxDag, maxVolg) {
+      var act = {}, max = 0;
+      t.forEach(function (r) {
+        if (maxDag != null && r.dag > maxDag) return;
+        if (maxVolg != null && r.volg > maxVolg) return;
+        if (r.kaart === "B1") { if (r.doel) { act = {}; act[r.doel] = true; } }
+        else if (r.kaart === "B2") { if (r.doel) delete act[r.doel]; }
+        else if (ANTI.indexOf(r.kaart) >= 0) act[r.kaart] = true;
+        max = Math.max(max, Object.keys(act).length);
+      });
+      return { act: act, max: max };
+    }
+    function starts(m) { return t.filter(function (r) { return r.kaart === m || (r.kaart === "B1" && r.doel === m); }); }
+    var isAnti = function (r) { return ANTI.indexOf(r.kaart) >= 0; };
+    if (!heeft(function (r) { return r.kaart === "N1"; })) uit.I1 = 1;
+    if (sim().max > 1) uit.I4 = 1;
+    if (starts("V3").length) uit.I5 = 1;
+    var fa = eerste(isAnti), o1 = eerste(function (r) { return r.kaart === "O1"; });
+    var i6a = !!(fa && !(o1 && o1.volg < fa.volg)), i6b = heeft(function (r) { return r.kaart === "V1" || r.kaart === "V2"; });
+    if (i6a || i6b) uit.I6 = 1;
+    var s5 = starts("V5"), i7a = false, i7b = false;
+    if (s5.length) {
+      var a = s5[0].dag;
+      i7a = !heeft(function (r) { return r.kaart === "O2" && r.dag - a >= 1 && r.dag - a <= 3; });
+      i7b = !heeft(function (r) { return r.kaart === "V6" && r.doel === "V5" && r.optie === "halveren" && r.dag - a >= 3; });
+      if (i7a || i7b) uit.I7 = 1;
+    }
+    if (dC != null) {
+      var st = s.klachten[dC] && s.klachten[dC].status, act = sim(dC + 1).act;
+      if ((st === "aan" || st === "geenVerbetering48") && (act.V5 || act.V10)) uit.I8 = 1;
+    }
+    var ev2 = eerste(function (r) { return r.kaart === "Ev2" && r.doel === SP; }), b5 = eerste(function (r) { return r.kaart === "B5" && r.doel === SP; });
+    var heeftO2 = heeft(function (r) { return r.kaart === "O2"; });
+    var i9 = (!heeftO2 && !ev2) || !!(b5 && !(ev2 && ev2.volg < b5.volg));
+    if (i9) uit.I9 = 1;
+    if (dA != null) { var a10 = sim(dA).act; if (a10.V3 || a10.V4) uit.I10 = 1; }
+    if (dA != null) {
+      var wis = t.filter(function (r) { return r.dag >= dA && (r.kaart === "B1" || isAnti(r)); });
+      if (wis.length) { var o1n = eerste(function (r) { return r.kaart === "O1" && r.dag >= dA; }); if (!(o1n && o1n.volg < wis[0].volg)) uit.I11 = 1; }
+    }
+    if (starts("V9").length) uit.I12 = 1;
+    var s8 = starts("V8");
+    if (s8.length && !heeft(function (r) { return r.kaart === "V6" && r.doel === "V8" && r.optie === "875/125 mg 2 dd" && r.dag === s8[0].dag; })) uit.I13 = 1;
+    var s7 = starts("V7"), i14 = false;
+    if (s7.length) {
+      var a7 = s7[0], pauze = {};
+      t.forEach(function (r) { if (r.volg > a7.volg) return; if (r.kaart === "B3" && r.doel) pauze[r.doel] = 1; if (r.kaart === "B5" && r.doel) delete pauze[r.doel]; });
+      var ok = heeft(function (r) { return (r.kaart === "B4" || (r.kaart === "B3" && r.doel === "calcium")) && r.dag - a7.dag >= 0 && r.dag - a7.dag <= 1; });
+      i14 = !pauze.calcium && !ok;
+      if (i14) uit.I14 = 1;
+    }
+    var geenSick = false;
+    if (dB != null) {
+      var bin = function (f) { return heeft(function (r) { return f(r) && r.dag >= dB && r.dag <= dB + 1; }); };
+      var m1 = bin(function (r) { return r.kaart === "B3" && r.doel === SP; }), m2 = bin(function (r) { return r.kaart === "V6" && r.doel === "lisinopril" && r.optie === "halveren"; });
+      var m3 = bin(function (r) { return r.kaart === "N3"; }), m4 = bin(function (r) { return r.kaart === "Ev1"; });
+      if (!(m1 && m2 && m3 && m4)) uit.I15 = 1;
+    }
+    if (dB != null) geenSick = !heeft(function (r) { return r.kaart === "B3" && r.doel === SP; }) && !heeft(function (r) { return r.kaart === "V6" && r.doel === "lisinopril" && r.optie === "halveren"; }) && !heeft(function (r) { return r.kaart === "N3"; }) && !heeft(function (r) { return r.kaart === "Ev1"; });
+    if (dA != null) {
+      var ev1 = heeft(function (r) { return r.kaart === "Ev1" && r.dag >= dA && r.dag <= dA + 1; });
+      var gv = s.klachten.some(function (k) { return k && k.status === "geenVerbetering48"; }), ev3 = heeft(function (r) { return r.kaart === "Ev3"; });
+      if (!ev1 || (gv && !ev3)) uit.I16 = 1;
+    }
+    var ids = Object.keys(uit).sort(function (x, y) { return +x.slice(1) - +y.slice(1); });
+    // score, profiel, extra vragen, zichtbaar-zinnen, vraagkeuze
+    var v8 = starts("V8").length > 0, v7 = s7.length > 0, v8naC = heeft(function (r) { return (r.kaart === "V8" || (r.kaart === "B1" && r.doel === "V8")) && dC != null && r.dag >= dC; });
+    var dur = v8 && !v7 ? 3 : (v7 && v8naC ? 3 : (v7 ? 2 : undefined));
+    var g3 = eerste(function (r) { return r.kaart === "G3"; }), eV = eerste(function (r) { return /^V(10|[1-9])$/.test(r.kaart); });
+    var doel = g3 && (!eV || g3.volg < eV.volg) ? 3 : 2;
+    var calcOpen = false;
+    if (s7.length) { var p2 = {}; t.forEach(function (r) { if (r.volg > s7[0].volg) return; if (r.kaart === "B3" && r.doel) p2[r.doel] = 1; if (r.kaart === "B5" && r.doel) delete p2[r.doel]; }); calcOpen = !p2.calcium; }
+    return {
+      ids: ids, dur: dur, doel: doel, profiel: v8 ? "Kweekgestuurd" : (v7 ? "Richtlijn eerste keus" : null),
+      extra: [heeft(function (r) { return r.kaart === "B5"; }) ? 0 : null, v7 ? 1 : null].filter(function (x) { return x !== null; }),
+      zicht: [dB != null && geenSick ? 0 : null, i14 ? 1 : null, i9 ? 2 : null].filter(function (x) { return x !== null; }),
+      i6v: i6a ? 0 : (i6b ? 1 : null), i7v: i7a ? 0 : (i7b ? 1 : null)
+    };
+  }
+  function gedrag(e, s) {
+    var P = g.Predicaten, ctx = P.maakContext(casus(), e, s);
+    function eerstePunten(as) { var r = e.score[as].regels; for (var i = 0; i < r.length; i++) if (P.evalueer(r[i].als, ctx)) return r[i].punten; return undefined; }
+    var prof = null; for (var i = 0; i < e.profielen.length; i++) if (P.evalueer(e.profielen[i].als, ctx)) { prof = e.profielen[i].naam; break; }
+    function vraagIdx(id) {
+      var inv = vind(e.invarianten, id);
+      for (var k = 0; k < inv.vraagVarianten.length; k++) if (P.evalueer(inv.vraagVarianten[k].als, ctx)) return k;
+      return null;
+    }
+    return {
+      ids: dataSchendingen(e, s), dur: eerstePunten("duurzaamheid"), doel: eerstePunten("doelmatigheid"), profiel: prof,
+      extra: e.feedbackExtra.map(function (f, k) { return P.evalueer(f.trigger, ctx) ? k : null; }).filter(function (x) { return x !== null; }),
+      zicht: e.zichtbaarAlsOntbreekt.map(function (z, k) { return P.evalueer(z.trigger, ctx) ? k : null; }).filter(function (x) { return x !== null; }),
+      i6v: dataSchendingen(e, s).indexOf("I6") >= 0 ? vraagIdx("I6") : null, i7v: dataSchendingen(e, s).indexOf("I7") >= 0 ? vraagIdx("I7") : null
+    };
+  }
+  var A1 = [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V8", V6A], ["Ev1", "B3:" + SP, V6L], ["N3"]];
+  var A2 = [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V7", "B4:V7"], ["B1:V8", V6A, "Ev1"], ["B3:" + SP, V6L, "N3"]];
+  var A3 = [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V7", "B3:calcium"], ["Ev1", "B3:" + SP, V6L], ["N3", "B5:" + SP]];
+  var BA1 = [["G3", "O1", "V4"], ["N1"], ["B3:" + SP, V6L], ["N3", "Ev1", "O2"], ["O1", "B1:V8", V6A], ["Ev1", "Ev2:" + SP]];
+  function wijzig(plan, dag, nieuw) { var p = JSON.parse(JSON.stringify(plan)); p[dag] = nieuw; return p; }
+  // Elke route: plan, volgorde, EXACT verwachte lijst geschonden invarianten (met de hand bepaald uit de casus), score/profiel waar de poort gehaald is.
+  var ROUTES = [
+    { n: "geldig: fosfomycine > amoxicilline/clavulaanzuur 875/125 (Kweekgestuurd 3/3)", p: A1, o: "AB", i: [], dur: 3, doel: 3, prof: "Kweekgestuurd" },
+    { n: "geldig BA: amoxicilline/clavulaanzuur 875/125 (Kweekgestuurd 3/3)", p: BA1, o: "BA", i: [], dur: 3, doel: 3, prof: "Kweekgestuurd" },
+    { n: "geldig: ciprofloxacine + B4, daarna de-escalatie naar V8 (3/3)", p: A2, o: "AB", i: [], dur: 3, doel: 3, prof: "Kweekgestuurd" },
+    { n: "geldig: ciprofloxacine + B3 op calcium, blijft (Richtlijn eerste keus 2/3)", p: A3, o: "AB", i: [], dur: 2, doel: 3, prof: "Richtlijn eerste keus" },
+    { n: "geldig: ciprofloxacine + B4 blijft (2/3)", p: [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V7", "B4:V7"], ["Ev1", "B3:" + SP, V6L], ["N3"]], o: "AB", i: [], dur: 2, doel: 3, prof: "Richtlijn eerste keus" },
+    { n: "I1: geen N1", p: wijzig(A1, 1, ["G1", "O2", "Ev2:" + SP]), o: "AB", i: ["I1"] },
+    { n: "I5: nitrofurantoïne gestart", p: wijzig(A1, 0, ["G3", "O1", "V3"]), o: "AB", i: ["I5"] },
+    { n: "I12: cotrimoxazol", p: wijzig(A1, 2, ["O1", "B1:V9"]), o: "AB", i: ["I12"] },
+    { n: "I13: V8 zonder V6", p: wijzig(A1, 2, ["O1", "B1:V8"]), o: "AB", i: ["I13"] },
+    { n: "I13: V8 met V6 500/125", p: wijzig(A1, 2, ["O1", "B1:V8", "V6:V8:500/125 mg 2 dd"]), o: "AB", i: ["I13"] },
+    { n: "I13: V6 875/125 een dag later", p: [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V8"], [V6A, "Ev1", "B3:" + SP], [V6L, "N3"]], o: "AB", i: ["I13"] },
+    { n: "I15: zonder N3", p: wijzig(wijzig(A1, 3, ["Ev1", "B3:" + SP, V6L]), 4, []), o: "AB", i: ["I15"] },
+    { n: "I15: zonder B3 op spironolacton", p: wijzig(wijzig(A1, 3, ["Ev1", V6L, "N3"]), 4, []), o: "AB", i: ["I15"] },
+    { n: "I15: zonder V6 lisinopril halveren", p: wijzig(wijzig(A1, 3, ["Ev1", "B3:" + SP, "N3"]), 4, []), o: "AB", i: ["I15"] },
+    { n: "I15 en I16: zonder Ev1", p: wijzig(wijzig(A1, 3, ["B3:" + SP, V6L, "N3"]), 4, []), o: "AB", i: ["I15", "I16"], zicht: [] },
+    { n: "I9: geen O2 en geen Ev2", p: wijzig(A1, 1, ["N1"]), o: "AB", i: ["I9"], zicht: [2] },
+    { n: "I9: O2 wel, Ev2 niet, geen B5 = geen schending", p: wijzig(A1, 1, ["N1", "O2"]), o: "AB", i: [], dur: 3, doel: 3, prof: "Kweekgestuurd" },
+    { n: "I9: B5 zonder Ev2", p: wijzig(wijzig(A1, 1, ["N1", "O2"]), 4, ["N3", "B5:" + SP]), o: "AB", i: ["I9"], zicht: [2] },
+    { n: "geldig: B5 na Ev2 (extra vraag Automatische herstart)", p: wijzig(A1, 4, ["N3", "B5:" + SP]), o: "AB", i: [], dur: 3, doel: 3, prof: "Kweekgestuurd", extra: [0] },
+    { n: "I11: wisselen zonder O1 na A", p: wijzig(A1, 2, ["B1:V8", V6A]), o: "AB", i: ["I11"] },
+    { n: "I6: V4 voor O1", p: wijzig(A1, 0, ["G3", "V4", "O1"]), o: "AB", i: ["I6"], i6v: 0 },
+    { n: "I6: afwachten (V1) in de risicogroep", p: wijzig(A1, 4, ["N3", "V1"]), o: "AB", i: ["I6"], i6v: 1 },
+    { n: "I4 en I10: twee antibiotica, V4 blijft actief na A", p: wijzig(A1, 2, ["O1", "V8", V6A]), o: "AB", i: ["I4", "I10"] },
+    { n: "I10 (en I16): V4 blijft na A, geen wissel", p: wijzig(A1, 2, ["O1"]), o: "AB", i: ["I10", "I16"] },
+    { n: "I14: ciprofloxacine zonder B4/B3", p: wijzig(A2, 2, ["O1", "B1:V7"]), o: "AB", i: ["I14"], zicht: [1] },
+    { n: "I14: B4 te laat (twee dagen na de start)", p: [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V7"], ["Ev1", "B3:" + SP, V6L], ["N3", "B4:V7"]], o: "AB", i: ["I14", "I16"], zicht: [1] },
+    { n: "I7: V5 met O2 en halveren = geen I7", p: [["G3", "O1", "V5"], ["N1", "O2", "B2:V5"], ["Ev2:" + SP, "Ev1"], ["B3:" + SP, V6L, "N3"], ["V6:V5:halveren"]], o: "AB", i7: false },
+    { n: "I7: geen halveren", p: [["G3", "O1", "V5"], ["N1", "O2", "B2:V5"], ["Ev2:" + SP, "Ev1"], ["B3:" + SP, V6L, "N3"], []], o: "AB", i7: true, i7v: 1 },
+    { n: "I7: halveren te vroeg (verschil 2)", p: [["G3", "O1", "V5"], ["N1", "O2", "B2:V5"], ["Ev2:" + SP, "Ev1", "V6:V5:halveren"], ["B3:" + SP, V6L, "N3"], []], o: "AB", i7: true, i7v: 1 },
+    { n: "I7: halveren op verschil 5 = geen I7", p: [["G3", "O1", "V5"], ["N1", "O2", "B2:V5"], ["Ev2:" + SP, "Ev1"], ["B3:" + SP, V6L, "N3"], [], ["V6:V5:halveren"]], o: "AB", i7: false },
+    { n: "I7: O2 op verschil 4 (te laat)", p: [["G3", "O1", "V5"], ["N1", "B2:V5"], ["Ev2:" + SP, "Ev1"], ["B3:" + SP, V6L, "N3"], ["O2", "V6:V5:halveren"]], o: "AB", i7: true, i7v: 0 },
+    { n: "I7: O2 op verschil 3 = geen I7", p: [["G3", "O1", "V5"], ["N1", "B2:V5"], ["Ev2:" + SP, "Ev1"], ["B3:" + SP, V6L, "O2"], ["N3", "V6:V5:halveren"]], o: "AB", i7: false },
+    { n: "I7: geen O2", p: [["G3", "O1", "V5"], ["N1", "B2:V5"], ["Ev2:" + SP, "Ev1"], ["B3:" + SP, V6L, "N3"], ["V6:V5:halveren"]], o: "AB", i7: true, i7v: 0 },
+    { n: "I8: trimethoprim blijft na de kweekuitslag (klachten houden aan)", p: [["G3", "O1", "V5"], ["N1", "O2", "Ev2:" + SP], ["Ev1", "B3:" + SP, V6L], ["N3", "V6:V5:halveren"]], o: "AB", i8: true },
+    { n: "I8: trimethoprim gestopt op de dag van de kweekuitslag = geen I8", p: [["G3", "O1", "V5"], ["N1", "O2", "Ev2:" + SP], ["B2:V5", "Ev1", "B3:" + SP], [V6L, "N3", "V6:V5:halveren"]], o: "AB", i8: false },
+    { n: "I8: V10 (resistent) blijft na de kweekuitslag", p: [["G3", "O1", "V10"], ["N1", "O2", "Ev2:" + SP], ["Ev1", "B3:" + SP, V6L], ["N3"]], o: "AB", i8: true },
+    { n: "I8: wissel naar werkzaam V8 vóór het eind van de tweede beurt = geen I8", p: [["G3", "O1", "V5"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V8", V6A], ["Ev1", "B3:" + SP, V6L], ["N3"]], o: "AB", i8: false }
+  ];
+  ROUTES.forEach(function (r) {
+    reg("E3-route (Engine) " + r.n, function (e) {
+      if (!eng()) return;
+      var s = speelPlan(r.p, r.o), gd = gedrag(e, s), orc = oracle(s);
+      var echt = gd.ids;
+      if (r.i) T.gelijk(echt, r.i, "geschonden invarianten (verwacht met de hand)");
+      if (r.i7 !== undefined) T.is(echt.indexOf("I7") >= 0, r.i7, "I7");
+      if (r.i8 !== undefined) T.is(echt.indexOf("I8") >= 0, r.i8, "I8");
+      if (r.i7v !== undefined) T.is(gd.i7v, r.i7v, "I7-vraagvariant");
+      if (r.i6v !== undefined) T.is(gd.i6v, r.i6v, "I6-vraagvariant");
+      if (r.dur !== undefined || (r.i && r.i.length === 0)) { T.is(gd.dur, r.dur, "duurzaamheid"); T.is(gd.doel, r.doel, "doelmatigheid"); T.is(gd.profiel, r.prof, "profiel"); }
+      if (r.extra) T.gelijk(gd.extra, r.extra, "extra vragen");
+      if (r.zicht) T.gelijk(gd.zicht, r.zicht, "zichtbaar-zinnen");
+      T.gelijk(echt, orc.ids, "data == eigen oracle (kruiscontrole)");
+    });
+  });
+  reg("E3-route (Engine) I6- en I7-vragen komen uit de juiste variant (tekst letterlijk uit de casus)", function (e) {
+    if (!eng()) return;
+    var i6 = vind(e.invarianten, "I6"), i7 = vind(e.invarianten, "I7");
+    T.gelijk(i6.vraagVarianten.map(function (v) { return v.vraag; }), [REF.fb2["I6, geen kweek"], REF.fb2["I6, afwachten"]]);
+    T.gelijk(i7.vraagVarianten.map(function (v) { return v.vraag; }), [REF.fb2["I7, geen kalium"], REF.fb2["I7, niet gehalveerd"]]);
+    var P = g.Predicaten;
+    function idx(s, inv) { var ctx = P.maakContext(casus(), e, s); for (var k = 0; k < inv.vraagVarianten.length; k++) if (P.evalueer(inv.vraagVarianten[k].als, ctx)) return k; return null; }
+    T.is(idx(speelPlan(wijzig(A1, 0, ["G3", "V4", "O1"]), "AB"), i6), 0);
+    T.is(idx(speelPlan(wijzig(A1, 4, ["N3", "V1"]), "AB"), i6), 1);
+    T.is(idx(speelPlan(A1, "AB"), i6), null);
+    T.is(idx(speelPlan(wijzig(A1, 4, ["N3", "V2"]), "AB"), i6), 1, "V2 telt ook als afwachten");
+  });
+  reg("E3-route (Engine) zichtbaar-zin 'geen sick day-maatregelen' alleen als B geweest is en alle vier de maatregelen ontbreken", function (e) {
+    if (!eng()) return;
+    var basis = [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V8", V6A], [], ["N3"]];
+    var s = speelPlan(basis.map(function (d) { return d.filter(function (x) { return x !== "N3"; }); }), "AB");
+    T.waar(gedrag(e, s).zicht.indexOf(0) < 0 || s.gebeurtenissen.some(function (b) { return b.id === "B"; }), "alleen na B");
+    // B komt na de 7e kaart: speel 7 kaarten zonder een sick day-maatregel
+    var s2 = speelPlan([["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V8", V6A], []], "AB");
+    T.waar(s2.gebeurtenissen.some(function (b) { return b.id === "B"; }), "B opgetreden na 7 kaarten");
+    T.gelijk(gedrag(e, s2).zicht, [0]);
+    [["Ev1"], ["N3"], [V6L], ["B3:" + SP]].forEach(function (m) {
+      var s3 = speelPlan([["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V8", V6A], m], "AB");
+      T.is(gedrag(e, s3).zicht.indexOf(0) < 0, true, "één maatregel (" + m[0] + ") gespeeld = zin niet getoond");
+    });
+    T.gelijk(gedrag(speelPlan(A1, "AB") && e, speelPlan(A1, "AB")).zicht, []);
+  });
+  reg("E3-route (Engine) G3 vóór de eerste V-kaart (doelmatigheid 3) of daarna/niet (2)", function (e) {
+    if (!eng()) return;
+    T.is(gedrag(e, speelPlan(A1, "AB")).doel, 3);
+    T.is(gedrag(e, speelPlan(wijzig(A1, 0, ["O1", "V4", "G3"]), "AB")).doel, 2, "G3 na V4");
+    T.is(gedrag(e, speelPlan(wijzig(A1, 0, ["O1", "V4"]), "AB")).doel, 2, "zonder G3");
+    T.is(gedrag(e, speelPlan(wijzig(A1, 0, ["G3", "O1", "V6:V4:x"].slice(0, 2).concat(["V4"])), "AB")).doel, 3);
+    T.is(gedrag(e, speelPlan([["O1", "V4", "G3"], ["N1", "O2", "Ev2:" + SP], ["B1:V8", V6A], ["Ev1", "B3:" + SP, V6L], ["N3"]], "AB")).doel, 2, "V6 telt als V-kaart; G3 na V4");
+    // V6 (dosering) vóór G3 telt ook als keuze: V4, V6 (bij een gestart middel) dan G3
+    T.is(gedrag(e, speelPlan([["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V8", V6A], ["Ev1", "B3:" + SP, V6L], ["N3"]], "AB")).doel, 3);
+  });
+  reg("E3-route (Engine) kruiscontrole: 600 willekeurige en afgeleide spelen, data == eigen oracle (schendingen, score, profiel, extra vragen, zichtbaar-zinnen, vraagkeuze)", function (e) {
+    if (!eng()) return;
+    var POOL = ["G1", "G3", "O1", "O2", "V1", "V2", "V3", "V4", "V5", "V7", "V8", "V9", "V10", "N1", "N3", "Ev1", "Ev3", "V6:V5:halveren", V6A, "V6:V8:500/125 mg 2 dd", V6L,
+      "B1:V3", "B1:V4", "B1:V5", "B1:V7", "B1:V8", "B1:V9", "B1:V10", "B2:V4", "B2:V5", "B2:V7", "B2:V8", "B3:" + SP, "B3:calcium", "B5:" + SP, "B4:V7", "Ev2:" + SP];
+    var BASES = { AB: [A1, A2, A3], BA: [BA1] }, seed = 11;
+    function r() { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }
+    var tellers = {}, n = 0;
+    for (var i = 0; i < 600; i++) {
+      var order = r() < 0.5 ? "AB" : "BA", plan;
+      if (r() < 0.2) {
+        plan = []; var nd = 1 + Math.floor(r() * 7);
+        for (var d = 0; d < nd; d++) { var k = Math.floor(r() * 4), dag = []; for (var j = 0; j < k; j++) dag.push(POOL[Math.floor(r() * POOL.length)]); plan.push(dag); }
+      } else {
+        var lijst = BASES[order]; plan = JSON.parse(JSON.stringify(lijst[Math.floor(r() * lijst.length)]));
+        while (plan.length < 7) plan.push([]);
+        var m = Math.floor(r() * 4);
+        for (var q = 0; q < m; q++) {
+          var t = r(), dd = Math.floor(r() * 7);
+          if (t < 0.3) { if (plan[dd].length) plan[dd].splice(Math.floor(r() * plan[dd].length), 1); }
+          else if (t < 0.6) { if (plan[dd].length < 3) plan[dd].splice(Math.floor(r() * (plan[dd].length + 1)), 0, POOL[Math.floor(r() * POOL.length)]); }
+          else if (t < 0.8) { if (plan[dd].length) plan[dd][Math.floor(r() * plan[dd].length)] = POOL[Math.floor(r() * POOL.length)]; }
+          else { var d2 = Math.min(6, dd + 1); if (plan[dd].length && plan[d2].length < 3) plan[d2].push(plan[dd].pop()); }
+        }
+      }
+      var s = speelPlanVrij(plan, order), gd = gedrag(e, s), orc = oracle(s);
+      gd.ids.forEach(function (id) { tellers[id] = (tellers[id] || 0) + 1; });
+      var a = JSON.stringify(gd), b = JSON.stringify(orc, ["ids", "dur", "doel", "profiel", "extra", "zicht", "i6v", "i7v"]);
+      if (a !== b) { n++; if (n <= 3) throw new Error("verschil data/oracle (" + order + " " + JSON.stringify(plan) + "):\n data  " + a + "\n oracle " + b); }
+    }
+    ["I1", "I4", "I5", "I6", "I7", "I8", "I9", "I10", "I11", "I12", "I13", "I14", "I15", "I16"].forEach(function (id) { T.waar((tellers[id] || 0) >= 3, "te weinig dekking in het corpus voor " + id + ": " + (tellers[id] || 0)); });
+  });
+
   /* ---------- vastgepinde stand (mutatietest-dekking) ---------- */
   // Vastgelegd na handmatige controle en na de mutatieset van ronde 2: elke betekenisvolle wijziging van een predicaat, getal, id, toestand,
   // werkzaamheidslijst, score/profielregel, trigger, flag of TODO-tekst maakt minstens één test rood. De klinische teksten staan daarnaast
