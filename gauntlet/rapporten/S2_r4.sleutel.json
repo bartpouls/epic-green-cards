@@ -1,0 +1,114 @@
+[
+ {
+  "nr": 1,
+  "naam": "patiëntkaart regel 1",
+  "X": "bron",
+  "Y": "spel",
+  "identiek": true
+ },
+ {
+  "nr": 2,
+  "naam": "medicatieregel",
+  "X": "bron",
+  "Y": "spel",
+  "identiek": true
+ },
+ {
+  "nr": 3,
+  "naam": "labregel",
+  "X": "bron",
+  "Y": "spel",
+  "identiek": true
+ },
+ {
+  "nr": 4,
+  "naam": "risicogroepregel (spel: meta, niet zichtbaar voor student)",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "nr": 5,
+  "naam": "I1 vraag",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "nr": 6,
+  "naam": "I3 vraag",
+  "X": "bron",
+  "Y": "spel",
+  "identiek": true
+ },
+ {
+  "nr": 7,
+  "naam": "I4 vraag",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "nr": 8,
+  "naam": "O1 gespeeld vraag",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "nr": 9,
+  "naam": "reflectie terughoudend",
+  "X": "bron",
+  "Y": "spel",
+  "identiek": true
+ },
+ {
+  "nr": 10,
+  "naam": "reflectie direct",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "nr": 11,
+  "naam": "zichtbaar zonder N1",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "nr": 12,
+  "naam": "zichtbaar V1 zonder Ev1",
+  "X": "bron",
+  "Y": "spel",
+  "identiek": true
+ },
+ {
+  "nr": 13,
+  "naam": "statustekst af (casus E2 r190)",
+  "X": "bron",
+  "Y": "spel",
+  "identiek": true
+ },
+ {
+  "nr": 14,
+  "naam": "statustekst aan (casus E2 r189)",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "nr": 15,
+  "naam": "repertoire",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "nr": 16,
+  "naam": "bron I4",
+  "X": "bron",
+  "Y": "spel",
+  "identiek": true
+ }
+]

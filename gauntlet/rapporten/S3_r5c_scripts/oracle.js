@@ -3,7 +3,7 @@
 // vergelijkt met de data-evaluatie via echte Engine + Predicaten. Gebruik: node oracle.js <N> <seed> [root]
 const {load}=require('./load.js');
 const N=+process.argv[2]||20000, seed0=+process.argv[3]||5, root=process.argv[4]||'/home/user/epic-green-cards';
-const sb=load(root,{zonderTests:true});
+const sb=load(root,{zonderTests:!process.env.MET_TESTS,over:process.env.OVER?JSON.parse(process.env.OVER):undefined});
 const casus=sb.CASUSSEN[0]; const E=()=>casus.episodes.find(e=>e.id==='E2');
 let seed=seed0; const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
 const pick=a=>a[Math.floor(rnd()*a.length)];

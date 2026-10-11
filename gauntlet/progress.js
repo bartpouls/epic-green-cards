@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 21:58",
+ "updated": "2026-10-11 22:08",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -18,8 +18,8 @@ window.GAUNTLET = {
   {
    "name": "S2 data-e1",
    "round": 4,
-   "verdict": "PENDING",
-   "evidence": "r4 gebouwd (31 eigen tests, groep 2,7 s; 1103 mutaties 5 equivalent; risicogroep naar meta; TODO_BART-E1-1…7); criticus r4 bezig",
+   "verdict": "PASS",
+   "evidence": "r4 PASS, BLIND=ONS, 0 afwijkingen; 7 TODO_BART wachten op Bart",
    "artifact": ""
   },
   {
@@ -229,6 +229,12 @@ window.GAUNTLET = {
    "unit": "S7 engine",
    "verdict": "FAIL",
    "note": "engine-gedrag correct (36.000 spellen, 14.000 geïnjecteerde fouten atomair, 120.000 ontgrendel-controles 0 afwijkingen); M6-bronscan nog te omzeilen (15/21 trucs; hardgecodeerde middelnamen glippen erdoor) (F1); 8 gedragingen ongetest o.a. gebeurtenis op laatste dag blijft in wachtend (F2). BLIND=ONS → ronde 5 (laatste)"
+  },
+  {
+   "round": 4,
+   "unit": "S2 data-e1",
+   "verdict": "PASS",
+   "note": "geen letterlijke afwijking; 20.000 reeksen 0 afwijkingen (ook tegen regels/evaluatie.js 3.000 afrondingen); 1133 mutaties, 2 equivalent; BLIND=ONS (16/16 paren identiek)"
   }
  ],
  "open": [

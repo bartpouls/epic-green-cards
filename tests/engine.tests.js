@@ -1754,9 +1754,8 @@
     var u = g.Engine.rondAf(s); T.is(u.stub, true, "afronden mag; de beoordeling ziet de state met de wachtende gebeurtenis");
     T.gelijk(s.gebeurtenissen, [], "ook na afronden is de gebeurtenis niet gebeurd");
   });
-  test("laatste dag (echte regeltaal, echte E3-data): de wachtende gebeurtenis telt niet als gebeurd, dus gebeurtenisGeweest en inToestand zijn onwaar (de invarianten die na de gebeurtenis gelden, gelden dan niet)", function () {
-    T.waar(!!g.Predicaten && !!g.CASUSSEN && !!g.CASUSSEN[0], "echte regeltaal en data nodig");
-    var c = g.CASUSSEN[0], e3 = ep(c, "E3"), s = g.Engine.nieuwSpel(c, "E3", { rng: rngVast(0) });
+  echt("laatste dag (E3): de wachtende gebeurtenis telt niet als gebeurd, dus gebeurtenisGeweest en inToestand zijn onwaar (de invarianten die na de gebeurtenis gelden, gelden dan niet)", function (c) {
+    var e3 = ep(c, "E3"), s = g.Engine.nieuwSpel(c, "E3", { rng: rngVast(0) });
     ["G1", "G2", "N1"].forEach(function (k) { speel(s, k); });
     while (s.dag < s.aantalDagen) g.Engine.volgendeDag(s);
     T.is(s.dag, e3.knoppen.aantalDagen);
@@ -1795,8 +1794,8 @@
   });
   test("nieuwSpel en herkansing zonder opties-argument werken: eigen willekeur (Math.random), opt-in uit, geen fout", function () {
     var c = maakFixture(), s = g.Engine.nieuwSpel(c, "X1");
-    T.is(typeof s.rng, "function"); T.is(s.afrondenPasNaGebeurtenissen, false); T.is(s.dag, 1); T.is(s.volgordeAB.length, 2);
-    T.gelijk(s.volgordeAB.slice().sort(), ["P", "Q"]);
+    T.is(typeof s.rng, "function"); T.is(s.afrondenPasNaGebeurtenissen, false); T.is(s.dag, 1); T.is(s.groepen.PQ.length, 2);
+    T.gelijk(s.groepen.PQ.slice().sort(), ["P", "Q"]);
     var h = g.Engine.herkansing(s);
     T.is(h.episodeId, "X1"); T.is(h.afrondenPasNaGebeurtenissen, false); T.is(typeof h.rng, "function"); T.waar(h !== s, "nieuw object");
     var h2 = g.Engine.herkansing(g.Engine.nieuwSpel(c, "X1"), undefined); T.is(h2.dag, 1);
@@ -1821,7 +1820,7 @@
     T.gelijk(s.groepen.G3, ["W", "Q", "Z"], "derde groep (3 leden, 2 aanroepen): waarden 0 en 0.99");
     T.is(aanroepen, 4, "1 + 1 + 2 aanroepen");
     T.gelijk(s.volgordeAB, [], "geen groep AB: lege volgordeAB");
-    var s2 = g.Engine.nieuwSpel(maakFixture(), "X1", { rng: rngVast(0.99) }); T.gelijk(s2.volgordeAB, ["Q", "P"], "groep PQ met rng 0.99");
+    var s2 = g.Engine.nieuwSpel(maakFixture(), "X1", { rng: rngVast(0.99) }); T.gelijk(s2.groepen.PQ, ["Q", "P"], "groep PQ met rng 0.99");
   });
   test("state: _casus en _opties zijn niet-opsombare, overschrijfbare en verwijderbare eigenschappen met de juiste descriptor", function () {
     var c = maakFixture(), s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0), eigen: 1 });
@@ -1839,5 +1838,56 @@
     T.is(delete s._casus, true, "_casus is verwijderbaar (configurable)"); T.is(delete s._opties, true, "_opties is verwijderbaar");
     var d2 = Object.getOwnPropertyDescriptor(g.Engine, "_bron");
     T.is(d2.enumerable, false, "_bron enumerable"); T.is(typeof d2.value, "string");
+  });
+
+  /* ---------- M6 als GEDRAG: een volledig hernoemde kopie van de echte casus speelt identiek ---------- */
+  function heeft(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
+  function hernoem(x, kaart) {
+    if (typeof x === "string") return heeft(kaart, x) ? kaart[x] : x;
+    if (Array.isArray(x)) return x.map(function (y) { return hernoem(y, kaart); });
+    if (x && typeof x === "object") { var o = {}; Object.keys(x).forEach(function (k) { o[heeft(kaart, k) ? kaart[k] : k] = hernoem(x[k], kaart); }); return o; }
+    return x;
+  }
+  function lcg(zaad) { var z = zaad >>> 0; return function () { z = (Math.imul(z, 1664525) + 1013904223) >>> 0; return z / 4294967296; }; }
+  echt("M6 gedrag: een hernoemde kopie van de echte UWI-data (alle id's, toestanden, middelen en waar-sleutels andere namen) geeft in de engine exact dezelfde spellen, op de hernoeming na", function (c) {
+    var data = echteNamen(), kaart = {}, terug = {}, n = 0;
+    Object.keys(data.ids).concat(Object.keys(data.namen)).forEach(function (x) { if (!heeft(kaart, x)) { n++; kaart[x] = "zz" + n + "q"; terug[kaart[x]] = x; } });
+    T.waar(n > 40, "er worden veel namen hernoemd: " + n);
+    var c2 = hernoem(c, kaart), tekst2 = JSON.stringify(c2);
+    ["V5", "G2", "cystitis", "lisinopril", "weefselinvasie", "eGFR", "E3", "Ev1"].forEach(function (x) {
+      T.is(tekst2.indexOf('"' + x + '"'), -1, "de hernoemde casus bevat '" + x + "' niet meer als waarde of sleutel");
+    });
+    T.waar(c2.rollen && c2.rollen.wissel !== c.rollen.wissel, "ook de rollen (wissel/stop/pauzeer/hervat) zijn hernoemd");
+    var spellen = 0, stappen = 0, schendingenGeweigerd = 0, gebeurtenisSpellen = 0;
+    c.episodes.forEach(function (e1, ei) {
+      var e2 = c2.episodes[ei];
+      for (var spel = 0; spel < 70; spel++) {
+        var zaad = 1000 * (ei + 1) + spel, keuze = lcg(zaad * 7 + 3);
+        var s1 = g.Engine.nieuwSpel(c, e1.id, { rng: lcg(zaad) }), s2 = g.Engine.nieuwSpel(c2, e2.id, { rng: lcg(zaad) });
+        function gelijkNu(wat) {
+          T.is(JSON.stringify(hernoem(JSON.parse(JSON.stringify(s1)), kaart)), JSON.stringify(JSON.parse(JSON.stringify(s2))), "spel " + zaad + " " + e1.id + ": state na " + wat);
+        }
+        gelijkNu("start");
+        for (var stap = 0; stap < 70 && !g.Engine.eindeBereikt(s1); stap++) {
+          var w = keuze(), wat;
+          if (w < 0.18) { g.Engine.volgendeDag(s1); g.Engine.volgendeDag(s2); wat = "volgendeDag"; }
+          else if (w < 0.24) { var a = g.Engine.raadpleeg(s1), b = g.Engine.raadpleeg(s2); T.is(a.ok, b.ok); wat = "raadpleeg"; }
+          else {
+            var kid = e1.repertoire[Math.floor(keuze() * e1.repertoire.length)], k = c.kaarten.filter(function (x) { return x.id === kid; })[0], o = {};
+            var doelen = (k.doelen && k.doelen[e1.id]) || [];
+            if (doelen.length && keuze() < 0.9) o.doel = doelen[Math.floor(keuze() * doelen.length)].id;
+            if (k.opties && o.doel != null && k.opties[o.doel] && keuze() < 0.9) { var ol = k.opties[o.doel]; var op = ol[Math.floor(keuze() * ol.length)]; o.optie = typeof op === "string" ? op : op.tekst; }
+            var r1 = g.Engine.speelKaart(s1, kid, o), r2 = g.Engine.speelKaart(s2, kaart[kid], { doel: o.doel == null ? undefined : kaart[o.doel], optie: o.optie });
+            T.is(r1.ok, r2.ok, "spel " + zaad + ": zelfde oordeel over de zet " + kid + " " + JSON.stringify(o));
+            if (!r1.ok) { schendingenGeweigerd++; T.is(r1.fout, r2.fout, "dezelfde foutmelding"); }
+            wat = "kaart " + kid;
+          }
+          stappen++; gelijkNu(wat);
+        }
+        if (s1.gebeurtenissen.length) gebeurtenisSpellen++;
+        spellen++;
+      }
+    });
+    T.waar(stappen > 3000 && schendingenGeweigerd > 50 && gebeurtenisSpellen > 40, "de dekking is echt: " + spellen + " spellen, " + stappen + " stappen, " + schendingenGeweigerd + " geweigerde zetten, " + gebeurtenisSpellen + " spellen met gebeurtenissen");
   });
 })(typeof window !== "undefined" ? window : globalThis);
