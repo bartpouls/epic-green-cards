@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Epic green cards</title>
+<link rel="stylesheet" href="ui/stijl.css">
+</head>
+<body>
+<div id="app">
+  <noscript><p class="geenscript">Voor dit spel is JavaScript nodig. Zet JavaScript aan in je browser en laad de pagina opnieuw.</p></noscript>
+</div>
+
+<!-- Data, regels, motor, logging en weergave, in vaste volgorde. Klassieke scripts: dubbelklikken (file://) werkt. -->
+<script src="casussen/uwi.js"></script>
+<script>
+  // Staan de episodes nog in aparte bestanden, laad ze dan hier. Zijn ze samengevoegd in uwi.js, dan gebeurt er niets.
+  if (window.CASUSSEN && window.CASUSSEN[0] && (!window.CASUSSEN[0].episodes || !window.CASUSSEN[0].episodes.length)) {
+    ["uwi-e1.js", "uwi-e2.js", "uwi-e3.js"].forEach(function (b) {
+      document.write('<script src="casussen/' + b + '"><\/script>');
+    });
+  }
+</script>
+<script src="regels/predicaten.js"></script>
+<script src="regels/evaluatie.js"></script>
+<script src="engine/engine.js"></script>
+<script src="engine/logging.js"></script>
+<script src="ui/ui.js"></script>
+</body>
+</html>

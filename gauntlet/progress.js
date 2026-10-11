@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 22:31",
+ "updated": "2026-10-11 22:35",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -80,9 +80,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S11 referentie",
-   "round": 0,
+   "round": 1,
    "verdict": "PENDING",
-   "evidence": "nieuw stuk: casusreferentie (Geldige routes, Altijd fout, Volgorde, Score, Brug, Bronconflict) voor overzicht; ronde 1 bouwer bezig",
+   "evidence": "r1 gebouwd (40 eigen tests; 840 mutaties, 20 equivalent in vrije tekst; TODO_BART-R1…R5); criticus r1 bezig",
    "artifact": ""
   }
  ],
@@ -269,7 +269,8 @@ window.GAUNTLET = {
   "S9 geeft Logging.alle() gefilterd op pseudoniem mee aan Engine.ontgrendeld (API heeft bewust geen pseudoniem-parameter)",
   "Opruimen bij integratie: mini-evaluators in tests/data-e1/e2/e3.tests.js vervangen door Evaluatie (S6); tests/data-e2: C komt niet als O1 de 5e kaart is (TODO_BART-E2-6, literale lezing)",
   "TODO_BART-8: klachtenstatus na een werkzaam interlude — LEAD-keuze: geenVerbetering48 alleen in de eerste nul-periode (contract §3b)",
-  "TODO_BART-9: gebeurtenis die op de laatste dag triggert verschijnt nooit (blijft in state.wachtend); bijbehorende invarianten (I10/I11/I16/I15) gelden dan niet — LEAD-keuze, door Bart te bevestigen"
+  "TODO_BART-9: gebeurtenis die op de laatste dag triggert verschijnt nooit (blijft in state.wachtend); bijbehorende invarianten (I10/I11/I16/I15) gelden dan niet — LEAD-keuze, door Bart te bevestigen",
+  "LEAD-ingreep: in tests/data-kaarten.tests.js (S1, PASS) staat nu \"referentie\" in de toegestane casuskop-sleutels (mechanisch gevolg van S11); S1 wordt bij de eindcontrole nogmaals gedraaid"
  ],
  "belowBar": [
   "S5 predicaten:: 4 randgevallen niet door tests bewaakt (zet met >1 id; pauze over wissel; twee gelijktijdige pauzes; kaart vóór anker bij opDagRelatief van:0) — code zelf klopt; 6 kleine punten zonder casusgevolg (rapport S5_r5.md)",

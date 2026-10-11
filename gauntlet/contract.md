@@ -137,7 +137,7 @@ Beschrijvende casustekst die NIET in het spel zit maar die Bart in het overzicht
 - `brug`: string of null (E2: 'Brug: …'), `bronconflict`: string of null (E3: 'Bronconflict, geen poort: …')
 - `knoppen`: array bullets uit 'Knoppen' (letterlijk), `gebeurtenisUitleg`: array van extra bullets onder 'Gebeurtenis(sen)' die niet in `gebeurtenissen` zitten (bv. 'Wat de patiënt laat zien, hangt af van de keuze: …'), anders []
 - `volgordeVanSecties`: array met de kopnamen van de casus in volgorde (bv. ['Knoppen','Patiëntkaart','Repertoire','Geldige routes','Invarianten (poort)','Volgorde','Score','Wat er zichtbaar wordt als een kaart ontbreekt','Feedback']) zodat het overzicht dezelfde volgorde en namen gebruikt.
-Het overzicht (S8) leest dit; geen enkel ander onderdeel (engine/evaluatie/UI) gebruikt `referentie`.
+Extra sleutel (door S11 gebouwd, door LEAD aanvaard): `geldigeRoutesNoot` (de losse alinea onder de E1-routetabel) en elke episode heeft dezelfde elf sleutels (niet van toepassing = `null` of `[]`). Het overzicht (S8) leest dit; geen enkel ander onderdeel (engine/evaluatie/UI) gebruikt `referentie`.
 
 ## 5. Evaluatie (`regels/evaluatie.js`)
 `Evaluatie.beoordeel(casus, episodeId, state)` → 

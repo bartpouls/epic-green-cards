@@ -1809,6 +1809,16 @@
     T.gelijk(s.raadplegingen.map(function (x) { return x.dag; }), [1, 2, 2, 4]);
     T.is(s.tijdlijn.length, 0, "raadplegen staat niet op de tijdlijn");
   });
+  test("herkansing: de bewaarde opties (_opties) gaan voor op de huidige vlag in de state; alleen zonder _opties telt de vlag in de state", function () {
+    var c = maakFixture(), s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0), afrondenPasNaGebeurtenissen: true });
+    s.afrondenPasNaGebeurtenissen = false;                                         // de state-vlag wijkt af van wat de speler bij de start koos
+    T.is(g.Engine.herkansing(s).afrondenPasNaGebeurtenissen, true, "de bewaarde optie van het begin telt");
+    var uit = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0), afrondenPasNaGebeurtenissen: false });
+    uit.afrondenPasNaGebeurtenissen = true;
+    T.is(g.Engine.herkansing(uit).afrondenPasNaGebeurtenissen, false, "ook een bewaarde false telt");
+    delete s._opties; s.afrondenPasNaGebeurtenissen = true;
+    T.is(g.Engine.herkansing(s).afrondenPasNaGebeurtenissen, true, "zonder _opties: de vlag in de state");
+  });
   test("trekvolgorde bij twee groepen: de groepen worden getrokken in datavolgorde (eerste groep eerst) en elke groep gebruikt eigen rng-aanroepen (n - 1 per groep)", function () {
     var data = [ { id: "X", groep: "G1", trigger: { type: "naKaart", n: 1 }, tekst: "x" }, { id: "Y", groep: "G1", trigger: { type: "naKaart", n: 2 }, tekst: "y" },
       { id: "U", groep: "G2", trigger: { type: "naKaart", n: 3 }, tekst: "u" }, { id: "V", groep: "G2", trigger: { type: "naKaart", n: 4 }, tekst: "v" },
