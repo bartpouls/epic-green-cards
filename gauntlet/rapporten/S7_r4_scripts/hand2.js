@@ -1,0 +1,22 @@
+const {draai,orig}=require("./mut.js");
+function m(naam,van,naar){if(!orig.includes(van)){console.log("N/A",naam);return;}const r=draai(orig.replace(van,naar));console.log((r.length?"GEDOOD    ":"OVERLEEFD ")+naam+(r.length?"  <- "+r[0].slice(0,60):""));}
+m("N1 afronden-open: alleen blokkeren als geen enkele gebeurtenis geweest","return !state.gebeurtenissen.some(function (x) { return x.id === e.id; });","return !state.gebeurtenissen.length;");
+m("N2 nieuwSpel zonder opties","opties = opties || {};\n    var ep = zoekEpisode","var ep = zoekEpisode");
+m("N3 volgendeDag geeft state niet terug","      return state;\n    });","      return undefined;\n    });");
+m("N4 raadplegingen omgekeerd","state.raadplegingen.push({ dag: state.dag });","state.raadplegingen.unshift({ dag: state.dag });");
+m("N5 foutmelding raadpleeg te weinig acties","Je hebt niet genoeg acties over om de richtlijn te raadplegen.","Te weinig acties.");
+m("N6 foutmelding onbekende kaart","\"Onbekende kaart: \" + kaartId + \".\"","\"Onbekende kaart.\"");
+m("N7 foutmelding casus niet gevonden","De casus bij dit spel is niet gevonden.","Casus onbekend.");
+m("N8 foutmelding episode niet gevonden","De episode bij dit spel is niet gevonden.","Episode onbekend.");
+m("N9 foutmelding Predicaten niet geladen","De regeltaal (Predicaten) is niet geladen.","Predicaten ontbreekt.");
+m("N10 foutmelding Evaluatie niet geladen","De beoordeling (Evaluatie) is niet geladen.","Evaluatie ontbreekt.");
+m("N11 foutmelding knoppen","De episode mist de knoppen (actiesPerBeurt, aantalDagen) in de data.","Knoppen ontbreken.");
+m("N12 foutmelding geen doel","Dit doel kan niet bij de kaart","Doel mag niet bij de kaart");
+m("N13 foutmelding geen opties voor doel","geen opties beschikbaar.","geen opties.");
+m("N14 foutmelding geen enkel doel","kan in deze episode op geen enkel doel worden gespeeld.","kan niet.");
+m("N15 afgerond volgendeDag-fout","if (state.afgerond) throw new Error(\"Deze episode is al afgerond.\");\n    if (state.dagenVoorbij)","if (state.afgerond) throw new Error(\"Afgerond.\");\n    if (state.dagenVoorbij)");
+m("N16 rondAf vroeg-afronden foutmelding","Je kunt deze episode pas afronden nadat de gebeurtenissen zich hebben voorgedaan.","Nog niet.");
+m("N17 doel niet beschikbaar (vereist) melding","Dit doel is nu niet beschikbaar voor de kaart","Niet nu voor");
+m("N18 geen repertoire melding","Deze kaart zit niet in het repertoire van deze episode.","Niet in repertoire.");
+m("N19 geen acties melding","Je hebt vandaag geen acties meer. Ga naar de volgende dag of rond de episode af.","Geen acties.");
+m("N20 optie hoort niet bij doel","Deze optie hoort niet bij dit doel.","Optie fout.");

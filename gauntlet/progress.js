@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 21:48",
+ "updated": "2026-10-11 21:51",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -53,8 +53,8 @@ window.GAUNTLET = {
   {
    "name": "S7 engine",
    "round": 4,
-   "verdict": "PENDING",
-   "evidence": "r4 gebouwd (129 eigen tests; suite 505 groen Node+Chromium; atomair, herkansing, M6-scan met 35 evasieprobes); criticus r4 bezig",
+   "verdict": "FAIL",
+   "evidence": "r4 FAIL, 2 punten, BLIND=ONS; ronde 5 (laatste) bouwer bezig",
    "artifact": ""
   },
   {
@@ -223,6 +223,12 @@ window.GAUNTLET = {
    "unit": "S5 predicaten",
    "verdict": "FAIL",
    "note": "code correct (5,2 mln evaluaties op echte Engine, 0 fouten; referentie-interpreter 0 verschillen; 188 beweringen waar; BLIND=ONS); 4 testgaten (zet met >1 id, pauze over wissel, twee gelijktijdige pauzes, K vóór anker) → maximum 5 rondes bereikt, gestopt"
+  },
+  {
+   "round": 4,
+   "unit": "S7 engine",
+   "verdict": "FAIL",
+   "note": "engine-gedrag correct (36.000 spellen, 14.000 geïnjecteerde fouten atomair, 120.000 ontgrendel-controles 0 afwijkingen); M6-bronscan nog te omzeilen (15/21 trucs; hardgecodeerde middelnamen glippen erdoor) (F1); 8 gedragingen ongetest o.a. gebeurtenis op laatste dag blijft in wachtend (F2). BLIND=ONS → ronde 5 (laatste)"
   }
  ],
  "open": [
@@ -237,7 +243,8 @@ window.GAUNTLET = {
   "N2 (Gebruik en verwachting uitleggen) kan niet op V2/V1; route 'V2 (+ middel)' speelbaar alleen met extra V3/V4/V5 (hangt aan TODO_BART-5) — Bart",
   "S9 geeft Logging.alle() gefilterd op pseudoniem mee aan Engine.ontgrendeld (API heeft bewust geen pseudoniem-parameter)",
   "Opruimen bij integratie: mini-evaluators in tests/data-e1/e2/e3.tests.js vervangen door Evaluatie (S6); tests/data-e2: C komt niet als O1 de 5e kaart is (TODO_BART-E2-6, literale lezing)",
-  "TODO_BART-8: klachtenstatus na een werkzaam interlude — LEAD-keuze: geenVerbetering48 alleen in de eerste nul-periode (contract §3b)"
+  "TODO_BART-8: klachtenstatus na een werkzaam interlude — LEAD-keuze: geenVerbetering48 alleen in de eerste nul-periode (contract §3b)",
+  "TODO_BART-9: gebeurtenis die op de laatste dag triggert verschijnt nooit (blijft in state.wachtend); bijbehorende invarianten (I10/I11/I16/I15) gelden dan niet — LEAD-keuze, door Bart te bevestigen"
  ],
  "belowBar": [
   "S5 predicaten:: 4 randgevallen niet door tests bewaakt (zet met >1 id; pauze over wissel; twee gelijktijdige pauzes; kaart vóór anker bij opDagRelatief van:0) — code zelf klopt; 6 kleine punten zonder casusgevolg (rapport S5_r5.md)"
