@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:04",
+ "updated": "2026-10-11 20:06",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -26,7 +26,7 @@ window.GAUNTLET = {
    "name": "S3 data-e2",
    "round": 1,
    "verdict": "PENDING",
-   "evidence": "ronde 1: bouwer bezig",
+   "evidence": "r1 gebouwd (42 eigen tests groen; 14 TODO_BART-E2); criticus bezig",
    "artifact": ""
   },
   {

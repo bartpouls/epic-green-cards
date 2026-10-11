@@ -113,6 +113,10 @@ Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat
 
 - `episode.patient.zichtbaar.kop` = de patiëntkop letterlijk uit de casus (bv. "Mevrouw V., 72 jaar."), voor ALLE episodes; UI/overzicht tonen `kop`, stellen niets samen. Sleutels `TODO_BART` binnen data-objecten (bv. `statusTeksten.TODO_BART`) zijn geen data: iteraties in UI/overzicht/engine slaan sleutels die met `TODO_BART` beginnen over en tonen ze apart onder open vragen.
 
+- Triggers (canoniek): `{type:"naKaart", n, alleenAlsGespeeld?: "O1"}` (na de n-de gespeelde kaart) en `{type:"naKaartVanKaart", kaart:"O1", n:3}` (n kaarten nadat die kaart gespeeld is). De bouwers van S3/S4 en S7 volgen dit.
+- `invariant.vraagVarianten: [ { als: <predicaat>, vraag } ]` (eerste match wint, anders `vraag`) voor invarianten met meerdere casusvragen (bv. I6 geen kweek / afwachten; I7 geen kalium / niet gehalveerd). Evaluatie kiest één vraag.
+- `statusTeksten.geenVerbetering48` mag `null` zijn als de casus geen status-tekst geeft; UI toont dan niets.
+
 ## 5. Evaluatie (`regels/evaluatie.js`)
 `Evaluatie.beoordeel(casus, episodeId, state)` → 
 ```

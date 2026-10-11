@@ -16,9 +16,9 @@ window.CASUSSEN[0].episodes.push({
   antibiotica: ["V3", "V4", "V5", "V7", "V8", "V9", "V10"],
   patient: {
     zichtbaar: {
+      kop: "Mevrouw V., 79 jaar (1 jaar na episode 2).",
       naam: "Mevrouw V.",
       leeftijd: 79,
-      tijdSindsVorige: "1 jaar na episode 2",
       klachten: "Cystitis, geen koorts.",
       medicatie: ["lisinopril", "spironolacton", "calcium/colecalciferol"],
       lab: { eGFR: 28, datum: "recent" },
