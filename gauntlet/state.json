@@ -6,7 +6,7 @@
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 22:12",
+ "updated": "2026-10-11 22:15",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -61,7 +61,7 @@
    "name": "S8 overzicht",
    "round": 1,
    "verdict": "PENDING",
-   "evidence": "ronde 1: bouwer bezig",
+   "evidence": "r1 gebouwd (check-overzicht 15 groen; 26 kaarten, 23 invarianten, 56 open vragen, 214 tekstvelden letterlijk); criticus r1 bezig",
    "artifact": ""
   },
   {
