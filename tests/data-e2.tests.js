@@ -782,6 +782,68 @@
     T.gelijk(triggers(route([dag1(["V4"]), [["N1"], ["O2"]]]), e).zichtbaar, [], "geen V5");
     T.gelijk(triggers(route([[["O1"], ["V3"], ["N1"]], [["B1", "V5"]]]), e).zichtbaar, [NF, KA], "beide");
   });
+  reg("E2-route (I7, opnieuw starten): trimethoprim na stoppen opnieuw voorschrijven: O2 en V6 ten opzichte van de EERSTE start tellen (TODO_BART-E2-17: strengste lezing is eerste start)", function (e) {
+    vereisEngine();
+    var st = route([dag1(["V5"]), [["O2"], ["N1"]], [["B2", "V5"]], [["V6", "V5", "halveren"]], [["V5"]], [["B2", "V5"]]]);
+    T.gelijk(schending(st, e).ids, [], "O2 en V6 zijn op tijd na de eerste start gespeeld");
+  });
+  reg("E2-knoppen (Engine + E2-data): maximaal 3 acties per beurt en alleen kaarten uit het repertoire van E2", function (e) {
+    vereisEngine();
+    var st = g.Engine.nieuwSpel(casus(), "E2", { rng: function () { return 0; } });
+    ["G2", "O1", "V4"].forEach(function (k) { T.waar(g.Engine.speelKaart(st, k).ok, k); });
+    var vierde = g.Engine.speelKaart(st, "N1", {});
+    T.is(vierde.ok, false); T.waar(typeof vierde.fout === "string" && vierde.fout.length > 0, "Nederlandse foutmelding bij de 4e actie");
+    T.is(st.tijdlijn.length, 3, "de 4e kaart staat niet in de tijdlijn");
+    g.Engine.volgendeDag(st);
+    var buiten = g.Engine.speelKaart(st, "V7", {});
+    T.is(buiten.ok, false); T.waar(e.repertoire.indexOf("V7") < 0, "V7 hoort niet bij E2");
+    T.is(st.tijdlijn.length, 3, "V7 staat niet in de tijdlijn");
+  });
+  reg("S-TODO: id, plek en slot van de E2-TODO's zijn vast (geen afgeknipte of verschoven verwijzing)", function (e) {
+    var verwacht = {
+      "TODO_BART-E2-18": "E2.invarianten[].ernst", "TODO_BART-E2-19": "E2.invarianten[].weglaatDownside", "TODO_BART-E2-1": "E2.invarianten.I1",
+      "TODO_BART-E2-2": "E2.invarianten.I7", "TODO_BART-E2-3": "E2.invarianten.I7.vraagVarianten", "TODO_BART-E2-4": "E2.invarianten.I6.vraagVarianten",
+      "TODO_BART-E2-5": "E2.invarianten.I8", "TODO_BART-E2-6": "E2.gebeurtenissen.C", "TODO_BART-E2-7": "E2.patient.verborgen[G2]", "TODO_BART-E2-8": "E2.profielen",
+      "TODO_BART-E2-9": "E2.statusTeksten", "TODO_BART-E2-10": "E2.profielen", "TODO_BART-E2-11": "E2.score", "TODO_BART-E2-12": "E2.feedbackExtra",
+      "TODO_BART-E2-15": "E2.invarianten.I6", "TODO_BART-E2-16": "E2.invarianten.I8", "TODO_BART-E2-17": "E2.invarianten.I7", "TODO_BART-E2-14": "E2.zichtbaarAlsOntbreekt"
+    };
+    var mijn = casus().todoBart.filter(function (t) { return /^TODO_BART-E2-/.test(t.id); });
+    T.gelijk(mijn.map(function (t) { return t.id; }).sort(), Object.keys(verwacht).sort());
+    mijn.forEach(function (t) {
+      T.is(t.plek, verwacht[t.id], t.id + " plek");
+      T.waar(/\.$/.test(t.gekozenLezing), t.id + ".gekozenLezing eindigt niet op een punt");
+      T.waar(/[.?]$/.test(t.vraag), t.id + ".vraag eindigt niet op een punt of vraagteken");
+    });
+    // De gekozen lezing van de statusteksten noemt het slotpunt, de kleine letter en het alternatief.
+    var st = mijn.filter(function (t) { return t.id === "TODO_BART-E2-9"; })[0];
+    T.waar(st.gekozenLezing.indexOf("'klachten nemen af.'") >= 0 && st.gekozenLezing.indexOf("'klachten houden aan.'") >= 0 && st.gekozenLezing.indexOf("Alternatief") >= 0 && st.gekozenLezing.indexOf("hoofdletter") >= 0, "gekozen lezing van de statusteksten");
+  });
+  reg("E2-Engine: V6 op trimethoprim vereist dat trimethoprim gestart is; na C staan resistent/gevoelig in state.sets", function (e) {
+    vereisEngine();
+    var st = g.Engine.nieuwSpel(casus(), "E2", { rng: function () { return 0; } });
+    var nee = g.Engine.speelKaart(st, "V6", { doel: "V5", optie: "halveren" });
+    T.is(nee.ok, false, "V6 op V5 vóór de start van V5"); T.is(st.tijdlijn.length, 0);
+    var anders = g.Engine.speelKaart(st, "V6", { doel: "V4", optie: "halveren" });
+    T.is(anders.ok, false, "V4 is geen doel van V6 in E2");
+    T.waar(g.Engine.speelKaart(st, "V6", { doel: "lisinopril", optie: "halveren" }).ok, "V6 op lisinopril mag (medicatie actief)");
+    var s2 = route([dag1(["V4"]), [["N1"], ["N2", "V4"]], [["Ev1"]]]);
+    T.gelijk(s2.sets.resistent.slice().sort(), ["V10", "V5"]);
+    T.gelijk(s2.sets.gevoelig.slice().sort(), ["V3", "V4", "V7", "V8"]);
+    var s0 = g.Engine.nieuwSpel(casus(), "E2", { rng: function () { return 0; } });
+    T.gelijk(s0.sets.resistent, []); T.gelijk(s0.sets.gevoelig, []);
+  });
+  reg("E2-route (I8, predicaat los): zonder kweekuitslag C is het I8-predicaat zelf onwaar, ook als trimethoprim blijft doorlopen (de geldtIn-poort is niet de enige bewaker)", function (e) {
+    vereisEngine();
+    var st = route([[["G2"], ["V5"], ["O2"]], [["N1"]], [], [], [], []]);
+    T.is(st.gebeurtenissen.length, 0, "geen O1: geen C");
+    var ctx = g.Predicaten.maakContext(casus(), e, st);
+    T.is(g.Predicaten.evalueer(vindInv(e, "I8").predicaat.args[0], ctx), false, "gebeurtenisGeweest C");
+    T.is(g.Predicaten.evalueer(vindInv(e, "I8").predicaat, ctx), false);
+    var met = route([dag1(["V5"]), [["O2"], ["N1"]], [["Ev1"]], [], [], []]);
+    var c2 = g.Predicaten.maakContext(casus(), e, met);
+    T.is(g.Predicaten.evalueer(vindInv(e, "I8").predicaat.args[0], c2), true);
+    T.is(g.Predicaten.evalueer(vindInv(e, "I8").predicaat, c2), true);
+  });
   reg("E2-route (vereisten): zonder Engine, Predicaten of bibliotheek faalt een route-test luid (nooit leeg groen)", function (e) {
     var bewaard = { E: g.Engine, P: g.Predicaten };
     try {

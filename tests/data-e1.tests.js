@@ -524,7 +524,7 @@
     { id: "TODO_BART-E1-1", pad: function (e) { return vindInv(e, "I1"); }, plek: "E1.invarianten.I1", kern: ["zonder N1","geen V1"],
       vraag: "De casus noemt als invariant I1 'Een route zonder N1'. Telt een episode zonder enige route (niets gespeeld) ook als 'een route zonder N1', en telt afronden zonder gekozen route (geen V1, V2, V3, V4 of V5), ook mét N1, als geschonden?",
       lezing: "Strengste lezing: elke afronding zonder N1 schendt I1, ook als er helemaal geen route is gekozen. Ook afronden mét N1 maar zonder route-kaart (geen V1 t/m V5) schendt I1; de casus noemt dit geval niet, maar zonder deze lezing haalt een lege route de poort zonder profiel of duurzaamheidsscore." },
-    { id: "TODO_BART-E1-2", pad: function (e) { return e.statusTeksten; }, plek: "E1.statusTeksten", kern: ["klachten nemen af","Na 48 uur geen verbetering."],
+    { id: "TODO_BART-E1-2", pad: function (e) { return e.statusTeksten; }, plek: "E1.statusTeksten", kern: ["klachten nemen af.", "geen tekst"],
       vraag: "In episode 1 kunnen de klachten af, aan of na 48 uur niet verbeterd zijn, maar de casus geeft bij episode 1 geen statusteksten. Welke tekst hoort bij welke klachtenstatus?",
       lezing: "Status af = 'klachten nemen af.', status aan = 'klachten houden aan.' (casusfragmenten uit episode 2, met slotpunt). Voor de status na 48 uur geen verbetering geeft de casus in episode 1 geen tekst: leeg (geen tekst); de casus geeft die zin alleen in episode 3. In episode 1 komen aan en na 48 uur niet verbeterd niet voor." },
     { id: "TODO_BART-E1-3", pad: function (e) { return e.profielen[1]; }, plek: "E1.profielen.Gedeelde regie", kern: ["Geen reflectievraag"],

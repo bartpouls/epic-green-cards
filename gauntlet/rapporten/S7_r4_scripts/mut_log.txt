@@ -5,3 +5,6 @@ gegenereerd: 483 gekozen: 400
 200 gedraaid, overleefd 16
 250 gedraaid, overleefd 17
 300 gedraaid, overleefd 20
+350 gedraaid, overleefd 26
+400 gedraaid, overleefd 28
+{ gedood: 372, overleefd: 28 }
