@@ -6,7 +6,7 @@
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 22:26",
+ "updated": "2026-10-11 22:30",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -25,8 +25,8 @@
   {
    "name": "S3 data-e2",
    "round": 5,
-   "verdict": "PENDING",
-   "evidence": "r5 (laatste) gebouwd (75 eigen tests; 750 semantische mutanten gedood; 16 equivalent); criticus r5 bezig",
+   "verdict": "PASS",
+   "evidence": "r5 PASS, BLIND=ONS, 0 afwijkingen; kleine observaties: TODO-teksten met jargon (A4/offset) en geval \"4e kaart op laatste dag\"",
    "artifact": ""
   },
   {
@@ -248,6 +248,12 @@
    "unit": "S8 overzicht",
    "verdict": "FAIL",
    "note": "data-trouw maar niet casus-trouw: casuskolom Altijd fout (E1/E2), scorezinnen, Geldige routes/Brug/Bronconflict ontbreken in data; sectievolgorde/namen wijken af; hardgecodeerde tekst; jargon; geen index/zoek bij 56 vragen. BLIND=BRON → ronde 2 + nieuw stuk S11 (casusreferentie)"
+  },
+  {
+   "round": 5,
+   "unit": "S3 data-e2",
+   "verdict": "PASS",
+   "note": "0 afwijkingen; 60.000 routes 0 afwijkingen (ook tegen Evaluatie 6.000); zonder engine/predicaten 33 tests rood; 559 nieuwe mutaties; BLIND=ONS (23/24 paren identiek, 1 = bewuste meta-verberging)"
   }
  ],
  "open": [
@@ -266,6 +272,7 @@
   "TODO_BART-9: gebeurtenis die op de laatste dag triggert verschijnt nooit (blijft in state.wachtend); bijbehorende invarianten (I10/I11/I16/I15) gelden dan niet — LEAD-keuze, door Bart te bevestigen"
  ],
  "belowBar": [
-  "S5 predicaten:: 4 randgevallen niet door tests bewaakt (zet met >1 id; pauze over wissel; twee gelijktijdige pauzes; kaart vóór anker bij opDagRelatief van:0) — code zelf klopt; 6 kleine punten zonder casusgevolg (rapport S5_r5.md)"
+  "S5 predicaten:: 4 randgevallen niet door tests bewaakt (zet met >1 id; pauze over wissel; twee gelijktijdige pauzes; kaart vóór anker bij opDagRelatief van:0) — code zelf klopt; 6 kleine punten zonder casusgevolg (rapport S5_r5.md)",
+  "S3 data-e2:: kleine restpunten (geen FAIL): enkele TODO-teksten bevatten nog jargon (A4, offset, in de data); TODO noemt het geval C-trigger op de laatste dag niet; medicatieTekst E2 zonder slotpunt (casus plaatst het na de verborgen ontwerpnotitie)"
  ]
 }

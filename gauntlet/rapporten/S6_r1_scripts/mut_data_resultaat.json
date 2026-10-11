@@ -1,0 +1,73 @@
+[
+ {
+  "idx": 0,
+  "desc": "E3 inv I14 predicaat: args[2] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4,
+   "evaluatie": 3
+  }
+ },
+ {
+  "idx": 1,
+  "desc": "E3 zichtbaar0: p nietGespeeld -> gespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 83,
+   "evaluatie": 13
+  }
+ },
+ {
+  "idx": 2,
+  "desc": "E1 duurzaamheid regel2: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 3,
+  "desc": "E3 zichtbaar1: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 37,
+   "evaluatie": 21
+  }
+ },
+ {
+  "idx": 4,
+  "desc": "E3 feedbackExtra0 wanneer gewisseld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 83,
+   "evaluatie": 13
+  }
+ },
+ {
+  "idx": 5,
+  "desc": "E2 feedbackExtra0: niet() verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 83,
+   "evaluatie": 13
+  }
+ },
+ {
+  "idx": 6,
+  "desc": "E2 inv I7 predicaat: middel V5 -> V4",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 7
+  }
+ },
+ {
+  "idx": 7,
+  "desc": "E3 inv I10 predicaat: offset 0 -> 1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 83,
+   "evaluatie": 13
+  }
+ }
+]
