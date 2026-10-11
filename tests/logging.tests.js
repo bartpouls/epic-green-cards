@@ -1,12 +1,15 @@
 // Tests voor engine/logging.js (stuk S10). Groep: 'logging'.
 (function (g) {
   var G = "logging";
+  // Elke test draait op een eigen nepopslag; de echte localStorage wordt nooit gelezen, geschreven of gewist.
+  // Na afloop wordt alleen de override teruggezet (dat wist niets).
+  function omhul(fn) {
+    var L = g.Logging;
+    L._zetOpslag(nepOpslag());
+    try { fn(L); } finally { L._zetOpslag(undefined); }
+  }
   function t(naam, fn) {
-    g.Test.registreer(G, naam, function () {
-      var L = g.Logging;
-      L._zetOpslag(null); L.wis();
-      try { fn(L); } finally { L._zetOpslag(undefined); L.wis(); }
-    });
+    g.Test.registreer(G, naam, function () { omhul(fn); });
   }
   function nepOpslag() {
     var d = {};
@@ -239,6 +242,99 @@
     g.Test.waar(/\.json$/.test(n.log.geklikt[1].naam), "tweede is geen .json");
     g.Test.is(n.log.blobs[0].delen[0].charCodeAt(0), 0xFEFF);
     g.Test.is(JSON.parse(n.log.blobs[1].delen[0]).length, 1);
+  });
+
+  // ---- F1: tests mogen de echte opslag niet wissen ----
+  function leesEcht(sleutel) {
+    try { return g.localStorage ? g.localStorage.getItem(sleutel) : "(geen)"; } catch (e) { return "(geen)"; }
+  }
+  g.Test.registreer(G, "testharnas wist de echte localStorage niet (echte of nep-global)", function () {
+    var L = g.Logging, S = L.SLEUTEL;
+    var eigenNep = null, oud = Object.getOwnPropertyDescriptor(g, "localStorage");
+    var heeftEcht = (leesEcht(S) !== "(geen)");
+    if (!heeftEcht) { // Node: plaats tijdelijk een nep-global localStorage
+      eigenNep = nepOpslag();
+      try { Object.defineProperty(g, "localStorage", { value: eigenNep, configurable: true, writable: true }); }
+      catch (e) { eigenNep = null; }
+    }
+    var zelfGezet = false, voor;
+    try {
+      if (leesEcht(S) === "(geen)") return; // geen opslag beschikbaar: niets te bewijzen
+      voor = g.localStorage.getItem(S);
+      if (voor === null) { g.localStorage.setItem(S, '[{"pseudoniem":"echt"}]'); zelfGezet = true; voor = g.localStorage.getItem(S); }
+      var raak = [];
+      omhul(function (Lx) {
+        Lx.bewaar(basis()); Lx.bewaar(basis()); Lx.wis(); Lx.bewaar(basis());
+        g.Test.is(Lx.alle().length, 1);
+      });
+      omhul(function (Lx) { Lx._zetOpslag(null); Lx.wis(); });
+      g.Test.is(g.localStorage.getItem(S), voor, "echte localStorage is veranderd of gewist door de tests");
+      g.Test.is(L.alle().length, JSON.parse(voor).length, "na afloop wijst Logging weer naar de echte opslag");
+    } finally {
+      try { if (zelfGezet) g.localStorage.removeItem(S); } catch (e) { /* niets */ }
+      if (eigenNep) { if (oud) Object.defineProperty(g, "localStorage", oud); else delete g.localStorage; }
+    }
+  });
+
+  t("harnas: elke test start met een lege nepopslag, ook na een eerdere test", function (L) {
+    g.Test.is(L.alle().length, 0);
+    L.bewaar(basis());
+  });
+  t("harnas: vorige test heeft niets achtergelaten", function (L) {
+    g.Test.is(L.alle().length, 0);
+  });
+
+  // ---- F2: kapotte records in de opslag ----
+  [["[null]", "null"], ["[1]", "getal"], ['["x"]', "tekst"], ["[[1,2]]", "array"], ['[null,{"pseudoniem":"abc","casusId":"uwi","episodeId":"E1","pogingnummer":1,"eerstePoging":true}]', "null naast geldig record"]]
+    .forEach(function (c) {
+      t("kapot record in opslag (" + c[1] + "): bewaar en exports crashen niet", function (L) {
+        var o = nepOpslag(); o.d[L.SLEUTEL] = c[0]; L._zetOpslag(o);
+        var geldig = c[0].indexOf("abc") >= 0 ? 1 : 0;
+        g.Test.is(L.alle().length, geldig);
+        var r = L.bewaar(basis());
+        g.Test.is(r.pogingnummer, geldig + 1);
+        g.Test.is(r.eerstePoging, geldig === 0);
+        g.Test.is(L.alle().length, geldig + 1);
+        g.Test.is(leesCSV(L.exportCSV()).length, geldig + 2);
+        g.Test.is(JSON.parse(L.exportJSON()).length, geldig + 1);
+      });
+    });
+
+  // ---- F3: pseudoniem normaliseren, leeg pseudoniem ----
+  t("eerste poging: ABC, abc en ' abc ' zijn één student", function (L) {
+    L.bewaar(basis({ pseudoniem: "ABC" }));
+    L.bewaar(basis({ pseudoniem: "abc" }));
+    L.bewaar(basis({ pseudoniem: " abc " }));
+    var a = L.alle();
+    g.Test.gelijk(a.map(function (p) { return p.eerstePoging; }), [true, false, false]);
+    g.Test.gelijk(a.map(function (p) { return p.pogingnummer; }), [1, 2, 3]);
+    g.Test.is(a[0].pseudoniem, "ABC", "oorspronkelijke schrijfwijze blijft bewaard");
+    g.Test.is(a[2].pseudoniem, "abc", "alleen getrimd");
+  });
+
+  t("eerste poging: Unicode-samenstelling (é als één teken of e + accent) is dezelfde student", function (L) {
+    L.bewaar(basis({ pseudoniem: "José" }));
+    L.bewaar(basis({ pseudoniem: "josé" }));
+    g.Test.gelijk(L.alle().map(function (p) { return p.eerstePoging; }), [true, false]);
+  });
+
+  t("eerste poging: casus en episode blijven verschillend, hoofdletters daarin niet", function (L) {
+    L.bewaar(basis({ pseudoniem: "ABC" }));
+    L.bewaar(basis({ pseudoniem: "abc", episodeId: "E2" }));
+    L.bewaar(basis({ pseudoniem: "abc", episodeId: "e1" }));
+    g.Test.gelijk(L.alle().map(function (p) { return p.eerstePoging; }), [true, true, false]);
+  });
+
+  t("leeg pseudoniem geeft een Nederlandse fout en bewaart niets", function (L) {
+    [undefined, null, "", "   "].forEach(function (leeg) {
+      var fout = null;
+      try { L.bewaar(basis({ pseudoniem: leeg })); } catch (e) { fout = e; }
+      g.Test.waar(fout && /pseudoniem/i.test(fout.message), "geen duidelijke fout voor " + JSON.stringify(leeg));
+    });
+    var fout2 = null;
+    try { L.bewaar({}); } catch (e) { fout2 = e; }
+    g.Test.waar(fout2 !== null, "bewaar({}) moet falen");
+    g.Test.is(L.alle().length, 0);
   });
 
   t("geen netwerk: bronbestand bevat geen fetch/XMLHttpRequest/sendBeacon/WebSocket", function (L) {

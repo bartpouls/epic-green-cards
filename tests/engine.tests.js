@@ -168,14 +168,10 @@
     var ids = s.gebeurtenissen.map(function (e) { return e.id + "@" + e.dag + "/" + e.naVolg; });
     T.waar(ids.indexOf("P@2/2") >= 0 || ids.indexOf("Q@2/2") >= 0, "groepsgebeurtenis op dag 2 na kaart 2: " + ids);
   });
-  test("A/B-achtige groep: rng bepaalt volgorde; eerste trigger activeert eerst-getrokken gebeurtenis", function () {
-    var s0 = nieuw(0); T.gelijk(s0.volgordeAB.length, 0, "volgordeAB is alleen voor groep AB");
-    T.gelijk(s0.groepen.PQ, ["P", "Q"]);
-    var s1 = nieuw(0.99); T.gelijk(s1.groepen.PQ, ["P", "Q"]);
-    var s2 = g.Engine.nieuwSpel(maakFixture(), "X1", { rng: (function () { var i = 0, w = [0.9, 0.0]; return function () { return w[i++ % 2]; }; })() });
-    T.gelijk(s2.groepen.PQ.length, 2);
-    function loop(s) { speel(s, "K1"); speel(s, "M1"); g.Engine.volgendeDag(s); speel(s, "K2"); speel(s, "M2"); g.Engine.volgendeDag(s); return s.gebeurtenissen.map(function (e) { return e.id; }); }
-    var a = loop(nieuw(0)); T.is(a.indexOf("P") >= 0 && a.indexOf("Q") >= 0, true, "beide gebeurd: " + a);
+  test("groep: rng bepaalt de getrokken volgorde (rng 0 = datavolgorde, hoge rng draait om)", function () {
+    T.gelijk(nieuw(0).groepen.PQ, ["P", "Q"]);
+    T.gelijk(nieuw(0.99).groepen.PQ, ["Q", "P"]);
+    T.gelijk(nieuw(0).volgordeAB, [], "volgordeAB alleen gevuld voor een groep AB");
   });
   test("groep: omgekeerde volgorde via rng geeft omgekeerde koppeling aan de triggers (n=2 en n=4)", function () {
     var casus = maakFixture(); casus.episodes[0].gebeurtenissen = casus.episodes[0].gebeurtenissen.filter(function (e) { return e.groep; });
@@ -187,12 +183,10 @@
       return { eerste: eerste, orde: s.groepen.PQ.slice(), alle: s.gebeurtenissen.map(function (e) { return e.id + e.dag; }) };
     }
     var a = speelReeks(function () { return 0; }), b = speelReeks(function () { return 0; });
-    var rngKeer = (function () { var i = 0; return function () { return i++ === 0 ? 0.999 : 0; }; })();
     T.gelijk(a.orde, ["P", "Q"]); T.gelijk(a.eerste, ["P"]); T.gelijk(a.alle, ["P2", "Q3"]); T.gelijk(b.alle, a.alle, "deterministisch");
     // rng die [P,Q] omdraait: Fisher-Yates met n=2 kiest j = i + floor(rng*(2-i)); rng 0.6 -> j=1
     var c = speelReeks(function () { return 0.6; });
     T.gelijk(c.orde, ["Q", "P"]); T.gelijk(c.eerste, ["Q"]); T.gelijk(c.alle, ["Q2", "P3"]);
-    void rngKeer;
   });
   test("gebeurtenis: elke gebeurtenis maar één keer", function () {
     var s = nieuw(0); speel(s, "K1"); speel(s, "K2"); speel(s, "M1"); g.Engine.volgendeDag(s);
@@ -217,10 +211,14 @@
     T.is(zonder.gebeurtenissen.filter(function (e) { return e.id === "V"; }).length, 0);
   });
   test("gebeurtenis zet toestand en sets (resistent/gevoelig) uit de data", function () {
-    var s = g.Engine.nieuwSpel(maakFixture(), "X1", { rng: rngVast(0) });
+    var c = maakFixture(); c.episodes[0].gebeurtenissen = c.episodes[0].gebeurtenissen.filter(function (e) { return e.id === "P"; });
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
     speel(s, "K1"); speel(s, "M1"); g.Engine.volgendeDag(s);
     T.gelijk(s.toestanden, ["basis", "erger"]); T.gelijk(s.sets.resistent, ["M2"]);
-    speel(s, "M2"); g.Engine.volgendeDag(s);   // R (na K1 + 1 kaart = kaart 2) is al op dag 2 geweest
+    var c2 = maakFixture(); c2.episodes[0].gebeurtenissen = c2.episodes[0].gebeurtenissen.filter(function (e) { return e.id === "P" || e.id === "R"; });
+    var s2 = g.Engine.nieuwSpel(c2, "X1", { rng: rngVast(0) });
+    speel(s2, "K1"); speel(s2, "M1"); g.Engine.volgendeDag(s2);   // P (n=2) en R (K1 + 1 kaart) tegelijk: gevoelig haalt M2 uit resistent
+    T.gelijk(s2.sets.resistent, []); T.gelijk(s2.sets.gevoelig, ["M2"]);
   });
   test("raadplegen telt niet mee voor triggers op aantal kaarten", function () {
     var s = nieuw(0); g.Engine.raadpleeg(s); speel(s, "K1"); g.Engine.volgendeDag(s);

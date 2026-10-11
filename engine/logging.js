@@ -5,7 +5,12 @@
 //     geschonden: [ids], score, profiel, tijdstempel }
 // - pogingnummer en eerstePoging worden HIER bepaald (niet door de aanroeper): het pogingnummer is het aantal
 //   al bewaarde pogingen van dezelfde pseudoniem + casus + episode, plus 1. Alleen pogingnummer 1 is de
-//   "eerste poging".
+//   "eerste poging". Pseudoniem, casus en episode worden daarvoor genormaliseerd vergeleken (hoofdletters,
+//   spaties aan de rand en Unicode-samenstelling tellen niet): "ABC", "abc" en " abc " zijn één student. De
+//   oorspronkelijke schrijfwijze (alleen getrimd) blijft in de export staan. Een leeg pseudoniem geeft een
+//   Nederlandse foutmelding (de UI moet dus een pseudoniem afdwingen).
+// - Kapotte elementen in de opslag (bv. null of een getal) worden genegeerd.
+// - Let op Excel: een pseudoniem met voorloopnullen (007) wordt daar het getal 7; het JSON-bestand is leidend.
 // - Opslag: localStorage (sleutel "egc.logging.v1") in try/catch; bij ontbreken of fout val terug op geheugen.
 //
 // CSV-keuzes (gedocumenteerd):

@@ -101,6 +101,14 @@ Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat
 - `episode.open`/`TODO_BART`: elke twijfel als `{ id: "TODO_BART-n", vraag, gekozenLezing, plek }` in `casus.todoBart[]` en (bij kaart/regel) als `"TODO_BART": "<vraag>"` op de plek zelf.
 - `episode.raadplegen`: `{ titel, bronnen: ["NHG", ...] }` (verwijzing, geen richtlijntekst).
 
+### 4b. Vastgelegd na ronde 1 (LEAD)
+- Canoniek: `episode.startToestanden` (array, GEEN `startToestand`). Engine mag een enkele string niet raden.
+- `episode.patient.verborgen[i] = { kaart, onthult (tekst), sleutel?, waarde?, zichtbaar?: {patch} }`; zonder `waarde` wordt `patient.waar[sleutel]` onthuld.
+- `state.sets = { resistent: [...], gevoelig: [...] }` gevuld uit `gebeurtenis.zet` na de gebeurtenis; `Predicaten.actief({uitSet:"resistent"})` leest `ctx.sets`.
+- `state.klachten` is een array met index = dag. Werkzaamheid wordt bepaald met de toestand van de dag waarvoor de status geldt (na A dus weefselinvasie).
+- `Engine.volgendeDag` op de laatste dag zet `state.dagenVoorbij=true` (geen verdere beurt); `rondAf` mag daarna.
+- `afrondenPasNaGebeurtenissen` is een instelbare parameter op episode-niveau (standaard false), zie TODO_BART-4.
+
 ## 5. Evaluatie (`regels/evaluatie.js`)
 `Evaluatie.beoordeel(casus, episodeId, state)` → 
 ```

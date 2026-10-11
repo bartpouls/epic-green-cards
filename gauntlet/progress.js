@@ -54,7 +54,7 @@ window.GAUNTLET = {
    "name": "S7 engine",
    "round": 1,
    "verdict": "PENDING",
-   "evidence": "ronde 1: bouwer bezig",
+   "evidence": "r1 gebouwd (40 eigen tests groen op stubs); criticus bezig",
    "artifact": ""
   },
   {
