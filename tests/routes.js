@@ -168,6 +168,8 @@
   e2("E2-onnodig-gewisseld", "Fosfomycine werkt (klachten af), wissel naar trimethoprim en terug: duurzaamheid 2, extra vraag",
     ["G2", "O1", "V4", "|", "N1", "B1>V5", "|", "B1>V4", "O2", "|", "|", "V6>V5>halveren", "=7"],
     { geschonden: [], vraag: null, score: { duurzaamheid: 2, doelmatigheid: 3 }, extraVragen: [EXTRA.gewisseld], zichtbaar: [] });
+  e2("E2-grens-I8-wissel-op-tweede-beurt", "Trimethoprim, wissel naar fosfomycine op de laatste toegestane dag (de dag na de uitslag: binnen 2 beurten)",
+    ["G2", "O1", "V5", "|", "O2", "N1", "|", "|", "B1>V4", "V6>V5>halveren", "=7"], geldig("Bijgestuurd", null, 3, 3));
   e2("E2-G2-te-laat", "Fosfomycine, G2 pas na V4: doelmatigheid 2, extra vraag verouderde eGFR",
     ["O1", "V4", "N1", "|", "G2", "|", "=7"], geldig("Kweekgestuurd, smal", null, 3, 2, { extra: [EXTRA.eGFR] }));
   e2("E2-G2-nooit", "Fosfomycine zonder G2: doelmatigheid 2, extra vraag verouderde eGFR",
@@ -193,6 +195,10 @@
     ["G2", "O1", "V5", "|", "N1", "B1>V4", "|", "|", "V6>V5>halveren", "|", "O2", "=7"], fout(["I7"], VRAAG.I7kalium), "fout");
   e2("E2-fout-I8", "Na de kweekuitslag doorgaan met trimethoprim terwijl de klachten aanhouden",
     ["G2", "O1", "V5", "|", "O2", "N1", "|", "|", "V6>V5>halveren", "=7"], fout(["I8"], VRAAG.I8), "fout");
+  e2("E2-fout-I8-te-laat", "Trimethoprim, wissel pas twee dagen na de uitslag (buiten 2 beurten)",
+    ["G2", "O1", "V5", "|", "O2", "N1", "|", "|", "V6>V5>halveren", "|", "B1>V4", "=7"], fout(["I8"], VRAAG.I8), "fout");
+  e2("E2-fout-I7-I6", "Ernst: I7 (3) gaat voor I6 (4), hoewel I6 eerder in de data staat",
+    ["G2", "V5", "O1", "|", "N1", "B1>V4", "|", "|", "=7"], fout(["I7", "I6"], VRAAG.I7kalium, [ZICHT.V5]), "fout");
   e2("E2-fout-I5-I1", "Ernst: I5 (2) gaat voor I1 (5)", ["G2", "O1", "V3", "|", "|", "=7"], fout(["I5", "I1"], VRAAG.I5), "fout");
   e2("E2-fout-I6-I8", "Gelijke ernst 4: I6 en I8; eerste in de data (I6)",
     ["G2", "V5", "O1", "|", "O2", "N1", "|", "|", "V6>V5>halveren", "=7"], fout(["I6", "I8"], VRAAG.I6geenKweek), "fout");
@@ -222,6 +228,14 @@
         "|", "O1", "B1>V7", "B4>V7", "|", "Ev1", "B1>V8", V6_V8, "|", "Ev2>spironolacton", "=7"]
     },
     geldig("Kweekgestuurd", null, 3, 3, { extra: [EXTRA.cipro] }));
+  e3plannen("E3-grens-I14-B4-volgende-beurt", "Ciprofloxacine, B4 pas de dag na de start van ciprofloxacine (dezelfde of de volgende beurt)",
+    {
+      "A,B": ["G3", "O1", "V4", "|", "N1", "|", "O1", "B1>V7", "G1", "|", "Ev1", "B4>V7", "B3>spironolacton", "|", "V6>lisinopril>halveren", "N3", "O2",
+        "|", "Ev2>spironolacton", "=7"],
+      "B,A": ["G3", "O1", "V4", "|", "N1", "|", "B3>spironolacton", "V6>lisinopril>halveren", "|", "N3", "Ev1", "O2",
+        "|", "O1", "B1>V7", "G1", "|", "Ev1", "B4>V7", "Ev2>spironolacton", "=7"]
+    },
+    geldig("Richtlijn eerste keus", REFLECTIE.cipro, 2, 3, { extra: [EXTRA.cipro] }));
   e3("E3-verwijzen", "Weefselinvasie: fosfomycine stoppen, geen werkzaam antibioticum, na 48 uur geen verbetering: Ev3",
     [["B1>V8", "B2>V4"], [V6_V8, "G1"], { eind: ["Ev3"] }], geldig(null, null, null, 3));
 
@@ -251,7 +265,21 @@
   e3("E3-fout-I13-geen-V6", "Amoxicilline/clavulaanzuur zonder V6", [[V6_V8, "G1"]], fout(["I13"], VRAAG.I13), "fout");
   e3("E3-fout-I14", "Ciprofloxacine zonder B4 en zonder B3 op calcium (Ev3 sluit I16 uit)",
     [["B1>V8", "B1>V7"], [V6_V8, "G1"], { eind: ["Ev3"] }], fout(["I14"], VRAAG.I14, [ZICHT.cipro]), "fout");
+  e3plannen("E3-fout-I14-B4-te-laat", "Ciprofloxacine, B4 pas twee dagen na de start (buiten 'dezelfde of de volgende beurt'; Ev3 sluit I16 uit)",
+    {
+      "A,B": ["G3", "O1", "V4", "|", "N1", "|", "O1", "B1>V7", "G1", "|", "Ev1", "B3>spironolacton", "G1", "|", "V6>lisinopril>halveren", "N3", "B4>V7",
+        "|", "O2", "Ev2>spironolacton", "=7", "Ev3"],
+      "B,A": ["G3", "O1", "V4", "|", "N1", "|", "B3>spironolacton", "V6>lisinopril>halveren", "|", "N3", "Ev1", "O2",
+        "|", "O1", "B1>V7", "G1", "|", "Ev1", "Ev2>spironolacton", "|", "B4>V7", "Ev3"]
+    }, fout(["I14"], VRAAG.I14, [ZICHT.cipro]), "fout");
   e3("E3-fout-I15", "Sick day-set zonder drinkadvies (N3)", [["N3", "G1"]], fout(["I15"], VRAAG.I15), "fout");
+  e3plannen("E3-fout-I15-N3-te-laat", "Sick day-set: N3 pas twee dagen na B (buiten 'binnen 2 beurten'); A afgehandeld door te stoppen en later te verwijzen",
+    {
+      "A,B": ["G3", "O1", "V4", "|", "N1", "|", "O1", "B2>V4", "G1", "|", "Ev1", "B3>spironolacton", "V6>lisinopril>halveren", "|", "O2", "Ev2>spironolacton",
+        "|", "N3", "=7", "Ev3"],
+      "B,A": ["G3", "O1", "V4", "|", "N1", "|", "B3>spironolacton", "V6>lisinopril>halveren", "|", "Ev1", "O2", "G1",
+        "|", "O1", "B2>V4", "N3", "|", "Ev1", "Ev2>spironolacton", "=7", "Ev3"]
+    }, fout(["I15"], VRAAG.I15), "fout");
   e3("E3-fout-I16-geen-Ev1", "Geen Ev1 in de eerste 2 beurten na A",
     { "A,B": [["Ev1", "G1"], ["O2", "Ev1"]], "B,A": [["Ev1", "G1", 2]] }, fout(["I16"], VRAAG.I16), "fout");
   e3("E3-fout-I16-geen-verwijzing", "Na 48 uur geen verbetering en geen Ev3",
@@ -259,6 +287,10 @@
 
   /* ---- combinaties: alleen de vraag van de laagste ernst-waarde; gelijke ernst: eerste in de data ---- */
   e3("E3-fout-I12-I1", "Ernst 1 (I12) gaat voor ernst 5 (I1), hoewel I12 later in de data staat", [["V4", "V9"], ["N1", "G1"]], fout(["I12", "I1"], VRAAG.I12), "fout");
+  e3("E3-fout-I12-I5", "Ernst 1 (I12) gaat voor ernst 2 (I5)", [["V4", "V3"], ["B1>V8", "B1>V9"], [V6_V8, "G1"]], fout(["I12", "I5"], VRAAG.I12), "fout");
+  e3("E3-fout-I13-I11", "Ernst 3 (I13) gaat voor ernst 4 (I11), hoewel I11 eerder in de data staat", [["O1", "G1", 2], [V6_V8, "G1"]], fout(["I13", "I11"], VRAAG.I13), "fout");
+  e3("E3-fout-I8-I1", "Ernst 4 (I8) gaat voor ernst 5 (I1), hoewel I1 eerder in de data staat",
+    [["V4", "V10"], ["B1>V8", "G1"], [V6_V8, "G1"], ["N1", "G1"], { eind: ["Ev3"] }], fout(["I8", "I1"], VRAAG.I8), "fout");
   e3("E3-fout-I15-I9", "Ernst 2 (I15) gaat voor ernst 3 (I9), hoewel I9 eerder in de data staat",
     [["N3", "G1"], ["O2", "G1"], ["Ev2>spironolacton", "G1"]], fout(["I15", "I9"], VRAAG.I15, [ZICHT.I9]), "fout");
   e3("E3-fout-I9-I13", "Gelijke ernst 3: I9 en I13; I9 staat eerder in de data (niet op id-volgorde)",

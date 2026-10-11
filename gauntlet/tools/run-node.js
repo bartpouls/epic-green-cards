@@ -9,7 +9,7 @@ const bestanden = [
   "regels/predicaten.js", "regels/evaluatie.js", "engine/engine.js", "engine/logging.js",
   "tests/testlib.js",
   "tests/data-kaarten.tests.js", "tests/data-e1.tests.js", "tests/data-e2.tests.js", "tests/data-e3.tests.js",
-  "tests/predicaten.tests.js", "tests/evaluatie.tests.js", "tests/engine.tests.js", "tests/logging.tests.js", "tests/ui.tests.js"
+  "tests/predicaten.tests.js", "tests/routes.js", "tests/evaluatie.tests.js", "tests/engine.tests.js", "tests/logging.tests.js", "tests/ui.tests.js"
 ];
 const geladen = [], overgeslagen = [];
 for (const f of bestanden) {
