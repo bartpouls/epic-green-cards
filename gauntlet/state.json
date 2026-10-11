@@ -6,7 +6,7 @@
  "status": "running",
  "round": 2,
  "maxRounds": 5,
- "updated": "2026-10-11 19:56",
+ "updated": "2026-10-11 19:57",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -18,8 +18,8 @@
   {
    "name": "S2 data-e1",
    "round": 1,
-   "verdict": "PENDING",
-   "evidence": "ronde 1: bouwer bezig",
+   "verdict": "FAIL",
+   "evidence": "r1 FAIL, 4 punten, BLIND=BRON; ronde 2 bouwer bezig",
    "artifact": ""
   },
   {
@@ -85,6 +85,12 @@
    "unit": "S10 logging",
    "verdict": "FAIL",
    "note": "tests wissen echte localStorage (F1); null-record crasht (F2); eerste-poging hoofdlettergevoelig/leeg pseudoniem (F3) → ronde 2"
+  },
+  {
+   "round": 1,
+   "unit": "S2 data-e1",
+   "verdict": "FAIL",
+   "note": "alleen N1 haalt poort (geen route-regel/TODO); V1+V2 inconsistente lezing; mutaties niet gevangen door tests; eigen bronkeuze raadplegen zonder TODO. BLIND=BRON (12/13 paren) → ronde 2"
   }
  ],
  "open": [
