@@ -838,6 +838,7 @@
     T.is(st.gebeurtenissen.length, 0, "geen O1: geen C");
     var ctx = g.Predicaten.maakContext(casus(), e, st);
     T.is(g.Predicaten.evalueer(vindInv(e, "I8").predicaat.args[0], ctx), false, "gebeurtenisGeweest C");
+    T.is(g.Predicaten.evalueer(vindInv(e, "I8").predicaat.args[1], ctx), false, "zonder C is er geen resistent middel en dus geen actief resistent middel");
     T.is(g.Predicaten.evalueer(vindInv(e, "I8").predicaat, ctx), false);
     var met = route([dag1(["V5"]), [["O2"], ["N1"]], [["Ev1"]], [], [], []]);
     var c2 = g.Predicaten.maakContext(casus(), e, met);

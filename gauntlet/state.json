@@ -6,7 +6,7 @@
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 21:51",
+ "updated": "2026-10-11 21:57",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -24,9 +24,9 @@
   },
   {
    "name": "S3 data-e2",
-   "round": 4,
-   "verdict": "FAIL",
-   "evidence": "r4 FAIL, 2 punten, BLIND=BRON; ronde 5 (laatste) bouwer bezig",
+   "round": 5,
+   "verdict": "PENDING",
+   "evidence": "r5 (laatste) gebouwd (75 eigen tests; 750 semantische mutanten gedood; 16 equivalent); criticus r5 bezig",
    "artifact": ""
   },
   {

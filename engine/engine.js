@@ -9,6 +9,16 @@
  *  - Volgorde van een groep (bv. "AB"): Fisher-Yates met opties.rng; rng() = 0 geeft de datavolgorde, rng() ~ 1 draait om.
  *  - Pogingnummer en "eerste poging" worden NIET door de engine bepaald (dat doet Logging, per pseudoniem); de state bevat ze niet.
  *  - Op de laatste dag zet Engine.volgendeDag state.dagenVoorbij = true (dag blijft aantalDagen); Engine.eindeBereikt is dan waar.
+ *  - LEAD-BESLISSING (gebeurtenis op de laatste dag; open vraag voor Bart, TODO_BART-9 op het dashboard, "Verzoek aan LEAD"):
+ *    triggert een kaart die op de LAATSTE dag wordt gespeeld een gebeurtenis, dan verschijnt die gebeurtenis NIET: er komt immers geen
+ *    volgende dag meer waarop de banner kan verschijnen. De gebeurtenis blijft in state.wachtend staan en komt nooit in
+ *    state.gebeurtenissen; toestanden, sets en klachten veranderen niet (klachten krijgt geen extra dag). Gevolg: de invarianten die
+ *    alleen gelden na die gebeurtenis (geldtIn: { gebeurtenis: ... }) gelden dan niet, en de speler kan een gebeurtenis ontlopen door de
+ *    kaart die haar triggert tot de laatste dag uit te stellen (naast het vroeg afronden, TODO_BART-4). Vastgelegd in tests/engine.tests.js
+ *    (test "laatste dag: ..."). Wijzigt Bart dit (bv. de gebeurtenis alsnog tonen), dan is dat een bewuste wijziging van die test.
+ *  - Bronscan (M6): tests/engine.tests.js scant Engine._bron op een ALLOWLIST (alleen vaste teksten, geen regex/sjabloon/getallen buiten 0 en 1,
+ *    geen dynamische code, geen woorden uit de casusdata). Nieuwe tekst of een nieuwe eigenschapsnaam in deze module vraagt dus ook een
+ *    bewuste regel in die allowlist.
  *  - ATOMAIR: elke muterende functie (speelKaart, raadpleeg, volgendeDag, rondAf) werkt via atomisch(): gaat er iets mis
  *    (kapotte data, kapot predicaat, gooiende Evaluatie), dan is de state daarna precies zoals hij was (momentopname + herstel).
  *  - Engine._bron is de volledige broncode van deze module (voor de casuslogica-scan in de tests).
