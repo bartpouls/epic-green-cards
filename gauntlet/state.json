@@ -6,7 +6,7 @@
  "status": "running",
  "round": 4,
  "maxRounds": 5,
- "updated": "2026-10-11 21:11",
+ "updated": "2026-10-11 21:21",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -24,9 +24,9 @@
   },
   {
    "name": "S3 data-e2",
-   "round": 3,
-   "verdict": "FAIL",
-   "evidence": "r3 FAIL, 2 punten (alleen tests), BLIND=ONS; ronde 4 bouwer bezig",
+   "round": 4,
+   "verdict": "PENDING",
+   "evidence": "r4 gebouwd (60 eigen tests; 5 nieuwe B1-route-tests; 210 mutaties); criticus r4 bezig",
    "artifact": ""
   },
   {

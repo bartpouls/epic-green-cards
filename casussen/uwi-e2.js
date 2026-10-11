@@ -17,8 +17,8 @@ window.CASUSSEN[0].episodes.push({
       medicatie: ["lisinopril", "calcium/colecalciferol"],
       medicatieTekst: "lisinopril; calcium/colecalciferol",
       lab: { eGFR: 42, datum: "van 6 jaar geleden" },
-      labTekst: "laatst bekende eGFR 42, van 6 jaar geleden",
-      eerdereUWI: "episode 1, toen geen kweek gedaan"
+      labTekst: "laatst bekende eGFR 42, van 6 jaar geleden.",
+      eerdereUWI: "episode 1, toen geen kweek gedaan."
     },
     waar: { eGFR: 29, risicogroep: true },
     medicatie: [
@@ -31,10 +31,10 @@ window.CASUSSEN[0].episodes.push({
         kaart: "G2",
         sleutel: "eGFR",
         waarde: 29,
-        onthult: "eGFR 29 uit de jaarlijkse controle",
+        onthult: "eGFR 29 uit de jaarlijkse controle.",
         zichtbaar: {
           lab: { datum: "uit de jaarlijkse controle" },
-          labTekst: "eGFR 29 uit de jaarlijkse controle"
+          labTekst: "eGFR 29 uit de jaarlijkse controle."
         },
         meta: { toelichting: "Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG]." },
         TODO_BART: "Moet de zin 'Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG].' bij het onthullen van G2 aan de speler getoond worden (botst met 'feedback zegt niet voor')?"
@@ -84,7 +84,7 @@ window.CASUSSEN[0].episodes.push({
       predicaat: { p: "aantalActieveAntibiotica", op: ">", n: 1 },
       vraag: "Wat lost het tweede middel op dat het eerste niet oplost?",
       bron: "[G]",
-      TODO_BART: "De ernst-volgorde van de invarianten is een voorstel van Claude (bouwopdracht 6.1) en niet door Bart bevestigd."
+      TODO_BART: "De ernst-volgorde van de invarianten (1 = ernstigst) is een voorstel van Claude en niet door Bart bevestigd: I5 = 2, I7 = 3, I6 en I8 = 4, I1 en I4 = 5. Klopt die volgorde?"
     },
     {
       id: "I5",
@@ -234,7 +234,7 @@ window.CASUSSEN[0].episodes.push({
         }
       ],
       bron: "NHG, KNMP",
-      TODO_BART: "Lezing van 'O2 (dag 2–4)' en 'V6 (na dag 3)' (I7, episode 2): de casus zegt niet 'na V5'. Lezing A (gekozen): cursusdag = verschil in dagen t.o.v. de dag van V5 plus 1, dus O2 op verschil 1 t/m 3 (V5 op dag 1: O2 op dag 2–4) en V6-halveren op verschil vanaf 3 (dag 4 of later). Lezing B (bouwopdracht 6.1, opDagRelatief(O2,V5,2,4)): O2 op verschil 2 t/m 4 (V5 op dag 1: O2 op dag 3–5). Bij lezing B faalt de casusroute 'V5 dag 1, O2 dag 2'. Welke lezing bedoel je?",
+      TODO_BART: "De casus zegt bij I7: 'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3', en in de geldige route 'V5 + O2 (dag 2–4) + V6 (na dag 3)'. Er staat niet 'na V5'. Lezing A (gekozen): dag 1 van de kuur is de dag waarop trimethoprim start; O2 is op tijd op dag 2 t/m 4 van de kuur, dus op verschil 1 t/m 3 dagen na de startdag (V5 op dag 1: O2 op dag 2–4), en V6 halveren op dag 4 of later, dus op verschil vanaf 3. Lezing B: 'dag 2–4' is het verschil in dagen na de startdag, dus O2 op verschil 2 t/m 4 (V5 op dag 1: O2 op dag 3–5). Bij lezing B is de route 'V5 op dag 1, O2 op dag 2' te vroeg en dus fout. Welke lezing bedoel je?",
       TODO_BART_vroegeWissel: "I7 bij een middel dat al vóór dag 3 is vervangen (V5, dan B1 naar V4, O2 en V6 halveren op het al gestopte V5): de casus zegt 'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3'. Geldt I7 nog als trimethoprim niet 7 dagen loopt?"
     },
     {
@@ -252,7 +252,7 @@ window.CASUSSEN[0].episodes.push({
       vraag: "De kweek is binnen en de klachten blijven. Waar wacht je nog op?",
       bron: "NHG; hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten",
       TODO_BART: "I8 (episode 2): casus zegt 'hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten'. Hoeveel beurten na de kweekuitslag (C) mag het resistente middel nog doorlopen, en vanaf wanneer 'houden de klachten aan'?",
-      TODO_BART_vroegAfronden: "Vroeg afronden vóór de kweekuitslag (gebeurtenis C) ontloopt I8: de uitslag is dan nog niet gemeld, dus het resistente middel telt niet als doorgelopen. Moet afronden pas kunnen nadat C geweest is (parameter afrondenPasNaGebeurtenissen)?"
+      TODO_BART_vroegAfronden: "Vroeg afronden vóór de kweekuitslag (gebeurtenis C) ontloopt I8: de uitslag is dan nog niet gemeld, dus het resistente middel telt niet als doorgelopen. Moet afronden pas kunnen nadat C geweest is (instelling 'afronden pas na de gebeurtenissen')?"
     }
   ],
   score: {
@@ -425,19 +425,19 @@ window.CASUSSEN[0].episodes.push({
       tekst: "De kaliumspiegel is onbekend."
     }
   ],
-  brug: "de kweek uit deze episode is het verborgen gegeven in episode 3 (G3)."
+  meta: { brug: "de kweek uit deze episode is het verborgen gegeven in episode 3 (G3)." }
 });
 window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E2-18",
-    vraag: "De ernst-volgorde van de invarianten is een voorstel van Claude (bouwopdracht 6.1) en niet door Bart bevestigd.",
-    gekozenLezing: "Ernst overgenomen uit bouwopdracht 6.1: I5=2; I7=3; I6, I8=4; I1, I4=5. Instelbaar in de data.",
+    vraag: "De ernst-volgorde van de invarianten (1 = ernstigst) is een voorstel van Claude en niet door Bart bevestigd: I5 = 2, I7 = 3, I6 en I8 = 4, I1 en I4 = 5. Klopt die volgorde?",
+    gekozenLezing: "Ernst zoals in de vraag genoemd: I5 = 2; I7 = 3; I6 en I8 = 4; I1 en I4 = 5. Instelbaar in de data. Bij gelijke ernst verschijnt de vraag die in de data het eerst staat.",
     plek: "E2.invarianten[].ernst"
   },
   {
     id: "TODO_BART-E2-19",
     vraag: "Terugkoppeling van weggelaten kaarten: de casus noemt niet welke weggelaten kaart welke downside toont.",
-    gekozenLezing: "Geen `weglaatDownside` in episode 2 (zelfde lezing als episode 3); de teksten bij ontbrekende kaarten staan in zichtbaarAlsOntbreekt.",
+    gekozenLezing: "Geen terugkoppeling voor weggelaten kaarten in episode 2 (zelfde lezing als episode 3); wat de speler ziet bij een ontbrekende kaart staat in de zinnen onder 'Wat er zichtbaar wordt als een kaart ontbreekt'.",
     plek: "E2.invarianten[].weglaatDownside"
   },
   {
@@ -448,26 +448,26 @@ window.CASUSSEN[0].todoBart.push(
   },
   {
     id: "TODO_BART-E2-2",
-    vraag: "Lezing van 'O2 (dag 2–4)' en 'V6 (na dag 3)' (I7, episode 2): de casus zegt niet 'na V5'. Lezing A (gekozen): cursusdag = verschil in dagen t.o.v. de dag van V5 plus 1, dus O2 op verschil 1 t/m 3 (V5 op dag 1: O2 op dag 2–4) en V6-halveren op verschil vanaf 3 (dag 4 of later). Lezing B (bouwopdracht 6.1, opDagRelatief(O2,V5,2,4)): O2 op verschil 2 t/m 4 (V5 op dag 1: O2 op dag 3–5). Bij lezing B faalt de casusroute 'V5 dag 1, O2 dag 2'. Welke lezing bedoel je?",
-    gekozenLezing: "(Contract TODO_BART-1.) Lezing A: verschil in dagen t.o.v. de dag van V5 (V5 zelf = 0): O2 op verschil 1 t/m 3 (V5 op dag 1: dag 2–4, de casusroute is dus speelbaar), V6 halveren op verschil vanaf 3 (dag 4 of later; vgl. feedback 'Dag 4.'). Anker = start van trimethoprim (V5, of B1 met doel V5). Lezing B staat in de vraag.",
+    vraag: "De casus zegt bij I7: 'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3', en in de geldige route 'V5 + O2 (dag 2–4) + V6 (na dag 3)'. Er staat niet 'na V5'. Lezing A (gekozen): dag 1 van de kuur is de dag waarop trimethoprim start; O2 is op tijd op dag 2 t/m 4 van de kuur, dus op verschil 1 t/m 3 dagen na de startdag (V5 op dag 1: O2 op dag 2–4), en V6 halveren op dag 4 of later, dus op verschil vanaf 3. Lezing B: 'dag 2–4' is het verschil in dagen na de startdag, dus O2 op verschil 2 t/m 4 (V5 op dag 1: O2 op dag 3–5). Bij lezing B is de route 'V5 op dag 1, O2 op dag 2' te vroeg en dus fout. Welke lezing bedoel je?",
+    gekozenLezing: "Lezing A: verschil in dagen ten opzichte van de dag waarop trimethoprim start (die dag zelf = 0): O2 op verschil 1 t/m 3 (V5 op dag 1: dag 2–4, de route uit de casus is dus speelbaar), V6 halveren op verschil vanaf 3 (dag 4 of later; vgl. de feedbackvraag 'Dag 4. Hoeveel trimethoprim klaren haar nieren nog?'). Start van trimethoprim = V5 gespeeld, of B1 (wisselen) naar V5. Lezing B staat in de vraag.",
     plek: "E2.invarianten.I7"
   },
   {
     id: "TODO_BART-E2-3",
     vraag: "Casus geeft bij I7 twee verschillende vragen (geen kalium / niet gehalveerd). Welke vraag verschijnt als beide eisen ontbreken?",
-    gekozenLezing: "De vragen staan beide letterlijk in vraagVarianten; de eerste variant waarvan de voorwaarde klopt wint, volgorde van de casustabel (eerst geen kalium, dan niet gehalveerd). 'vraag' is de eerste.",
+    gekozenLezing: "Beide vragen staan letterlijk in de data, elk met zijn eigen voorwaarde; de eerste waarvan de voorwaarde klopt wint, in de volgorde van de casustabel (eerst geen kalium, dan niet gehalveerd).",
     plek: "E2.invarianten.I7.vraagVarianten"
   },
   {
     id: "TODO_BART-E2-4",
     vraag: "Casus geeft bij I6 twee verschillende vragen (geen kweek / afwachten). Welke vraag verschijnt als beide spelen?",
-    gekozenLezing: "Beide vragen staan letterlijk in vraagVarianten; volgorde van de casustabel (eerst 'geen kweek', dan 'afwachten'). 'vraag' is de eerste.",
+    gekozenLezing: "Beide vragen staan letterlijk in de data, elk met zijn eigen voorwaarde; de eerste waarvan de voorwaarde klopt wint, in de volgorde van de casustabel (eerst 'geen kweek', dan 'afwachten').",
     plek: "E2.invarianten.I6.vraagVarianten"
   },
   {
     id: "TODO_BART-E2-5",
     vraag: "I8 (episode 2): casus zegt 'hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten'. Hoeveel beurten na de kweekuitslag (C) mag het resistente middel nog doorlopen, en vanaf wanneer 'houden de klachten aan'?",
-    gekozenLezing: "Bouwopdracht 6.1: 'niet gewisseld (B1) of gestopt (B2) binnen 2 beurten na C' = aan het einde van de tweede beurt (de dag van C plus 1) is een resistent middel (set 'resistent', gezet door C) nog actief, en de klachtenstatus was 'aan'. Een wissel naar een ander resistent middel telt dus niet als bijsturen. De 2 staat als offset (1) in de data en is instelbaar.",
+    gekozenLezing: "Streng: binnen 2 beurten na de kweekuitslag moet de speler gewisseld (B1) of gestopt (B2) hebben. Aan het einde van de tweede beurt (de dag van de uitslag plus 1) mag geen middel actief zijn waarvoor de kweek resistent zegt, terwijl de klachten aanhouden. Een wissel naar een ander resistent middel telt dus niet als bijsturen. De '2' staat als offset 1 in de data en is instelbaar.",
     plek: "E2.invarianten.I8"
   },
   {
@@ -479,7 +479,7 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E2-7",
     vraag: "Moet de zin 'Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG].' bij het onthullen van G2 aan de speler getoond worden (botst met 'feedback zegt niet voor')?",
-    gekozenLezing: "Alleen 'eGFR 29 uit de jaarlijkse controle' wordt getoond. De zin over de risicogroep staat als 'toelichting' in de data (voor Bart/overzicht), niet in de interface.",
+    gekozenLezing: "Alleen 'eGFR 29 uit de jaarlijkse controle' wordt getoond. De zin over de risicogroep staat in de data onder 'meta' (voor Bart en het overzicht), niet in de interface van de speler.",
     plek: "E2.patient.verborgen[G2]"
   },
   {
@@ -520,8 +520,8 @@ window.CASUSSEN[0].todoBart.push(
   },
   {
     id: "TODO_BART-E2-16",
-    vraag: "Vroeg afronden vóór de kweekuitslag (gebeurtenis C) ontloopt I8: de uitslag is dan nog niet gemeld, dus het resistente middel telt niet als doorgelopen. Moet afronden pas kunnen nadat C geweest is (parameter afrondenPasNaGebeurtenissen)?",
-    gekozenLezing: "Aansluitend op contract TODO_BART-4: de data blokkeert niets; I8 geldt alleen als C geweest is (geldtIn). De instelbare parameter afrondenPasNaGebeurtenissen (standaard uit) bepaalt of vroeg afronden kan. Let op: C komt alleen als O1 gespeeld is.",
+    vraag: "Vroeg afronden vóór de kweekuitslag (gebeurtenis C) ontloopt I8: de uitslag is dan nog niet gemeld, dus het resistente middel telt niet als doorgelopen. Moet afronden pas kunnen nadat C geweest is (instelling 'afronden pas na de gebeurtenissen')?",
+    gekozenLezing: "De data blokkeert niets: I8 geldt alleen als C geweest is. De spelinstelling 'afronden pas na de gebeurtenissen' staat standaard uit (de speler mag vrij afronden, ook vóór C) en kan door de ontwikkelaar aan worden gezet; dan is I8 niet meer te ontlopen. Let op: C komt alleen als O1 gespeeld is.",
     plek: "E2.invarianten.I8"
   },
   {

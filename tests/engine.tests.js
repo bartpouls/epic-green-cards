@@ -866,8 +866,8 @@
     T.is(e.patient.zichtbaar.lab.eGFR, 42);
     speel(s, "G1"); T.is(JSON.stringify(s.zichtbaar), zichtVoor); T.is(s.onthuld.length, 0);
     var r = speel(s, "G2");
-    T.is(r.onthuld.length, 1); T.is(r.onthuld[0].waarde, 29); T.is(r.onthuld[0].sleutel, "eGFR"); T.is(r.onthuld[0].tekst, "eGFR 29 uit de jaarlijkse controle");
-    T.is(s.zichtbaar.lab.eGFR, 29); T.is(s.zichtbaar.lab.datum, "uit de jaarlijkse controle"); T.is(s.zichtbaar.labTekst, "eGFR 29 uit de jaarlijkse controle");
+    T.is(r.onthuld.length, 1); T.is(r.onthuld[0].waarde, 29); T.is(r.onthuld[0].sleutel, "eGFR"); T.is(r.onthuld[0].tekst, e.patient.verborgen[0].onthult, "tekst letterlijk uit de data");
+    T.is(s.zichtbaar.lab.eGFR, 29); T.is(s.zichtbaar.lab.datum, "uit de jaarlijkse controle"); T.is(s.zichtbaar.labTekst, e.patient.verborgen[0].zichtbaar.labTekst, "labTekst letterlijk uit de data");
     T.is(e.patient.waar.eGFR, 29, "waar ongewijzigd"); T.is(e.patient.zichtbaar.lab.eGFR, 42, "casusdata zichtbaar niet gemuteerd");
     T.is(speel(s, "G2").onthuld.length, 0, "niet dubbel");
     // Predicaat 'waar' rekent met de ware waarde, ook zonder G2
@@ -1008,6 +1008,14 @@
     var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }), voor = JSON.stringify(s);
     gooitMet(function () { g.Engine.speelKaart(s, "S", { doel: "M1" }); }, /bestaatniet|kent predicaat/, "kapot predicaat");
     T.is(JSON.stringify(s), voor);
+  });
+  test("speelKaart is atomair: sleutels die de onthulling al aan zichtbaar had toegevoegd verdwijnen bij herstel (ook nieuwe geneste objecten)", function () {
+    var c = maakFixture(); c.episodes[0].patient.verborgen = [
+      { kaart: "K2", onthult: "T1", sleutel: "diep.nieuw.pad", waarde: 5 }, { kaart: "K2", onthult: "T2", zichtbaar: { extra: { x: 1 } } },
+      { kaart: "K2", onthult: "T3", sleutel: 7, waarde: 1 } ];
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }), voor = JSON.stringify(s);
+    gooitMet(function () { g.Engine.speelKaart(s, "K2"); }, /./);
+    T.is(JSON.stringify(s), voor); T.gelijk(Object.keys(s.zichtbaar), ["naam", "lab"]); T.is(s.zichtbaar.diep, undefined); T.is(s.zichtbaar.extra, undefined);
   });
   test("raadpleeg is atomair: onleesbare casus.raadplegen -> fout, geen actie verbruikt, geen registratie; na herstel van de data werkt het", function () {
     var c = maakFixture(); c.raadplegen = { titel: "t", get bronnen() { throw new Error("kapotte bronnen"); } };
