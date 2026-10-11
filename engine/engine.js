@@ -254,7 +254,7 @@
     if (state.actiesOver < kost) return fout("Je hebt niet genoeg acties over om de richtlijn te raadplegen.");
     state.actiesOver -= kost;
     state.raadplegingen.push({ dag: state.dag });
-    var r = ep.raadplegen || {};
+    var r = casusVan(state).raadplegen || {};   // contract 4: alleen op casusniveau
     return { ok: true, kost: kost, titel: r.titel || null, bronnen: kopie(r.bronnen || []) };
   }
 

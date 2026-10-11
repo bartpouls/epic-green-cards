@@ -20,9 +20,8 @@ for (const f of bestanden) {
   catch (e) { console.error("LAADFOUT in " + f + ": " + e.message); process.exit(2); }
 }
 const args = process.argv.slice(2);
-const res = sandbox.Test ? sandbox.Test.draaiAlles() : [];
 const filter = (args.find(a => a.startsWith("--groep=")) || "").slice(8);
-const sel = filter ? res.filter(r => r.groep.includes(filter)) : res;
+const sel = sandbox.Test ? sandbox.Test.draaiAlles(filter || undefined) : [];
 if (args.includes("--json")) console.log(JSON.stringify({ geladen, overgeslagen, resultaten: sel }, null, 1));
 else {
   for (const r of sel) console.log((r.ok ? "PASS " : "FAIL ") + "[" + r.groep + "] " + r.naam + (r.ok ? "" : "\n     " + r.fout));

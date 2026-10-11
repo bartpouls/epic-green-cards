@@ -53,6 +53,7 @@
         { id: "Z", categorie: "Onderzoek", label: "Buiten repertoire", doelkaart: false, downside: "d" }
       ],
       todoBart: [],
+      raadplegen: { titel: "Bron", bronnen: ["BRON-A"] },
       episodes: [ {
         id: "X1", level: 1,
         knoppen: { actiesPerBeurt: 3, aantalDagen: 4, raadplegenKost: 1 },
@@ -64,7 +65,6 @@
           verborgen: [ { kaart: "K2", onthult: "Verborgen tekst", sleutel: "w", waarde: 3 } ]
         },
         repertoire: ["K1", "K2", "M1", "M2", "S", "D"],
-        raadplegen: { titel: "Bron", bronnen: ["BRON-A"] },
         gebeurtenissen: [
           { id: "P", groep: "PQ", trigger: { type: "naKaart", n: 2 }, tekst: "tp", toestand: "erger", zet: { statusNaBeurten: 2, resistent: ["M2"] } },
           { id: "Q", groep: "PQ", trigger: { type: "naKaart", n: 4 }, tekst: "tq" },
@@ -463,6 +463,10 @@
     T.is(g.Engine.raadpleeg(spel(c, "E1")).ok, true);
   });
 
+  echt("raadpleeg leest casus.raadplegen (casusniveau), kost uit episode.knoppen", function (c) {
+    var s = spel(c, "E1"), r = g.Engine.raadpleeg(s);
+    T.is(r.ok, true); T.gelijk(r.bronnen, c.raadplegen.bronnen); T.is(r.titel, c.raadplegen.titel); T.is(r.kost, ep(c, "E1").knoppen.raadplegenKost);
+  });
   echt("E1: V3 daarna nog V4 (twee antibiotica) en trimethoprim geven werkzame status; zonder antibioticum status null", function (c) {
     var s = spel(c, "E1"); iedereen(s, ["G1", "|"]); T.is(s.klachten[2].status, null);
     var s2 = spel(c, "E1"); iedereen(s2, ["V5", "|"]); T.is(s2.klachten[2].status, "af");

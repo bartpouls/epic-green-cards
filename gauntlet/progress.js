@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:14",
+ "updated": "2026-10-11 20:16",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -52,9 +52,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S7 engine",
-   "round": 1,
-   "verdict": "FAIL",
-   "evidence": "r1 FAIL, 2 punten + naden, BLIND=ONS; ronde 2 bouwer bezig",
+   "round": 2,
+   "verdict": "PENDING",
+   "evidence": "r2 gebouwd (53 eigen tests groen, tests.html 324 groen in Chromium); criticus r2 bezig",
    "artifact": ""
   },
   {

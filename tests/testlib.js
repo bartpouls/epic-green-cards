@@ -8,8 +8,8 @@
     gelijk: function (a, b, msg) { if (tekst(a) !== tekst(b)) throw new Error((msg || "gelijk") + ": verwacht " + tekst(b) + ", kreeg " + tekst(a)); },
     waar: function (v, msg) { if (!v) throw new Error(msg || "niet waar"); },
     gooit: function (fn, msg) { var ok = false; try { fn(); } catch (e) { ok = true; } if (!ok) throw new Error(msg || "verwachtte een fout"); },
-    draaiAlles: function () {
-      return lijst.map(function (t) {
+    draaiAlles: function (groepFilter) {
+      return lijst.filter(function (t) { return !groepFilter || t.groep.indexOf(groepFilter) !== -1; }).map(function (t) {
         try { t.fn(); return { groep: t.groep, naam: t.naam, ok: true }; }
         catch (e) { return { groep: t.groep, naam: t.naam, ok: false, fout: String((e && e.message) || e) }; }
       });
