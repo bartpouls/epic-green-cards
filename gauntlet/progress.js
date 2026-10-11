@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:38",
+ "updated": "2026-10-11 20:44",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -39,8 +39,8 @@ window.GAUNTLET = {
   {
    "name": "S5 predicaten",
    "round": 3,
-   "verdict": "PENDING",
-   "evidence": "r3 gebouwd (121 eigen tests, volledige suite 350 groen; 404 mutaties, 8 equivalent); criticus r3 bezig",
+   "verdict": "FAIL",
+   "evidence": "r3 FAIL, 5 punten (nog kleine validatie/testgaten), BLIND=ONS; ronde 4 bouwer bezig",
    "artifact": ""
   },
   {
@@ -163,6 +163,12 @@ window.GAUNTLET = {
    "unit": "S1 data-kaarten",
    "verdict": "PASS",
    "note": "230 controles 0 afwijkingen; 4637 mutaties, 1 equivalente overlever; 345 groen Node/371 Chromium; BLIND=ONS (15/15 paren byte-identiek)"
+  },
+  {
+   "round": 3,
+   "unit": "S5 predicaten",
+   "verdict": "FAIL",
+   "note": "geneste K.naGebeurtenis bij binnenBeurten stil false (F1); PREDICATEN.md claimt gevoelig altijd bekend (F2); hardcode-mutaties stop-rol/kaartUit-lijstnaam onzichtbaar (F3); 9 testgaten (F4); gestart op onbekend middel stil (F5). Naad: I7 E3 gebruikt van:2,tot:4 vs E2 1–3 (S4). BLIND=ONS → ronde 4"
   }
  ],
  "open": [

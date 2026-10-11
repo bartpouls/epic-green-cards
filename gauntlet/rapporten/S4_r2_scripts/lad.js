@@ -1,6 +1,7 @@
 const fs=require("fs"),vm=require("vm");
 const root="/home/user/epic-green-cards";
 function laad(extra){
+  extra=extra||process.env.MUT||undefined;
   const sb={console,setTimeout}; sb.window=sb; sb.globalThis=sb; vm.createContext(sb);
   const files=["casussen/uwi.js","casussen/uwi-e1.js","casussen/uwi-e2.js",extra||"casussen/uwi-e3.js","regels/predicaten.js","engine/engine.js"];
   for(const f of files){ const src=(f.startsWith("/")?fs.readFileSync(f,"utf8"):fs.readFileSync(root+"/"+f,"utf8")); vm.runInContext(src,sb,{filename:f}); }
