@@ -112,7 +112,7 @@
   //     patiëntteksten, namen) in een naam of tekst van de module, behalve de CONTRACTWOORDEN. Ook geen id uit de data.
   //  6. Teken buiten ASCII, een backslash of een sjabloonteken buiten tekst/commentaar is rood.
   var TOEGESTANE_TEKSTEN = [
-    "use strict", "undefined", "function", "object", "string", "number", ".",                       // taal en typeof
+    "use strict", "undefined" /* alleen buiten de modulefunctie: typeof window */, "function", "object", "string", "number", ".",                       // taal en typeof
     "_casus", "_opties", "rng", "_bron", "poortGehaald", "TODO_BART", "statusTeksten",              // vaste sleutels (contract / engine)
     "actief", "af", "aan", "geenVerbetering48",                                                    // predicaat- en statuswaarden (contract 3, 3b)
     "naKaart", "naAantalKaarten", "naKaartVanKaart",                                               // triggertypes (contract 4b)
@@ -623,7 +623,167 @@
     T.gelijk(a.klachten, b.klachten);
     T.is(a.klachten[2].status, "af"); T.is(a.klachten[3].status, "af");
   });
-  test("DBG", function () { var v = bronScan(g.Engine._bron); throw new Error(v.length + "\n" + v.join("\n")); });
+  var CR = String.fromCharCode(13), LS = String.fromCharCode(0x2028), PS = String.fromCharCode(0x2029), BS = String.fromCharCode(92), BT = String.fromCharCode(96);
+  function metExtra(extra, bron) { return (bron || g.Engine._bron).replace("function fout(tekst)", extra + "\n  function fout(tekst)"); }
+  function gebruikteTokens() {
+    var tk = lexBron(g.Engine._bron).tokens, teksten = {}, eig = {}, namen = {};
+    tk.forEach(function (t) { if (t.s === "str") teksten[t.w] = 1; else if (t.s === "id") { namen[t.w] = 1; if (t.prop) eig[t.w] = 1; } });
+    return { teksten: teksten, eigenschappen: eig, namen: namen };
+  }
+  test("engine.js bevat geen casuslogica: de VOLLEDIGE modulebron (Engine._bron) voldoet aan de ALLOWLIST (teksten, eigenschappen, getallen, geen regex/dynamische code, geen casuswoorden)", function () {
+    var bron = g.Engine._bron;
+    T.waar(typeof bron === "string" && bron.length > 5000, "Engine._bron is de volledige modulebron");
+    T.waar(/^function engineModule\(g\) \{\s*"use strict";/.test(bron), "_bron begint met de modulefunctie zelf, in strikte modus");
+    ["nieuwSpel", "herkansing", "speelKaart", "raadpleeg", "volgendeDag", "rondAf", "eindeBereikt", "ontgrendeld", "ontgrendeldeEpisodes", "atomisch", "berekenKlachten", "onthul", "trekVolgorde"].forEach(function (k) {
+      T.waar(bron.indexOf("function " + k + "(") >= 0, "function " + k + " staat in de gescande bron");
+    });
+    Object.keys(g.Engine).forEach(function (k) {
+      T.waar(bron.indexOf(Function.prototype.toString.call(g.Engine[k])) >= 0, k + " zit in de gescande bron");
+    });
+    T.is(Object.keys(g.Engine).indexOf("_bron"), -1, "_bron is niet opsombaar");
+    var data = echteNamen(), woorden = dataWoorden();
+    T.waar(Object.keys(data.ids).length > 30, "id-lijst uit de echte data is gevuld (anders bewijst deze scan niets)");
+    T.waar(data.ids.E2 && data.ids.C && data.ids.A && data.ids.B && data.ids.G2 && data.ids.V5 && data.ids.Ev1, "episode-, gebeurtenis- en kaart-id's zitten in de scan");
+    T.waar(data.namen.cystitis && data.namen.lisinopril && data.namen.weefselinvasie, "toestanden en comedicatie zitten in de scan");
+    ["nitrofurantoine", "cotrimoxazol", "clavulaanzuur", "sidrik", "flankpijn", "pyelonefritis", "voorschrijven", "ciprofloxacine", "spironolacton", "kalium"].forEach(function (w) {
+      T.waar(woorden[w], "het woord '" + w + "' uit de echte casustekst zit in de verboden woorden (accent-onafhankelijk)");
+    });
+    T.waar(Object.keys(woorden).length > 500, "woordenlijst uit ALLE tekstvelden is gevuld: " + Object.keys(woorden).length);
+    T.gelijk(bronScan(bron), [], "modulebron tegen de allowlist");
+  });
+  test("bronscan: de allowlists zijn klein en zonder speling (elke toegestane tekst, eigenschap en elk contractwoord wordt echt gebruikt; geen enkel contractwoord is een middel/toestand)", function () {
+    var gebruikt = gebruikteTokens(), data = echteNamen(), bron = g.Engine._bron;
+    TOEGESTANE_TEKSTEN.forEach(function (x) { T.waar(gebruikt.teksten[x] || x === "undefined", "toegestane tekst wordt niet gebruikt (haal hem uit de lijst): " + x); });
+    TOEGESTANE_EIGENSCHAPPEN.forEach(function (x) { T.waar(gebruikt.eigenschappen[x], "toegestane eigenschap wordt niet gebruikt (haal hem uit de lijst): ." + x); });
+    var alleDelen = {};
+    Object.keys(gebruikt.namen).forEach(function (nm) { naamDelen(nm).concat([woordNorm(nm)]).forEach(function (d) { alleDelen[d] = 1; }); });
+    CONTRACTWOORDEN.forEach(function (w) { T.waar(alleDelen[w] || Object.keys(alleDelen).some(function (d) { return d.indexOf(w) >= 0; }), "contractwoord wordt niet in de modulebron gebruikt (haal het uit de lijst): " + w); });
+    var namenWoorden = {}; Object.keys(data.namen).forEach(function (nm) { namenWoorden[woordNorm(nm)] = 1; naamDelen(nm).forEach(function (d) { namenWoorden[d] = 1; }); });
+    CONTRACTWOORDEN.forEach(function (w) { T.waar(!namenWoorden[w], "een contractwoord mag geen toestand, middel of waar-sleutel zijn: " + w); });
+    T.waar(CONTRACTWOORDEN.length < 80 && TOEGESTANE_TEKSTEN.length < 60 && TOEGESTANE_EIGENSCHAPPEN.length < 120, "de lijsten blijven klein");
+    T.gelijk(teksteneigenSchoon(data), [], "de toegestane teksten bevatten geen id of naam uit de casusdata");
+  });
+
+  var EVASIES = [
+    // de 21 trucs van de criticus (ronde 4, evasie.js)
+    ["c1 hoofdletterfunctie + som", 'function h1(k) { return k === "g".toUpperCase() + (1 + 1); } var _x = h1("Z");'],
+    ["c2 omgekeerde tekst", 'function h1(k) { return k === "2g".split("").reverse().join("").toUpperCase(); } var _x = h1("Z");'],
+    ["c3 regex na ) lijkt commentaar", 'var _z = 0; if (_z) /' + BS + '//.test(_z); function h1(k) { return k === "G2"; }'],
+    ["c4 JSON.parse met dubbel geescapete unicode", 'function h1(k) { return k === JSON.parse(\'"' + BS + BS + 'u0047' + BS + BS + 'u0032"\'); } var _x = h1("Z");'],
+    ["c5 Buffer base64", 'function h1(k) { return k === Buffer.from("RzI=", "base64").toString(); }'],
+    ["c6 Function via constructor-keten", 'function h1(k) { return [][("con" + "structor")][("con" + "structor")]("return 1")(); }'],
+    ["c7 globale eval via sleutel", 'function h1(k) { return g["ev" + "al"]("1"); }'],
+    ["c8 identifier met unicode-escape", 'function h1(k) { var ' + BS + 'u0047' + BS + 'u0032 = 5; return k === "x" ? ' + BS + 'u0047' + BS + 'u0032 : 0; }'],
+    ["c9 drempel 30 via Number(0x1e)", 'function h1(w) { return w < Number("0x1e"); }'],
+    ["c10 drempel via binair", 'function h1(w) { return w < Number("0b11101") + (1 - 0); }'],
+    ["c11 RegExp uit join", 'function h1(k) { return new RegExp(["^", "v", "' + BS + BS + '", "d", "+$"].join("").replace("v", "V")).test(k); }'],
+    ["c12 template met uitdrukkingen", 'function h1(k) { return k === ' + BT + '${"g".toUpperCase()}${1 + 1}' + BT + '; }'],
+    ["c13 bereikvergelijking zonder id", 'function h1(k) { return k >= "V0" && k <= "V9"; }'],
+    ["c14 comedicatie via join", 'function h1(m) { return m === ["lis", "inopril"].join(""); }'],
+    ["c15 decodeURIComponent", 'function h1(k) { return k === decodeURIComponent("%47") + (1 + 1); }'],
+    ["c16 charAt-achtige prefix", 'function h1(k) { return k[0] === "v".toUpperCase(); }'],
+    ["c17 toestand via slice", 'function h1(t) { return t === "cystitisx".slice(0, -1); }'],
+    ["c18 klinische tekst met zero-width-space", 'function h1() { return "Mevrouw weet niet wanneer ze moet bellen."; }'],
+    ["c19 episode-id via toUpperCase", 'function h1(s) { return s.episodeId === "e3".toUpperCase(); }'],
+    ["c20 getal via lengte", 'function h1(w) { return w < "abcdefghijklmnopqrstuvwxyzabcd".length; }'],
+    ["c21 id in Map-sleutel via fromEntries", 'var _m = Object.fromEntries("g2,v5,ev1".split(",").map(function (x) { return [x.toUpperCase(), 1]; }));'],
+    // evasie2.js (zonder truc: gewoon een middelnaam of casuszin)
+    ["d1 nitrofurantoine met diaeresis", 'function h1(k) { return k === "nitrofuranto' + String.fromCharCode(239) + 'ne"; }'],
+    ["d2 cotrimoxazol", 'function h1(k) { return k === "cotrimoxazol"; }'],
+    ["d3 regex clavulaanzuur", 'function h1(k) { return /clavulaanzuur/.test(k); }'],
+    ["d4 spironolacton", 'function h1(k) { return k === "spironolacton"; }'],
+    ["d5 SIDRIK", 'function h1(k) { return k === "SIDRIK"; }'],
+    ["d6 flankpijn", 'function h1(k) { return k === "flankpijn"; }'],
+    ["d7 pyelonefritis", 'function h1(k) { return k === "pyelonefritis"; }'],
+    ["d8 casuszin", 'function h1() { return "De nierfunctie bleek 29."; }'],
+    ["d9 categorie Voorschrijven", 'function h1(k) { return k === "Voorschrijven"; }'],
+    ["d10 categorie Gegevens", 'function h1(k) { return k.categorie === "Gegevens"; }'],
+    ["d11 eigenschapsnaam resistent-achtig", 'function h1(k) { return k.nitrofurantoine; }'],
+    // 20+ eigen nieuwe trucs
+    ["n1 JSFuck: tekens uit ![]", 'var _a = (![] + [])[1 - 1];'],
+    ["n2 JSFuck: [] + {}", 'var _a = ([] + {})[1];'],
+    ["n3 getal naar tekst via toString(36)", 'var _a = (1 + 1).toString(1 + 1 + 1);'],
+    ["n4 String.raw met sjabloon", 'function h1(k) { return String.raw' + BT + 'G2' + BT + ' === k; }'],
+    ["n5 localeCompare", 'function h1(k) { return k.localeCompare(k); }'],
+    ["n6 commentaar eindigt op CR", 'var _q = 0; // verborgen' + CR + ' function h1(k) { return k === "G2"; }'],
+    ["n7 commentaar eindigt op U+2028", 'var _q = 0; // verborgen' + LS + ' function h1(k) { return k === "G2"; }'],
+    ["n8 commentaar eindigt op U+2029", 'var _q = 0; // verborgen' + PS + ' function h1(k) { return k === "V5"; }'],
+    ["n9 HTML-commentaar <!--", 'var _q = 0; <!-- verborgen\n function h1(k) { return k === "V5"; }'],
+    ["n10 variabele met middelnaam", 'var nitrofurantoineGebruik = 1;'],
+    ["n11 camelCase met kalium", 'var kaliumControle = 1;'],
+    ["n12 eigenschap pyelonefritis", 'function h1(k) { return k.pyelonefritis; }'],
+    ["n13 Cyrillische homoglief in naam", 'var ' + String.fromCharCode(0x410, 0x411) + ' = 1;'],
+    ["n14 zero-width in naam", 'var a' + String.fromCharCode(0x200b) + 'b = 1;'],
+    ["n15 id als objectsleutel zonder aanhalingstekens", 'var _o = { G2: 1 };'],
+    ["n16 this.constructor", 'function h1() { return this.constructor; }'],
+    ["n17 constructor via een toegestane methode", 'function h1() { return [].filter.constructor; }'],
+    ["n18 JSON.parse van een variabele tekst", 'function h1(k) { return JSON.parse(k); }'],
+    ["n19 Number en parseFloat", 'function h1(k) { return Number(k) < parseFloat(k); }'],
+    ["n20 bitoperatoren", 'function h1(k) { return (k >>> 1) < (1 << 1); }'],
+    ["n21 rekenwerk 1 + 1 + 1", 'var _v = 1 + 1 + 1;'],
+    ["n22 elke andere tekst is rood", 'var _s = "De kaart";'],
+    ["n23 .length op een toegestane tekst (getal uit tekst)", 'function h1() { return "Deze episode is al afgerond.".length; }'],
+    ["n24 idem tussen haakjes", 'function h1() { return ("Deze episode is al afgerond.")[1]; }'],
+    ["n25 regex-literal", 'var _e = /x/;'],
+    ["n26 RegExp-methode test", 'function h1(k) { return k.test(k); }'],
+    ["n27 require", 'var _p = require;'],
+    ["n28 hex en binair", 'function h1(k) { return k ? 0x1e : 0b11101; }'],
+    ["n29 escape()", 'var _t = escape;'],
+    ["n30 backslash-escape in naam", 'var ' + BS + 'u0047' + BS + 'u0032 = 5;'],
+    ["n31 deling", 'function h1(a, b) { return a / b; }'],
+    ["n32 commentaar-truc: /* in een deling-achtige vorm */", 'var _z = 0; var _y = _z /* x */ / 1;'],
+    ["n34 tekst met regeleinde", 'var _z = "abc\n";'],
+    ["n35 getal met exponent", 'function h1(w) { return w < 3e1; }'],
+    ["n36 getal met scheidingsteken", 'function h1(w) { return w < 1_0; }'],
+    ["n37 tekst met escape", 'function h1(k) { return k === "' + BS + 'x47' + BS + 'x32"; }'],
+    ["n38 tekst op de allowlist plus een stukje erbij", 'var _s = "af" + "gerond";'],
+    ["n39 Reflect/Proxy", 'var _r = Reflect.ownKeys(Proxy);'],
+    ["n40 eval via with", 'function h1(o) { with (o) { return 1; } }']
+  ];
+  test("bronscan is niet te omzeilen: ALLE " + EVASIES.length + " evasietrucs (21 van de criticus + eigen) geven rood, de echte bron en onschuldige toevoegingen niet", function () {
+    var data = echteNamen(), woorden = dataWoorden(), bron = g.Engine._bron;
+    T.gelijk(bronScan(bron), [], "uitgangspunt: echte bron is schoon");
+    T.waar(EVASIES.length >= 41, "minstens 21 + 20 trucs");
+    var groen = [];
+    EVASIES.forEach(function (e) {
+      var uit = scanBron(metExtra(e[1], bron), data, woorden, CONTRACTWOORDEN);
+      if (!uit.length) groen.push(e[0]);
+    });
+    T.gelijk(groen, [], "evasietrucs die de scan NIET vond");
+    // geen vals alarm: commentaar mag alles noemen; contractteksten en gewone code zijn toegestaan
+    T.gelijk(bronScan(metExtra("// G2, E3, cystitis, lisinopril, nitrofurantoine, 30 en 48 in commentaar; \"tekst\" /regex/ " + BT + "x\n  /* V5 Ev1 'x' */")), [], "commentaar is geen casuslogica");
+    T.gelijk(bronScan(metExtra('var _w = "geenVerbetering48"; var _t = "naKaartVanKaart"; var _n = 0 + _w.length; var _m = [1, 0]; var _z = _n - 1;')), [], "contractwoorden en gewone code zijn toegestaan");
+    T.gelijk(bronScan(metExtra('var _x = 0; // eindigt gewoon\n  var _y = _x + 1; /* en dit ook */ var _z = _y;')), [], "gewoon commentaar naast code");
+  });
+  test("bronscan: de gedragingen van de scan zelf (eigen bron, lege data geeft een fout, tokenizer)", function () {
+    var data = echteNamen(), woorden = dataWoorden();
+    T.waar(scanBron('var a = "G2";', data, woorden, CONTRACTWOORDEN).length > 0);
+    T.gelijk(scanBron('var a = 1;', data, woorden, CONTRACTWOORDEN), []);
+    T.gelijk(scanBron('var a = "af"; // "G2" 30', data, woorden, CONTRACTWOORDEN), [], "tekst op de allowlist en commentaar");
+    T.gooit(function () { scanBron('var a = "G2";', { ids: {}, namen: {} }, woorden, CONTRACTWOORDEN); }, "lege data moet een fout geven");
+    T.gooit(function () { scanBron('var a = "G2";', data, {}, CONTRACTWOORDEN); }, "lege woordenlijst moet een fout geven");
+    // lexer: elke soort meldt zichzelf; de tokenizer kan niet uit de pas lopen omdat een "/" in code altijd rood is
+    T.waar(lexBron('x = a / b;').vondst.length === 1, "deling is rood");
+    T.waar(lexBron('x = /\\//.test(y); var z = "G2";').vondst.length >= 1, "regex is rood");
+    T.is(lexBron('x = 1; // c' + CR + 'y = "G2";').tokens.filter(function (t) { return t.s === "str"; }).length, 1, "commentaar eindigt op CR: de tekst erna wordt WEL gezien");
+    T.is(lexBron('x = 1; // c' + LS + 'y = "G2";').tokens.filter(function (t) { return t.s === "str"; }).length, 1, "commentaar eindigt op U+2028");
+    T.is(lexBron('x = "//"; y = 1;').tokens.length, 8, "// in een tekst is geen commentaar");
+    T.is(lexBron("x = 1; /* nooit gesloten").vondst.length, 1, "niet afgesloten blokcommentaar is rood");
+    T.is(lexBron("x = '\"'; y = 1;").vondst.length, 0, "een dubbel aanhalingsteken in een enkele-aanhalingsteken-tekst");
+  });
+  test("bronscan (alleen Node): ook de code BUITEN de modulefunctie (het hele bestand engine/engine.js) voldoet aan dezelfde allowlist", function () {
+    var fs = null, bestand = null;
+    try {
+      var hoofd = typeof process !== "undefined" && process.mainModule;
+      if (hoofd) { fs = hoofd.require("fs"); bestand = hoofd.require("path").resolve(hoofd.filename, "../../../engine/engine.js"); }
+    } catch (e) { fs = null; }
+    if (!fs || !bestand || !fs.existsSync(bestand)) return;     // browser (file://): geen bestandstoegang; daar scant de test hierboven Engine._bron
+    var src = fs.readFileSync(bestand, "utf8");
+    T.waar(src.indexOf(g.Engine._bron) >= 0, "Engine._bron is een letterlijk stuk van het bestand");
+    T.gelijk(bronScan(src), [], "het hele bestand engine/engine.js");
+    var buiten = src.replace(g.Engine._bron, "");
+    T.waar(lexBron(buiten).tokens.length < 40, "buiten de modulefunctie staat vrijwel niets (alleen de aanroep): " + lexBron(buiten).tokens.length + " tokens");
+  });
   test("herkansing: nieuw spel zelfde episode, schone staat; poging wordt niet door de engine geteld", function () {
     var c = maakFixture(), s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
     speel(s, "K1"); g.Engine.rondAf(s);
@@ -1570,5 +1730,114 @@
     speel(v, "a"); g.Engine.volgendeDag(v); T.gelijk(v.klachten[2], { dag: 2, status: "aan", tekst: null }, "geen statusTeksten: tekst null, geen verzonnen tekst");
     var w = miniSpel([], rngVast(0), function (e) { e.werkzaamheid = { basis: { werkzaam: [ { kaart: "a" } ], nietWerkzaam: [] }, statusTeksten: { af: "uit-werkzaamheid" } }; delete e.statusTeksten; });
     speel(w, "a"); g.Engine.volgendeDag(w); T.is(w.klachten[2].tekst, "uit-werkzaamheid", "terugval op werkzaamheid.statusTeksten");
+  });
+
+  /* ---------- ronde 5 (F2): gedragingen die eerder alleen impliciet of niet getest waren ---------- */
+  test("laatste dag (LEAD-beslissing, TODO_BART-9): een gebeurtenis die op de laatste dag triggert verschijnt NIET en blijft in state.wachtend; er komt geen extra dag, toestand of set", function () {
+    var Z = { id: "Z", trigger: { type: "naKaart", n: 3 }, tekst: "tz", toestand: "erger", zet: { resistent: ["a"], gevoelig: ["b"] } };
+    var s = miniSpel([Z]); dagen(s, 5);
+    T.is(s.dag, 6); T.is(s.dag, s.aantalDagen); T.is(s.dagenVoorbij, false, "dag 6 is de laatste dag, maar nog niet voorbij");
+    speel(s, "c"); speel(s, "c"); speel(s, "c");
+    T.gelijk(s.wachtend, [{ id: "Z", naVolg: 3 }], "de gebeurtenis is getriggerd en wacht");
+    var klachtenVoor = JSON.stringify(s.klachten);
+    T.is(g.Engine.volgendeDag(s), s, "volgendeDag op de laatste dag geeft ook de state terug");
+    T.is(s.dagenVoorbij, true); T.is(s.dag, 6, "de dag loopt niet door"); T.is(g.Engine.eindeBereikt(s), true);
+    T.gelijk(s.wachtend, [{ id: "Z", naVolg: 3 }], "blijft in state.wachtend staan");
+    T.gelijk(s.gebeurtenissen, [], "komt NIET in state.gebeurtenissen");
+    T.gelijk(s.toestanden, ["basis"], "de toestand van de gebeurtenis wordt niet gezet");
+    T.gelijk(s.sets, { resistent: [], gevoelig: [] }, "de sets worden niet gezet");
+    T.is(JSON.stringify(s.klachten), klachtenVoor, "geen extra klachtenregel voor een dag die er niet is");
+    T.is(s.klachten.length, 7, "klachten[0] t/m klachten[aantalDagen]");
+    T.is(g.Engine.speelKaart(s, "c").fout, "De laatste dag is voorbij.");
+    gooitMet(function () { g.Engine.volgendeDag(s); }, /^De laatste dag is al voorbij\.$/, "tweede volgendeDag");
+    T.gelijk(s.wachtend, [{ id: "Z", naVolg: 3 }]);
+    var u = g.Engine.rondAf(s); T.is(u.stub, true, "afronden mag; de beoordeling ziet de state met de wachtende gebeurtenis");
+    T.gelijk(s.gebeurtenissen, [], "ook na afronden is de gebeurtenis niet gebeurd");
+  });
+  test("laatste dag (echte regeltaal, echte E3-data): de wachtende gebeurtenis telt niet als gebeurd, dus gebeurtenisGeweest en inToestand zijn onwaar (de invarianten die na de gebeurtenis gelden, gelden dan niet)", function () {
+    T.waar(!!g.Predicaten && !!g.CASUSSEN && !!g.CASUSSEN[0], "echte regeltaal en data nodig");
+    var c = g.CASUSSEN[0], e3 = ep(c, "E3"), s = g.Engine.nieuwSpel(c, "E3", { rng: rngVast(0) });
+    ["G1", "G2", "N1"].forEach(function (k) { speel(s, k); });
+    while (s.dag < s.aantalDagen) g.Engine.volgendeDag(s);
+    T.is(s.dag, e3.knoppen.aantalDagen);
+    var r = g.Engine.speelKaart(s, "N3"); T.waar(r.ok, "vierde kaart op de laatste dag: " + r.fout);
+    T.is(s.wachtend.length, 1, "een gebeurtenis wacht"); var id = s.wachtend[0].id; T.waar(id === "A" || id === "B", "A of B: " + id);
+    g.Engine.volgendeDag(s); T.is(s.dagenVoorbij, true);
+    T.gelijk(s.wachtend.map(function (x) { return x.id; }), [id]); T.gelijk(s.gebeurtenissen, []);
+    var ctx = g.Predicaten.maakContext(c, e3, s);
+    T.is(g.Predicaten.evalueer({ p: "gebeurtenisGeweest", id: id }, ctx), false, "de gebeurtenis is niet gebeurd");
+    var def = e3.gebeurtenissen.filter(function (x) { return x.id === id; })[0];
+    lijstVanTest(def.toestand).forEach(function (t) { T.is(g.Predicaten.evalueer({ p: "inToestand", t: t }, ctx), false, "toestand " + t + " is niet gezet"); });
+  });
+  test("laatste dag: een niet-bestaande gebeurtenis in state.wachtend (kapotte state) gooit niet; ze wordt wel als gebeurd genoteerd zonder toestand", function () {
+    var s = miniSpel([]); s.wachtend.push({ id: "ONBEKEND", naVolg: 1 });
+    g.Engine.volgendeDag(s);
+    T.gelijk(s.gebeurtenissen, [{ id: "ONBEKEND", dag: 2, naVolg: 1 }]); T.gelijk(s.toestanden, ["basis"]); T.gelijk(s.wachtend, []);
+  });
+  test("rondAf met afrondenPasNaGebeurtenissen aan en twee gebeurtenissen waarvan er een is gebeurd: afronden blijft geweigerd (met de juiste melding) tot ook de tweede is gebeurd", function () {
+    var data = [ { id: "X", trigger: { type: "naKaart", n: 1 }, tekst: "x" }, { id: "Y", trigger: { type: "naKaart", n: 5 }, tekst: "y" } ];
+    var s = g.Engine.nieuwSpel(maakMini(data), "m1", { rng: rngVast(0), afrondenPasNaGebeurtenissen: true });
+    speel(s, "c"); g.Engine.volgendeDag(s);
+    T.gelijk(ev(s), ["X@1"], "een van de twee is gebeurd");
+    gooitMet(function () { g.Engine.rondAf(s); }, /^Je kunt deze episode pas afronden nadat de gebeurtenissen zich hebben voorgedaan\.$/, "een gebeurtenis staat nog open");
+    T.is(s.afgerond, false); T.is(s.uitkomst, null, "geen uitkomst bij een geweigerde afronding");
+    speelTot(s, 5); T.gelijk(ev(s), ["X@1", "Y@5"], "nu zijn beide gebeurd");
+    T.is(g.Engine.rondAf(s).stub, true); T.is(s.afgerond, true);
+  });
+  test("volgendeDag geeft de state zelf terug (contract 2), op een gewone dag en op de laatste dag; een tweede aanroep na afronden geeft de letterlijke foutmelding", function () {
+    var s = nieuw();
+    T.is(g.Engine.volgendeDag(s), s, "gewone dag"); T.is(s.dag, 2);
+    dagen(s, 2); T.is(s.dag, 4); T.is(g.Engine.volgendeDag(s), s, "laatste dag"); T.is(s.dagenVoorbij, true);
+    var t = nieuw(); g.Engine.rondAf(t);
+    gooitMet(function () { g.Engine.volgendeDag(t); }, /^Deze episode is al afgerond\.$/, "volgendeDag na afronden");
+    T.is(t.dag, 1, "state ongewijzigd");
+    gooitMet(function () { g.Engine.volgendeDag(s); }, /^De laatste dag is al voorbij\.$/, "volgendeDag na de laatste dag");
+  });
+  test("nieuwSpel en herkansing zonder opties-argument werken: eigen willekeur (Math.random), opt-in uit, geen fout", function () {
+    var c = maakFixture(), s = g.Engine.nieuwSpel(c, "X1");
+    T.is(typeof s.rng, "function"); T.is(s.afrondenPasNaGebeurtenissen, false); T.is(s.dag, 1); T.is(s.volgordeAB.length, 2);
+    T.gelijk(s.volgordeAB.slice().sort(), ["P", "Q"]);
+    var h = g.Engine.herkansing(s);
+    T.is(h.episodeId, "X1"); T.is(h.afrondenPasNaGebeurtenissen, false); T.is(typeof h.rng, "function"); T.waar(h !== s, "nieuw object");
+    var h2 = g.Engine.herkansing(g.Engine.nieuwSpel(c, "X1"), undefined); T.is(h2.dag, 1);
+  });
+  test("raadplegingen: staan in volgorde van raadplegen (oudste eerst) met de dag waarop het gebeurde; elke raadpleging kost de acties uit de data", function () {
+    var s = nieuw();
+    g.Engine.raadpleeg(s); T.gelijk(s.raadplegingen, [{ dag: 1 }]);
+    g.Engine.volgendeDag(s); g.Engine.raadpleeg(s); g.Engine.raadpleeg(s);
+    T.gelijk(s.raadplegingen, [{ dag: 1 }, { dag: 2 }, { dag: 2 }]); T.is(s.actiesOver, 1);
+    g.Engine.volgendeDag(s); g.Engine.volgendeDag(s); g.Engine.raadpleeg(s);
+    T.gelijk(s.raadplegingen.map(function (x) { return x.dag; }), [1, 2, 2, 4]);
+    T.is(s.tijdlijn.length, 0, "raadplegen staat niet op de tijdlijn");
+  });
+  test("trekvolgorde bij twee groepen: de groepen worden getrokken in datavolgorde (eerste groep eerst) en elke groep gebruikt eigen rng-aanroepen (n - 1 per groep)", function () {
+    var data = [ { id: "X", groep: "G1", trigger: { type: "naKaart", n: 1 }, tekst: "x" }, { id: "Y", groep: "G1", trigger: { type: "naKaart", n: 2 }, tekst: "y" },
+      { id: "U", groep: "G2", trigger: { type: "naKaart", n: 3 }, tekst: "u" }, { id: "V", groep: "G2", trigger: { type: "naKaart", n: 4 }, tekst: "v" },
+      { id: "W", groep: "G3", trigger: { type: "naKaart", n: 5 }, tekst: "w" }, { id: "Z", groep: "G3", trigger: { type: "naKaart", n: 6 }, tekst: "z" }, { id: "Q", groep: "G3", trigger: { type: "naKaart", n: 7 }, tekst: "q" } ];
+    var reeks = [0.99, 0, 0, 0.99], i = 0, aanroepen = 0;
+    var s = g.Engine.nieuwSpel(maakMini(data), "m1", { rng: function () { aanroepen++; return i < reeks.length ? reeks[i++] : 0; } });
+    T.gelijk(s.groepen.G1, ["Y", "X"], "eerste groep kreeg de eerste rng-waarde (0.99: omdraaien)");
+    T.gelijk(s.groepen.G2, ["U", "V"], "tweede groep kreeg de tweede waarde (0: datavolgorde)");
+    T.gelijk(s.groepen.G3, ["W", "Q", "Z"], "derde groep (3 leden, 2 aanroepen): waarden 0 en 0.99");
+    T.is(aanroepen, 4, "1 + 1 + 2 aanroepen");
+    T.gelijk(s.volgordeAB, [], "geen groep AB: lege volgordeAB");
+    var s2 = g.Engine.nieuwSpel(maakFixture(), "X1", { rng: rngVast(0.99) }); T.gelijk(s2.volgordeAB, ["Q", "P"], "groep PQ met rng 0.99");
+  });
+  test("state: _casus en _opties zijn niet-opsombare, overschrijfbare en verwijderbare eigenschappen met de juiste descriptor", function () {
+    var c = maakFixture(), s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0), eigen: 1 });
+    ["_casus", "_opties"].forEach(function (naam) {
+      var d = Object.getOwnPropertyDescriptor(s, naam);
+      T.waar(!!d, naam + " bestaat"); T.is(d.enumerable, false, naam + " enumerable"); T.is(d.writable, true, naam + " writable"); T.is(d.configurable, true, naam + " configurable");
+      T.is(Object.keys(s).indexOf(naam), -1, naam + " niet in Object.keys");
+      var inFor = false; for (var k in s) if (k === naam) inFor = true; T.is(inFor, false, naam + " niet in for-in");
+      T.is(JSON.stringify(s).indexOf(naam), -1, naam + " niet in JSON");
+    });
+    T.is(s._casus, c); T.gelijk(s._opties, { eigen: 1 });
+    var andere = maakFixture(); s._casus = andere; T.is(s._casus, andere, "_casus is overschrijfbaar");
+    s._opties = { nieuw: 2 }; T.gelijk(s._opties, { nieuw: 2 }, "_opties is overschrijfbaar");
+    T.is(g.Engine.herkansing(s)._casus, andere, "herkansing gebruikt de overschreven casus");
+    T.is(delete s._casus, true, "_casus is verwijderbaar (configurable)"); T.is(delete s._opties, true, "_opties is verwijderbaar");
+    var d2 = Object.getOwnPropertyDescriptor(g.Engine, "_bron");
+    T.is(d2.enumerable, false, "_bron enumerable"); T.is(typeof d2.value, "string");
   });
 })(typeof window !== "undefined" ? window : globalThis);
