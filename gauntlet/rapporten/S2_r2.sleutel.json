@@ -1,0 +1,86 @@
+[
+ {
+  "paar": 1,
+  "naam": "kop+klachten",
+  "X": "bron",
+  "Y": "spel",
+  "identiek": true
+ },
+ {
+  "paar": 2,
+  "naam": "medicatie",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": false
+ },
+ {
+  "paar": 3,
+  "naam": "lab",
+  "X": "bron",
+  "Y": "spel",
+  "identiek": true
+ },
+ {
+  "paar": 4,
+  "naam": "risicogroep",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "paar": 5,
+  "naam": "I1 vraag",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "paar": 6,
+  "naam": "I3 vraag",
+  "X": "bron",
+  "Y": "spel",
+  "identiek": true
+ },
+ {
+  "paar": 7,
+  "naam": "I4 vraag",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "paar": 8,
+  "naam": "refl terughoudend",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "paar": 9,
+  "naam": "refl direct",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "paar": 10,
+  "naam": "fb O1",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "paar": 11,
+  "naam": "zicht N1",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ },
+ {
+  "paar": 12,
+  "naam": "zicht V1",
+  "X": "spel",
+  "Y": "bron",
+  "identiek": true
+ }
+]

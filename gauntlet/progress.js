@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:08",
+ "updated": "2026-10-11 20:11",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -18,8 +18,8 @@ window.GAUNTLET = {
   {
    "name": "S2 data-e1",
    "round": 2,
-   "verdict": "PENDING",
-   "evidence": "r2 gebouwd; criticus r2 bezig",
+   "verdict": "FAIL",
+   "evidence": "r2 FAIL, 4 punten (3 eigen), BLIND=BRON; ronde 3 bouwer bezig",
    "artifact": ""
   },
   {
@@ -121,6 +121,12 @@ window.GAUNTLET = {
    "unit": "S5 predicaten",
    "verdict": "FAIL",
    "note": "typfouten in platte vorm stil genegeerd (F1); uitSet/medicatieActief stil false/true (F2); volg-sortering en waar==-onbekend ongetest (F3); B1/B2/B3/B5 hardcoded (F4, vraagt casus.rollen). BLIND=ONS → ronde 2"
+  },
+  {
+   "round": 2,
+   "unit": "S2 data-e1",
+   "verdict": "FAIL",
+   "note": "medicatieTekst mist slotpunt (en test pint fout vast) (F1); raadplegen-bronnen zonder TODO (F2); TODO-markeringen niet vastgepind (F3); extern: rollen.pauzeer/pauze (F4). BLIND=BRON → ronde 3"
   }
  ],
  "open": [

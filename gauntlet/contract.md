@@ -99,7 +99,7 @@ Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat
 - `episode.feedbackExtra[i]`: `{ trigger: <pred>, vraag, wanneer: "altijd"|"alleenBijGehaaldePoort" }` — de overige casus-feedbackvragen (O1 gespeeld, bronconflict ciprofloxacine, Automatische herstart, Verouderde eGFR, Onnodig gewisseld, …).
 - `episode.zichtbaarAlsOntbreekt[i]`: `{ trigger: <pred>, tekst }` — de "Wat er zichtbaar wordt als een kaart ontbreekt"-zinnen, casus-letterlijk.
 - `episode.open`/`TODO_BART`: elke twijfel als `{ id: "TODO_BART-n", vraag, gekozenLezing, plek }` in `casus.todoBart[]` en (bij kaart/regel) als `"TODO_BART": "<vraag>"` op de plek zelf.
-- `episode.raadplegen`: `{ titel, bronnen: ["NHG", ...] }` (verwijzing, geen richtlijntekst).
+- `casus.raadplegen`: `{ titel, bronnen: [...] }` staat ALLEEN op casusniveau (S1), niet per episode (geen `episode.raadplegen`); de keuze welke bronnen erin staan is een TODO_BART (casus noemt alleen 'een eigen naslagkaart met verwijzing naar de bronnen'). Per episode alleen `knoppen.raadplegenKost`.
 
 ### 4b. Vastgelegd na ronde 1 (LEAD)
 - Canoniek: `episode.startToestanden` (array, GEEN `startToestand`). Engine mag een enkele string niet raden.
