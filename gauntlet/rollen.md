@@ -26,3 +26,4 @@ Je krijgt ALLEEN: het stuk-id en het rondenummer. Je ziet de redenering van de b
 - Schrijf het rapport naar `gauntlet/rapporten/<stuk>_r<n>.md` met: oordeel, per criterium PASS/FAIL + bewijs, de lijst FAILs genummerd (F1, F2, …) met precieze, uitvoerbare reparatie-aanwijzing, verworpen hypotheses, grootste resterende kloof, geschatte aantal resterende afwijkingen.
 - Wees streng maar eerlijk: verzin geen fouten. Elk FAIL-punt moet reproduceerbaar zijn met een citaat of commando.
 - Eindig je antwoord met EXACT één regel: `OORDEEL: PASS|FAIL | BLIND: ONS|BRON|ONBESLIST | FAILS: <aantal> | KLOOF: <één zin>` en daarboven max 120 woorden toelichting.
+- Gebruik GEEN git-commando's die de werkboom wijzigen (stash, pull, checkout, reset, merge). Alleen lezen (git log/diff/show) mag.

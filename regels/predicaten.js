@@ -7,8 +7,8 @@
 (function (g) {
   "use strict";
 
-  // Rollen van de bijsturingskaarten staan in de data: casus.rollen = { wissel, stop, pauze, hervat }.
-  var ROL_NAMEN = ["wissel", "stop", "pauze", "hervat"];
+  // Rollen van de bijsturingskaarten staan in de data: casus.rollen = { wissel, stop, pauzeer, hervat }.
+  var ROL_NAMEN = ["wissel", "stop", "pauzeer", "hervat"];
   // Benoemde sets die door een gebeurtenis (zet) worden aangevuld, met hun tegenset (verwijdert uit de set).
   var TEGENSET = { resistent: "gevoelig" };
   var VERGELIJK = ["<", "<=", ">", ">=", "==", "=", "!="];
@@ -101,7 +101,7 @@
   /* ---------- hulpfuncties over ctx ---------- */
   function rollen(ctx) {
     var r = ctx.casus && ctx.casus.rollen;
-    if (!isObj(r)) fout("De casus mist 'rollen' ({ wissel, stop, pauze, hervat }): de kaart-id's voor wisselen, stoppen, pauzeren en hervatten. Die zijn nodig voor dit predicaat.");
+    if (!isObj(r)) fout("De casus mist 'rollen' ({ wissel, stop, pauzeer, hervat }): de kaart-id's voor wisselen, stoppen, pauzeren en hervatten. Die zijn nodig voor dit predicaat.");
     var uit = {};
     ROL_NAMEN.forEach(function (n) {
       if (typeof r[n] !== "string" || r[n] === "") fout("De casus mist 'rollen." + n + "' (een kaart-id) voor dit predicaat.");
@@ -219,7 +219,7 @@
         if (r.doel !== null) { ab().forEach(function (x) { delete act[x]; }); act[r.doel] = true; }
       } else if (r.kaart === rl.stop) {
         if (r.doel !== null) delete act[r.doel];
-      } else if (r.kaart === rl.pauze) {
+      } else if (r.kaart === rl.pauzeer) {
         if (r.doel !== null) pauze[r.doel] = true;
       } else if (r.kaart === rl.hervat) {
         if (r.doel !== null) delete pauze[r.doel];

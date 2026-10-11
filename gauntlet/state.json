@@ -10,9 +10,9 @@
  "units": [
   {
    "name": "S1 data-kaarten",
-   "round": 1,
-   "verdict": "FAIL",
-   "evidence": "r1 FAIL, 3 punten, BLIND=BRON; ronde 2 bouwer bezig",
+   "round": 2,
+   "verdict": "PENDING",
+   "evidence": "r2 gebouwd (24 eigen tests groen, effect.alle, casus.rollen); criticus r2 bezig",
    "artifact": ""
   },
   {
@@ -129,7 +129,8 @@
   "S9 (UI) moet een pseudoniem afdwingen vóór Logging.bewaar (leeg pseudoniem geeft een fout)",
   "S4 (E3-data): gebeurtenis A mist zet.statusNaBeurten:2 → geenVerbetering48 (I14/I16) werkt niet (gemeld door S7-criticus)",
   "S9 moet bewaarUitSpel aanroepen, Logging.opslagStatus() melden ('Resultaten staan alleen in dit tabblad: exporteer nu.') en lege pseudoniem afvangen",
-  "Let op: bouwers mogen NIET git stash/pull/checkout gebruiken (gebeurde één keer, conflict hersteld door LEAD)"
+  "Let op: bouwers mogen NIET git stash/pull/checkout gebruiken (gebeurde één keer, conflict hersteld door LEAD)",
+  "tests/data-e2.tests.js regel ~110 gebruikt k.effect.E2 → moet effect[ep] ?? effect.alle worden (S3 ronde 2); idem controleren in data-e1/e3, engine, UI, overzicht"
  ],
  "belowBar": []
 }

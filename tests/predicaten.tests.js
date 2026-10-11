@@ -7,7 +7,7 @@
   // regel: [volg, kaart, dag, doel, optie]
   function R(volg, kaart, dag, doel, optie) { return { volg: volg, kaart: kaart, dag: dag, doel: doel || null, optie: optie || null }; }
   // ctx bouwen via maakContext met een synthetische casus/episode/state
-  var ROLLEN = { wissel: "B1", stop: "B2", pauze: "B3", hervat: "B5" };
+  var ROLLEN = { wissel: "B1", stop: "B2", pauzeer: "B3", hervat: "B5" };
   var MEDICATIE = ["m", "m1", "m2", "m3"].map(function (id) { return { id: id, label: id }; });
   function mk(tijdlijn, o) {
     o = o || {};
@@ -313,7 +313,7 @@
     T.gooit(function () { ev({ p: "actief", uitSet: "nietBestaand" }, stat2); });
   });
   t("rollen: B1/B2/B3/B5 zijn instelbaar via casus.rollen (geen vaste kaartnamen in de code)", function () {
-    var rollen = { wissel: "W", stop: "S", pauze: "P", hervat: "H" };
+    var rollen = { wissel: "W", stop: "S", pauzeer: "P", hervat: "H" };
     var c = mk([R(1, "Q1", 1), R(2, "W", 2, "Q2"), R(3, "P", 2, "m"), R(4, "B1", 2, "Q3")], { rollen: rollen });
     T.is(ev({ p: "actief", middel: "Q1" }, c), false);
     T.is(ev({ p: "actief", middel: "Q2" }, c), true);
@@ -849,11 +849,11 @@
     gooitNL(function () { ev({ p: "aantalActieveAntibiotica", op: ">", n: 1 }, zonder); }, /casus mist 'rollen'/);
     gooitNL(function () { P.tel({ t: "aantalActieveAntibiotica", op: "max" }, zonder); }, /casus mist 'rollen'/);
     gooitNL(function () { ev({ p: "gespeeld", K: { start: "Q1" } }, zonder); }, /casus mist 'rollen'/);
-    ["wissel", "stop", "pauze", "hervat"].forEach(function (n) {
-      var r = { wissel: "W", stop: "S", pauze: "P", hervat: "H" }; delete r[n];
+    ["wissel", "stop", "pauzeer", "hervat"].forEach(function (n) {
+      var r = { wissel: "W", stop: "S", pauzeer: "P", hervat: "H" }; delete r[n];
       gooitNL(function () { ev({ p: "actief", middel: "Q1" }, mk([R(1, "Q1", 1)], { rollen: r })); }, new RegExp("rollen\\." + n), n);
     });
-    var leeg = mk([R(1, "Q1", 1)], { rollen: { wissel: "", stop: "S", pauze: "P", hervat: "H" } });
+    var leeg = mk([R(1, "Q1", 1)], { rollen: { wissel: "", stop: "S", pauzeer: "P", hervat: "H" } });
     gooitNL(function () { ev({ p: "actief", middel: "Q1" }, leeg); }, /rollen\.wissel/);
   });
   t("rollen: predicaten die de rollen niet nodig hebben, werken ook zonder casus.rollen", function () {
