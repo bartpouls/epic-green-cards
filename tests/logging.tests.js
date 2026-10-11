@@ -228,7 +228,7 @@
   });
 
   t("download: zonder browseromgeving geeft false, gooit niet", function (L) {
-    g.Test.is(L.download("x.csv", "a", "text/csv", {}), false);
+    g.Test.is(L.download("x.csv", "a", "text/csv", { document: null, Blob: null, URL: null }), false);
     g.Test.is(L.download("x.csv", "a", "text/csv", { document: {}, Blob: function () { throw new Error("nee"); }, URL: {} }), false);
   });
 
@@ -335,6 +335,41 @@
     try { L.bewaar({}); } catch (e) { fout2 = e; }
     g.Test.waar(fout2 !== null, "bewaar({}) moet falen");
     g.Test.is(L.alle().length, 0);
+  });
+
+  t("exportCSV: kapotte velden in een opgeslagen record laten de export niet crashen", function (L) {
+    var o = nepOpslag(); L._zetOpslag(o);
+    var kapot = [
+      { pseudoniem: "q", casusId: "uwi", episodeId: "E1", geschonden: "I1" },
+      { pseudoniem: "q", casusId: "uwi", episodeId: "E1", geschonden: 5, tijdlijn: null, onthuld: "x", score: "hoog", profiel: 3 },
+      { pseudoniem: "r", casusId: "uwi", episodeId: "E1", pogingnummer: 1, eerstePoging: true, geschonden: ["I1", "I2"], tijdlijn: TL }
+    ];
+    o.setItem(L.SLEUTEL, JSON.stringify(kapot));
+    var csv = L.exportCSV();
+    g.Test.waar(csv.indexOf("undefined") === -1, "undefined in CSV");
+    var regels = csv.replace(/^\uFEFF/, "").split("\r\n");
+    g.Test.is(regels.length, 5); // kop + 3 + afsluitende lege
+    g.Test.waar(/^q;uwi;E1;;nee;/.test(regels[1]), "pogingnummer ontbreekt moet lege cel zijn: " + regels[1]);
+    g.Test.waar(regels[3].indexOf("I1, I2") !== -1);
+    JSON.parse(L.exportJSON());
+  });
+
+  t("opslagStatus: gezond, mislukte opslag, geen opslag", function (L) {
+    g.Test.gelijk(L.opslagStatus(), { bewaard: true, opslagBeschikbaar: true, totaal: 0, inGeheugenOnly: 0 });
+    L.bewaar(basis());
+    g.Test.gelijk(L.opslagStatus(), { bewaard: true, opslagBeschikbaar: true, totaal: 1, inGeheugenOnly: 0 });
+    var vol = nepOpslag(); vol.setItem = function () { throw new Error("QuotaExceededError"); };
+    L._zetOpslag(vol);
+    L.bewaar(basis()); L.bewaar(basis());
+    var st = L.opslagStatus();
+    g.Test.is(st.bewaard, false); g.Test.is(st.opslagBeschikbaar, true);
+    g.Test.is(st.totaal, 2); g.Test.is(st.inGeheugenOnly, 2);
+    L._zetOpslag(null);
+    L.bewaar(basis());
+    st = L.opslagStatus();
+    g.Test.is(st.bewaard, false); g.Test.is(st.opslagBeschikbaar, false); g.Test.is(st.inGeheugenOnly, 1);
+    L.wis();
+    g.Test.is(L.opslagStatus().bewaard, true);
   });
 
   t("geen netwerk: bronbestand bevat geen fetch/XMLHttpRequest/sendBeacon/WebSocket", function (L) {

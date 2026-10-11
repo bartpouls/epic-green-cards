@@ -39,6 +39,11 @@
     "| Lisinopril | halveren · stoppen · verdubbelen | halveren [SIDRIK] |"
   ].join("\n");
 
+  // Letterlijk uit casus-uwi.md (H1, sectie 5/6 medicatie, "Richtlijn raadplegen")
+  var REF_TITEL = "Casus UWI in de eerste lijn — tutorialcasus Epic green cards";
+  var REF_RAADPLEGEN_TITEL = "Richtlijn raadplegen";
+  var REF_COMED = { lisinopril: "lisinopril", spironolacton: "spironolacton", calcium: "calcium/colecalciferol" };
+
   var CATEGORIEEN = ["Gegevens", "Onderzoek", "Voorschrijven", "Bijsturen", "Informeren", "Evalueren"];
   var VOLGORDE = ["G1","G2","G3","O1","O2","V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","B1","B2","B3","B5","B4","N1","N2","N3","Ev1","Ev2","Ev3"];
   var PRED = ["gespeeld","nietGespeeld","voor","na","binnenBeurten","opDagRelatief","gestart","actief","aantalActieveAntibiotica","medicatieActief","waar","inToestand","gebeurtenisGeweest","klachten","en","of","niet","alsDan","waarheid"];
@@ -60,14 +65,17 @@
     delen.forEach(function (d) { var m = d.match(/^E([123]): ([\s\S]*)$/); if (m) { seg[m[1]] = m[2]; heeft = true; } });
     return heeft ? seg : null;
   }
+  // Casus geeft één cel -> { alle: cel } (ook als de cel met "E1:" begint, voorvoegsel blijft staan);
+  // alleen als de casus zelf per episode splitst (G2) staan er per-episode sleutels.
   function verwachtEffect(r) {
-    var v = +r.vanaf.slice(1), seg = segmenten(r.effect), uit = {};
-    for (var e = v; e <= 3; e++) {
-      if (!seg) uit["E" + e] = r.effect;
-      else if (seg[e] !== undefined) uit["E" + e] = seg[e];
-      else if (seg[1] !== undefined) uit["E" + e] = seg[1];   // gekozen lezing TODO_BART-K2
+    var v = +r.vanaf.slice(1);
+    if (r.id === "G2") {
+      var seg = segmenten(r.effect), uit = {};
+      Object.keys(seg).forEach(function (e) { uit["E" + e] = seg[e]; });
+      return uit;
     }
-    return uit;
+    void v;
+    return { alle: r.effect };
   }
   function verwachtDownside(r) {
     var seg = segmenten(r.down);
@@ -80,6 +88,7 @@
     Test.waar(Array.isArray(window.CASUSSEN) && window.CASUSSEN.length === 1, "één casus verwacht");
     Test.is(casus().id, "uwi-eerstelijn");
     Test.is(casus().versie, "1.1");
+    Test.is(casus().titel, REF_TITEL, "titel");
     Test.waar(Array.isArray(casus().episodes), "episodes is een array (door de episodebestanden aangevuld)");
     Test.waar(Array.isArray(casus().todoBart), "todoBart is een array");
   });
@@ -141,12 +150,59 @@
     });
   });
 
-  Test.registreer(G, "K6 uitzonderingen met varianten per episode (G2 en O1) staan letterlijk in de juiste episode", function () {
+  Test.registreer(G, "K6 uitzonderingen: G2 gesplitst per episode, V3/V5 houden het E1:-voorvoegsel in effect.alle, O1-downside alleen E1", function () {
     Test.gelijk(kaart("G2").effect, { E1: "eGFR 42, recent.", E2: "eGFR 29 (verborgen).", E3: "eGFR 28, bevestigd." });
+    Test.gelijk(kaart("V3").effect, { alle: "E1: 5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen." });
+    Test.gelijk(kaart("V5").effect, { alle: "E1: 3 dagen 1 dd 300 mg. Risicogroep: 7 dagen." });
+    Test.gelijk(kaart("O1").effect, { alle: "Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag in E2 na de 4e gespeelde kaart, in E3 drie kaarten na O1." });
     Test.gelijk(kaart("O1").downside, { E1: "niet geïndiceerd, kost doelmatigheid" });
     Test.is(kaart("V6").vanafEpisode, 2);
     Test.is(kaart("G3").vanafEpisode, 3);
-    Test.is(kaart("V7").effect.E1, undefined, "V7 bestaat niet in E1");
+  });
+
+  Test.registreer(G, "K6 effect[episodeId] ?? effect.alle geeft voor elke kaart in elke episode vanaf vanafEpisode precies de casustekst (geen verzonnen tekst)", function () {
+    refKaarten().forEach(function (r) {
+      var k = kaart(r.id), v = +r.vanaf.slice(1), seg = segmenten(r.effect);
+      Object.keys(k.effect).forEach(function (sl) { Test.waar(sl === "alle" || /^E[123]$/.test(sl), r.id + ": vreemde effectsleutel " + sl); });
+      for (var e = v; e <= 3; e++) {
+        var uit = k.effect["E" + e] !== undefined && k.effect["E" + e] !== null ? k.effect["E" + e] : k.effect.alle;
+        var verwacht = seg ? seg[e] : r.effect;
+        Test.is(uit, verwacht, r.id + " effect in E" + e);
+      }
+      if (!seg) Test.waar(Object.keys(k.effect).join() === "alle", r.id + ": casus geeft één cel, dus alleen effect.alle");
+    });
+  });
+
+  Test.registreer(G, "K1 raadplegen.titel en comedicatie-labels in doelen komen letterlijk uit de casus", function () {
+    Test.is(casus().raadplegen.titel, REF_RAADPLEGEN_TITEL, "raadplegen.titel");
+    var gezien = {};
+    casus().kaarten.forEach(function (k) {
+      if (!k.doelen) return;
+      Object.keys(k.doelen).forEach(function (e) {
+        k.doelen[e].forEach(function (d) {
+          if (REF_COMED[d.id] === undefined) return;
+          Test.is(d.label, REF_COMED[d.id], k.id + " " + e + " label van " + d.id);
+          gezien[d.id] = true;
+        });
+      });
+    });
+    Test.gelijk(Object.keys(gezien).sort(), ["calcium", "lisinopril", "spironolacton"], "alle comedicatie-doelen gecontroleerd");
+  });
+
+  Test.registreer(G, "S-TODO inhoud: kaart-TODO_BART-teksten zijn vragen uit casus.todoBart; K2 en K3 beschrijven de gekozen lezing correct", function () {
+    var vragen = casus().todoBart.map(function (t) { return t.vraag; });
+    casus().kaarten.forEach(function (k) {
+      if (k.TODO_BART === undefined) return;
+      k.TODO_BART.split(" | ").forEach(function (p) { Test.waar(vragen.indexOf(p) >= 0, k.id + ": TODO_BART-tekst is geen vraag uit casus.todoBart: " + p); });
+    });
+    var t = {}; casus().todoBart.forEach(function (x) { t[x.id] = x; });
+    Test.gelijk(Object.keys(t), ["TODO_BART-K1", "TODO_BART-K2", "TODO_BART-K3", "TODO_BART-K4"]);
+    Test.is(t["TODO_BART-K1"].gekozenLezing, "Letterlijk \"—\" overgenomen; geen downside verzonnen.");
+    Test.waar(/effect\.alle/.test(t["TODO_BART-K2"].gekozenLezing) && /voorvoegsel \"E1: \"/.test(t["TODO_BART-K2"].gekozenLezing) && /geen tekst voor E2 of E3/.test(t["TODO_BART-K2"].gekozenLezing), "K2 gekozenLezing beschrijft effect.alle niet");
+    Test.waar(/G2: gesplitst/.test(t["TODO_BART-K3"].gekozenLezing) && /O1 en Ev1: niet gesplitst/.test(t["TODO_BART-K3"].gekozenLezing), "K3 gekozenLezing noemt G2/O1/Ev1 niet juist");
+    Test.waar(/V6, ?B1|V6: V5/.test(t["TODO_BART-K4"].vraag), "K4 vraag over doelenlijsten");
+    ["V3", "V5"].forEach(function (id) { Test.waar(kaart(id).TODO_BART.indexOf("voorvoegsel") >= 0, id + " mist K2-TODO"); });
+    Test.waar(kaart("O1").TODO_BART.indexOf("voorvoegsel") >= 0 && kaart("O1").TODO_BART.indexOf("G2") >= 0, "O1 mist K2+K3-TODO");
   });
 
   Test.registreer(G, "K2 bronnen letterlijk uit de casuskop (volledige bronbeschrijving)", function () {

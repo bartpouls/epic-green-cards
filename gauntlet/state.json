@@ -6,7 +6,7 @@
  "status": "running",
  "round": 2,
  "maxRounds": 5,
- "updated": "2026-10-11 20:00",
+ "updated": "2026-10-11 20:01",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -17,9 +17,9 @@
   },
   {
    "name": "S2 data-e1",
-   "round": 1,
-   "verdict": "FAIL",
-   "evidence": "r1 FAIL, 4 punten, BLIND=BRON; ronde 2 bouwer bezig",
+   "round": 2,
+   "verdict": "PENDING",
+   "evidence": "r2 gebouwd; criticus r2 bezig",
    "artifact": ""
   },
   {
@@ -53,8 +53,8 @@
   {
    "name": "S7 engine",
    "round": 1,
-   "verdict": "PENDING",
-   "evidence": "r1 gebouwd (40 eigen tests groen op stubs); criticus bezig",
+   "verdict": "FAIL",
+   "evidence": "r1 FAIL, 2 punten + naden, BLIND=ONS; ronde 2 bouwer bezig",
    "artifact": ""
   },
   {
@@ -103,12 +103,19 @@
    "unit": "S10 logging",
    "verdict": "FAIL",
    "note": "r1-punten weg; nieuw: tests.html rood in Chromium (download-test), kapotte velden crashen exportCSV, quota-verlies niet gemeld. BLIND=BRON → ronde 3"
+  },
+  {
+   "round": 1,
+   "unit": "S7 engine",
+   "verdict": "FAIL",
+   "note": "werkzaamheid hangt af van A/B-volgorde (F1); tests bewijzen M6/echte regeltaal niet (F2); naden: startToestanden, afrondenPasNa.., ontgrendeld. BLIND=ONS → ronde 2"
   }
  ],
  "open": [
   "TODO_BART-1…7 staan vooraf in gauntlet/contract.md §8; bouwers vullen aan (casus.todoBart)",
   "TODO_BART-K1…K4 (S1): '—'-downsides N1/N2/N3/Ev1; E1-voorvoegsel V3/V5/O1; G2/O1/Ev1 ongesplitst; doelenlijsten afgeleid",
-  "S9 (UI) moet een pseudoniem afdwingen vóór Logging.bewaar (leeg pseudoniem geeft een fout)"
+  "S9 (UI) moet een pseudoniem afdwingen vóór Logging.bewaar (leeg pseudoniem geeft een fout)",
+  "S4 (E3-data): gebeurtenis A mist zet.statusNaBeurten:2 → geenVerbetering48 (I14/I16) werkt niet (gemeld door S7-criticus)"
  ],
  "belowBar": []
 }

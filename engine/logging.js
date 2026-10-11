@@ -12,6 +12,12 @@
 // - Kapotte elementen in de opslag (bv. null of een getal) worden genegeerd.
 // - Let op Excel: een pseudoniem met voorloopnullen (007) wordt daar het getal 7; het JSON-bestand is leidend.
 // - Opslag: localStorage (sleutel "egc.logging.v1") in try/catch; bij ontbreken of fout val terug op geheugen.
+// - Opslagstatus (voor de UI, S9): Logging.opslagStatus() geeft
+//     { bewaard: bool, opslagBeschikbaar: bool, totaal: n, inGeheugenOnly: n }
+//   bewaard=false betekent dat n pogingen alleen in dit tabblad staan en verdwijnen bij sluiten/herladen. De UI
+//   moet dan melden: "Resultaten staan alleen in dit tabblad: exporteer nu." Het spel blijft gewoon werken.
+// - Export is bestand tegen kapotte velden in opgeslagen records (geschonden/tijdlijn/onthuld geen array,
+//   pogingnummer ontbreekt): zo'n veld wordt een lege cel, de export crasht niet.
 //
 // CSV-keuzes (gedocumenteerd):
 // - scheidingsteken ";" (Nederlandse Excel verwacht dit), regeleinde CRLF, UTF-8 met BOM zodat Excel
@@ -31,6 +37,7 @@
     "geschonden", "scoreDuurzaamheid", "scoreDoelmatigheid", "profiel", "aantalKaarten", "tijdlijn", "onthuld"];
 
   var geheugen = [];
+  var laatsteSchrijfOk = true;
   var opslagOverride; // undefined = gebruik window.localStorage; null = geen opslag; object = nepopslag
 
   function opslag() {
@@ -115,7 +122,7 @@
     };
     lijst.push(rec);
     geheugen = kopie(lijst);
-    schrijfOpslag(lijst);
+    laatsteSchrijfOk = schrijfOpslag(lijst);
     return kopie(rec);
   }
 
@@ -139,8 +146,20 @@
     return bewaar(maakPoging(state, uitkomst, pseudoniem));
   }
 
+  // Voor de UI: staat alles echt in de opslag? Zo niet, hoeveel pogingen staan alleen in het geheugen.
+  function opslagStatus() {
+    var uit = leesOpslag();
+    var beschikbaar = uit !== null;
+    var inOpslag = beschikbaar ? uit.length : 0;
+    var totaal = alle().length;
+    var alleenGeheugen = Math.max(0, totaal - inOpslag);
+    return { bewaard: alleenGeheugen === 0 && (totaal === 0 || laatsteSchrijfOk), opslagBeschikbaar: beschikbaar,
+      totaal: totaal, inGeheugenOnly: alleenGeheugen };
+  }
+
   function wis() {
     geheugen = [];
+    laatsteSchrijfOk = true;
     try { var o = opslag(); if (o && typeof o.removeItem === "function") o.removeItem(SLEUTEL); } catch (e) { /* geen opslag */ }
   }
 
@@ -166,21 +185,23 @@
   function exportCSV() {
     var regels = [KOLOMMEN.join(SCHEIDER)];
     alle().forEach(function (p) {
-      var sc = p.score || {};
+      var sc = (p.score && typeof p.score === "object") ? p.score : {};
+      var tl = Array.isArray(p.tijdlijn) ? p.tijdlijn : [];
+      var onth = Array.isArray(p.onthuld) ? p.onthuld : [];
       regels.push([
         celTekst(p.pseudoniem),
         celTekst(p.casusId),
         celTekst(p.episodeId),
-        String(p.pogingnummer),
+        (typeof p.pogingnummer === "number" ? String(p.pogingnummer) : ""),
         p.eerstePoging ? "ja" : "nee",
         celTekst(p.tijdstempel),
-        celTekst((p.geschonden || []).join(", ")),
+        celTekst(Array.isArray(p.geschonden) ? p.geschonden.join(", ") : ""),
         (sc.duurzaamheid === undefined || sc.duurzaamheid === null) ? "" : String(sc.duurzaamheid),
         (sc.doelmatigheid === undefined || sc.doelmatigheid === null) ? "" : String(sc.doelmatigheid),
-        celTekst(p.profiel && p.profiel.naam ? p.profiel.naam : ""),
-        String((p.tijdlijn || []).length),
-        celJson(p.tijdlijn || []),
-        celJson(p.onthuld || [])
+        celTekst(p.profiel && typeof p.profiel === "object" && p.profiel.naam ? p.profiel.naam : ""),
+        String(tl.length),
+        celJson(tl),
+        celJson(onth)
       ].join(SCHEIDER));
     });
     return BOM + regels.join("\r\n") + "\r\n";
@@ -195,9 +216,10 @@
   function download(bestandsnaam, inhoud, mime, omgeving) {
     try {
       omgeving = omgeving || {};
-      var doc = omgeving.document || g.document;
-      var BlobK = omgeving.Blob || g.Blob;
-      var urlK = omgeving.URL || g.URL;
+      // Een meegegeven sleutel (ook null) wordt gerespecteerd; alleen een ontbrekende sleutel valt terug op de globals.
+      var doc = ("document" in omgeving) ? omgeving.document : g.document;
+      var BlobK = ("Blob" in omgeving) ? omgeving.Blob : g.Blob;
+      var urlK = ("URL" in omgeving) ? omgeving.URL : g.URL;
       if (!doc || !BlobK || !urlK || typeof urlK.createObjectURL !== "function") return false;
       var blob = new BlobK([inhoud], { type: mime || "application/octet-stream" });
       var url = urlK.createObjectURL(blob);
@@ -241,6 +263,7 @@
     maakPoging: maakPoging,
     alle: alle,
     wis: wis,
+    opslagStatus: opslagStatus,
     exportCSV: exportCSV,
     exportJSON: exportJSON,
     download: download,

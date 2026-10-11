@@ -111,6 +111,8 @@ Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat
 
 - `kaart.effect` mag ook `{ alle: "<casuscel verbatim>" }` zijn (of per episode `E1/E2/E3` waar de casus per episode splitst). Engine/UI/overzicht tonen `effect[episodeId] ?? effect.alle`; ontbreekt beide, dan niets (geen verzonnen tekst). Voor V3/V5/O1/Ev1/G2 geldt: de hele casuscel verbatim in `alle` tenzij de casus expliciet per episode (E1:/E2:/E3:) splitst.
 
+- `episode.patient.zichtbaar.kop` = de patiëntkop letterlijk uit de casus (bv. "Mevrouw V., 72 jaar."), voor ALLE episodes; UI/overzicht tonen `kop`, stellen niets samen. Sleutels `TODO_BART` binnen data-objecten (bv. `statusTeksten.TODO_BART`) zijn geen data: iteraties in UI/overzicht/engine slaan sleutels die met `TODO_BART` beginnen over en tonen ze apart onder open vragen.
+
 ## 5. Evaluatie (`regels/evaluatie.js`)
 `Evaluatie.beoordeel(casus, episodeId, state)` → 
 ```
