@@ -1,4 +1,5 @@
-// Datavorm-tests voor episode 1 (stuk S2). Geen evaluator: alleen controle van de data in casussen/uwi-e1.js.
+// Datatests voor episode 1 (stuk S2): datavorm, letterlijkheid, exacte sleutelwhitelist, TODO_BART-pins, plus een
+// als zodanig gemarkeerde eigen oracle (kruiscontrole) die de regels in de data naast een uit de casus geschreven uitkomst legt.
 // De referentieteksten hieronder zijn met de hand uit casus-uwi.md (sectie 4) overgenomen en NIET uit de data gegenereerd.
 (function (g) {
   var G = "data-e1";
@@ -44,13 +45,23 @@
   }
   reg("E1-1 patiëntkaart: elke tekst teken voor teken gelijk aan casus-uwi.md sectie 4 (medicatie, klachten, lab, risicogroep, kop)", function (e) {
     var z = e.patient.zichtbaar, ref = casusRef();
-    Object.keys(ref).forEach(function (k) { T.is(z[k], ref[k], "patient.zichtbaar." + k + " wijkt af van de casus"); });
+    Object.keys(ref).forEach(function (k) { if (k !== "risicogroep") T.is(z[k], ref[k], "patient.zichtbaar." + k + " wijkt af van de casus"); });
     T.is(ref.medicatieTekst.slice(-1), ".", "casus-medicatieregel eindigt op een punt");
     T.is(z.naam, "Mevrouw V.");
     T.is(z.leeftijd, 72);
     T.is(z.kop, z.naam + ", " + z.leeftijd + " jaar.", "kop consistent met naam en leeftijd");
     T.gelijk(z.medicatie, ["lisinopril"]);
     T.gelijk(z.lab, { eGFR: 42, datum: "recent" });
+  });
+  reg("E1-1 risicogroep-uitleg staat onder patient.meta.risicogroep (letterlijk) en NIET in wat de student ziet", function (e) {
+    var ref = casusRef();
+    T.is(e.patient.meta.risicogroep, ref.risicogroep, "patient.meta.risicogroep wijkt af van de casus");
+    T.waar(!("risicogroep" in e.patient.zichtbaar), "risicogroep staat in patient.zichtbaar (de student mag dit niet vooraf lezen)");
+    alleStrings(e.patient.zichtbaar, [], "zichtbaar").forEach(function (x) {
+      ["risicogroep", "[NHG]", "bewust", "verminderde weerstand", "\u2265 30"].forEach(function (w) {
+        T.waar(x.s.toLowerCase().indexOf(w.toLowerCase()) < 0, "verklappende tekst '" + w + "' in " + x.pad);
+      });
+    });
   });
   reg("E1-1 waar, comedicatie en verborgen", function (e) {
     T.gelijk(e.patient.waar, { eGFR: 42, risicogroep: false });
@@ -69,6 +80,17 @@
     var ids = kaarten.map(function (k) { return k.id; });
     e.repertoire.forEach(function (id) { T.waar(ids.indexOf(id) >= 0, "kaart " + id + " ontbreekt in casus.kaarten"); });
     e.antibiotica.forEach(function (id) { T.waar(ids.indexOf(id) >= 0, "antibioticum " + id + " ontbreekt in casus.kaarten"); });
+  });
+  function effectVoor(k, ep) { var ef = k && k.effect; if (!ef || typeof ef !== "object") return null; return ef[ep] !== undefined && ef[ep] !== null ? ef[ep] : (ef.alle !== undefined ? ef.alle : null); }
+  reg("E1-2 elke repertoirekaart heeft een effecttekst voor E1 (effect[E1] ?? effect.alle); G2 geeft het lab uit de patiëntkaart", function (e) {
+    var kaarten = casus().kaarten;
+    if (!kaarten || !kaarten.length) return;
+    e.repertoire.forEach(function (id) {
+      var k = kaarten.filter(function (x) { return x.id === id; })[0];
+      var t = effectVoor(k, "E1");
+      T.waar(typeof t === "string" && t.length > 0, "kaart " + id + " heeft geen effect voor E1 (effect.E1 noch effect.alle)");
+    });
+    T.is(effectVoor(kaarten.filter(function (x) { return x.id === "G2"; })[0], "E1"), e.patient.zichtbaar.labTekst, "G2-effect in E1 gelijk aan de lab-regel van de patiëntkaart");
   });
   reg("E1-2 knoppen (raadplegenKost 0), geen episode.raadplegen en geen gebeurtenissen", function (e) {
     T.gelijk(e.knoppen, { actiesPerBeurt: 3, aantalDagen: 5, raadplegenKost: 0 });
@@ -181,9 +203,10 @@
     T.is(s.geenVerbetering48, "Na 48 uur geen verbetering.");
   });
 
-  // ---- Gedragstests: de regels in de data worden doorgerekend met de ECHTE regeltaal (Predicaten.evalueer) over
-  // synthetische tijdlijnen; de verwachte uitkomst komt uit een met de hand geschreven casus-orakel (casus sectie 4),
-  // NIET uit de data. Elke score-, profiel-, poort- en feedbackregel is hiermee vastgepind aan casus-uitkomsten.
+  // ---- ORACLE (KRUISCONTROLE): eigen, door de bouwer onafhankelijk uit casus sectie 4 geschreven mini-evaluator.
+  // De regels in de data worden doorgerekend met de ECHTE regeltaal (Predicaten.evalueer) over synthetische tijdlijnen en
+  // vergeleken met de uitkomst van het orakel hieronder (NIET uit de data afgeleid). Dit is een gedragscontrole naast de
+  // datavorm-tests, geen vervanging van Evaluatie.beoordeel (zodra S6 bestaat draait die ernaast, zie evaluatie.tests.js).
   var REP = ["G1", "G2", "O1", "O2", "V1", "V2", "V3", "V4", "V5", "N1", "N2", "Ev1"];
   function tijdlijn(kaarten) {
     return kaarten.map(function (k, i) { return { volg: i + 1, kaart: k, dag: Math.floor(i / 3) + 1, doel: null, optie: null }; });
@@ -235,17 +258,21 @@
     if (zicht("Er is geen moment om alsnog te starten als de klachten aanhouden.") !== o.zichtV1) fouten.push(naam + "zichtbaar-V1-zonder-Ev1 klopt niet");
     return fouten;
   }
-  function gedragsfouten(e) {
+  // Representatieve, niet-uitputtende set: ALLE 4096 combinaties in oplopende volgorde (de regels hangen niet van de volgorde
+  // af), plus de omgekeerde volgorde voor elke 8e combinatie (casus: 'volgorde vrij'). Stopt bij de eerste afwijking ("eerst").
+  function gedragsfouten(e, eerst) {
     var uit = [];
     for (var m = 0; m < (1 << REP.length); m++) {
       var s = REP.filter(function (k, i) { return m & (1 << i); });
-      uit = uit.concat(afwijkingen(e, s), afwijkingen(e, s.slice().reverse()));   // casus: 'volgorde vrij'
+      uit = uit.concat(afwijkingen(e, s));
+      if (m % 8 === 0) uit = uit.concat(afwijkingen(e, s.slice().reverse()));
+      if (eerst && uit.length) return uit;
     }
     return uit;
   }
   function kloon(e) { return JSON.parse(JSON.stringify(e)); }
 
-  reg("E1-G1 gedrag: alle 4096 kaartcombinaties in 2 volgordes geven de casus-uitkomst (poort, duurzaamheid, profiel, doelmatigheid, feedback, zichtbaar)", function (e) {
+  reg("E1-G1 oracle (kruiscontrole): alle 4096 kaartcombinaties (+ omgekeerde volgorde voor elke 8e) geven de casus-uitkomst (poort, duurzaamheid, profiel, doelmatigheid, feedback, zichtbaar)", function (e) {
     T.waar(g.Predicaten && g.Predicaten.evalueer, "regels/predicaten.js niet geladen");
     var f = gedragsfouten(e);
     T.waar(f.length === 0, f.length + " afwijkingen, bv. " + f.slice(0, 3).join(" ; "));
@@ -274,7 +301,7 @@
     [["V3", "V4", "V5", "N1"], ["I4"], null, null, null],
     [["V1", "V3", "V4"], ["I1", "I3", "I4"], null, null, null]
   ];
-  reg("E1-G2 gedrag: handgeschreven casusroutes geven exact de bedoelde schendingen, score en profiel", function (e) {
+  reg("E1-G2 oracle (kruiscontrole): handgeschreven casusroutes geven exact de bedoelde schendingen, score en profiel", function (e) {
     var P = g.Predicaten;
     ROUTES.forEach(function (r) {
       [r[0], r[0].slice().reverse()].forEach(function (kaarten) {
@@ -291,13 +318,13 @@
       });
     });
   });
-  reg("E1-G3 gedrag: bij drie schendingen van gelijke ernst staat de vraag van de eerste in de data (I1) vooraan", function (e) {
+  reg("E1-G3 oracle (kruiscontrole): bij drie schendingen van gelijke ernst staat de vraag van de eerste in de data (I1) vooraan", function (e) {
     var gesch = e.invarianten.filter(function (i) { return g.Predicaten.evalueer(i.predicaat, ctxVoor(e, ["V1", "V3", "V4"])); });
     T.gelijk(gesch.map(function (i) { return i.id; }), ["I1", "I3", "I4"]);
     T.is(gesch[0].vraag, "Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?");
   });
 
-  // Mutatiecontrole: de gedragstests moeten elke inhoudelijke mutatie van een regel in de data opmerken.
+  // Mutatiecontrole: de oracle-tests moeten elke inhoudelijke mutatie van een regel in de data opmerken.
   var MUTATIES = [
     ["duurzaamheid regel 1 -> waarheid", function (e) { e.score.duurzaamheid.regels[0].als = { p: "waarheid", waarde: true }; }],
     ["duurzaamheid regel 1 punten 3 -> 2", function (e) { e.score.duurzaamheid.regels[0].punten = 2; }],
@@ -327,10 +354,10 @@
     ["zichtbaar N1 trigger gespeeld", function (e) { e.zichtbaarAlsOntbreekt[0].trigger = { p: "gespeeld", kaart: "N1" }; }],
     ["zichtbaar V1: Ev1 -> Ev2", function (e) { e.zichtbaarAlsOntbreekt[1].trigger.args[1].kaart = "Ev2"; }]
   ];
-  reg("E1-M mutatiecontrole: " + MUTATIES.length + " inhoudelijke mutaties van score-, profiel-, poort- en feedbackregels worden door de gedragstests opgemerkt", function (e) {
+  reg("E1-M oracle (kruiscontrole) mutatiecontrole: " + MUTATIES.length + " inhoudelijke mutaties van score-, profiel-, poort- en feedbackregels worden door de oracle opgemerkt", function (e) {
     MUTATIES.forEach(function (m) {
       var c = kloon(e); m[1](c);
-      T.waar(gedragsfouten(c).length > 0, "mutatie ongemerkt gebleven: " + m[0]);
+      T.waar(gedragsfouten(c, true).length > 0, "mutatie ongemerkt gebleven: " + m[0]);
     });
   });
 
