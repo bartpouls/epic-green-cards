@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 22:35",
+ "updated": "2026-10-11 22:37",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -52,9 +52,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S7 engine",
-   "round": 4,
-   "verdict": "FAIL",
-   "evidence": "r4 FAIL, 2 punten, BLIND=ONS; ronde 5 (laatste) bouwer bezig",
+   "round": 5,
+   "verdict": "PENDING",
+   "evidence": "r5 (laatste) gebouwd (engine-groep 142, suite 738 groen Node+Chromium; M6-scan allowlist, 72 evasietrucs rood; 21 mutanten allemaal equivalent); criticus r5 bezig",
    "artifact": ""
   },
   {

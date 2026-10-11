@@ -260,7 +260,8 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
   };
   function veldnaam(k) {
     if (VELDNAMEN[k]) return VELDNAMEN[k];
-    var t = String(k).replace(/([a-z]{2,})([A-Z])/g, '$1 $2').replace(/ ([A-Z])([a-z])/g, function (m, a, b) { return ' ' + a.toLowerCase() + b; });
+    if (/^[a-z][A-Z]/.test(k)) return String(k);
+    var t = String(k).replace(/Tekst$/, '').replace(/([a-z]{2,})([A-Z])/g, '$1 $2').replace(/ ([A-Z])([a-z])/g, function (m, a, b) { return ' ' + a.toLowerCase() + b; });
     return t.charAt(0).toUpperCase() + t.slice(1);
   }
 
@@ -516,10 +517,10 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
       });
       sec.appendChild(el('details', { open: 'open' }, [el('summary', null, 'Inhoud van deze groep'), ul]));
       g.items.forEach(function (t) {
-        var plekLinks = [];
-        for (var n = 1; n <= (badgeNr[t.id] || 0); n++) plekLinks.push(el('a', { href: '#plek-' + t.id + '-' + n }, badgeNr[t.id] > 1 ? 'Naar de plek in het overzicht (' + n + ')' : 'Naar de plek in het overzicht'));
+        var plekLinks = [], aantalPlekken = badgeNr[t.id] || 0;
+        for (var n = 1; n <= aantalPlekken; n++) plekLinks.push(el('a', { href: '#plek-' + t.id + '-' + n }, aantalPlekken > 1 ? 'plek ' + n : 'Naar de plek in het overzicht'));
         var markering = plekLinks.length
-          ? el('p', { 'class': 'klein plek-links' }, plekLinks.map(function (a) { return [a, '  ']; }))
+          ? el('p', { 'class': 'klein plek-links' }, aantalPlekken > 1 ? ['Staat op ' + aantalPlekken + ' plekken in het overzicht: '].concat(plekLinks.map(function (a) { return [a, '  ']; })) : plekLinks)
           : el('p', { 'class': 'klein geen-markering' }, 'Geen markering op de plek: in de data staat deze vraag alleen in deze lijst, niet ook bij de kaart of regel zelf. Zie “plek” hierboven.');
         sec.appendChild(el('div', { 'class': 'open-vraag', id: 'todo-' + t.id, 'data-todo-id': t.id }, [
           el('p', null, [el('span', { 'class': 'nr' }, t.id), el('span', { 'class': 'zacht' }, ' · plek: '), plekTxt(t.plek)]),
@@ -680,7 +681,7 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
       var los = Object.keys(p.zichtbaar).filter(function (k) { return ZICHTBAAR_LOS.indexOf(k) >= 0; });
       if (los.length) {
         var dlos = el('dl', { 'class': 'kv', 'data-blok': 'zichtbaar-los' });
-        los.forEach(function (k) { dlos.appendChild(el('dt', null, veldnaam(k))); dlos.appendChild(el('dd', null, waarde(p.zichtbaar[k]))); });
+        los.forEach(function (k) { dlos.appendChild(el('dt', null, veldnaam(k) + (/Tekst$/.test(k) ? ' (tekstregel)' : ' (los veld)'))); dlos.appendChild(el('dd', null, waarde(p.zichtbaar[k]))); });
         w.appendChild(el('details', { 'class': 'klein' }, [el('summary', null, 'Dezelfde gegevens als losse velden (daar rekent het spel mee)'), dlos]));
       }
     }

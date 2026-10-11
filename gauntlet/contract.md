@@ -140,6 +140,7 @@ Beschrijvende casustekst die NIET in het spel zit maar die Bart in het overzicht
 Extra sleutel (door S11 gebouwd, door LEAD aanvaard): `geldigeRoutesNoot` (de losse alinea onder de E1-routetabel) en elke episode heeft dezelfde elf sleutels (niet van toepassing = `null` of `[]`). Het overzicht (S8) leest dit; geen enkel ander onderdeel (engine/evaluatie/UI) gebruikt `referentie`.
 
 ## 5. Evaluatie (`regels/evaluatie.js`)
+(LEAD-aanvulling: `Evaluatie.beoordeel` geeft een JSON-baar object terug: geen functies, geen cycli.)
 `Evaluatie.beoordeel(casus, episodeId, state)` → 
 ```
 {
