@@ -9,6 +9,7 @@ window.CASUSSEN[0].episodes.push({
     actiesPerBeurt: 3,
     aantalDagen: 7,
     raadplegenKost: 1,
+    casusTekst: ["volledig repertoire (26 kaarten)", "acties per beurt krap", "2 gebeurtenissen in vrije volgorde, plus de kweekuitslag"],
     TODO_BART: "Acties per beurt in episode 3: de casus noemt 'krap', bouwopdracht 6.6 zegt 3 (zelfde als E1 en E2)."
   },
   raadplegen: { titel: "Richtlijn raadplegen", bronnen: ["NHG", "SIDRIK", "Kompas", "KNMP"] },
@@ -30,6 +31,7 @@ window.CASUSSEN[0].episodes.push({
       { id: "spironolacton", label: "spironolacton" },
       { id: "calcium", label: "calcium/colecalciferol" }
     ],
+    casusMedicatieregel: "lisinopril, spironolacton (hypertensie), calcium/colecalciferol",
     toelichting: "Wie spironolacton heeft gestart en waarom, staat er bewust niet op. Het leerpunt: als de nierfunctie daalt, kijk je niet alleen naar wat je nu voorschrijft, maar naar alles wat de patiënt al gebruikt. In de praktijk wordt dat vaak gemist.",
     verborgen: [
       {
@@ -387,7 +389,7 @@ window.CASUSSEN[0].episodes.push({
       geldtIn: ["*"],
       altijdFout: "Cotrimoxazol voorschrijven",
       geldtInTekst: "Alle",
-      predicaat: { p: "gespeeld", K: { kaart: "V9" } },
+      predicaat: { p: "gestart", middel: "V9" },
       vraag: "Cotrimoxazol naast spironolacton bij een eGFR van 28. Wat doet dat met haar kalium?",
       bron: "NHG, Kompas"
     },
@@ -493,6 +495,7 @@ window.CASUSSEN[0].episodes.push({
   ],
   score: {
     duurzaamheid: {
+      casusTekst: "de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op.",
       regels: [
         {
           als: { p: "en", args: [{ p: "gestart", middel: "V8" }, { p: "niet", arg: { p: "gestart", middel: "V7" } }] },
@@ -510,6 +513,7 @@ window.CASUSSEN[0].episodes.push({
       TODO_BART: "Profielen en score in episode 3: wat gebeurt er bij routes zonder ciprofloxacine of amoxicilline/clavulaanzuur (bijvoorbeeld alleen fosfomycine of verwijzen), en welk profiel hoort bij ciprofloxacine met de-escalatie naar amoxicilline/clavulaanzuur?"
     },
     doelmatigheid: {
+      casusTekst: "G3 gebruiken vóór de eerste keuze levert punten op.",
       regels: [
         {
           als: {
@@ -536,12 +540,14 @@ window.CASUSSEN[0].episodes.push({
   profielen: [
     {
       naam: "Kweekgestuurd",
+      casusTekst: "Kweekgestuurd; scoort hoger. De keuze leunt op de eerdere kweek en vermijdt de risico's van ciprofloxacine bij ouderen [NHG].",
       als: { p: "gestart", middel: "V8" },
       reflectievraag: null,
       TODO_BART: "Reflectievraag voor profiel Kweekgestuurd (episode 3) ontbreekt in de casus."
     },
     {
       naam: "Richtlijn eerste keus",
+      casusTekst: "Eerste keus volgens de richtlijn; eigen profiel",
       als: { p: "gestart", middel: "V7" },
       reflectievraag: "Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?"
     }
@@ -556,6 +562,7 @@ window.CASUSSEN[0].episodes.push({
     {
       trigger: { p: "gestart", middel: "V7" },
       vraag: "De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?",
+      toelichting: "voor ciprofloxacine bij eGFR 10–30 geeft de NHG de normale keerdosis eenmaal per 24 uur [NHG]. Het Kompas past de dosis pas aan bij een klaring ≤ 15 [Kompas]. Beide zijn verdedigbaar; het wordt een feedbackmoment.",
       wanneer: "alleenBijGehaaldePoort",
       TODO_BART: "Feedbackvragen 'Automatische herstart' en 'Ciprofloxacine-dosis (bronconflict)': de casus noemt geen trigger en niet of ze ook bij een poortschending verschijnen."
     }
@@ -573,6 +580,7 @@ window.CASUSSEN[0].episodes.push({
         ]
       },
       tekst: "De nierfunctie daalt verder en het kalium stijgt.",
+      toelichting: "Zonder getallen, zoals ook de KNMP-regel geen getallen geeft.",
       TODO_BART: "'Geen sick day-maatregelen' (zichtbaar als een kaart ontbreekt): geen enkele maatregel, of ook als er één ontbreekt?"
     },
     {

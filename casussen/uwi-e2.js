@@ -245,17 +245,7 @@ window.CASUSSEN[0].episodes.push({
         args: [
           { p: "gebeurtenisGeweest", id: "C" },
           { p: "actief", uitSet: "resistent", op: { eindeBeurtNaGebeurtenis: "C", offset: 1 } },
-          { p: "klachten", waarde: "aan" },
-          {
-            p: "niet",
-            arg: {
-              p: "of",
-              args: [
-                { p: "binnenBeurten", kaart: "B1", naGebeurtenis: "C", n: 2 },
-                { p: "binnenBeurten", kaart: "B2", naGebeurtenis: "C", n: 2 }
-              ]
-            }
-          }
+          { p: "klachten", waarde: "aan" }
         ]
       },
       vraag: "De kweek is binnen en de klachten blijven. Waar wacht je nog op?",
@@ -468,7 +458,7 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E2-5",
     vraag: "I8 (episode 2): casus zegt 'hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten'. Hoeveel beurten na de kweekuitslag (C) mag het resistente middel nog doorlopen, en vanaf wanneer 'houden de klachten aan'?",
-    gekozenLezing: "Bouwopdracht 6.1: niet gewisseld (B1) of gestopt (B2) binnen 2 beurten na C (de dag van C en de dag erna); een resistent middel nog actief aan het einde van die tweede beurt; klachtenstatus 'aan' ooit tijdens de episode. De grens (2) staat als getal in de data en is instelbaar.",
+    gekozenLezing: "Bouwopdracht 6.1: 'niet gewisseld (B1) of gestopt (B2) binnen 2 beurten na C' = aan het einde van de tweede beurt (de dag van C plus 1) is een resistent middel (set 'resistent', gezet door C) nog actief, en de klachtenstatus was 'aan'. Een wissel naar een ander resistent middel telt dus niet als bijsturen. De 2 staat als offset (1) in de data en is instelbaar.",
     plek: "E2.invarianten.I8"
   },
   {

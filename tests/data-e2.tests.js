@@ -107,7 +107,7 @@
     e.repertoire.forEach(function (id) {
       var k = kaarten.filter(function (x) { return x.id === id; })[0];
       T.waar(k.vanafEpisode <= 2, "kaart " + id + " hoort pas vanaf E" + k.vanafEpisode);
-      T.waar(k.effect && k.effect.E2, "kaart " + id + " heeft geen effect voor E2");
+      T.waar(k.effect && (k.effect.E2 || k.effect.alle), "kaart " + id + " heeft geen effect voor E2");
     });
   });
   reg("E2-2 knoppen, raadplegen, antibiotica en begintoestand", function (e) {
@@ -235,17 +235,16 @@
     T.waar(of_.args[1].arg.tot === undefined, "'vanaf dag 3' heeft geen bovengrens");
     T.waar(typeof vindInv(e, "I7").TODO_BART === "string", "I7 heeft TODO_BART (dag-lezing)");
   });
-  reg("E2-3 predicaat I8: na C een resistent middel nog actief, klachten 'aan', niet gewisseld (B1) of gestopt (B2) binnen 2 beurten", function (e) {
+  reg("E2-3 predicaat I8: na C nog een resistent middel actief aan het einde van beurt 2 (dag van C + 1) bij klachten 'aan'", function (e) {
     var i8 = vindInv(e, "I8");
     var p = i8.predicaat;
     T.is(p.p, "en");
     T.gelijk(p.args[0], { p: "gebeurtenisGeweest", id: "C" });
     T.gelijk(p.args[1], { p: "actief", uitSet: "resistent", op: { eindeBeurtNaGebeurtenis: "C", offset: 1 } });
     T.gelijk(p.args[2], { p: "klachten", waarde: "aan" });
-    T.gelijk(p.args[3], { p: "niet", arg: { p: "of", args: [
-      { p: "binnenBeurten", kaart: "B1", naGebeurtenis: "C", n: 2 },
-      { p: "binnenBeurten", kaart: "B2", naGebeurtenis: "C", n: 2 }
-    ] } });
+    T.is(p.args.length, 3);
+    // 'binnen 2 beurten' = de beurt van C en de beurt erna: offset 1 (instelbaar in de data).
+    T.is(p.args[1].op.offset, 2 - 1);
     T.waar(typeof i8.TODO_BART === "string", "I8 heeft TODO_BART (grens)");
   });
   reg("E2-3 alle predicaten gebruiken bekende predicaatnamen met geldige velden", function (e) {

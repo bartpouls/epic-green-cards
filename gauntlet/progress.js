@@ -4,9 +4,9 @@ window.GAUNTLET = {
  "budget": "per stuk min 3 / max 5 rondes; stop ook bij 2 rondes zonder verbetering",
  "level": "blind (verse criticus per ronde; A/B-labels procedureel verborgen, niet door aparte context)",
  "status": "running",
- "round": 2,
+ "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:01",
+ "updated": "2026-10-11 20:04",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -73,9 +73,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S10 logging",
-   "round": 2,
-   "verdict": "FAIL",
-   "evidence": "r2 FAIL, 3 nieuwe punten, BLIND=BRON; ronde 3 bouwer bezig",
+   "round": 3,
+   "verdict": "PENDING",
+   "evidence": "r3 gebouwd; criticus r3 bezig",
    "artifact": ""
   }
  ],

@@ -7,12 +7,11 @@
  *  - Gebeurtenissen worden bij het spelen van de kaart "in de wacht" gezet (state.wachtend) en pas bij Engine.volgendeDag
  *    toegepast: dan krijgen ze dag = nieuwe dag, wordt de toestand gezet en tellen ze mee voor de klachtenstatus van die dag.
  *  - Volgorde van een groep (bv. "AB"): Fisher-Yates met opties.rng; rng() = 0 geeft de datavolgorde, rng() ~ 1 draait om.
+ *  - Pogingnummer en "eerste poging" worden NIET door de engine bepaald (dat doet Logging, per pseudoniem); de state bevat ze niet.
  *  - Op de laatste dag zet Engine.volgendeDag state.dagenVoorbij = true (dag blijft aantalDagen); Engine.eindeBereikt is dan waar.
  */
 (function (g) {
   "use strict";
-
-  var pogingenTeller = {};
 
   function fout(tekst) { return { ok: false, fout: tekst }; }
   function kopie(x) { return x === undefined ? undefined : JSON.parse(JSON.stringify(x)); }
@@ -52,6 +51,7 @@
     var a = ids.slice(), n = a.length;
     for (var i = 0; i < n - 1; i++) {
       var j = i + Math.floor(rng() * (n - i));
+      if (!(j >= i)) j = i;
       if (j > n - 1) j = n - 1;
       var t = a[i]; a[i] = a[j]; a[j] = t;
     }
@@ -75,22 +75,13 @@
     });
     groepIds.forEach(function (gr) { groepen[gr] = trekVolgorde(groepen[gr], rng); });
 
-    var start = ep.startToestand != null ? ep.startToestand : (ep.patient && ep.patient.toestand);
-    var toestanden = lijstVan(start).slice();
-    if (!toestanden.length && ep.werkzaamheid) {
-      var sl = Object.keys(ep.werkzaamheid).filter(function (s) { return s !== "statusTeksten"; });
-      if (sl.length) toestanden = [sl[0]];
-    }
-
-    var sleutel = casus.id + "|" + episodeId;
-    var poging = opties.pogingnummer;
-    if (typeof poging !== "number") { pogingenTeller[sleutel] = (pogingenTeller[sleutel] || 0) + 1; poging = pogingenTeller[sleutel]; }
-    else pogingenTeller[sleutel] = Math.max(pogingenTeller[sleutel] || 0, poging);
+    if (!Array.isArray(ep.startToestanden) || !ep.startToestanden.length)
+      throw new Error("De episode mist de beginstoestand(en) (startToestanden, een lijst) in de data.");
+    var toestanden = ep.startToestanden.slice();
 
     var state = {
       casusId: casus.id, episodeId: episodeId,
       dag: 1, actiesOver: kn.actiesPerBeurt, aantalDagen: kn.aantalDagen, afgerond: false, dagenVoorbij: false,
-      pogingnummer: poging, eerstePoging: poging === 1,
       tijdlijn: [], raadplegingen: [], gebeurtenissen: [], wachtend: [],
       toestanden: toestanden,
       sets: { resistent: [], gevoelig: [] },
@@ -99,7 +90,7 @@
       groepen: groepen,
       volgordeAB: (groepen.AB || []).slice(),
       klachten: [{ dag: 0, status: null, tekst: null }, { dag: 1, status: null, tekst: null }],
-      afrondenPasNaGebeurtenissen: !!(opties.afrondenPasNaGebeurtenissen != null ? opties.afrondenPasNaGebeurtenissen : kn.afrondenPasNaGebeurtenissen),
+      afrondenPasNaGebeurtenissen: !!(opties.afrondenPasNaGebeurtenissen != null ? opties.afrondenPasNaGebeurtenissen : ep.afrondenPasNaGebeurtenissen),
       rng: rng,
       uitkomst: null
     };
@@ -110,7 +101,6 @@
   function herkansing(state, opties) {
     opties = opties || {};
     var o = {}; for (var k in opties) o[k] = opties[k];
-    if (o.pogingnummer == null) o.pogingnummer = (state.pogingnummer || 1) + 1;
     if (o.rng == null && typeof state.rng === "function") o.rng = state.rng;
     return nieuwSpel(casusVan(state), state.episodeId, o);
   }
@@ -219,6 +209,7 @@
     opts = opts || {};
     if (state.afgerond) return fout("Deze episode is al afgerond.");
     if (state.dagenVoorbij) return fout("De laatste dag is voorbij.");
+    if (typeof kaartId !== "string" || !kaartId) return fout("Kies eerst een kaart om te spelen.");
     var casus = casusVan(state), ep = episodeVan(state), kaart = kaartVan(casus, kaartId);
     if (!kaart) return fout("Onbekende kaart: " + kaartId + ".");
     if (!bevat(ep.repertoire || [], kaartId)) return fout("Deze kaart zit niet in het repertoire van deze episode.");
@@ -270,12 +261,14 @@
   /* ---------- klachtenstatus ---------- */
 
   function werkzaamheidVan(state, ep) {
-    var w = ep.werkzaamheid || {};
-    for (var i = state.toestanden.length - 1; i >= 0; i--) {
-      var t = state.toestanden[i];
-      if (t !== "statusTeksten" && w[t] && typeof w[t] === "object") return w[t];
+    // Datavolgorde (niet activeringsvolgorde): de laatste sleutel in episode.werkzaamheid die in state.toestanden zit.
+    // Zo hangt de uitkomst niet af van de getrokken A/B-volgorde.
+    var w = ep.werkzaamheid || {}, sleutels = Object.keys(w);
+    for (var i = sleutels.length - 1; i >= 0; i--) {
+      var t = sleutels[i];
+      if (t !== "statusTeksten" && t.indexOf("TODO_BART") !== 0 && w[t] && typeof w[t] === "object" && bevat(state.toestanden, t)) return w[t];
     }
-    return w["*"] || null;
+    return null;
   }
 
   function eindeDag(state, ep, ctx, d) {
@@ -351,8 +344,12 @@
     var set = {};
     if (Array.isArray(gehaald)) {
       gehaald.forEach(function (x) {
-        if (typeof x === "string") set[x] = true;
-        else if (x && (x.poortGehaald === true || (x.uitkomst && x.uitkomst.poortGehaald === true)) && x.episodeId) set[x.episodeId] = true;
+        if (typeof x === "string") { set[x] = true; return; }
+        if (!x || !x.episodeId) return;
+        var u = x.uitkomst && typeof x.uitkomst === "object" ? x.uitkomst : null;
+        // Gehaald: poortGehaald===true; of, zonder veld poortGehaald (Logging-record, contract 6), een lege geschonden-lijst.
+        if (x.poortGehaald === true || (u && u.poortGehaald === true)) set[x.episodeId] = true;
+        else if (!("poortGehaald" in x) && !(u && "poortGehaald" in u) && Array.isArray(x.geschonden) && x.geschonden.length === 0) set[x.episodeId] = true;
       });
     } else if (gehaald && typeof gehaald === "object") {
       for (var k in gehaald) if (gehaald[k]) set[k] = true;

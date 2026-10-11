@@ -162,7 +162,7 @@
 
   Test.registreer(G, "K6 effect[episodeId] ?? effect.alle geeft voor elke kaart in elke episode vanaf vanafEpisode precies de casustekst (geen verzonnen tekst)", function () {
     refKaarten().forEach(function (r) {
-      var k = kaart(r.id), v = +r.vanaf.slice(1), seg = segmenten(r.effect);
+      var k = kaart(r.id), v = +r.vanaf.slice(1), seg = r.id === "G2" ? segmenten(r.effect) : null;
       Object.keys(k.effect).forEach(function (sl) { Test.waar(sl === "alle" || /^E[123]$/.test(sl), r.id + ": vreemde effectsleutel " + sl); });
       for (var e = v; e <= 3; e++) {
         var uit = k.effect["E" + e] !== undefined && k.effect["E" + e] !== null ? k.effect["E" + e] : k.effect.alle;
@@ -196,7 +196,7 @@
       k.TODO_BART.split(" | ").forEach(function (p) { Test.waar(vragen.indexOf(p) >= 0, k.id + ": TODO_BART-tekst is geen vraag uit casus.todoBart: " + p); });
     });
     var t = {}; casus().todoBart.forEach(function (x) { t[x.id] = x; });
-    Test.gelijk(Object.keys(t), ["TODO_BART-K1", "TODO_BART-K2", "TODO_BART-K3", "TODO_BART-K4"]);
+    ["TODO_BART-K1", "TODO_BART-K2", "TODO_BART-K3", "TODO_BART-K4"].forEach(function (id) { Test.waar(t[id], id + " ontbreekt"); });
     Test.is(t["TODO_BART-K1"].gekozenLezing, "Letterlijk \"—\" overgenomen; geen downside verzonnen.");
     Test.waar(/effect\.alle/.test(t["TODO_BART-K2"].gekozenLezing) && /voorvoegsel \"E1: \"/.test(t["TODO_BART-K2"].gekozenLezing) && /geen tekst voor E2 of E3/.test(t["TODO_BART-K2"].gekozenLezing), "K2 gekozenLezing beschrijft effect.alle niet");
     Test.waar(/G2: gesplitst/.test(t["TODO_BART-K3"].gekozenLezing) && /O1 en Ev1: niet gesplitst/.test(t["TODO_BART-K3"].gekozenLezing), "K3 gekozenLezing noemt G2/O1/Ev1 niet juist");
