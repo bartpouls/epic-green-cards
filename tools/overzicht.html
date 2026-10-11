@@ -48,6 +48,13 @@ ul, ol { margin: 4px 0; padding-left: 22px; }
 .open-vraag { background: var(--open); border: 1px solid var(--open-lijn); border-radius: 6px; padding: 8px 12px; margin: 8px 0; }
 .open-vraag .nr { font-weight: 700; }
 .open-vraag p { margin: 4px 0; }
+.open-vraag[hidden], .open-groep[hidden], .inhoud li[hidden] { display: none; }
+.zoekbalk { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 8px 0; }
+.zoekbalk input { flex: 1 1 320px; max-width: 520px; padding: 6px 10px; font-size: 15px; border: 1px solid var(--meta-lijn); border-radius: 4px; }
+.groepnav a { margin-right: 14px; }
+ul.inhoud { margin: 4px 0; columns: 1; font-size: 13.5px; }
+.geen-markering { color: #6b4c00; font-style: italic; }
+.open-groep h3 { margin-top: 26px; }
 .pred { margin: 2px 0; }
 .pred ul { list-style: none; margin: 2px 0 2px 4px; padding-left: 14px; border-left: 2px solid var(--lijn); }
 .pred li { margin: 3px 0; }
@@ -290,7 +297,8 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
   function metaBox(m, titel) {
     return el('div', { 'class': 'meta' }, [
       el('span', { 'class': 'etiket' }, titel || 'Niet zichtbaar voor de student (alleen voor de ontwerper)'),
-      waarde(m)
+      waarde(m),
+      (m && typeof m === 'object') ? badges(m) : null
     ]);
   }
   function casusQuote(tekst) {
@@ -456,14 +464,22 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
   }
 
   // ---------- Onderdelen ----------
+  function kortTitel(t) {
+    var v = String(t.vraag || ''), q = v.indexOf('?');
+    var begin = 0;
+    if (q >= 0) { var b = v.lastIndexOf('. ', q); begin = b >= 0 && q - b < 220 ? b + 2 : 0; }
+    var z = v.slice(begin, q >= 0 ? q + 1 : undefined);
+    return z.length > 150 ? z.slice(0, 147) + '…' : z;
+  }
+
   function openVragen(c) {
     var wrap = el('section', { id: 'open' });
     var lijst = c.todoBart || [];
     wrap.appendChild(el('h2', null, 'Open vragen voor Bart (' + lijst.length + ')'));
-    wrap.appendChild(el('p', { 'class': 'zacht' }, 'Hier staat alles wat de casus niet of dubbelzinnig zegt. Per vraag staat de lezing waarmee nu is doorgewerkt. Gegroepeerd per kaarten en per episode.'));
+    wrap.appendChild(el('p', { 'class': 'zacht' }, 'Hier staat alles wat de casus niet of dubbelzinnig zegt. Per vraag staat de lezing waarmee nu is doorgewerkt. Gegroepeerd per kaarten en per episode. Vragen met het label “geen markering op de plek” staan alleen in deze lijst; bij de andere vragen staat een gele knop op de plek zelf.'));
 
     var groepen = [{ sleutel: '', titel: 'Kaartenbibliotheek en algemeen', items: [] }];
-    (c.episodes || []).forEach(function (e) { groepen.push({ sleutel: e.id, titel: 'Episode ' + e.id + ' (level ' + e.level + ')', items: [] }); });
+    (c.episodes || []).forEach(function (e) { groepen.push({ sleutel: e.id, titel: 'Episode ' + e.id.replace(/^E/, ''), items: [] }); });
     lijst.forEach(function (t) {
       var m = /^TODO_BART-(E\d+)-/.exec(t.id || '') || /^(E\d+)[.\[]/.exec(t.plek || '');
       var g = groepen[0];
@@ -471,17 +487,42 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
       g.items.push(t);
     });
     function nr(t) { var m = /(\d+)\s*$/.exec(t.id || ''); return m ? +m[1] : 0; }
-    groepen.forEach(function (g) {
-      if (!g.items.length) return;
-      g.items.sort(function (a, b) { return nr(a) - nr(b); });
-      wrap.appendChild(el('h3', null, g.titel + ' (' + g.items.length + ')'));
+    groepen.forEach(function (g) { g.items.sort(function (a, b) { return nr(a) - nr(b); }); });
+    var zichtbareGroepen = groepen.filter(function (g) { return g.items.length; });
+
+    // Zoekveld en inhoudsopgave per groep
+    var zoek = el('input', { type: 'search', id: 'zoek', placeholder: 'Zoek in de open vragen (nummer, kaart, woord)…', 'aria-label': 'Zoek in de open vragen' });
+    var teller = el('span', { id: 'zoekteller', 'class': 'zacht klein' }, lijst.length + ' van ' + lijst.length + ' vragen getoond');
+    wrap.appendChild(el('div', { 'class': 'zoekbalk' }, [zoek, teller]));
+    var nav = el('p', { 'class': 'groepnav' }, [el('span', { 'class': 'etiket' }, 'Spring naar: ')]);
+    zichtbareGroepen.forEach(function (g, i) {
+      nav.appendChild(el('a', { href: '#open-groep-' + (g.sleutel || 'K') }, g.titel + ' (' + g.items.length + ')'));
+    });
+    wrap.appendChild(nav);
+    wrap.appendChild(el('p', { id: 'zoekleeg', 'class': 'zacht', hidden: 'hidden' }, 'Geen enkele open vraag past bij deze zoekterm.'));
+
+    zichtbareGroepen.forEach(function (g) {
+      var sec = el('div', { 'class': 'open-groep', id: 'open-groep-' + (g.sleutel || 'K') });
+      sec.appendChild(el('h3', null, g.titel + ' (' + g.items.length + ')'));
+      var ul = el('ul', { 'class': 'inhoud' });
       g.items.forEach(function (t) {
-        wrap.appendChild(el('div', { 'class': 'open-vraag', id: 'todo-' + t.id, 'data-todo-id': t.id }, [
-          el('p', null, [el('span', { 'class': 'nr' }, t.id), el('span', { 'class': 'zacht' }, ' · plek: '), t.plek]),
+        ul.appendChild(el('li', { 'data-index-id': t.id }, [el('a', { href: '#todo-' + t.id }, t.id), ' — ', kortTitel(t)]));
+      });
+      sec.appendChild(el('details', { open: 'open' }, [el('summary', null, 'Inhoud van deze groep'), ul]));
+      g.items.forEach(function (t) {
+        var plekLinks = [];
+        for (var n = 1; n <= (badgeNr[t.id] || 0); n++) plekLinks.push(el('a', { href: '#plek-' + t.id + '-' + n }, badgeNr[t.id] > 1 ? 'Naar de plek in het overzicht (' + n + ')' : 'Naar de plek in het overzicht'));
+        var markering = plekLinks.length
+          ? el('p', { 'class': 'klein plek-links' }, plekLinks.map(function (a) { return [a, '  ']; }))
+          : el('p', { 'class': 'klein geen-markering' }, 'Geen markering op de plek: in de data staat deze vraag alleen in deze lijst, niet ook bij de kaart of regel zelf. Zie “plek” hierboven.');
+        sec.appendChild(el('div', { 'class': 'open-vraag', id: 'todo-' + t.id, 'data-todo-id': t.id }, [
+          el('p', null, [el('span', { 'class': 'nr' }, t.id), el('span', { 'class': 'zacht' }, ' · plek: '), plekTxt(t.plek)]),
           el('p', null, [el('b', null, 'Vraag: '), t.vraag]),
-          el('p', null, [el('b', null, 'Gekozen lezing: '), t.gekozenLezing])
+          el('p', null, [el('b', null, 'Gekozen lezing: '), t.gekozenLezing]),
+          markering
         ]));
       });
+      wrap.appendChild(sec);
     });
 
     // Open vragen die alleen op de plek zelf in de data staan en niet in de lijst.
@@ -496,13 +537,34 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
       });
     })(c, 'casus');
     if (extra.length) {
-      wrap.appendChild(el('h3', null, 'Alleen op de plek zelf vastgelegd, niet in de lijst hierboven (' + extra.length + ')'));
+      var sec2 = el('div', { 'class': 'open-groep', id: 'open-groep-extra' });
+      sec2.appendChild(el('h3', null, 'Alleen op de plek zelf vastgelegd, niet in de lijst hierboven (' + extra.length + ')'));
       extra.forEach(function (x) {
-        wrap.appendChild(el('div', { 'class': 'open-vraag', 'data-todo-plek': x.pad }, [
-          el('p', { 'class': 'zacht' }, 'plek: ' + x.pad), el('p', null, x.tekst)
+        sec2.appendChild(el('div', { 'class': 'open-vraag', 'data-todo-plek': x.pad }, [
+          el('p', { 'class': 'zacht' }, 'plek: ' + plekTxt(x.pad.replace(/^casus\./, ''))), el('p', null, x.tekst)
         ]));
       });
+      wrap.appendChild(sec2);
     }
+
+    // Zoeken: verbergt vragen die niet passen (de tekst blijft in de pagina).
+    zoek.addEventListener('input', function () {
+      var q = zoek.value.toLowerCase().replace(/\s+/g, ' ').trim(), getoond = 0, totaal = 0;
+      var kaarten = wrap.querySelectorAll('.open-vraag');
+      Array.prototype.forEach.call(kaarten, function (k) {
+        totaal++;
+        var pas = !q || k.textContent.toLowerCase().replace(/\s+/g, ' ').indexOf(q) >= 0;
+        k.hidden = !pas;
+        if (pas) getoond++;
+        var id = k.getAttribute('data-todo-id');
+        if (id) { var li = wrap.querySelector('[data-index-id="' + id + '"]'); if (li) li.hidden = !pas; }
+      });
+      Array.prototype.forEach.call(wrap.querySelectorAll('.open-groep'), function (g) {
+        g.hidden = !g.querySelector('.open-vraag:not([hidden])');
+      });
+      teller.textContent = getoond + ' van ' + totaal + ' vragen getoond';
+      wrap.querySelector('#zoekleeg').hidden = getoond > 0;
+    });
     return wrap;
   }
 

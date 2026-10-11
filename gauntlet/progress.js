@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 22:30",
+ "updated": "2026-10-11 22:31",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -66,9 +66,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S9 ui",
-   "round": 0,
+   "round": 1,
    "verdict": "PENDING",
-   "evidence": "nog niet gestart",
+   "evidence": "ronde 1: bouwer bezig",
    "artifact": ""
   },
   {
