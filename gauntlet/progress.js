@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 4,
  "maxRounds": 5,
- "updated": "2026-10-11 20:53",
+ "updated": "2026-10-11 20:58",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -53,8 +53,8 @@ window.GAUNTLET = {
   {
    "name": "S7 engine",
    "round": 3,
-   "verdict": "PENDING",
-   "evidence": "r3 gebouwd (78 eigen tests, suite 396 groen Node+Chromium); criticus r3 bezig",
+   "verdict": "FAIL",
+   "evidence": "r3 FAIL, 7 punten (atomiciteit/testdekking), BLIND=ONS; ronde 4 bouwer bezig",
    "artifact": ""
   },
   {
@@ -175,6 +175,12 @@ window.GAUNTLET = {
    "unit": "S3 data-e2",
    "verdict": "FAIL",
    "note": "data letterlijk en gedragsmatig correct (60.000 routes, 0 verschillen); ontbrekende TODO ernst-volgorde en weglaatDownside (F1); geen I8-route/O2-zelfde-dag-test (F2); lab.datum ongetest (F3). BLIND=ONS → ronde 3"
+  },
+  {
+   "round": 3,
+   "unit": "S7 engine",
+   "verdict": "FAIL",
+   "note": "speelKaart/raadpleeg niet atomair; herkansing verliest afrondenPasNa..; ontgrendelen E3/herkansing latere episode onbewezen; 7 ongetest gedragingen; M6-bronscan omzeilbaar; foutmeldingen/casusVan ongetest; randgeval klachtenstatus (LEAD besliste). 21.000 fuzz-spellen 0 afwijkingen. BLIND=ONS → ronde 4"
   }
  ],
  "open": [
@@ -189,7 +195,8 @@ window.GAUNTLET = {
   "N2 (Gebruik en verwachting uitleggen) kan niet op V2/V1; route 'V2 (+ middel)' speelbaar alleen met extra V3/V4/V5 (hangt aan TODO_BART-5) — Bart",
   "S9 geeft Logging.alle() gefilterd op pseudoniem mee aan Engine.ontgrendeld (API heeft bewust geen pseudoniem-parameter)",
   "Opruimen bij integratie: mini-evaluators in tests/data-e1/e2/e3.tests.js vervangen door Evaluatie (S6); tests/data-e2: C komt niet als O1 de 5e kaart is (TODO_BART-E2-6, literale lezing)",
-  "Prestatie: testgroep data-e1 duurt >100 s sinds eager validatie in S5 (valideert bij elke evaluatie); wordt in S5 r4-criticus/r5 opgelost (validatie cachen)"
+  "Prestatie: testgroep data-e1 duurt >100 s sinds eager validatie in S5 (valideert bij elke evaluatie); wordt in S5 r4-criticus/r5 opgelost (validatie cachen)",
+  "TODO_BART-8: klachtenstatus na een werkzaam interlude — LEAD-keuze: geenVerbetering48 alleen in de eerste nul-periode (contract §3b)"
  ],
  "belowBar": []
 };
