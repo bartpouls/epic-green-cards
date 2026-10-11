@@ -6,13 +6,13 @@ window.GAUNTLET = {
  "status": "running",
  "round": 1,
  "maxRounds": 5,
- "updated": "2026-10-11 19:51",
+ "updated": "2026-10-11 19:55",
  "units": [
   {
    "name": "S1 data-kaarten",
    "round": 1,
    "verdict": "PENDING",
-   "evidence": "ronde 1: bouwer bezig",
+   "evidence": "r1 gebouwd (20 eigen tests groen); criticus bezig",
    "artifact": ""
   },
   {
@@ -74,14 +74,22 @@ window.GAUNTLET = {
   {
    "name": "S10 logging",
    "round": 1,
-   "verdict": "PENDING",
-   "evidence": "ronde 1: bouwer bezig",
+   "verdict": "FAIL",
+   "evidence": "r1 FAIL, 3 punten, BLIND onbeslist; ronde 2 bouwer bezig",
    "artifact": ""
   }
  ],
- "log": [],
+ "log": [
+  {
+   "round": 1,
+   "unit": "S10 logging",
+   "verdict": "FAIL",
+   "note": "tests wissen echte localStorage (F1); null-record crasht (F2); eerste-poging hoofdlettergevoelig/leeg pseudoniem (F3) → ronde 2"
+  }
+ ],
  "open": [
-  "TODO_BART-1…7 staan vooraf in gauntlet/contract.md §8; bouwers vullen aan (casus.todoBart)"
+  "TODO_BART-1…7 staan vooraf in gauntlet/contract.md §8; bouwers vullen aan (casus.todoBart)",
+  "TODO_BART-K1…K4 (S1): '—'-downsides N1/N2/N3/Ev1; E1-voorvoegsel V3/V5/O1; G2/O1/Ev1 ongesplitst; doelenlijsten afgeleid"
  ],
  "belowBar": []
 };
