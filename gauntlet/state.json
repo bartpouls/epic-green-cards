@@ -6,7 +6,7 @@
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:11",
+ "updated": "2026-10-11 20:13",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -38,9 +38,9 @@
   },
   {
    "name": "S5 predicaten",
-   "round": 1,
-   "verdict": "FAIL",
-   "evidence": "r1 FAIL, 4 punten, BLIND=ONS; ronde 2 bouwer bezig",
+   "round": 2,
+   "verdict": "PENDING",
+   "evidence": "r2 gebouwd (106 eigen tests groen, volledige suite 321 groen, data E1-E3 0 fouten); criticus r2 bezig",
    "artifact": ""
   },
   {

@@ -5,7 +5,6 @@ window.CASUSSEN[0].episodes.push({
   level: 1,
   startToestanden: ["cystitis"],
   knoppen: { actiesPerBeurt: 3, aantalDagen: 5, raadplegenKost: 0 },
-  raadplegen: { titel: "Richtlijn raadplegen", bronnen: ["NHG", "SIDRIK", "Kompas", "KNMP"] },
   antibiotica: ["V3", "V4", "V5"],
   patient: {
     zichtbaar: {
@@ -14,7 +13,7 @@ window.CASUSSEN[0].episodes.push({
       leeftijd: 72,
       klachten: "Eerste cystitis: pijnlijke en frequente mictie sinds 2 dagen, geen koorts, nitriettest positief.",
       medicatie: ["lisinopril"],
-      medicatieTekst: "lisinopril (hypertensie)",
+      medicatieTekst: "lisinopril (hypertensie).",
       lab: { eGFR: 42, datum: "recent" },
       labTekst: "eGFR 42, recent.",
       risicogroep: "Geen risicogroep. De eGFR is ≥ 30 [NHG]. De leeftijd ligt bewust onder 75, de grens die de NHG noemt als factor bij verminderde weerstand [NHG]."
@@ -136,6 +135,6 @@ window.CASUSSEN[0].todoBart.push(
   { id: "TODO_BART-E1-3", vraag: "Reflectievraag voor profiel Gedeelde regie ontbreekt in de casus.", gekozenLezing: "reflectievraag = null.", plek: "E1.profielen.Gedeelde regie" },
   { id: "TODO_BART-E1-4", vraag: "Is 'Direct behandelen, 1e/2e/3e keus' één profiel of drie?", gekozenLezing: "Eén profiel 'Direct behandelen' (V3, V4 of V5) met de ene reflectievraag uit de casus.", plek: "E1.profielen.Direct behandelen" },
   { id: "TODO_BART-E1-5", vraag: "Komt de feedbackvraag 'O1 gespeeld' (episode 1) ook bij een poortschending?", gekozenLezing: "Alleen bij gehaalde poort; bij een schending verschijnt maar één vraag (A4).", plek: "E1.feedbackExtra[O1]" },
-  { id: "TODO_BART-E1-6", vraag: "Duurzaamheid bij V2 (+ middel) en bij V1 samen met V2, zie TODO_BART-5: telt uitgesteld recept met een middel erbij, of met V1 erbij, nog als 2?", gekozenLezing: "Gespeeld V2 (ook met V1 of met een middel erbij) = 2, in lijn met profiel Gedeelde regie; V1 zonder V2 en zonder antibioticum = 3; een antibioticum zonder V2 = 1. Zonder gekozen route is er geen score (zie TODO_BART-E1-1).", plek: "E1.score.duurzaamheid" }
+  { id: "TODO_BART-E1-6", vraag: "Duurzaamheid bij V2 (+ middel) en bij V1 samen met V2, zie TODO_BART-5: telt uitgesteld recept met een middel erbij, of met V1 erbij, nog als 2?", gekozenLezing: "Gespeeld V2 (ook met V1 of met een middel erbij) = 2, in lijn met profiel Gedeelde regie; V1 zonder V2 en zonder antibioticum = 3; een antibioticum zonder V2 = 1 (ook met V1 erbij, profiel Direct behandelen). Zonder gekozen route is er geen score (zie TODO_BART-E1-1).", plek: "E1.score.duurzaamheid" }
 );
 }
