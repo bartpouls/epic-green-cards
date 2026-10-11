@@ -1,0 +1,74 @@
+[
+ {
+  "i": 1,
+  "naam": "E1 routes rij 5",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "i": 2,
+  "naam": "E1 noot",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "i": 3,
+  "naam": "E2 I8",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "i": 4,
+  "naam": "E2 volgorde",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "i": 5,
+  "naam": "E2 brug",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "i": 6,
+  "naam": "E3 knoppen 3",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "i": 7,
+  "naam": "E3 I9",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "i": 8,
+  "naam": "E3 weef 1",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "i": 9,
+  "naam": "E3 bronconflict",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "i": 10,
+  "naam": "E3 Na A route",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "i": 11,
+  "naam": "E2 Gebeurtenis (bullets)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "i": 12,
+  "naam": "E3 Gebeurtenissen tabel regel A",
+  "X": "spel",
+  "Y": "bron"
+ }
+]

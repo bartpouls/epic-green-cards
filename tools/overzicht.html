@@ -707,7 +707,7 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
         el('div', null, [el('span', { 'class': 'etiket' }, 'Onthult: '), isLeeg(v.onthult) ? '' : v.onthult])
       ]);
       var dl = el('dl', { 'class': 'kv' });
-      if (!isLeeg(v.sleutel)) { dl.appendChild(el('dt', null, 'Onthuld gegeven')); dl.appendChild(el('dd', null, v.sleutel)); }
+      if (!isLeeg(v.sleutel)) { dl.appendChild(el('dt', null, 'Onthuld gegeven')); dl.appendChild(el('dd', null, veldnaam(v.sleutel))); }
       if (!isLeeg(v.waarde)) { dl.appendChild(el('dt', null, 'Waarde')); dl.appendChild(el('dd', null, waarde(v.waarde))); }
       if (v.zichtbaar) { dl.appendChild(el('dt', null, 'Daarna ziet de student')); dl.appendChild(el('dd', null, waarde(v.zichtbaar))); }
       if (dl.children.length) blok.appendChild(dl);
@@ -937,7 +937,8 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
       });
     });
     (e.feedbackExtra || []).forEach(function (x, i) {
-      var kel = [wanneer(predBlok(x.trigger)), el('div', { 'class': 'klein zacht' }, [el('span', { 'class': 'etiket' }, 'Verschijnt: '), WANNEER[x.wanneer] || String(x.wanneer)])];
+      var eenvoudig = x.trigger && ['gespeeld', 'nietGespeeld', 'gebeurtenisGeweest', 'klachten'].indexOf(x.trigger.p) >= 0;
+      var kel = [eenvoudig ? predBlok(x.trigger) : wanneer(predBlok(x.trigger)), el('div', { 'class': 'klein zacht' }, [el('span', { 'class': 'etiket' }, 'Verschijnt: '), WANNEER[x.wanneer] || String(x.wanneer)])];
       if (x.meta) kel.push(metaBox(x.meta));
       var ov = rest(x, ['trigger', 'vraag', 'wanneer', 'meta']);
       if (ov) kel.push(ov);
