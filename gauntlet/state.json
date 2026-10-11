@@ -11,8 +11,8 @@
   {
    "name": "S1 data-kaarten",
    "round": 2,
-   "verdict": "PENDING",
-   "evidence": "r2 gebouwd (24 eigen tests groen, effect.alle, casus.rollen); criticus r2 bezig",
+   "verdict": "FAIL",
+   "evidence": "r2 FAIL, 2 punten (alleen tests), BLIND=ONS; ronde 3 bouwer bezig",
    "artifact": ""
   },
   {
@@ -127,6 +127,12 @@
    "unit": "S2 data-e1",
    "verdict": "FAIL",
    "note": "medicatieTekst mist slotpunt (en test pint fout vast) (F1); raadplegen-bronnen zonder TODO (F2); TODO-markeringen niet vastgepind (F3); extern: rollen.pauzeer/pauze (F4). BLIND=BRON → ronde 3"
+  },
+  {
+   "round": 2,
+   "unit": "S1 data-kaarten",
+   "verdict": "FAIL",
+   "note": "data letterlijk correct (0 afwijkingen), maar doelenlijsten V6-E3/B2-E3/B5-E3/N2-E2/N2-E3 niet door tests bewaakt (F1, 13 overlevende mutanten); functie in data en verwijderde G2-TODO onopgemerkt (F2). BLIND=ONS → ronde 3"
   }
  ],
  "open": [
