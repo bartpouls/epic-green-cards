@@ -6,7 +6,7 @@
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 22:15",
+ "updated": "2026-10-11 22:17",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -31,9 +31,9 @@
   },
   {
    "name": "S4 data-e3",
-   "round": 3,
-   "verdict": "FAIL",
-   "evidence": "r3 FAIL, vorm/conventies + 56 gedragsmutanten zonder pin, BLIND=ONS; ronde 4 bouwer bezig",
+   "round": 4,
+   "verdict": "PENDING",
+   "evidence": "r4 gebouwd (101 eigen tests groen; 37 routes + oracle-kruiscontrole; TODO_BART-E3-1…26; mutatieset zonder pin niet afgerond); criticus r4 bezig",
    "artifact": ""
   },
   {
