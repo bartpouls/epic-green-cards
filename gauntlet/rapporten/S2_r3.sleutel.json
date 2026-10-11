@@ -1,0 +1,122 @@
+[
+ {
+  "paar": 1,
+  "naam": "patiëntkop+klachten",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 2,
+  "naam": "medicatie",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 3,
+  "naam": "lab",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 4,
+  "naam": "risicogroep",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 5,
+  "naam": "I1 vraag",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 6,
+  "naam": "I3 vraag",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 7,
+  "naam": "I4 vraag",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 8,
+  "naam": "O1 gespeeld",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 9,
+  "naam": "profiel terughoudend",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 10,
+  "naam": "profiel direct",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 11,
+  "naam": "zichtbaar zonder N1",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 12,
+  "naam": "zichtbaar V1 zonder Ev1",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 13,
+  "naam": "repertoire",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 14,
+  "naam": "knoppen",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 15,
+  "naam": "route Afwachten V1+N1+Ev1",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 16,
+  "naam": "route Fosfomycine V4+N1+N2",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 17,
+  "naam": "route Trimethoprim V5+N1",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 18,
+  "naam": "foutroute V1+N1 (I3)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 19,
+  "naam": "foutroute V3+V4+N1 (I4)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 20,
+  "naam": "foutroute V3 zonder N1 (I1)",
+  "X": "spel",
+  "Y": "bron"
+ }
+]

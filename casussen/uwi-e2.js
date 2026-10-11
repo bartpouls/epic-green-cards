@@ -6,14 +6,10 @@ window.CASUSSEN[0].episodes.push({
   titel: "Episode 2 — level 2",
   startToestanden: ["cystitis"],
   knoppen: { actiesPerBeurt: 3, aantalDagen: 7, raadplegenKost: 0 },
-  raadplegen: {
-    titel: "Richtlijn raadplegen",
-    bronnen: ["NHG", "KNMP"],
-    TODO_BART: "Welke bronnen horen op de naslagkaart (Richtlijn raadplegen) in episode 2? De casus noemt alleen 'verwijzing naar de bronnen'."
-  },
   antibiotica: ["V3", "V4", "V5"],
   patient: {
     zichtbaar: {
+      kop: "Mevrouw V., 78 jaar (6 jaar na episode 1).",
       naam: "Mevrouw V.",
       leeftijd: 78,
       leeftijdTekst: "78 jaar (6 jaar na episode 1)",
@@ -29,7 +25,7 @@ window.CASUSSEN[0].episodes.push({
       { id: "lisinopril", label: "lisinopril" },
       { id: "calcium", label: "calcium/colecalciferol" }
     ],
-    ontwerpnoot: "Casus bij de medicatie: calcium/colecalciferol (afleider, bereidt episode 3 voor). Niet voor de speler bedoeld.",
+    meta: { medicatieNoot: "afleider, bereidt episode 3 voor" },
     verborgen: [
       {
         kaart: "G2",
@@ -40,7 +36,7 @@ window.CASUSSEN[0].episodes.push({
           lab: { datum: "uit de jaarlijkse controle" },
           labTekst: "eGFR 29 uit de jaarlijkse controle"
         },
-        toelichting: "Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG].",
+        meta: { toelichting: "Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG]." },
         TODO_BART: "Moet de zin 'Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG].' bij het onthullen van G2 aan de speler getoond worden (botst met 'feedback zegt niet voor')?"
       }
     ]
@@ -60,8 +56,8 @@ window.CASUSSEN[0].episodes.push({
     cystitis: {
       werkzaam: [{ kaart: "V4" }],
       nietWerkzaam: [
-        { kaart: "V3", reden: "geen bactericide concentratie bij eGFR < 30" },
-        { kaart: "V5", reden: "resistent" }
+        { kaart: "V3", meta: { reden: "geen bactericide concentratie bij eGFR < 30" } },
+        { kaart: "V5", meta: { reden: "resistent" } }
       ]
     }
   },
@@ -133,7 +129,8 @@ window.CASUSSEN[0].episodes.push({
                   { p: "gespeeld", kaart: "V5" },
                   { p: "niet", arg: { p: "voor", a: { kaart: "O1" }, b: { kaart: "V5" } } }
                 ]
-              }
+              },
+              { p: "niet", arg: { p: "of", args: [{ p: "gestart", middel: "V3" }, { p: "gestart", middel: "V4" }, { p: "gestart", middel: "V5" }] } }
             ]
           }
         ]
@@ -170,7 +167,7 @@ window.CASUSSEN[0].episodes.push({
           vraag: "Wat vertelt een kweek van urine die al antibioticum heeft gezien?"
         },
         {
-          als: { p: "of", args: [{ p: "gespeeld", kaart: "V1" }, { p: "gespeeld", kaart: "V2" }] },
+          als: { p: "of", args: [{ p: "gespeeld", kaart: "V1" }, { p: "gespeeld", kaart: "V2" }, { p: "niet", arg: { p: "of", args: [{ p: "gestart", middel: "V3" }, { p: "gestart", middel: "V4" }, { p: "gestart", middel: "V5" }] } }] },
           vraag: "Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?"
         }
       ],
@@ -191,7 +188,7 @@ window.CASUSSEN[0].episodes.push({
             args: [
               {
                 p: "niet",
-                arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 2, tot: 4 }
+                arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 1, tot: 3 }
               },
               {
                 p: "niet",
@@ -213,7 +210,7 @@ window.CASUSSEN[0].episodes.push({
         {
           als: {
             p: "niet",
-            arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 2, tot: 4 }
+            arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 1, tot: 3 }
           },
           vraag: "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?",
           TODO_BART: "Casus geeft bij I7 twee verschillende vragen (geen kalium / niet gehalveerd). Welke vraag verschijnt als beide eisen ontbreken?"
@@ -234,7 +231,7 @@ window.CASUSSEN[0].episodes.push({
         }
       ],
       bron: "NHG, KNMP",
-      TODO_BART: "Lezing van 'dag 2–4 na de start' en 'na dag 3' (I7, episode 2): dag-verschil t.o.v. de dag van V5, waarbij V5 zelf verschil 0 heeft?"
+      TODO_BART: "Lezing van 'O2 (dag 2–4)' en 'V6 (na dag 3)' (I7, episode 2): de casus zegt niet 'na V5'. Lezing A (gekozen): cursusdag = verschil in dagen t.o.v. de dag van V5 plus 1, dus O2 op verschil 1 t/m 3 (V5 op dag 1: O2 op dag 2–4) en V6-halveren op verschil vanaf 3 (dag 4 of later). Lezing B (bouwopdracht 6.1, opDagRelatief(O2,V5,2,4)): O2 op verschil 2 t/m 4 (V5 op dag 1: O2 op dag 3–5). Bij lezing B faalt de casusroute 'V5 dag 1, O2 dag 2'. Welke lezing bedoel je?"
     },
     {
       id: "I8",
@@ -424,11 +421,23 @@ window.CASUSSEN[0].episodes.push({
   ],
   open: [
     {
+      TODO_BART: "Een route zonder enig antibioticum (geen V3, V4, V5, ook geen wissel ernaartoe) in de risicogroep: de casus zegt 'een antibioticum is nodig', maar I6 noemt alleen 'afwachten (V1/V2)'. Telt niets voorschrijven als afwachten?",
+      plek: "E2.invarianten.I6"
+    },
+    {
+      TODO_BART: "Vroeg afronden vóór de kweekuitslag (gebeurtenis C) ontloopt I8: de uitslag is dan nog niet gemeld, dus het resistente middel telt niet als doorgelopen. Moet afronden pas kunnen nadat C geweest is (parameter afrondenPasNaGebeurtenissen)?",
+      plek: "E2.invarianten.I8"
+    },
+    {
+      TODO_BART: "I7 bij een middel dat al vóór dag 3 is vervangen (V5, dan B1 naar V4, O2 en V6 halveren op het al gestopte V5): de casus zegt 'Trimethoprim 7 dagen zonder O2 ... of zonder V6 na dag 3'. Geldt I7 nog als trimethoprim niet 7 dagen loopt?",
+      plek: "E2.invarianten.I7"
+    },
+    {
       TODO_BART: "Een route die de poort haalt maar geen van beide profielen matcht (trimethoprim gevolgd door stoppen zonder wissel) heeft in de casus geen profiel.",
       plek: "E2.profielen"
     }
   ],
-  brug: "De kweek uit deze episode is het verborgen gegeven in episode 3 (G3)."
+  brug: "de kweek uit deze episode is het verborgen gegeven in episode 3 (G3)."
 });
 window.CASUSSEN[0].todoBart.push(
   {
@@ -439,14 +448,14 @@ window.CASUSSEN[0].todoBart.push(
   },
   {
     id: "TODO_BART-E2-2",
-    vraag: "Lezing van 'dag 2–4 na de start' en 'na dag 3' (I7, episode 2): dag-verschil t.o.v. de dag van V5, waarbij V5 zelf verschil 0 heeft?",
-    gekozenLezing: "(Contract TODO_BART-1.) Verschil in dagen t.o.v. de dag van V5 (V5 zelf = 0): O2 op verschil 2 t/m 4 (V5 op dag 1: dag 3-5), V6 halveren op verschil vanaf 3 (dag 4 of later). Anker = start van trimethoprim (V5, of B1 met doel V5).",
+    vraag: "Lezing van 'O2 (dag 2–4)' en 'V6 (na dag 3)' (I7, episode 2): de casus zegt niet 'na V5'. Lezing A (gekozen): cursusdag = verschil in dagen t.o.v. de dag van V5 plus 1, dus O2 op verschil 1 t/m 3 (V5 op dag 1: O2 op dag 2–4) en V6-halveren op verschil vanaf 3 (dag 4 of later). Lezing B (bouwopdracht 6.1, opDagRelatief(O2,V5,2,4)): O2 op verschil 2 t/m 4 (V5 op dag 1: O2 op dag 3–5). Bij lezing B faalt de casusroute 'V5 dag 1, O2 dag 2'. Welke lezing bedoel je?",
+    gekozenLezing: "(Contract TODO_BART-1.) Lezing A: verschil in dagen t.o.v. de dag van V5 (V5 zelf = 0): O2 op verschil 1 t/m 3 (V5 op dag 1: dag 2–4, de casusroute is dus speelbaar), V6 halveren op verschil vanaf 3 (dag 4 of later; vgl. feedback 'Dag 4.'). Anker = start van trimethoprim (V5, of B1 met doel V5). Lezing B staat in de vraag.",
     plek: "E2.invarianten.I7"
   },
   {
     id: "TODO_BART-E2-3",
     vraag: "Casus geeft bij I7 twee verschillende vragen (geen kalium / niet gehalveerd). Welke vraag verschijnt als beide eisen ontbreken?",
-    gekozenLezing: "De vragen staan beide letterlijk in vraagVarianten; de eerste variant waarvan de voorwaarde klopt wint, volgorde van de casustabel (eerst geen kalium, dan niet gehalveerd). 'vraag' is de eerste. Dit vraagt een uitbreiding van de evaluatie (zie rapport).",
+    gekozenLezing: "De vragen staan beide letterlijk in vraagVarianten; de eerste variant waarvan de voorwaarde klopt wint, volgorde van de casustabel (eerst geen kalium, dan niet gehalveerd). 'vraag' is de eerste.",
     plek: "E2.invarianten.I7.vraagVarianten"
   },
   {
@@ -504,10 +513,22 @@ window.CASUSSEN[0].todoBart.push(
     plek: "E2.feedbackExtra"
   },
   {
-    id: "TODO_BART-E2-13",
-    vraag: "Welke bronnen horen op de naslagkaart (Richtlijn raadplegen) in episode 2? De casus noemt alleen 'verwijzing naar de bronnen'.",
-    gekozenLezing: "Naslagkaart met titel 'Richtlijn raadplegen' en de bronnen die bij de invarianten van episode 2 staan: NHG, KNMP. Geen richtlijntekst.",
-    plek: "E2.raadplegen"
+    id: "TODO_BART-E2-15",
+    vraag: "Een route zonder enig antibioticum (geen V3, V4, V5, ook geen wissel ernaartoe) in de risicogroep: de casus zegt 'een antibioticum is nodig', maar I6 noemt alleen 'afwachten (V1/V2)'. Telt niets voorschrijven als afwachten?",
+    gekozenLezing: "Strengste lezing: ja. Een risicogroep-episode zonder gestart antibioticum schendt I6, met de afwachten-vraag ('Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?').",
+    plek: "E2.invarianten.I6"
+  },
+  {
+    id: "TODO_BART-E2-16",
+    vraag: "Vroeg afronden vóór de kweekuitslag (gebeurtenis C) ontloopt I8: de uitslag is dan nog niet gemeld, dus het resistente middel telt niet als doorgelopen. Moet afronden pas kunnen nadat C geweest is (parameter afrondenPasNaGebeurtenissen)?",
+    gekozenLezing: "Aansluitend op contract TODO_BART-4: de data blokkeert niets; I8 geldt alleen als C geweest is (geldtIn). De instelbare parameter afrondenPasNaGebeurtenissen (standaard uit) bepaalt of vroeg afronden kan. Let op: C komt alleen als O1 gespeeld is.",
+    plek: "E2.invarianten.I8"
+  },
+  {
+    id: "TODO_BART-E2-17",
+    vraag: "I7 bij een middel dat al vóór dag 3 is vervangen (V5, dan B1 naar V4, O2 en V6 halveren op het al gestopte V5): de casus zegt 'Trimethoprim 7 dagen zonder O2 ... of zonder V6 na dag 3'. Geldt I7 nog als trimethoprim niet 7 dagen loopt?",
+    gekozenLezing: "Strengste lezing: I7 geldt zodra V5 gestart is (ook als het middel later wordt vervangen), tenzij O2 en V6 halveren op tijd zijn gespeeld.",
+    plek: "E2.invarianten.I7"
   },
   {
     id: "TODO_BART-E2-14",

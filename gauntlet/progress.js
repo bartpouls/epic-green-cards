@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:21",
+ "updated": "2026-10-11 20:22",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -39,8 +39,8 @@ window.GAUNTLET = {
   {
    "name": "S5 predicaten",
    "round": 2,
-   "verdict": "PENDING",
-   "evidence": "r2 gebouwd (106 eigen tests groen, volledige suite 321 groen, data E1-E3 0 fouten); criticus r2 bezig",
+   "verdict": "FAIL",
+   "evidence": "r2 FAIL, 3 punten (validatie), BLIND=ONS; ronde 3 bouwer bezig",
    "artifact": ""
   },
   {
@@ -139,6 +139,12 @@ window.GAUNTLET = {
    "unit": "S3 data-e2",
    "verdict": "FAIL",
    "note": "kop ontbreekt; episode.raadplegen nog aanwezig; brug hoofdletter; 3 TODO ontbreken (route zonder antibioticum, vroeg afronden vs I8, I7 bij vroege wissel); tests missen mutaties; verzonnen ontwerpnoot. BLIND=BRON → ronde 2"
+  },
+  {
+   "round": 2,
+   "unit": "S5 predicaten",
+   "verdict": "FAIL",
+   "note": "r1-punten weg; nieuw: validatie van verwijzingen hangt van spelstand af (stil false) (F1); PREDICATEN.md klopt daardoor niet (F2); testgaten (F3). Geen afwijking op casusdata. BLIND=ONS → ronde 3"
   }
  ],
  "open": [
