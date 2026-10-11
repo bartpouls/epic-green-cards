@@ -6,7 +6,7 @@
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:34",
+ "updated": "2026-10-11 20:38",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -52,9 +52,9 @@
   },
   {
    "name": "S7 engine",
-   "round": 2,
-   "verdict": "FAIL",
-   "evidence": "r2 FAIL, 3 punten, BLIND=ONS; ronde 3 bouwer bezig",
+   "round": 3,
+   "verdict": "PENDING",
+   "evidence": "r3 gebouwd (78 eigen tests, suite 396 groen Node+Chromium); criticus r3 bezig",
    "artifact": ""
   },
   {
@@ -174,7 +174,8 @@
   "Let op: bouwers mogen NIET git stash/pull/checkout gebruiken (gebeurde één keer, conflict hersteld door LEAD)",
   "tests/data-e2.tests.js regel ~110 gebruikt k.effect.E2 → moet effect[ep] ?? effect.alle worden (S3 ronde 2); idem controleren in data-e1/e3, engine, UI, overzicht",
   "TODO_BART-1 (I7 dag-lezing): LEAD koos cursusdag-lezing (O2 verschil 1–3; V6 halveren verschil ≥3) omdat de casusroute anders niet speelbaar is; Bart bevestigt",
-  "N2 (Gebruik en verwachting uitleggen) kan niet op V2/V1; route 'V2 (+ middel)' speelbaar alleen met extra V3/V4/V5 (hangt aan TODO_BART-5) — Bart"
+  "N2 (Gebruik en verwachting uitleggen) kan niet op V2/V1; route 'V2 (+ middel)' speelbaar alleen met extra V3/V4/V5 (hangt aan TODO_BART-5) — Bart",
+  "S9 geeft Logging.alle() gefilterd op pseudoniem mee aan Engine.ontgrendeld (API heeft bewust geen pseudoniem-parameter)"
  ],
  "belowBar": []
 }

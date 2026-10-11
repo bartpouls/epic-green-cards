@@ -137,7 +137,7 @@
       if (al) return;
       var waarde = v.waarde;
       if (waarde === undefined && v.sleutel && ep.patient.waar) waarde = ep.patient.waar[v.sleutel];
-      var rij = { kaart: kaartId, dag: state.dag, sleutel: v.sleutel || null, tekst: v.onthult, waarde: waarde === undefined ? null : waarde };
+      var rij = { kaart: kaartId, dag: state.dag, sleutel: v.sleutel || null, tekst: v.onthult, waarde: waarde === undefined ? null : kopie(waarde) };
       if (v.sleutel && waarde !== undefined) zetPad(state.zichtbaar, v.sleutel, kopie(waarde));
       if (v.zichtbaar && typeof v.zichtbaar === "object") meng(state.zichtbaar, v.zichtbaar);
       state.onthuld.push(rij); nieuw.push(kopie(rij));
@@ -200,7 +200,7 @@
         });
       }
     });
-    state.wachtend = [];
+    state.wachtend.length = 0;   // in place: de rollback in volgendeDag herstelt dezelfde array
   }
 
   /* ---------- kaarten spelen ---------- */
@@ -310,14 +310,14 @@
     return {
       dag: state.dag, actiesOver: state.actiesOver, dagenVoorbij: state.dagenVoorbij,
       toestanden: state.toestanden.slice(), gebeurtenissen: state.gebeurtenissen.slice(), wachtend: state.wachtend.slice(),
-      resistent: state.sets.resistent.slice(), gevoelig: state.sets.gevoelig.slice(), klachten: state.klachten.slice()
+      resistent: state.sets.resistent.slice(), gevoelig: state.sets.gevoelig.slice()   // klachten[nieuw] wordt als LAATSTE gezet, dus daar valt niets terug te zetten
     };
   }
   function zetTerug(lijst, oud) { lijst.length = 0; Array.prototype.push.apply(lijst, oud); }
   function herstel(state, m) {
     state.dag = m.dag; state.actiesOver = m.actiesOver; state.dagenVoorbij = m.dagenVoorbij;
     zetTerug(state.toestanden, m.toestanden); zetTerug(state.gebeurtenissen, m.gebeurtenissen); zetTerug(state.wachtend, m.wachtend);
-    zetTerug(state.sets.resistent, m.resistent); zetTerug(state.sets.gevoelig, m.gevoelig); zetTerug(state.klachten, m.klachten);
+    zetTerug(state.sets.resistent, m.resistent); zetTerug(state.sets.gevoelig, m.gevoelig);
   }
 
   function volgendeDag(state) {

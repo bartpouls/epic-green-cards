@@ -469,6 +469,226 @@
     T.gelijk(g.Engine.ontgrendeldeEpisodes(c, [rec({ geschonden: [] })]), ["X1", "X2"]);
   });
 
+  /* ---------- ronde 3: F1 (ontgrendelen per casus), F2 (atomische volgendeDag), F3 (contractgedrag vastgepind) ---------- */
+
+  test("ontgrendeld: een Logging-record van een ANDERE casus (casusId) opent niets, ook niet met lege geschonden-lijst of poortGehaald", function () {
+    var c = maakFixture();
+    function rec(extra) { var r = { pseudoniem: "p", casusId: "andere-casus", episodeId: "X1", tijdlijn: [], geschonden: [] }; for (var k in extra) r[k] = extra[k]; return r; }
+    T.is(g.Engine.ontgrendeld(c, "X2", [rec({})]), false, "andere casus, geschonden leeg");
+    T.is(g.Engine.ontgrendeld(c, "X2", [rec({ poortGehaald: true })]), false, "andere casus, poortGehaald");
+    T.is(g.Engine.ontgrendeld(c, "X2", [rec({ uitkomst: { poortGehaald: true } })]), false, "andere casus, uitkomst.poortGehaald");
+    T.is(g.Engine.ontgrendeld(c, "X2", [rec({ casusId: "fixtuur" })]), true, "dezelfde casus telt wel");
+    T.is(g.Engine.ontgrendeld(c, "X2", [rec({}), rec({ casusId: "fixtuur" })]), true, "gemengd: het record van de eigen casus telt");
+    T.is(g.Engine.ontgrendeld(c, "X2", [{ episodeId: "X1", geschonden: [] }]), true, "record zonder casusId blijft geldig (oudere vorm)");
+    T.gelijk(g.Engine.ontgrendeldeEpisodes(c, [rec({})]), ["X1"]);
+    // Eerste episode is altijd open en een episode van een andere casus bestaat hier niet.
+    T.is(g.Engine.ontgrendeld(c, "X1", [rec({})]), true);
+  });
+  test("ontgrendeld: record-vorm {episodeId, uitkomst:{poortGehaald}} wordt gelezen; false/ontbrekend telt niet", function () {
+    var c = maakFixture();
+    T.is(g.Engine.ontgrendeld(c, "X2", [{ episodeId: "X1", uitkomst: { poortGehaald: true } }]), true);
+    T.is(g.Engine.ontgrendeld(c, "X2", [{ episodeId: "X1", uitkomst: { poortGehaald: false } }]), false);
+    T.is(g.Engine.ontgrendeld(c, "X2", [{ episodeId: "X1", uitkomst: { poortGehaald: false }, geschonden: [] }]), false, "expliciet niet gehaald wint van lege lijst");
+  });
+
+  test("volgendeDag is atomisch: een fout (kapot predicaat in de data) laat de state exact ongewijzigd; daarna werkt dezelfde stap alsnog", function () {
+    var c = maakFixture(); c.episodes[0].werkzaamheid.erger.werkzaam[0].als = { p: "bestaatniet" };
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
+    speel(s, "K1"); speel(s, "M2");              // P (kaart 2) wacht; M2 is straks actief in toestand erger
+    var voor = JSON.stringify(s), toestandenRef = s.toestanden, wachtendRef = s.wachtend;
+    T.gooit(function () { g.Engine.volgendeDag(s); });
+    T.is(JSON.stringify(s), voor, "state ongewijzigd na de fout");
+    T.waar(s.toestanden === toestandenRef && s.wachtend === wachtendRef, "zelfde arrays (in-place hersteld)");
+    T.is(s.dag, 1); T.is(s.klachten.length, 2); T.is(s.wachtend.length, 2, "P en R wachten"); T.gelijk(s.gebeurtenissen, []); T.gelijk(s.toestanden, ["basis"]);
+    T.gelijk(s.sets, { resistent: [], gevoelig: [] });
+    T.gooit(function () { g.Engine.volgendeDag(s); });
+    T.is(JSON.stringify(s), voor, "ook een tweede poging verandert niets (geen overgeslagen dag)");
+    c.episodes[0].werkzaamheid.erger.werkzaam[0].als = { p: "gespeeld", K: { kaart: "K1" } };   // data hersteld
+    g.Engine.volgendeDag(s);
+    T.is(s.dag, 2); T.is(s.klachten[2].status, "af"); T.is(s.gebeurtenissen.length, 2); T.is(s.wachtend.length, 0); T.is(s.actiesOver, 3);
+  });
+  test("volgendeDag is atomisch ook voor sets/toestanden: een gebeurtenis met zet wordt bij een fout niet half toegepast", function () {
+    var c = maakFixture(); c.episodes[0].werkzaamheid.erger.werkzaam[0].als = { p: "bestaatniet" };
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
+    speel(s, "K1"); speel(s, "M2");
+    T.gooit(function () { g.Engine.volgendeDag(s); });
+    T.gelijk(s.sets.resistent, [], "P zet M2 resistent; bij een fout niet bewaard"); T.gelijk(s.toestanden, ["basis"]);
+    T.is(s.actiesOver, 1);
+  });
+
+  /* validatie: de boodschap moet de BEDOELDE reden noemen, niet een andere weigering */
+  test("validatie: doel ontbreekt en optie ontbreekt geven elk hun eigen melding", function () {
+    var s = nieuw();
+    var r1 = g.Engine.speelKaart(s, "S"); T.is(r1.ok, false); T.waar(/Kies eerst een doel/.test(r1.fout), r1.fout);
+    var r2 = g.Engine.speelKaart(s, "D", { doel: "M1" }); T.is(r2.ok, false); T.waar(/Kies eerst een optie/.test(r2.fout), r2.fout);
+    var r3 = g.Engine.speelKaart(s, "D", { doel: "M1", optie: "bestaat-niet" }); T.waar(/hoort niet bij dit doel/.test(r3.fout), r3.fout);
+    var r4 = g.Engine.speelKaart(s, "S", { doel: "NOPE" }); T.waar(/kan niet bij de kaart/.test(r4.fout), r4.fout);
+    T.is(s.tijdlijn.length, 0);
+  });
+  test("validatie: een doelkaart ZONDER opties (S) weigert een optie met de melding dat er geen opties zijn", function () {
+    var s = nieuw(); var r = g.Engine.speelKaart(s, "S", { doel: "M1", optie: "x" });
+    T.is(r.ok, false); T.waar(/geen opties/.test(r.fout), r.fout); T.is(s.tijdlijn.length, 0); T.is(s.actiesOver, 3);
+  });
+  test("validatie: vereist-predicaat ziet gebeurtenissen en klachtenstatus van de state (ctx is volledig)", function () {
+    var c = maakFixture(); var k = c.kaarten.filter(function (x) { return x.id === "S"; })[0];
+    k.doelen.X1 = [ { id: "M1", label: "Middel een", vereist: { p: "gebeurtenisGeweest", id: "P" } },
+                    { id: "M2", label: "Middel twee", vereist: { p: "klachtenNu", waarde: "aan" } } ];
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
+    T.is(g.Engine.speelKaart(s, "S", { doel: "M1" }).ok, false, "P nog niet gebeurd");
+    T.is(g.Engine.speelKaart(s, "S", { doel: "M2" }).ok, false, "klachten nog niet aan");
+    speel(s, "K1"); speel(s, "M2"); g.Engine.volgendeDag(s);           // P op dag 2, M2 niet werkzaam zonder K1? (K1 gespeeld: wel) -> status af
+    T.is(s.klachten[2].status, "af"); speel(s, "S", { doel: "M1" });   // gebeurtenisGeweest P
+    var c2 = maakFixture(); c2.kaarten.filter(function (x) { return x.id === "S"; })[0].doelen.X1 = [ { id: "M2", label: "x", vereist: { p: "klachtenNu", waarde: "aan" } } ];
+    var t = g.Engine.nieuwSpel(c2, "X1", { rng: rngVast(0) });
+    speel(t, "M2"); g.Engine.volgendeDag(t);                            // M2 in basis: niet werkzaam -> aan
+    T.is(t.klachten[2].status, "aan"); speel(t, "S", { doel: "M2" });
+  });
+
+  /* raadplegen: grenzen */
+  test("raadpleeg: precies 'kost' acties over is genoeg (kost 1, 1 actie over -> ok, 0 over); bij 0 over geweigerd", function () {
+    var s = nieuw(); speel(s, "K1"); speel(s, "K2"); T.is(s.actiesOver, 1);
+    var r = g.Engine.raadpleeg(s); T.is(r.ok, true); T.is(s.actiesOver, 0); T.is(s.raadplegingen.length, 1);
+    var r2 = g.Engine.raadpleeg(s); T.is(r2.ok, false); T.waar(/acties/.test(r2.fout)); T.is(s.raadplegingen.length, 1);
+  });
+  test("raadpleeg: na de laatste dag geweigerd (ook al zijn er acties over)", function () {
+    var s = nieuw(); dagen(s, 4); T.is(s.dagenVoorbij, true); T.waar(s.actiesOver >= 1);
+    var voor = JSON.stringify(s), r = g.Engine.raadpleeg(s); T.is(r.ok, false); T.waar(/laatste dag/.test(r.fout), r.fout); T.is(JSON.stringify(s), voor);
+  });
+
+  /* afronden */
+  test("rondAf: gooit Evaluatie.beoordeel een fout, dan blijft de episode open (afgerond=false, geen uitkomst) en kan opnieuw", function () {
+    var s = nieuw(); speel(s, "K1"); var o = g.Evaluatie;
+    g.Evaluatie = { beoordeel: function () { throw new Error("kapot"); } };
+    try { T.gooit(function () { g.Engine.rondAf(s); }); } finally { g.Evaluatie = o; }
+    T.is(s.afgerond, false); T.is(s.uitkomst, null); T.is(g.Engine.eindeBereikt(s), false);
+    T.is(g.Engine.speelKaart(s, "K2").ok, true, "na de fout kan er nog gespeeld worden");
+    T.is(g.Engine.rondAf(s).stub, true); T.is(s.afgerond, true);
+  });
+  test("rondAf: Evaluatie.beoordeel krijgt (casus, episodeId, state) en de uitkomst gaat ongewijzigd terug (stub-grens naar S6)", function () {
+    var s = nieuw(), gezien = null, uit = { eigen: 1 }, o = g.Evaluatie;
+    g.Evaluatie = { beoordeel: function (c, e, st) { gezien = [c.id, e, st === s]; return uit; } };
+    try { T.is(g.Engine.rondAf(s), uit); T.is(s.uitkomst, uit); } finally { g.Evaluatie = o; }
+    T.gelijk(gezien, ["fixtuur", "X1", true]);
+  });
+  test("afrondenPasNaGebeurtenissen aan: een gebeurtenis die getriggerd maar nog wachtend is telt NIET als gebeurd; na de volgende dag wel", function () {
+    var c = maakFixture(); c.episodes[0].afrondenPasNaGebeurtenissen = true;
+    c.episodes[0].gebeurtenissen = c.episodes[0].gebeurtenissen.filter(function (e) { return e.id === "P"; }); c.episodes[0].gebeurtenissen[0].groep = undefined;
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
+    speel(s, "K1"); speel(s, "M1"); T.is(s.wachtend.length, 1);
+    T.gooit(function () { g.Engine.rondAf(s); }); T.is(s.afgerond, false);
+    g.Engine.volgendeDag(s); T.is(s.gebeurtenissen.length, 1);
+    T.is(g.Engine.rondAf(s).stub, true);
+  });
+  test("afrondenPasNaGebeurtenissen aan: na de laatste dag (dagenVoorbij) mag afronden altijd (contract 4b)", function () {
+    var c = maakFixture(); c.episodes[0].afrondenPasNaGebeurtenissen = true;
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
+    dagen(s, 4); T.is(s.dagenVoorbij, true);
+    T.waar(s.gebeurtenissen.length < c.episodes[0].gebeurtenissen.length, "er zijn nog gebeurtenissen niet gebeurd");
+    T.is(g.Engine.rondAf(s).stub, true); T.is(s.afgerond, true);
+  });
+
+  /* onthullen */
+  function onthulCasus(verborgen, zichtbaar, waar) {
+    var c = maakFixture(), e = c.episodes[0];
+    e.patient.verborgen = verborgen; if (zichtbaar) e.patient.zichtbaar = zichtbaar; if (waar) e.patient.waar = waar;
+    return c;
+  }
+  test("onthullen: zonder 'waarde' in de data wordt patient.waar[sleutel] onthuld (contract 4b), ook in zichtbaar", function () {
+    var c = onthulCasus([ { kaart: "K2", onthult: "tekst", sleutel: "w" } ], { lab: { w: 10 } }, { w: 7 });
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }); var r = speel(s, "K2");
+    T.is(r.onthuld[0].waarde, 7); T.is(s.onthuld[0].waarde, 7); T.is(s.zichtbaar.lab.w, 7); T.is(c.episodes[0].patient.waar.w, 7);
+  });
+  test("onthullen: sleutel met punt ('lab.w') zet het geneste veld; een nieuw pad wordt aangemaakt", function () {
+    var c = onthulCasus([ { kaart: "K2", onthult: "a", sleutel: "lab.w", waarde: 4 }, { kaart: "K1", onthult: "b", sleutel: "nieuw.diep", waarde: 5 } ], { lab: { w: 10 } }, {});
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }); speel(s, "K2"); speel(s, "K1");
+    T.is(s.zichtbaar.lab.w, 4); T.is(s.zichtbaar.nieuw.diep, 5); T.is(s.zichtbaar["lab.w"], undefined, "geen veld met een punt in de naam");
+  });
+  test("onthullen: zichtbaar-patch wordt gemengd (geneste objecten samengevoegd) zonder de casusdata te delen of te muteren", function () {
+    var c = onthulCasus([ { kaart: "K2", onthult: "t", sleutel: "w", waarde: { a: 1 }, zichtbaar: { lab: { extra: { x: 1 } }, vlag: true } } ], { lab: { w: 10, datum: "d" } }, {});
+    var voor = JSON.stringify(c), s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }); var r = speel(s, "K2");
+    T.is(s.zichtbaar.lab.datum, "d", "bestaand veld blijft"); T.is(s.zichtbaar.lab.extra.x, 1); T.is(s.zichtbaar.vlag, true);
+    s.zichtbaar.lab.extra.x = 99; s.zichtbaar.lab.w.a = 99; r.onthuld[0].waarde.a = 99; s.onthuld[0].waarde.a = 98;
+    T.is(JSON.stringify(c), voor, "casusdata wordt niet gedeeld met state of resultaat");
+  });
+  test("onthullen: het resultaat van speelKaart is een kopie (wijzigen ervan raakt state.onthuld niet)", function () {
+    var s = nieuw(); var r = speel(s, "K2"); r.onthuld[0].tekst = "veranderd";
+    T.is(s.onthuld[0].tekst, "Verborgen tekst");
+    var r2 = speel(s, "M1"); r2.regel.kaart = "X"; T.is(s.tijdlijn[1].kaart, "M1");
+  });
+
+  /* gebeurtenissen: eerste keer, statusNaBeurten uit de data */
+  test("trigger naKaartVanKaart telt vanaf de EERSTE keer dat de kaart is gespeeld", function () {
+    var s = nieuw(0); speel(s, "K1"); speel(s, "K1"); speel(s, "M1");   // K1 is kaart 1 en 2
+    var r = s.wachtend.filter(function (x) { return x.id === "R"; });
+    T.is(r.length, 1); T.is(r[0].naVolg, 2, "R na eerste K1 (kaart 1) + 1 = kaart 2, niet na de tweede K1 (dat zou kaart 3 zijn)");
+  });
+  test("statusNaBeurten komt uit de data: met 3 is de override pas op dA+3 (niet op dA+2)", function () {
+    var c = maakFixture(); c.episodes[0].knoppen.aantalDagen = 8; c.episodes[0].gebeurtenissen[0].zet.statusNaBeurten = 3;
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
+    speel(s, "K2"); speel(s, "M2"); g.Engine.volgendeDag(s);          // P op dag 2 = dA
+    g.Engine.volgendeDag(s); T.is(s.klachten[3].status, "aan");
+    g.Engine.volgendeDag(s); T.is(s.klachten[4].status, "aan", "dA+2: nog geen override bij statusNaBeurten 3");
+    g.Engine.volgendeDag(s); T.is(s.klachten[5].status, "geenVerbetering48", "dA+3");
+    g.Engine.volgendeDag(s); T.is(s.klachten[6].status, "geenVerbetering48", "blijft");
+  });
+  test("statusNaBeurten ontbreekt: een gebeurtenis zonder dat veld geeft nooit de 48-uurs override", function () {
+    var c = maakFixture(); c.episodes[0].knoppen.aantalDagen = 8; delete c.episodes[0].gebeurtenissen[0].zet.statusNaBeurten;
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
+    speel(s, "K2"); speel(s, "M2"); g.Engine.volgendeDag(s); dagen(s, 5);
+    for (var d = 2; d <= 7; d++) T.is(s.klachten[d].status, "aan", "dag " + d);
+  });
+  test("klachtenstatus kijkt naar het EIND van de vorige dag: een middel dat vandaag pas wordt gestart telt nog niet", function () {
+    var s = nieuw(); speel(s, "M1"); g.Engine.volgendeDag(s);           // dag 2 begint
+    T.is(s.klachten[2].status, "af");
+    speel(s, "S", { doel: "M1" }); g.Engine.volgendeDag(s);             // M1 gestopt op dag 2
+    T.is(s.klachten[3].status, null, "gestopt op dag 2: aan het eind van dag 2 niet meer actief");
+    var t = nieuw(); g.Engine.volgendeDag(t); T.is(t.klachten[2].status, null);
+    speel(t, "M1"); T.is(t.klachten[2].status, null, "een kaart van vandaag verandert de status van vandaag niet");
+  });
+
+  /* herkansing en rng */
+  test("herkansing: neemt opties.rng over, anders de rng van het vorige spel; trekt dus opnieuw volgens die rng", function () {
+    var c = maakFixture(), s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
+    T.gelijk(g.Engine.herkansing(s).groepen.PQ, ["P", "Q"], "rng van het vorige spel (0)");
+    T.gelijk(g.Engine.herkansing(s, { rng: rngVast(0.99) }).groepen.PQ, ["Q", "P"], "opties.rng wint");
+    var s2 = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0.99) });
+    T.gelijk(g.Engine.herkansing(s2).groepen.PQ, ["Q", "P"], "rng van het vorige spel (0.99)");
+    T.gelijk(g.Engine.herkansing(s2, { rng: rngVast(0) }).groepen.PQ, ["P", "Q"]);
+    T.is(g.Engine.herkansing(s2).casusId, "fixtuur"); T.is(g.Engine.herkansing(s2).episodeId, "X1");
+  });
+  test("herkansing: afrondenPasNaGebeurtenissen uit opties wordt doorgegeven", function () {
+    var s = nieuw(); T.is(g.Engine.herkansing(s, { afrondenPasNaGebeurtenissen: true }).afrondenPasNaGebeurtenissen, true);
+  });
+
+  /* nieuwSpel: knoppen */
+  test("nieuwSpel: ontbrekende of onjuiste knoppen (actiesPerBeurt, aantalDagen) geven een Nederlandse fout", function () {
+    function met(wijzig) { var c = maakFixture(); wijzig(c.episodes[0]); return c; }
+    [ function (e) { delete e.knoppen; }, function (e) { delete e.knoppen.actiesPerBeurt; }, function (e) { delete e.knoppen.aantalDagen; },
+      function (e) { e.knoppen.actiesPerBeurt = "3"; }, function (e) { e.knoppen.aantalDagen = "4"; } ].forEach(function (w, i) {
+      try { g.Engine.nieuwSpel(met(w), "X1", {}); T.waar(false, "geen fout bij variant " + i); }
+      catch (e) { T.waar(/knoppen/.test(e.message) && /De episode/.test(e.message), "variant " + i + ": " + e.message); }
+    });
+  });
+
+  /* geen koppeling aan id's: een synthetische casus met dezelfde id's als UWI maar andere inhoud moet de data volgen */
+  test("geen id-koppeling: episode 'E2' met 2 acties, gebeurtenis 'C' na kaart 2 en kaart 'V9' volgen alleen de data", function () {
+    var c = {
+      id: "nep", kaarten: [ { id: "V9", label: "x", categorie: "c", downside: "d" }, { id: "O1", label: "y", categorie: "c", downside: "d" }, { id: "G1", label: "z", categorie: "c", downside: "d" } ],
+      raadplegen: { titel: "t", bronnen: [] },
+      episodes: [ { id: "E2", knoppen: { actiesPerBeurt: 2, aantalDagen: 3, raadplegenKost: 0 }, startToestanden: ["cystitis"], antibiotica: [],
+        patient: { zichtbaar: {}, waar: { eGFR: 10 }, verborgen: [] }, repertoire: ["V9", "O1", "G1"],
+        gebeurtenissen: [ { id: "C", trigger: { type: "naKaart", n: 2 }, tekst: "t", toestand: "weefselinvasie" } ], werkzaamheid: {} } ]
+    };
+    var s = g.Engine.nieuwSpel(c, "E2", {});
+    T.is(s.actiesOver, 2); speel(s, "V9"); speel(s, "G1");
+    T.is(g.Engine.speelKaart(s, "O1").ok, false, "2 acties, geen vaste 3");
+    g.Engine.volgendeDag(s); T.is(s.actiesOver, 2, "budget uit de data (niet 3)");
+    T.gelijk(s.gebeurtenissen, [{ id: "C", dag: 2, naVolg: 2 }], "C zonder O1, gewoon na kaart 2");
+    T.gelijk(s.toestanden, ["cystitis", "weefselinvasie"]);
+    T.is(g.Engine.raadpleeg(s).kost, 0, "raadplegenkost uit de data");
+    g.Engine.volgendeDag(s); T.is(s.klachten[3].status, null);
+  });
+
   /* ---------- echte regeltaal + echte UWI-data (geen stubs) ---------- */
   function echt(naam, fn) {
     T.registreer(GROEP, "echt: " + naam, function () {
