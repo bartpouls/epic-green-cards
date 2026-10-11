@@ -1,0 +1,77 @@
+{
+ "1": {
+  "X": "bron",
+  "Y": "spel",
+  "naam": "Patiëntkaart: kop en klachten"
+ },
+ "2": {
+  "X": "bron",
+  "Y": "spel",
+  "naam": "Patiëntkaart: medicatieregel"
+ },
+ "3": {
+  "X": "spel",
+  "Y": "bron",
+  "naam": "Patiëntkaart: lab en risicogroep"
+ },
+ "4": {
+  "X": "bron",
+  "Y": "spel",
+  "naam": "Patiëntkaart: verborgen achter G3"
+ },
+ "5": {
+  "X": "spel",
+  "Y": "bron",
+  "naam": "Gebeurtenissen A, B, C (tekst)"
+ },
+ "6": {
+  "X": "bron",
+  "Y": "spel",
+  "naam": "Invarianten I9 t/m I12"
+ },
+ "7": {
+  "X": "bron",
+  "Y": "spel",
+  "naam": "Invarianten I13 t/m I16"
+ },
+ "8": {
+  "X": "bron",
+  "Y": "spel",
+  "naam": "Feedbackvragen I9 t/m I16"
+ },
+ "9": {
+  "X": "bron",
+  "Y": "spel",
+  "naam": "Overige feedback"
+ },
+ "10": {
+  "X": "spel",
+  "Y": "bron",
+  "naam": "Zichtbaar als een kaart ontbreekt"
+ },
+ "11": {
+  "X": "bron",
+  "Y": "spel",
+  "naam": "Profielen bij weefselinvasie"
+ },
+ "12": {
+  "X": "spel",
+  "Y": "bron",
+  "naam": "Knoppen"
+ },
+ "13": {
+  "X": "spel",
+  "Y": "bron",
+  "naam": "Scenario: fosfomycine-start (G3, O1, V4, N1, O2) vroeg afgerond"
+ },
+ "14": {
+  "X": "bron",
+  "Y": "spel",
+  "naam": "Scenario: ciprofloxacine zonder B4/B3 (casus vs spel-uitkomst)"
+ },
+ "15": {
+  "X": "bron",
+  "Y": "spel",
+  "naam": "Scenario: sick-day-set onvolledig (N3 ontbreekt)"
+ }
+}

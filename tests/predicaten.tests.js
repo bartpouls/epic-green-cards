@@ -261,7 +261,7 @@
     T.is(ev(a, mk([R(1, "Q2", 1), R(2, "B1", 2, "Q3")])), true);
   });
   t("actief: middel als lijst, en zonder antibiotica-lijst in de episode een fout", function () {
-    T.is(ev({ p: "actief", middel: ["Q8", "Q1"] }, mk([R(1, "Q1", 1)])), true);
+    T.is(ev({ p: "actief", middel: ["Q2", "Q1"] }, mk([R(1, "Q1", 1)])), true);
     T.gooit(function () { ev({ p: "actief" }, mk([R(1, "Q1", 1)], { zonderAb: true })); });
   });
   t("actief: op {dag} = einde van die beurt (randen)", function () {
@@ -724,7 +724,7 @@
     { p: "alsDan", als: { p: "waarheid", waarde: true }, dan: { p: "waarheid", waarde: true } },
     { p: "waarheid", waarde: true }
   ];
-  var CTX_E = { waar: { w: 5 }, toest: ["s1"], geb: [{ id: "E", dag: 2, naVolg: 1 }], gebdef: [{ id: "G", zet: { resistent: ["Q1"] } }] };
+  var CTX_E = { waar: { w: 5 }, toest: ["s1"], geb: [{ id: "E", dag: 2, naVolg: 1 }], gebdef: [{ id: "E" }, { id: "G", zet: { resistent: ["Q1"] } }] };
   t("typfouten: elk predicaat (plat én genest) met een onbekend veld geeft een Nederlandse fout", function () {
     VOORBEELDEN.forEach(function (v) {
       var ctx = mk([R(1, "X1", 1), R(2, "X2", 2)], CTX_E);

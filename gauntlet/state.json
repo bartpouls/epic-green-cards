@@ -6,13 +6,13 @@
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:22",
+ "updated": "2026-10-11 20:25",
  "units": [
   {
    "name": "S1 data-kaarten",
-   "round": 2,
-   "verdict": "FAIL",
-   "evidence": "r2 FAIL, 2 punten (alleen tests), BLIND=ONS; ronde 3 bouwer bezig",
+   "round": 3,
+   "verdict": "PENDING",
+   "evidence": "r3 gebouwd (27 eigen tests groen, 4050 mutaties 0 overlevers); criticus r3 bezig",
    "artifact": ""
   },
   {

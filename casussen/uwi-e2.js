@@ -429,7 +429,7 @@ window.CASUSSEN[0].episodes.push({
       plek: "E2.invarianten.I8"
     },
     {
-      TODO_BART: "I7 bij een middel dat al vóór dag 3 is vervangen (V5, dan B1 naar V4, O2 en V6 halveren op het al gestopte V5): de casus zegt 'Trimethoprim 7 dagen zonder O2 ... of zonder V6 na dag 3'. Geldt I7 nog als trimethoprim niet 7 dagen loopt?",
+      TODO_BART: "I7 bij een middel dat al vóór dag 3 is vervangen (V5, dan B1 naar V4, O2 en V6 halveren op het al gestopte V5): de casus zegt 'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3'. Geldt I7 nog als trimethoprim niet 7 dagen loopt?",
       plek: "E2.invarianten.I7"
     },
     {
@@ -526,7 +526,7 @@ window.CASUSSEN[0].todoBart.push(
   },
   {
     id: "TODO_BART-E2-17",
-    vraag: "I7 bij een middel dat al vóór dag 3 is vervangen (V5, dan B1 naar V4, O2 en V6 halveren op het al gestopte V5): de casus zegt 'Trimethoprim 7 dagen zonder O2 ... of zonder V6 na dag 3'. Geldt I7 nog als trimethoprim niet 7 dagen loopt?",
+    vraag: "I7 bij een middel dat al vóór dag 3 is vervangen (V5, dan B1 naar V4, O2 en V6 halveren op het al gestopte V5): de casus zegt 'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3'. Geldt I7 nog als trimethoprim niet 7 dagen loopt?",
     gekozenLezing: "Strengste lezing: I7 geldt zodra V5 gestart is (ook als het middel later wordt vervangen), tenzij O2 en V6 halveren op tijd zijn gespeeld.",
     plek: "E2.invarianten.I7"
   },

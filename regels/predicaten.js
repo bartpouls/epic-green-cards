@@ -158,9 +158,7 @@
   function matcht(regel, K, ctx) {
     if (K.kaart !== undefined && lijst(K.kaart).indexOf(regel.kaart) < 0) return false;
     if (K.kaartUit !== undefined) {
-      var set = ctx.episode && typeof K.kaartUit === "string" && heeft(ctx.episode, K.kaartUit) ? ctx.episode[K.kaartUit] : null;
-      if (!Array.isArray(set)) fout("Onbekende set '" + K.kaartUit + "' in de episode (kaartUit).");
-      if (set.indexOf(regel.kaart) < 0) return false;
+      if (ctx.episode[K.kaartUit].indexOf(regel.kaart) < 0) return false;
     }
     if (K.start !== undefined) {
       var mids = lijst(K.start), rl = rollen(ctx);
@@ -187,17 +185,11 @@
   function moment(op, ctx) {
     if (op === undefined || op === null) return {};
     if (isObj(op)) {
-      controleerVelden(op, MOMENT_VELDEN, "moment", "op");
-      if (op.dag !== undefined) {
-        if (!isGetal(op.dag)) fout("'op.dag' moet een getal zijn.");
-        return { maxDag: op.dag };
-      }
+      if (op.dag !== undefined) return { maxDag: op.dag };
       if (op.eindeBeurtNaGebeurtenis !== undefined) {
         var d = gebDag(ctx, op.eindeBeurtNaGebeurtenis);
         if (d === null) return null;
-        var off = op.offset === undefined ? 0 : op.offset;
-        if (!isGetal(off)) fout("'offset' moet een getal zijn.");
-        return { maxDag: d + off };
+        return { maxDag: d + (op.offset === undefined ? 0 : op.offset) };
       }
       if (op.naKaart !== undefined) {
         var K = leesK({ p: "op", K: op.naKaart }, "K");
@@ -223,27 +215,33 @@
         if (r.doel !== null) pauze[r.doel] = true;
       } else if (r.kaart === rl.hervat) {
         if (r.doel !== null) delete pauze[r.doel];
-      } else if (r.doel === null || (Array.isArray(ctx.episode && ctx.episode.antibiotica) && ctx.episode.antibiotica.indexOf(r.kaart) >= 0)) {
+      } else if (ab().indexOf(r.kaart) >= 0) {
         act[r.kaart] = true;
       }
-      if (Array.isArray(ctx.episode && ctx.episode.antibiotica) || r.kaart === rl.wissel) maxAb = Math.max(maxAb, tel());
+      maxAb = Math.max(maxAb, tel());
     });
     return { act: act, pauze: pauze, maxAb: maxAb, ab: ab, tel: tel };
   }
   // Benoemde set (bv. "resistent") op een moment: basis uit waar[naam] of episode[naam], aangevuld door gebeurtenissen (zet).
-  function benoemdeSet(ctx, naam, m) {
+  function setNaam(ctx, naam) {
     if (typeof naam !== "string" || naam === "") fout("'uitSet' moet de naam van een set zijn.");
-    var uit = Object.create(null), bekend = false;
+    var bekend = false;
     var tegen = heeft(TEGENSET, naam) ? TEGENSET[naam] : null;
     var basis = (isObj(ctx.waar) && heeft(ctx.waar, naam) && Array.isArray(ctx.waar[naam]) && ctx.waar[naam]) ||
       (isObj(ctx.episode) && heeft(ctx.episode, naam) && Array.isArray(ctx.episode[naam]) && ctx.episode[naam]) || null;
-    if (basis) { bekend = true; basis.forEach(function (x) { uit[x] = true; }); }
+    if (basis) bekend = true;
     var defs = lijst(ctx.episode && ctx.episode.gebeurtenissen);
     defs.forEach(function (d) {
       if (d && isObj(d.zet) && (heeft(d.zet, naam) || (tegen !== null && heeft(d.zet, tegen)))) bekend = true;
     });
     if (tegen !== null) bekend = true;
     if (!bekend) fout("Onbekende set '" + naam + "' (niet in de data van de episode).");
+    return { basis: basis, tegen: tegen, defs: defs };
+  }
+  function benoemdeSet(ctx, naam, m) {
+    var si = setNaam(ctx, naam), basis = si.basis, tegen = si.tegen, defs = si.defs;
+    var uit = Object.create(null);
+    if (basis) basis.forEach(function (x) { uit[x] = true; });
     lijst(ctx.gebeurtenissen).forEach(function (ge) {
       if (!ge || (m.maxDag !== undefined && !(ge.dag <= m.maxDag))) return;
       var def = null;
@@ -271,46 +269,190 @@
   }
   function klachtDag(op, ctx) {
     if (isObj(op)) {
-      controleerVelden(op, ["dag", "eindeBeurtNaGebeurtenis", "offset"], "moment", "op");
-      if (op.dag !== undefined) { if (!isGetal(op.dag)) fout("'op.dag' moet een getal zijn."); return op.dag; }
+      if (op.dag !== undefined) return op.dag;
       if (op.eindeBeurtNaGebeurtenis !== undefined) {
         var d = gebDag(ctx, op.eindeBeurtNaGebeurtenis);
-        var off = op.offset === undefined ? 0 : op.offset;
-        if (!isGetal(off)) fout("'offset' moet een getal zijn.");
-        return d === null ? null : d + off;
+        return d === null ? null : d + (op.offset === undefined ? 0 : op.offset);
       }
     }
     fout("Onbekend moment in 'op' bij 'klachten': " + JSON.stringify(op) + ".");
+  }
+
+  /* ---------- validatie (eager, onafhankelijk van de spelstand) ----------
+     Alles wat uit de data van het predicaat, de casus en de episode te controleren is, wordt gecontroleerd
+     VOORDAT er een waarde wordt gegeven: veldnamen, types, operatoren, verwijzingen naar sets (kaartUit,
+     uitSet), medicatie, gebeurtenissen, ware waarden, rollen en antibiotica. Of een gebeurtenis al geweest
+     is of een kaart al gespeeld, speelt geen rol. Ook alle onderdelen van en/of/niet/alsDan worden gecontroleerd. */
+  function valLijstTekst(x, wat) {
+    lijst(x).forEach(function (v) { if (typeof v !== "string") fout("'" + wat + "' moet een id (tekst) of een lijst van ids zijn (kreeg " + JSON.stringify(x) + ")."); });
+  }
+  function valGebeurtenis(ctx, id, wat) {
+    if (typeof id !== "string") fout("'" + wat + "' moet een gebeurtenis-id (tekst) zijn.");
+    var defs = ctx.episode && ctx.episode.gebeurtenissen;
+    if (Array.isArray(defs) && defs.length > 0 && !defs.some(function (d) { return isObj(d) && d.id === id; })) {
+      fout("Onbekende gebeurtenis '" + id + "' in '" + wat + "' (niet in episode.gebeurtenissen).");
+    }
+  }
+  function valGetal(x, wat) { if (!isGetal(x)) fout("'" + wat + "' moet een getal zijn."); }
+  function valOperator(op) { if (VERGELIJK.indexOf(op) < 0) fout("Onbekende vergelijkingsoperator '" + op + "'."); }
+  function valK(p, veld, ctx) {
+    var K = leesK(p, veld);
+    if (K.kaart !== undefined) valLijstTekst(K.kaart, "kaart");
+    if (K.kaartUit !== undefined) {
+      if (typeof K.kaartUit !== "string" || !isObj(ctx.episode) || !heeft(ctx.episode, K.kaartUit) || !Array.isArray(ctx.episode[K.kaartUit])) {
+        fout("Onbekende set '" + K.kaartUit + "' in de episode (kaartUit).");
+      }
+    }
+    if (K.start !== undefined) { valLijstTekst(K.start, "start"); rollen(ctx); }
+    if (K.doel !== undefined && K.doel !== null && typeof K.doel !== "string") fout("'doel' moet een id (tekst) of null zijn.");
+    if (K.optie !== undefined && K.optie !== null && typeof K.optie !== "string") fout("'optie' moet een tekst of null zijn.");
+    if (K.optieNiet !== undefined) valLijstTekst(K.optieNiet, "optieNiet");
+    // Bij binnenBeurten is naGebeurtenis een eigen veld en valt buiten de kaartverwijzing; elders is het een K-veld.
+    if (K.naGebeurtenis !== undefined && p.p !== "binnenBeurten") valGebeurtenis(ctx, K.naGebeurtenis, "naGebeurtenis");
+    if (K.voorGebeurtenis !== undefined) valGebeurtenis(ctx, K.voorGebeurtenis, "voorGebeurtenis");
+    return K;
+  }
+  function valOffset(op) { if (op.offset !== undefined) valGetal(op.offset, "offset"); }
+  function valMoment(op, ctx) {
+    if (op === undefined || op === null) return;
+    if (!isObj(op)) fout("Onbekend moment in 'op': " + JSON.stringify(op) + ".");
+    controleerVelden(op, MOMENT_VELDEN, "moment", "op");
+    var soorten = ["dag", "eindeBeurtNaGebeurtenis", "naKaart"].filter(function (v) { return op[v] !== undefined; });
+    if (soorten.length !== 1) fout("Onbekend moment in 'op': " + JSON.stringify(op) + ". Kies precies één van dag, eindeBeurtNaGebeurtenis of naKaart.");
+    if (op.offset !== undefined && soorten[0] !== "eindeBeurtNaGebeurtenis") fout("'offset' hoort alleen bij 'eindeBeurtNaGebeurtenis'.");
+    if (soorten[0] === "dag") valGetal(op.dag, "op.dag");
+    if (soorten[0] === "eindeBeurtNaGebeurtenis") { valGebeurtenis(ctx, op.eindeBeurtNaGebeurtenis, "eindeBeurtNaGebeurtenis"); valOffset(op); }
+    if (soorten[0] === "naKaart") valK({ p: "op", K: op.naKaart }, "K", ctx);
+  }
+  function valKlachtMoment(op, ctx) {
+    if (op === "laatste") return;
+    if (!isObj(op)) fout("Onbekend moment in 'op' bij 'klachten': " + JSON.stringify(op) + ".");
+    controleerVelden(op, ["dag", "eindeBeurtNaGebeurtenis", "offset"], "moment", "op");
+    var soorten = ["dag", "eindeBeurtNaGebeurtenis"].filter(function (v) { return op[v] !== undefined; });
+    if (soorten.length !== 1) fout("Onbekend moment in 'op' bij 'klachten': " + JSON.stringify(op) + ".");
+    if (op.offset !== undefined && soorten[0] !== "eindeBeurtNaGebeurtenis") fout("'offset' hoort alleen bij 'eindeBeurtNaGebeurtenis'.");
+    if (soorten[0] === "dag") valGetal(op.dag, "op.dag");
+    else { valGebeurtenis(ctx, op.eindeBeurtNaGebeurtenis, "eindeBeurtNaGebeurtenis"); valOffset(op); }
+  }
+  function valAntibiotica(ctx) { antibiotica(ctx); rollen(ctx); }
+
+  var VAL = {
+    gespeeld: function (p, ctx) { valK(p, "K", ctx); },
+    nietGespeeld: function (p, ctx) { valK(p, "K", ctx); },
+    voor: function (p, ctx) { valK(p, "a", ctx); valK(p, "b", ctx); },
+    na: function (p, ctx) { valK(p, "a", ctx); valK(p, "b", ctx); },
+    binnenBeurten: function (p, ctx) {
+      valK(p, "K", ctx); vereis(p, ["naGebeurtenis", "n"]);
+      valGebeurtenis(ctx, p.naGebeurtenis, "naGebeurtenis"); valGetal(p.n, "n");
+    },
+    binnenBeurtenNaKaart: function (p, ctx) {
+      valK(p, "K", ctx); valK(p, "naKaart", ctx); vereis(p, ["n"]); valGetal(p.n, "n");
+    },
+    opDagRelatief: function (p, ctx) {
+      valK(p, "K", ctx); valK(p, "anker", ctx); vereis(p, ["van"]); valGetal(p.van, "van");
+      if (p.tot !== undefined) valGetal(p.tot, "tot");
+    },
+    gestart: function (p, ctx) { vereis(p, ["middel"]); valLijstTekst(p.middel, "middel"); rollen(ctx); },
+    actief: function (p, ctx) {
+      valMoment(p.op, ctx);
+      valAntibiotica(ctx);
+      if (p.middel !== undefined) {
+        valLijstTekst(p.middel, "middel");
+        lijst(p.middel).forEach(function (x) {
+          if (antibiotica(ctx).indexOf(x) < 0) fout("'" + x + "' is geen antibioticum (niet in episode.antibiotica); 'actief' geldt alleen voor antibiotica.");
+        });
+      }
+      if (p.uitSet !== undefined) setNaam(ctx, p.uitSet);
+    },
+    aantalActieveAntibiotica: function (p, ctx) {
+      vereis(p, ["op", "n"]); valOperator(p.op); valGetal(p.n, "n"); valAntibiotica(ctx);
+    },
+    medicatieActief: function (p, ctx) {
+      vereis(p, ["id"]);
+      var med = ctx.episode && ctx.episode.patient && ctx.episode.patient.medicatie;
+      if (!Array.isArray(med)) fout("De episode heeft geen lijst 'patient.medicatie'; die is nodig voor 'medicatieActief'.");
+      if (!med.some(function (x) { return x === p.id || (isObj(x) && x.id === p.id); })) {
+        fout("Onbekende medicatie '" + p.id + "' (niet in patient.medicatie van de episode).");
+      }
+      valMoment(p.op, ctx); rollen(ctx);
+    },
+    waar: function (p, ctx) {
+      vereis(p, ["veld", "op", "waarde"]); valOperator(p.op);
+      if (!isObj(ctx.waar) || !heeft(ctx.waar, p.veld)) fout("Het veld '" + p.veld + "' staat niet in de ware waarden van de patiënt.");
+      if (p.op !== "==" && p.op !== "=" && p.op !== "!=" && (!isGetal(ctx.waar[p.veld]) || !isGetal(p.waarde))) {
+        fout("De operator '" + p.op + "' vergelijkt alleen getallen (kreeg " + JSON.stringify(ctx.waar[p.veld]) + " en " + JSON.stringify(p.waarde) + ").");
+      }
+    },
+    inToestand: function (p) { vereis(p, ["t"]); if (typeof p.t !== "string") fout("'t' moet een toestand-id (tekst) zijn."); },
+    gebeurtenisGeweest: function (p, ctx) { vereis(p, ["id"]); valGebeurtenis(ctx, p.id, "id"); },
+    klachten: function (p, ctx) {
+      vereis(p, ["waarde"]);
+      if (KLACHT_WAARDEN.indexOf(p.waarde) < 0) fout("Onbekende klachtenstatus '" + p.waarde + "'.");
+      if (p.op !== undefined) valKlachtMoment(p.op, ctx);
+    },
+    tel: function (p, ctx) {
+      vereis(p, ["teller", "op", "waarde"]); valOperator(p.op); valGetal(p.waarde, "waarde"); valTeller(p.teller, ctx);
+    },
+    en: function (p, ctx) {
+      if (!Array.isArray(p.args)) fout("Het predicaat 'en' vraagt een lijst 'args'.");
+      p.args.forEach(function (a) { valideerPred(a, ctx); });
+    },
+    of: function (p, ctx) {
+      if (!Array.isArray(p.args)) fout("Het predicaat 'of' vraagt een lijst 'args'.");
+      p.args.forEach(function (a) { valideerPred(a, ctx); });
+    },
+    niet: function (p, ctx) { vereis(p, ["arg"]); valideerPred(p.arg, ctx); },
+    alsDan: function (p, ctx) { vereis(p, ["als", "dan"]); valideerPred(p.als, ctx); valideerPred(p.dan, ctx); },
+    waarheid: function (p) {
+      if (p.waarde !== true && p.waarde !== false) fout("Het predicaat 'waarheid' vraagt waarde true of false.");
+    }
+  };
+  function valideerPred(pred, ctx) {
+    if (!isObj(pred)) fout("Een predicaat moet een object zijn met een veld 'p' (kreeg " + JSON.stringify(pred) + ").");
+    if (typeof pred.p !== "string") fout("Een predicaat mist het veld 'p' (de naam van het predicaat).");
+    if (!heeft(VAL, pred.p)) fout("Onbekend predicaat '" + pred.p + "'.");
+    if (!isObj(ctx)) fout("Er is geen geldige context (ctx) meegegeven.");
+    controleerVelden(pred, VELDEN[pred.p], "predicaat", pred.p);
+    VAL[pred.p](pred, ctx);
+  }
+  var VALT = {
+    gespeeld: function (t, ctx) {
+      valK(t, "K", ctx);
+      if (t.terwijlKlachten !== undefined && KLACHT_WAARDEN.indexOf(t.terwijlKlachten) < 0) {
+        fout("Onbekende klachtenstatus '" + t.terwijlKlachten + "' in 'terwijlKlachten'.");
+      }
+    },
+    aantalActieveAntibiotica: function (t, ctx) {
+      if (t.op !== "max") fout("De teller 'aantalActieveAntibiotica' kent alleen op: \"max\".");
+      valAntibiotica(ctx);
+    }
+  };
+  function valTeller(teller, ctx) {
+    if (!isObj(teller) || typeof teller.t !== "string") fout("Een teller moet een object met een veld 't' zijn.");
+    if (!heeft(VALT, teller.t)) fout("Onbekende teller '" + teller.t + "'.");
+    if (!isObj(ctx)) fout("Er is geen geldige context (ctx) meegegeven.");
+    controleerVelden(teller, TELLER_VELDEN[teller.t], "teller", teller.t);
+    VALT[teller.t](teller, ctx);
   }
 
   /* ---------- tellers (contract 3b) ---------- */
   var TELLERS = {
     gespeeld: function (t, ctx) {
       var K = leesK(t, "K"), n = 0;
-      if (t.terwijlKlachten !== undefined && KLACHT_WAARDEN.indexOf(t.terwijlKlachten) < 0) {
-        fout("Onbekende klachtenstatus '" + t.terwijlKlachten + "' in 'terwijlKlachten'.");
-      }
       alle(ctx, K).forEach(function (r) {
         if (t.terwijlKlachten === undefined || ctx.status(r.dag) === t.terwijlKlachten) n++;
       });
       return n;
     },
-    aantalActieveAntibiotica: function (t, ctx) {
-      if (t.op !== "max") fout("De teller 'aantalActieveAntibiotica' kent alleen op: \"max\".");
-      antibiotica(ctx);
-      return simuleer(ctx, {}).maxAb;
-    }
+    aantalActieveAntibiotica: function (t, ctx) { return simuleer(ctx, {}).maxAb; }
   };
   function tel(teller, ctx) {
-    if (!isObj(teller) || typeof teller.t !== "string") fout("Een teller moet een object met een veld 't' zijn.");
-    if (!heeft(TELLERS, teller.t)) fout("Onbekende teller '" + teller.t + "'.");
-    controleerVelden(teller, TELLER_VELDEN[teller.t], "teller", teller.t);
+    valTeller(teller, ctx);
     return TELLERS[teller.t](teller, ctx);
   }
 
-  /* ---------- predicaten ---------- */
-  // en/of/alsDan evalueren ALLE onderdelen (geen kortsluiting), zodat een typfout in een tak die
-  // toevallig niet nodig is toch een fout geeft. Evalueren is puur, dus dit kost alleen rekentijd.
+  /* ---------- predicaten (alleen aangeroepen na validatie) ---------- */
+  // en/of/alsDan evalueren ALLE onderdelen (geen kortsluiting). Evalueren is puur, dus dit kost alleen rekentijd.
   var PRED = {
     gespeeld: function (p, ctx) { return eerste(ctx, leesK(p, "K")) !== null; },
     nietGespeeld: function (p, ctx) { return eerste(ctx, leesK(p, "K")) === null; },
@@ -323,38 +465,31 @@
       return a !== null && b !== null && a.volg > b.volg;
     },
     binnenBeurten: function (p, ctx) {
-      var K = leesK(p, "K"); vereis(p, ["naGebeurtenis", "n"]);
-      if (!isGetal(p.n)) fout("'n' moet een getal zijn.");
+      var K = leesK(p, "K");
       var d = gebDag(ctx, p.naGebeurtenis);
       if (d === null) return false;
       return alle(ctx, K).some(function (r) { return r.dag >= d && r.dag <= d + p.n - 1; });
     },
     binnenBeurtenNaKaart: function (p, ctx) {
-      var K = leesK(p, "K"), A = leesK(p, "naKaart"); vereis(p, ["n"]);
-      if (!isGetal(p.n)) fout("'n' moet een getal zijn.");
+      var K = leesK(p, "K"), A = leesK(p, "naKaart");
       var a = eerste(ctx, A);
       if (a === null) return false;
       return alle(ctx, K).some(function (r) { return r.dag >= a.dag && r.dag <= a.dag + p.n - 1; });
     },
     opDagRelatief: function (p, ctx) {
-      var K = leesK(p, "K"), A = leesK(p, "anker"); vereis(p, ["van"]);
-      if (!isGetal(p.van)) fout("'van' moet een getal zijn.");
+      var K = leesK(p, "K"), A = leesK(p, "anker");
       var tot = p.tot === undefined ? Infinity : p.tot;
-      if (typeof tot !== "number" || isNaN(tot)) fout("'tot' moet een getal zijn.");
       var a = eerste(ctx, A);
       if (a === null) return false;
       return alle(ctx, K).some(function (r) { var v = r.dag - a.dag; return v >= p.van && v <= tot; });
     },
-    gestart: function (p, ctx) {
-      vereis(p, ["middel"]);
-      return eerste(ctx, { start: p.middel }) !== null;
-    },
+    gestart: function (p, ctx) { return eerste(ctx, { start: p.middel }) !== null; },
     actief: function (p, ctx) {
       var m = moment(p.op, ctx);
       if (m === null) return false;
       var s = simuleer(ctx, m), kand;
       if (p.middel !== undefined) kand = lijst(p.middel);
-      else kand = s.ab().filter(function (x) { return s.act[x]; });
+      else kand = s.ab();
       kand = kand.filter(function (x) { return s.act[x]; });
       if (p.uitSet !== undefined) {
         var set = benoemdeSet(ctx, p.uitSet, m);
@@ -362,70 +497,51 @@
       }
       return kand.length > 0;
     },
-    aantalActieveAntibiotica: function (p, ctx) {
-      vereis(p, ["op", "n"]);
-      antibiotica(ctx);
-      return vergelijk(p.op, simuleer(ctx, {}).maxAb, p.n);
-    },
+    aantalActieveAntibiotica: function (p, ctx) { return vergelijk(p.op, simuleer(ctx, {}).maxAb, p.n); },
     medicatieActief: function (p, ctx) {
-      vereis(p, ["id"]);
-      var med = ctx.episode && ctx.episode.patient && ctx.episode.patient.medicatie;
-      if (!Array.isArray(med)) fout("De episode heeft geen lijst 'patient.medicatie'; die is nodig voor 'medicatieActief'.");
-      var bekendId = med.some(function (x) { return x === p.id || (isObj(x) && x.id === p.id); });
-      if (!bekendId) fout("Onbekende medicatie '" + p.id + "' (niet in patient.medicatie van de episode).");
       var m = moment(p.op, ctx);
       if (m === null) return false;
       return !simuleer(ctx, m).pauze[p.id];
     },
-    waar: function (p, ctx) {
-      vereis(p, ["veld", "op", "waarde"]);
-      if (!isObj(ctx.waar) || !heeft(ctx.waar, p.veld)) fout("Het veld '" + p.veld + "' staat niet in de ware waarden van de patiënt.");
-      return vergelijk(p.op, ctx.waar[p.veld], p.waarde);
-    },
-    inToestand: function (p, ctx) { vereis(p, ["t"]); return lijst(ctx.toestanden).indexOf(p.t) >= 0; },
-    gebeurtenisGeweest: function (p, ctx) { vereis(p, ["id"]); return gebDag(ctx, p.id) !== null; },
+    waar: function (p, ctx) { return vergelijk(p.op, ctx.waar[p.veld], p.waarde); },
+    inToestand: function (p, ctx) { return lijst(ctx.toestanden).indexOf(p.t) >= 0; },
+    gebeurtenisGeweest: function (p, ctx) { return gebDag(ctx, p.id) !== null; },
     klachten: function (p, ctx) {
-      vereis(p, ["waarde"]);
-      if (KLACHT_WAARDEN.indexOf(p.waarde) < 0) fout("Onbekende klachtenstatus '" + p.waarde + "'.");
       if (p.op === undefined) return lijst(ctx.klachten).some(function (k) { return k && k.status === p.waarde; });
       if (p.op === "laatste") return ctx.status(ctx.laatsteDag) === p.waarde;
       var d = klachtDag(p.op, ctx);
       return d !== null && ctx.status(d) === p.waarde;
     },
-    tel: function (p, ctx) {
-      vereis(p, ["teller", "op", "waarde"]);
-      return vergelijk(p.op, tel(p.teller, ctx), p.waarde);
-    },
-    en: function (p, ctx) {
-      if (!Array.isArray(p.args)) fout("Het predicaat 'en' vraagt een lijst 'args'.");
-      return p.args.map(function (a) { return evalueer(a, ctx); }).every(function (x) { return x; });
-    },
-    of: function (p, ctx) {
-      if (!Array.isArray(p.args)) fout("Het predicaat 'of' vraagt een lijst 'args'.");
-      return p.args.map(function (a) { return evalueer(a, ctx); }).some(function (x) { return x; });
-    },
-    niet: function (p, ctx) { vereis(p, ["arg"]); return !evalueer(p.arg, ctx); },
-    alsDan: function (p, ctx) { vereis(p, ["als", "dan"]); var als = evalueer(p.als, ctx), dan = evalueer(p.dan, ctx); return !als || dan; },
-    waarheid: function (p) {
-      if (p.waarde !== true && p.waarde !== false) fout("Het predicaat 'waarheid' vraagt waarde true of false.");
-      return p.waarde;
-    }
+    tel: function (p, ctx) { return vergelijk(p.op, TELLERS[p.teller.t](p.teller, ctx), p.waarde); },
+    en: function (p, ctx) { return p.args.map(function (a) { return ev(a, ctx); }).every(function (x) { return x; }); },
+    of: function (p, ctx) { return p.args.map(function (a) { return ev(a, ctx); }).some(function (x) { return x; }); },
+    niet: function (p, ctx) { return !ev(p.arg, ctx); },
+    alsDan: function (p, ctx) { var als = ev(p.als, ctx), dan = ev(p.dan, ctx); return !als || dan; },
+    waarheid: function (p) { return p.waarde; }
   };
+  function ev(pred, ctx) { return PRED[pred.p](pred, ctx) === true; }
 
   function evalueer(pred, ctx) {
-    if (!isObj(pred)) fout("Een predicaat moet een object zijn met een veld 'p' (kreeg " + JSON.stringify(pred) + ").");
-    if (typeof pred.p !== "string") fout("Een predicaat mist het veld 'p' (de naam van het predicaat).");
-    if (!heeft(PRED, pred.p)) fout("Onbekend predicaat '" + pred.p + "'.");
-    if (!isObj(ctx)) fout("Er is geen geldige context (ctx) meegegeven.");
-    controleerVelden(pred, VELDEN[pred.p], "predicaat", pred.p);
-    return PRED[pred.p](pred, ctx) === true;
+    valideerPred(pred, ctx);
+    return ev(pred, ctx);
+  }
+  // valideer(pred, ctx) of valideer(pred, casus, episode): controleert een predicaat (of teller {t:..}) volledig
+  // tegen casus en episode, zonder tijdlijn of spelstand. Geeft niets terug; bij een fout een Error met Nederlandse tekst.
+  function valideer(pred, casusOfCtx, episode) {
+    var ctx = casusOfCtx;
+    if (!(isObj(ctx) && Array.isArray(ctx.tijdlijn) && isObj(ctx.episode) && typeof ctx.status === "function")) {
+      ctx = maakContext(casusOfCtx, episode, {});
+    }
+    if (isObj(pred) && pred.p === undefined && pred.t !== undefined) valTeller(pred, ctx);
+    else valideerPred(pred, ctx);
   }
 
   g.Predicaten = {
-    versie: "1.0",
+    versie: "1.1",
     namen: Object.keys(PRED),
     tellerNamen: Object.keys(TELLERS),
     maakContext: maakContext,
+    valideer: valideer,
     evalueer: evalueer,
     tel: tel
   };

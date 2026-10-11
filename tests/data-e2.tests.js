@@ -24,6 +24,12 @@
   }
   function vindInv(e, id) { return e.invarianten.filter(function (i) { return i.id === id; })[0]; }
   function s(x) { return JSON.stringify(x); }
+  var GEEN_ANTIBIOTICUM = { p: "niet", arg: { p: "of", args: [{ p: "gestart", middel: "V3" }, { p: "gestart", middel: "V4" }, { p: "gestart", middel: "V5" }] } };
+  function zonderO1(v) { return { p: "en", args: [{ p: "gespeeld", kaart: v }, { p: "niet", arg: { p: "voor", a: { kaart: "O1" }, b: { kaart: "V" + v.slice(1) } } }] }; }
+  var KWEEK_ALS = { p: "of", args: [zonderO1("V3"), zonderO1("V4"), zonderO1("V5")] };
+  var AFWACHTEN_ALS = { p: "of", args: [{ p: "gespeeld", kaart: "V1" }, { p: "gespeeld", kaart: "V2" }, GEEN_ANTIBIOTICUM] };
+  var I7_O2 = { p: "niet", arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 1, tot: 3 } };
+  var I7_V6 = { p: "niet", arg: { p: "opDagRelatief", kaart: "V6", doel: "V5", optie: "halveren", anker: { start: "V5" }, van: 3 } };
   function bibliotheek() { var k = casus() && casus().kaarten; return k && k.length ? k : null; }
 
   // Alle predicaten van de episode, met een pad (voor foutmeldingen).
@@ -58,6 +64,7 @@
   /* ---------- E1-1 / E2-1: patiëntkaart ---------- */
   reg("E2-1 patiëntkaart letterlijk uit de casus", function (e) {
     var z = e.patient.zichtbaar;
+    T.is(z.kop, "Mevrouw V., 78 jaar (6 jaar na episode 1).");
     T.is(z.naam, "Mevrouw V.");
     T.is(z.leeftijd, 78);
     T.is(z.leeftijdTekst, "78 jaar (6 jaar na episode 1)");
@@ -83,7 +90,7 @@
     T.is(v.waarde, e.patient.waar.eGFR, "onthulde waarde = ware waarde");
     T.is(v.onthult, "eGFR 29 uit de jaarlijkse controle");
     T.is(v.zichtbaar.labTekst, "eGFR 29 uit de jaarlijkse controle");
-    T.is(v.toelichting, "Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG].");
+    T.is(v.meta.toelichting, "Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG].");
     T.waar(typeof v.TODO_BART === "string", "toelichting-vraag heeft TODO_BART op de plek zelf");
   });
   reg("E2-1 (A5/D2) de zichtbare kaart verklapt de verborgen gegevens niet", function (e) {
@@ -107,14 +114,12 @@
     e.repertoire.forEach(function (id) {
       var k = kaarten.filter(function (x) { return x.id === id; })[0];
       T.waar(k.vanafEpisode <= 2, "kaart " + id + " hoort pas vanaf E" + k.vanafEpisode);
-      T.waar(k.effect && (k.effect.E2 || k.effect.alle), "kaart " + id + " heeft geen effect voor E2");
+      T.waar(k.effect && (k.effect.E2 !== undefined ? k.effect.E2 : k.effect.alle), "kaart " + id + " heeft geen effect voor E2");
     });
   });
-  reg("E2-2 knoppen, raadplegen, antibiotica en begintoestand", function (e) {
+  reg("E2-2 knoppen, antibiotica en begintoestand", function (e) {
     T.gelijk(e.knoppen, { actiesPerBeurt: 3, aantalDagen: 7, raadplegenKost: 0 });
-    T.is(e.raadplegen.titel, "Richtlijn raadplegen");
-    T.gelijk(e.raadplegen.bronnen, ["NHG", "KNMP"]);
-    Object.keys(e.raadplegen).forEach(function (k) { T.waar(k === "titel" || k === "bronnen" || k === "TODO_BART", "raadplegen bevat geen richtlijntekst: " + k); });
+    T.waar(e.raadplegen === undefined, "raadplegen staat alleen op casusniveau (contract §4), niet in de episode");
     T.gelijk(e.antibiotica, ["V3", "V4", "V5"]);
     T.gelijk(e.startToestanden, ["cystitis"]);
   });
@@ -187,6 +192,11 @@
       T.is(i.vraagVarianten[0].vraag, i.vraag, id + ": 'vraag' is de eerste variant");
       i.vraagVarianten.forEach(function (v) { T.waar(v.als && typeof v.als.p === "string", id + ": variant mist 'als'"); });
     });
+    // Volledige voorwaarden, in volgorde: vraagvariant 1 = geen kweek / geen kalium, vraagvariant 2 = afwachten / niet gehalveerd.
+    T.gelijk(vindInv(e, "I6").vraagVarianten[0].als, KWEEK_ALS, "I6 variant 'geen kweek'");
+    T.gelijk(vindInv(e, "I6").vraagVarianten[1].als, AFWACHTEN_ALS, "I6 variant 'afwachten'");
+    T.gelijk(vindInv(e, "I7").vraagVarianten[0].als, I7_O2, "I7 variant 'geen kalium'");
+    T.gelijk(vindInv(e, "I7").vraagVarianten[1].als, I7_V6, "I7 variant 'niet gehalveerd'");
   });
   reg("E2-3 de acht feedbackvragen van de casus staan er precies één keer in (6 bij invarianten, 2 als feedbackExtra)", function (e) {
     var verwacht = [
@@ -221,16 +231,17 @@
     ["V3", "V4", "V5"].forEach(function (v, k) {
       T.gelijk(of_.args[2 + k], { p: "en", args: [{ p: "gespeeld", kaart: v }, { p: "niet", arg: { p: "voor", a: { kaart: "O1" }, b: { kaart: v } } }] }, "antibioticum " + v + " zonder O1 vooraf");
     });
-    T.is(of_.args.length, 5);
+    T.gelijk(of_.args[5], GEEN_ANTIBIOTICUM, "risicogroep zonder enig antibioticum (TODO_BART-E2-15)");
+    T.is(of_.args.length, 6);
   });
-  reg("E2-3 predicaat I7: V5 in de risicogroep zonder O2 op dag 2-4 of zonder V6 halveren vanaf dag 3 (contract TODO_BART-1)", function (e) {
+  reg("E2-3 predicaat I7: V5 in de risicogroep zonder O2 op verschil 1-3 of zonder V6 halveren vanaf verschil 3 (contract TODO_BART-1)", function (e) {
     var p = vindInv(e, "I7").predicaat;
     T.is(p.p, "en");
     T.gelijk(p.args[0], { p: "waar", veld: "risicogroep", op: "==", waarde: true });
     T.gelijk(p.args[1], { p: "gestart", middel: "V5" });
     var of_ = p.args[2];
     T.is(of_.p, "of");
-    T.gelijk(of_.args[0], { p: "niet", arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 2, tot: 4 } });
+    T.gelijk(of_.args[0], { p: "niet", arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 1, tot: 3 } });
     T.gelijk(of_.args[1], { p: "niet", arg: { p: "opDagRelatief", kaart: "V6", doel: "V5", optie: "halveren", anker: { start: "V5" }, van: 3 } });
     T.waar(of_.args[1].arg.tot === undefined, "'vanaf dag 3' heeft geen bovengrens");
     T.waar(typeof vindInv(e, "I7").TODO_BART === "string", "I7 heeft TODO_BART (dag-lezing)");
@@ -298,7 +309,7 @@
     var w = e.werkzaamheid.cystitis;
     T.gelijk(w.werkzaam, [{ kaart: "V4" }]);
     T.gelijk(w.nietWerkzaam.map(function (x) { return x.kaart; }), ["V3", "V5"]);
-    w.nietWerkzaam.forEach(function (x) { T.is(typeof x.reden, "string"); });
+    w.nietWerkzaam.forEach(function (x) { T.is(typeof x.meta.reden, "string"); T.waar(x.reden === undefined, "reden hoort onder meta"); });
     T.gelijk(Object.keys(e.werkzaamheid), ["cystitis"], "alleen de toestand cystitis in E2");
   });
   reg("E2-4 statusTeksten: klachten nemen af / houden aan (casus-fragmenten) en TODO_BART", function (e) {
@@ -331,6 +342,9 @@
     T.waar(tekst.indexOf('"G2"') >= 0, "regel 1 gaat over G2");
     VOORSCHRIJF.forEach(function (v) { T.waar(tekst.indexOf('"' + v + '"') >= 0, "regel 1 noemt " + v); });
     T.waar(r[0].als.p === "en" && r[0].als.args[0].p === "gespeeld" && r[0].als.args[0].kaart === "G2", "regel 1 vereist G2 gespeeld");
+    T.gelijk(r[0].als, { p: "en", args: [{ p: "gespeeld", kaart: "G2" }, { p: "niet", arg: { p: "of", args: VOORSCHRIJF.map(function (v) {
+      return { p: "en", args: [{ p: "gespeeld", kaart: v }, { p: "niet", arg: { p: "voor", a: { kaart: "G2" }, b: { kaart: v } } }] };
+    }) } }] }, "regel 1: G2 gespeeld en geen voorschrijfkaart zonder G2 ervoor (voor(G2,Vx) in alle vijf de armen, juiste richting)");
   });
   reg("E2-5 profielen: Kweekgestuurd, smal / Bijgestuurd, reflectievraag null + TODO_BART", function (e) {
     T.gelijk(e.profielen.map(function (p) { return p.naam; }), ["Kweekgestuurd, smal", "Bijgestuurd"]);
@@ -368,7 +382,7 @@
     T.is(z[1].tekst, "De kaliumspiegel is onbekend.");
   });
   reg("E2-5 brug naar episode 3 letterlijk", function (e) {
-    T.is(e.brug, "De kweek uit deze episode is het verborgen gegeven in episode 3 (G3).");
+    T.is(e.brug, "de kweek uit deze episode is het verborgen gegeven in episode 3 (G3).");
   });
 
   /* ---------- S-LETTER, lat 2, S-TODO ---------- */
@@ -415,7 +429,111 @@
   });
   reg("S-TODO: de gedeelde casus-onduidelijkheden zijn gemeld (dag-lezing I7, grens I8, kweek-doorlooptijd, ontbrekende reflectievragen)", function (e) {
     var tekst = JSON.stringify((casus().todoBart || []).filter(function (t) { return /^TODO_BART-E2-/.test(t.id); })).toLowerCase();
-    ["dag 2–4 na de start", "hoe streng de grens", "mistral", "reflectievraag", "risicogroep"].forEach(function (w) { T.waar(tekst.indexOf(w) >= 0, "TODO over '" + w + "' ontbreekt"); });
+    ["o2 (dag 2–4)", "hoe streng de grens", "mistral", "reflectievraag", "risicogroep"].forEach(function (w) { T.waar(tekst.indexOf(w) >= 0, "TODO over '" + w + "' ontbreekt"); });
+  });
+
+
+  /* ---------- sleutels, TODO's en routes (Engine + Predicaten, zonder Evaluatie) ---------- */
+  reg("S-LETTER: patient.zichtbaar bevat alleen casus-sleutels; niet-casus-sleutels staan onder meta of TODO_BART", function (e) {
+    T.gelijk(Object.keys(e.patient.zichtbaar).sort(), ["eerdereUWI", "kop", "klachten", "lab", "labTekst", "leeftijd", "leeftijdTekst", "medicatie", "medicatieTekst", "naam"].sort());
+    T.gelijk(Object.keys(e.patient).sort(), ["medicatie", "meta", "verborgen", "waar", "zichtbaar"]);
+    T.waar(e.ontwerpnoot === undefined && e.patient.ontwerpnoot === undefined, "ontwerpnoot is verzonnen tekst");
+    T.gelijk(e.patient.meta, { medicatieNoot: "afleider, bereidt episode 3 voor" });
+    e.patient.verborgen.forEach(function (v) { T.waar(v.toelichting === undefined, "toelichting hoort onder meta"); });
+    T.gelijk(Object.keys(e).sort(), ["antibiotica", "brug", "feedbackExtra", "gebeurtenissen", "id", "invarianten", "knoppen", "level", "open", "patient", "profielen", "repertoire", "score", "startToestanden", "statusTeksten", "titel", "werkzaamheid", "zichtbaarAlsOntbreekt"]);
+  });
+  reg("S-TODO: de drie extra onduidelijkheden zijn gemeld (route zonder antibioticum, vroeg afronden vs I8, I7 bij vroege wissel) en de dag-lezing noemt beide lezingen", function (e) {
+    var lijst = casus().todoBart.filter(function (t) { return /^TODO_BART-E2-/.test(t.id); });
+    function vind(w) { return lijst.filter(function (t) { return t.vraag.toLowerCase().indexOf(w) >= 0; }); }
+    T.is(vind("zonder enig antibioticum").length, 1);
+    T.is(vind("vroeg afronden").length, 1);
+    T.is(vind("al vóór dag 3 is vervangen").length, 1);
+    T.is(vind("afrondenpasnagebeurtenissen").length, 1);
+    var dag = vind("o2 (dag 2–4)")[0];
+    T.waar(dag && dag.vraag.indexOf("Lezing A") >= 0 && dag.vraag.indexOf("Lezing B") >= 0, "beide dag-lezingen staan in de vraag aan Bart");
+    T.waar(dag.vraag.indexOf("verschil 2 t/m 4") >= 0 && dag.vraag.indexOf("verschil 1 t/m 3") >= 0, "beide verschillen genoemd");
+    T.waar(e.open.length >= 4, "open-lijst");
+    T.waar(lijst.every(function (t) { return t.vraag.indexOf("rapport") < 0 && t.gekozenLezing.indexOf("rapport") < 0; }), "TODO verwijst naar een rapport dat Bart niet heeft");
+  });
+
+  // Speelt een route: elke 'dag' is een lijst [kaart, doel, optie]; tussen de dagen volgendeDag.
+  function route(dagen) {
+    var st = g.Engine.nieuwSpel(casus(), "E2", { rng: function () { return 0; } });
+    dagen.forEach(function (kaarten, d) {
+      if (d > 0) g.Engine.volgendeDag(st);
+      kaarten.forEach(function (k) {
+        var r = g.Engine.speelKaart(st, k[0], { doel: k[1] || null, optie: k[2] || null });
+        T.waar(r.ok, "kaart " + k[0] + " op dag " + (d + 1) + " mislukt: " + r.fout);
+      });
+    });
+    return st;
+  }
+  // Mini-evaluatie volgens contract §5 (alleen data + Predicaten): geschonden ids en gekozen vraag van de ernstigste.
+  function schending(st, e) {
+    var ctx = g.Predicaten.maakContext(casus(), e, st);
+    var gesch = e.invarianten.filter(function (i) {
+      var geldt = i.geldtIn.some(function (x) { return x === "*" || (x && x.gebeurtenis && st.gebeurtenissen.some(function (b) { return b.id === x.gebeurtenis; })); });
+      return geldt && g.Predicaten.evalueer(i.predicaat, ctx);
+    });
+    gesch.sort(function (a, b) { return a.ernst - b.ernst; });
+    var top = gesch[0], vraag = null;
+    if (top) {
+      vraag = top.vraag;
+      (top.vraagVarianten || []).some(function (v) { if (g.Predicaten.evalueer(v.als, ctx)) { vraag = v.vraag; return true; } return false; });
+    }
+    return { ids: gesch.map(function (i) { return i.id; }), vraag: vraag };
+  }
+  var VR_KWEEK = "Wat vertelt een kweek van urine die al antibioticum heeft gezien?";
+  var VR_AFW = "Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?";
+  var VR_KALIUM = "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?";
+  var VR_HALVEREN = "Dag 4. Hoeveel trimethoprim klaren haar nieren nog?";
+  function engineKlaar() { return g.Engine && g.Predicaten && bibliotheek(); }
+
+  reg("E2-route (I7, contract TODO_BART-1): de casusroute V5 dag 1 + O2 dag 2 + V6 halveren dag 4 slaagt", function (e) {
+    if (!engineKlaar()) return;
+    var st = route([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [["B1", "V4"]], [["V6", "V5", "halveren"]]]);
+    T.gelijk(schending(st, e).ids, []);
+  });
+  reg("E2-route (I7): O2 op verschil 3 (dag 4) slaagt nog; O2 op verschil 4 (dag 5) en O2 vóór V5 (verschil −1) falen met de kalium-vraag", function (e) {
+    if (!engineKlaar()) return;
+    function mijn(o2dag) {
+      var dagen = [[["G2"], ["O1"], ["V5"]], [["N1"]], [["B1", "V4"]], [["V6", "V5", "halveren"]], []];
+      dagen[o2dag - 1].push(["O2"]);
+      return schending(route(dagen), e);
+    }
+    T.gelijk(mijn(4).ids, []);
+    T.gelijk(mijn(5).ids, ["I7"]); T.is(mijn(5).vraag, VR_KALIUM);
+    var nul = route([[["G2"], ["O1"], ["O2"]], [["V5"], ["N1"]], [["B1", "V4"]], [["V6", "V5", "halveren"]]]);
+    T.gelijk(schending(nul, e).ids, ["I7"]);
+  });
+  reg("E2-route (I7): V6 halveren op verschil 2 (dag 3) of 'verdubbelen' faalt met de halveren-vraag; zonder beide eerst de kalium-vraag", function (e) {
+    if (!engineKlaar()) return;
+    var vroeg = route([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [["B1", "V4"], ["V6", "V5", "halveren"]]]);
+    var s1 = schending(vroeg, e); T.gelijk(s1.ids, ["I7"]); T.is(s1.vraag, VR_HALVEREN);
+    var geen = route([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [["B1", "V4"]]]);
+    var s2 = schending(geen, e); T.gelijk(s2.ids, ["I7"]); T.is(s2.vraag, VR_HALVEREN);
+    var niets = route([[["G2"], ["O1"], ["V5"]], [["N1"]], [["B1", "V4"]]]);
+    var s3 = schending(niets, e); T.gelijk(s3.ids, ["I7"]); T.is(s3.vraag, VR_KALIUM);
+  });
+  reg("E2-route (I6): vraagkeuze geen kweek vs afwachten en route zonder antibioticum", function (e) {
+    if (!engineKlaar()) return;
+    var gk = schending(route([[["G2"], ["V4"]], [["N1"]]]), e); T.gelijk(gk.ids, ["I6"]); T.is(gk.vraag, VR_KWEEK);
+    var afw = schending(route([[["G2"], ["O1"], ["V1"]], [["N1"]]]), e); T.gelijk(afw.ids, ["I6"]); T.is(afw.vraag, VR_AFW);
+    var v2 = schending(route([[["G2"], ["O1"], ["V2"]], [["N1"]]]), e); T.gelijk(v2.ids, ["I6"]); T.is(v2.vraag, VR_AFW);
+    var geen = schending(route([[["G2"], ["O1"], ["N1"]]]), e); T.gelijk(geen.ids, ["I6"]); T.is(geen.vraag, VR_AFW);
+    var goed = schending(route([[["G2"], ["O1"], ["V4"]], [["N1"], ["N2", "V4"]]]), e); T.gelijk(goed.ids, []);
+  });
+  reg("E2-route (A3): geldige routes halen de poort; foutroutes schenden precies de bedoelde invariant", function (e) {
+    if (!engineKlaar()) return;
+    T.gelijk(schending(route([[["G2"], ["O1"], ["V4"]], [["N1"], ["N2", "V4"]]]), e).ids, [], "fosfomycine");
+    T.gelijk(schending(route([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [["B1", "V4"]], [["V6", "V5", "halveren"]]]), e).ids, [], "trimethoprim + O2 + V6 + wissel");
+    T.gelijk(schending(route([[["G2"], ["O1"], ["V4"]]]), e).ids, ["I1"], "geen N1");
+    T.gelijk(schending(route([[["G2"], ["O1"], ["V3"]], [["N1"]]]), e).ids, ["I5"], "nitrofurantoïne");
+    T.gelijk(schending(route([[["G2"], ["O1"], ["V4"]], [["V5"], ["N1"]], [["O2"]], [], [["V6", "V5", "halveren"]]]), e).ids, ["I4"], "twee antibiotica");
+  });
+  reg("E2-route (A5): regels rekenen met de ware eGFR 29, ook zonder G2", function (e) {
+    if (!engineKlaar()) return;
+    T.gelijk(schending(route([[["O1"], ["V3"], ["N1"]]]), e).ids, ["I5"]);
   });
 
   /* ---------- samenwerking met de andere lagen (alleen als die geladen zijn) ---------- */
