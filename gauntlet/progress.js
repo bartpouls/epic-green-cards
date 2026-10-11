@@ -40,7 +40,7 @@ window.GAUNTLET = {
    "name": "S5 predicaten",
    "round": 1,
    "verdict": "PENDING",
-   "evidence": "ronde 1: bouwer bezig",
+   "evidence": "r1 gebouwd (92 eigen tests groen); criticus bezig",
    "artifact": ""
   },
   {
