@@ -9,8 +9,11 @@
  *  - Volgorde van een groep (bv. "AB"): Fisher-Yates met opties.rng; rng() = 0 geeft de datavolgorde, rng() ~ 1 draait om.
  *  - Pogingnummer en "eerste poging" worden NIET door de engine bepaald (dat doet Logging, per pseudoniem); de state bevat ze niet.
  *  - Op de laatste dag zet Engine.volgendeDag state.dagenVoorbij = true (dag blijft aantalDagen); Engine.eindeBereikt is dan waar.
+ *  - ATOMAIR: elke muterende functie (speelKaart, raadpleeg, volgendeDag, rondAf) werkt via atomisch(): gaat er iets mis
+ *    (kapotte data, kapot predicaat, gooiende Evaluatie), dan is de state daarna precies zoals hij was (momentopname + herstel).
+ *  - Engine._bron is de volledige broncode van deze module (voor de casuslogica-scan in de tests).
  */
-(function (g) {
+(function engineModule(g) {
   "use strict";
 
   function fout(tekst) { return { ok: false, fout: tekst }; }
@@ -95,12 +98,19 @@
       uitkomst: null
     };
     Object.defineProperty(state, "_casus", { value: casus, enumerable: false, writable: true, configurable: true });
+    var bewaard = {}; for (var ok in opties) if (ok !== "rng") bewaard[ok] = opties[ok];
+    Object.defineProperty(state, "_opties", { value: bewaard, enumerable: false, writable: true, configurable: true });
     return state;
   }
 
   function herkansing(state, opties) {
     opties = opties || {};
-    var o = {}; for (var k in opties) o[k] = opties[k];
+    // Zelfde spelregels als het vorige spel: alle eerder meegegeven opties (ook de opt-in afrondenPasNaGebeurtenissen) blijven gelden,
+    // tenzij hier expliciet anders is opgegeven. Een state zonder bewaarde opties (bv. een JSON-kopie) valt terug op de vlag in de state.
+    var o = {}, k;
+    for (k in (state._opties || {})) o[k] = state._opties[k];
+    if (o.afrondenPasNaGebeurtenissen == null && state.afrondenPasNaGebeurtenissen != null) o.afrondenPasNaGebeurtenissen = state.afrondenPasNaGebeurtenissen;
+    for (k in opties) o[k] = opties[k];
     if (o.rng == null && typeof state.rng === "function") o.rng = state.rng;
     return nieuwSpel(casusVan(state), state.episodeId, o);
   }
@@ -206,6 +216,9 @@
   /* ---------- kaarten spelen ---------- */
 
   function speelKaart(state, kaartId, opts) {
+    return atomisch(state, function () { return speelKaartNu(state, kaartId, opts); });
+  }
+  function speelKaartNu(state, kaartId, opts) {
     opts = opts || {};
     if (state.afgerond) return fout("Deze episode is al afgerond.");
     if (state.dagenVoorbij) return fout("De laatste dag is voorbij.");
@@ -248,14 +261,17 @@
   }
 
   function raadpleeg(state) {
-    if (state.afgerond) return fout("Deze episode is al afgerond.");
-    if (state.dagenVoorbij) return fout("De laatste dag is voorbij.");
-    var ep = episodeVan(state), kost = (ep.knoppen && ep.knoppen.raadplegenKost) || 0;
-    if (state.actiesOver < kost) return fout("Je hebt niet genoeg acties over om de richtlijn te raadplegen.");
-    state.actiesOver -= kost;
-    state.raadplegingen.push({ dag: state.dag });
-    var r = casusVan(state).raadplegen || {};   // contract 4: alleen op casusniveau
-    return { ok: true, kost: kost, titel: r.titel || null, bronnen: kopie(r.bronnen || []) };
+    return atomisch(state, function () {
+      if (state.afgerond) return fout("Deze episode is al afgerond.");
+      if (state.dagenVoorbij) return fout("De laatste dag is voorbij.");
+      var ep = episodeVan(state), kost = (ep.knoppen && ep.knoppen.raadplegenKost) || 0;
+      if (state.actiesOver < kost) return fout("Je hebt niet genoeg acties over om de richtlijn te raadplegen.");
+      var r = casusVan(state).raadplegen || {};   // contract 4: alleen op casusniveau; eerst lezen, pas daarna muteren
+      var antwoord = { ok: true, kost: kost, titel: r.titel || null, bronnen: kopie(r.bronnen || []) };
+      state.actiesOver -= kost;
+      state.raadplegingen.push({ dag: state.dag });
+      return antwoord;
+    });
   }
 
   /* ---------- klachtenstatus ---------- */
@@ -289,13 +305,17 @@
   function berekenKlachten(state, ep, d) {
     var ctx = ctxVan(state), vorige = eindeDag(state, ep, ctx, d - 1), status;
     var vorigeStatus = state.klachten[d - 1] ? state.klachten[d - 1].status : null;
+    // LEAD-beslissing (contract 3b): alleen de EERSTE nul-periode telt. De periode begint op dag gebeurtenis+n (als aan het einde van de
+    // dag ervoor geen werkzaam antibioticum actief was), loopt door zolang er geen werkzaam antibioticum actief is aan een dag-einde,
+    // en komt na afloop (ook na een latere gap, ook voor een andere gebeurtenis) NIET terug.
+    var periodeGehad = state.klachten.some(function (kl, i) { return i < d && kl && kl.status === "geenVerbetering48"; });
     var override = false;
     if (!vorige.werkzaam) {
-      state.gebeurtenissen.forEach(function (gb) {
+      if (periodeGehad) override = vorigeStatus === "geenVerbetering48";
+      else state.gebeurtenissen.forEach(function (gb) {
         var def = (ep.gebeurtenissen || []).filter(function (x) { return x.id === gb.id; })[0];
         if (!def || !def.zet || !def.zet.statusNaBeurten) return;
-        var n = def.zet.statusNaBeurten;
-        if (d >= gb.dag + n && (d === gb.dag + n || vorigeStatus === "geenVerbetering48")) override = true;
+        if (d === gb.dag + def.zet.statusNaBeurten) override = true;
       });
     }
     if (override) status = "geenVerbetering48";
@@ -305,19 +325,31 @@
     return { dag: d, status: status, tekst: status && teksten[status] != null ? teksten[status] : null };
   }
 
-  // Momentopname van alles wat volgendeDag kan wijzigen; bij een fout wordt het exact teruggezet (atomisch).
+  // Momentopname van de HELE state (alles wat JSON-baar is; functies zoals rng blijven dezelfde verwijzing). Herstel gebeurt
+  // op zijn plaats: bestaande arrays en objecten blijven dezelfde verwijzing, met de oude inhoud.
   function neemMoment(state) {
-    return {
-      dag: state.dag, actiesOver: state.actiesOver, dagenVoorbij: state.dagenVoorbij,
-      toestanden: state.toestanden.slice(), gebeurtenissen: state.gebeurtenissen.slice(), wachtend: state.wachtend.slice(),
-      resistent: state.sets.resistent.slice(), gevoelig: state.sets.gevoelig.slice()   // klachten[nieuw] wordt als LAATSTE gezet, dus daar valt niets terug te zetten
-    };
+    var m = {};
+    Object.keys(state).forEach(function (k) { m[k] = typeof state[k] === "function" ? state[k] : kopie(state[k]); });
+    return m;
   }
-  function zetTerug(lijst, oud) { lijst.length = 0; Array.prototype.push.apply(lijst, oud); }
-  function herstel(state, m) {
-    state.dag = m.dag; state.actiesOver = m.actiesOver; state.dagenVoorbij = m.dagenVoorbij;
-    zetTerug(state.toestanden, m.toestanden); zetTerug(state.gebeurtenissen, m.gebeurtenissen); zetTerug(state.wachtend, m.wachtend);
-    zetTerug(state.sets.resistent, m.resistent); zetTerug(state.sets.gevoelig, m.gevoelig);
+  function isObj(x) { return x !== null && typeof x === "object"; }
+  function zetIn(oud, nieuw) {
+    if (Array.isArray(oud) && Array.isArray(nieuw)) {
+      for (var i = 0; i < nieuw.length; i++) oud[i] = isObj(oud[i]) && isObj(nieuw[i]) && Array.isArray(oud[i]) === Array.isArray(nieuw[i]) ? zetIn(oud[i], nieuw[i]) : nieuw[i];
+      oud.length = nieuw.length;
+      return oud;
+    }
+    Object.keys(oud).forEach(function (k) { if (!(k in nieuw)) delete oud[k]; });
+    Object.keys(nieuw).forEach(function (k) {
+      oud[k] = isObj(oud[k]) && isObj(nieuw[k]) && Array.isArray(oud[k]) === Array.isArray(nieuw[k]) ? zetIn(oud[k], nieuw[k]) : nieuw[k];
+    });
+    return oud;
+  }
+  function herstel(state, m) { zetIn(state, m); }
+  function atomisch(state, fn) {
+    var moment = neemMoment(state);
+    try { return fn(); }
+    catch (e) { herstel(state, moment); throw e; }
   }
 
   function volgendeDag(state) {
@@ -326,18 +358,14 @@
     var ep = episodeVan(state);
     if (state.dag >= state.aantalDagen) { state.dagenVoorbij = true; return state; }
     // Atomisch: gaat er halverwege iets mis (bv. een kapot predicaat in de data), dan blijft de state precies zoals hij was.
-    var moment = neemMoment(state);
-    try {
+    return atomisch(state, function () {
       var nieuw = state.dag + 1;
       pasGebeurtenissenToe(state, ep, nieuw);
       state.dag = nieuw;
       state.actiesOver = ep.knoppen.actiesPerBeurt;
       state.klachten[nieuw] = berekenKlachten(state, ep, nieuw);
-    } catch (e) {
-      herstel(state, moment);
-      throw e;
-    }
-    return state;
+      return state;
+    });
   }
 
   /* ---------- einde ---------- */
@@ -347,17 +375,18 @@
   function rondAf(state) {
     if (state.afgerond) return state.uitkomst;
     var casus = casusVan(state), ep = episodeVan(state);
-    if (state.afrondenPasNaGebeurtenissen && !state.dagenVoorbij) {
-      var open = (ep.gebeurtenissen || []).some(function (e) {
-        return !state.gebeurtenissen.some(function (x) { return x.id === e.id; });
-      });
-      if (open) throw new Error("Je kunt deze episode pas afronden nadat de gebeurtenissen zich hebben voorgedaan.");
-    }
-    if (!g.Evaluatie || typeof g.Evaluatie.beoordeel !== "function") throw new Error("De beoordeling (Evaluatie) is niet geladen.");
-    state.afgerond = true;
-    try { state.uitkomst = g.Evaluatie.beoordeel(casus, state.episodeId, state); }
-    catch (e) { state.afgerond = false; throw e; }
-    return state.uitkomst;
+    return atomisch(state, function () {
+      if (state.afrondenPasNaGebeurtenissen && !state.dagenVoorbij) {
+        var open = (ep.gebeurtenissen || []).some(function (e) {
+          return !state.gebeurtenissen.some(function (x) { return x.id === e.id; });
+        });
+        if (open) throw new Error("Je kunt deze episode pas afronden nadat de gebeurtenissen zich hebben voorgedaan.");
+      }
+      if (!g.Evaluatie || typeof g.Evaluatie.beoordeel !== "function") throw new Error("De beoordeling (Evaluatie) is niet geladen.");
+      state.afgerond = true;
+      state.uitkomst = g.Evaluatie.beoordeel(casus, state.episodeId, state);   // gooit die: alles (ook wat beoordeel muteerde) wordt teruggezet
+      return state.uitkomst;
+    });
   }
 
   /* ---------- ontgrendelen ---------- */
@@ -404,10 +433,7 @@
     ontgrendeld: ontgrendeld,
     ontgrendeldeEpisodes: ontgrendeldeEpisodes
   };
-  // Alleen voor de tests (niet opsombaar): alle interne functies, zodat de broncode gecontroleerd kan worden op casuslogica.
-  Object.defineProperty(g.Engine, "_functies", { enumerable: false, value: [
-    fout, kopie, P, zoekEpisode, casusVan, episodeVan, kaartVan, ctxVan, lijstVan, bevat, trekVolgorde, nieuwSpel, herkansing,
-    zetPad, meng, onthul, triggerVan, eersteVolg, triggertNu, controleerGebeurtenissen, pasGebeurtenissenToe, speelKaart,
-    raadpleeg, werkzaamheidVan, eindeDag, berekenKlachten, neemMoment, zetTerug, herstel, volgendeDag, eindeBereikt, rondAf, gehaaldSet, ontgrendeld, ontgrendeldeEpisodes
-  ] });
+  // Alleen voor de tests (niet opsombaar): de VOLLEDIGE broncode van deze module, zodat de tests alles kunnen scannen op casuslogica
+  // (niet een handmatige lijst functies). Een benoemde function expression kent zijn eigen tekst; geen fs nodig.
+  Object.defineProperty(g.Engine, "_bron", { enumerable: false, value: engineModule.toString() });
 })(typeof window !== "undefined" ? window : globalThis);

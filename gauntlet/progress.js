@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 4,
  "maxRounds": 5,
- "updated": "2026-10-11 20:58",
+ "updated": "2026-10-11 21:01",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -32,8 +32,8 @@ window.GAUNTLET = {
   {
    "name": "S4 data-e3",
    "round": 2,
-   "verdict": "PENDING",
-   "evidence": "r2 gebouwd (57 eigen tests; 178 benoemde mutaties 0 overlevers; TODO_BART-E3-1…23); criticus r2 bezig",
+   "verdict": "FAIL",
+   "evidence": "r2 FAIL, 1 punt (ontbrekende TODO I15), BLIND=ONS; ronde 3 bouwer bezig",
    "artifact": ""
   },
   {
@@ -181,6 +181,12 @@ window.GAUNTLET = {
    "unit": "S7 engine",
    "verdict": "FAIL",
    "note": "speelKaart/raadpleeg niet atomair; herkansing verliest afrondenPasNa..; ontgrendelen E3/herkansing latere episode onbewezen; 7 ongetest gedragingen; M6-bronscan omzeilbaar; foutmeldingen/casusVan ongetest; randgeval klachtenstatus (LEAD besliste). 21.000 fuzz-spellen 0 afwijkingen. BLIND=ONS → ronde 4"
+  },
+  {
+   "round": 2,
+   "unit": "S4 data-e3",
+   "verdict": "FAIL",
+   "note": "data inhoudelijk schoon (100 velden gelijk, 30 A/B-paren identiek, 1672 mutaties 0 overlevers); casus I15 \"monitoring binnen 1–3 dagen\" vs bouwopdracht \"binnen 2 beurten\" staat in geen TODO (F1). BLIND=ONS → ronde 3"
   }
  ],
  "open": [

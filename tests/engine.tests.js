@@ -374,61 +374,89 @@
     T.gelijk(a.klachten, b.klachten);
     T.is(a.klachten[2].status, "af"); T.is(a.klachten[3].status, "af");
   });
-  test("engine.js bevat geen casuslogica: geen ids van kaarten/middelen/comedicatie/toestanden uit de echte casus en geen drempels (Function.prototype.toString)", function () {
-    var fs = g.Engine._functies; T.waar(fs && fs.length > 20, "interne functies bereikbaar");
-    var bron = fs.map(function (f) { return Function.prototype.toString.call(f); }).join("\n");
-    ["nieuwSpel","speelKaart","raadpleeg","volgendeDag","rondAf","eindeBereikt","ontgrendeld","herkansing"].forEach(function (k) {
+  test("engine.js bevat geen casuslogica: de VOLLEDIGE modulebron (Engine._bron) wordt gescand, niet een lijst functies", function () {
+    var bron = g.Engine._bron;
+    T.waar(typeof bron === "string" && bron.length > 5000, "Engine._bron is de volledige modulebron");
+    T.waar(/^function engineModule\b/.test(bron), "_bron begint met de modulefunctie zelf");
+    ["nieuwSpel", "herkansing", "speelKaart", "raadpleeg", "volgendeDag", "rondAf", "eindeBereikt", "ontgrendeld", "ontgrendeldeEpisodes", "atomisch", "berekenKlachten", "onthul", "trekVolgorde"].forEach(function (k) {
+      T.waar(bron.indexOf("function " + k + "(") >= 0, "function " + k + " staat in de gescande bron");
+    });
+    Object.keys(g.Engine).forEach(function (k) {
       T.waar(bron.indexOf(Function.prototype.toString.call(g.Engine[k])) >= 0, k + " zit in de gescande bron");
     });
-    // 'bron' zonder tekstconstanten van contractnamen: de scan zoekt naar casusnamen, niet naar contract-API
-    var namen = {};
-    if (g.CASUSSEN) g.CASUSSEN.forEach(function (c) {
-      (c.kaarten || []).forEach(function (k) { namen[k.id] = 1; });
-      (c.episodes || []).forEach(function (e) {
-        (e.antibiotica || []).forEach(function (m) { namen[m] = 1; });
-        ((e.patient && e.patient.medicatie) || []).forEach(function (m) { namen[m.id] = 1; });
-        (e.startToestanden || []).forEach(function (m) { namen[m] = 1; });
-        Object.keys(e.werkzaamheid || {}).forEach(function (m) { namen[m] = 1; });
-        (e.gebeurtenissen || []).forEach(function (x) { if (x.toestand) namen[x.toestand] = 1; });
-        Object.keys((e.patient && e.patient.waar) || {}).forEach(function (m) { namen[m] = 1; });
-      });
-    });
-    ["cystitis","weefselinvasie","uitdroging","eGFR","lisinopril","calcium","fosfomycine","nitrofurantoine","ciprofloxacine","trimethoprim"].forEach(function (m) { namen[m] = 1; });
-    var gevonden = [];
-    Object.keys(namen).forEach(function (n) {
-      if (n === "statusTeksten" || n === "TODO_BART" || n.length < 2) return;
-      var re = new RegExp("(^|[^A-Za-z0-9_])" + n.replace(/[.*+?^${}()|[\]\\\/]/g, "\\$&") + "([^A-Za-z0-9_]|$)", "i");
-      // woorden als 'dag' of 'tekst' zijn geen casusnamen; alleen echte treffers tellen
-      if (re.test(bron.replace(/\/\/[^\n]*/g, ""))) gevonden.push(n);
-    });
-    T.gelijk(gevonden, [], "casusnamen in engine.js: " + gevonden.join(", "));
-    // Episode-id's en gebeurtenis-id's (ook 1-letterige) en alle andere id's uit de echte data mogen nergens als tekstconstante in de code staan.
-    var ids = {};
-    (g.CASUSSEN || []).forEach(function (c) {
-      ids[c.id] = 1;
-      (c.kaarten || []).forEach(function (k) { ids[k.id] = 1; });
-      (c.episodes || []).forEach(function (e) {
-        ids[e.id] = 1;
-        (e.gebeurtenissen || []).forEach(function (x) { ids[x.id] = 1; if (x.groep) ids[x.groep] = 1; });
-        (e.antibiotica || []).forEach(function (m) { ids[m] = 1; });
-        ((e.patient && e.patient.medicatie) || []).forEach(function (m) { ids[m.id] = 1; });
-        (e.startToestanden || []).forEach(function (m) { ids[m] = 1; });
-        Object.keys(e.werkzaamheid || {}).forEach(function (m) { ids[m] = 1; });
-        (e.gebeurtenissen || []).forEach(function (x) { lijstVanTest(x.toestand).forEach(function (t) { ids[t] = 1; }); });
-        (e.invarianten || []).forEach(function (x) { ids[x.id] = 1; });
-      });
-    });
-    T.waar(Object.keys(ids).length > 30, "id-lijst uit de echte data is gevuld (anders bewijst deze scan niets)");
-    T.waar(ids.E2 && ids.C && ids.A && ids.B, "episode-id's en gebeurtenis-id's zitten in de scan");
-    var kaalBron = bron.replace(/\/\/[^\n]*/g, "");
-    var literalGevonden = Object.keys(ids).filter(function (n) {
-      if (!n || n === "TODO_BART") return false;
-      return new RegExp("[\"']" + n.replace(/[.*+?^${}()|[\]\\\/]/g, "\\$&") + "[\"']").test(kaalBron);
-    });
-    T.gelijk(literalGevonden, [], "id's uit de echte data als tekstconstante in engine.js: " + literalGevonden.join(", "));
-    var kaal = bron.replace(/"[^"]*"/g, '""');
-    [/<\s*30\b/, /\b38[,.]5\b/, /\b75\b/, /[<>]=?\s*(?:2|3|4|5|7)\d?\b(?!\s*[;)])/ ].slice(0, 3).forEach(function (re) { T.waar(!re.test(kaal), "drempel-patroon in engine.js: " + re); });
-    T.waar(!/\b48\b/.test(kaal), "getal 48 in code (buiten tekstconstanten)");
+    T.is(Object.keys(g.Engine).indexOf("_bron"), -1, "_bron is niet opsombaar");
+    var data = echteNamen();
+    T.waar(Object.keys(data.ids).length > 30, "id-lijst uit de echte data is gevuld (anders bewijst deze scan niets)");
+    T.waar(data.ids.E2 && data.ids.C && data.ids.A && data.ids.B && data.ids.G2 && data.ids.V5 && data.ids.Ev1, "episode-, gebeurtenis- en kaart-id's zitten in de scan");
+    T.waar(data.namen.cystitis && data.namen.lisinopril && data.namen.weefselinvasie, "toestanden en comedicatie zitten in de scan");
+    T.waar(data.drempels.indexOf(30) >= 0 && data.drempels.indexOf(29) >= 0, "drempels en waarden uit de echte data zitten in de scan: " + data.drempels.join(","));
+    T.gelijk(casuslogicaIn(bron, data), [], "casuslogica in engine.js");
+  });
+  test("bronscan is niet te omzeilen: elke vorm van casuslogica in de modulebron wordt gevonden (incl. de hulpfunctie-evasie van de criticus)", function () {
+    var data = echteNamen(), bron = g.Engine._bron;
+    function metExtra(extra) { return bron.replace("function fout(tekst)", extra + "\n  function fout(tekst)"); }
+    function gevonden(extra, wat) { T.waar(casuslogicaIn(metExtra(extra), data).length > 0, "niet gevonden: " + wat); }
+    T.gelijk(casuslogicaIn(bron, data), [], "uitgangspunt: echte bron is schoon");
+    // de evasie uit het criticusrapport: extra hulpfunctie, niet in een lijst
+    gevonden('function verborgenHulp(k) { return k === "G2" || k === "E3" || k === "cystitis" || k === "lisinopril"; } var _x = verborgenHulp("Z");', "hulpfunctie met id's en namen");
+    gevonden('function h1(k) { return k === "G2"; }', "kaart-id");
+    gevonden("function h1(k) { return k === 'V5'; }", "kaart-id tussen enkele aanhalingstekens");
+    gevonden('function h1(k) { return k === "Ev1"; }', "kaart-id Ev1");
+    gevonden('function h1(k) { return k === "E3"; }', "episode-id");
+    gevonden('function h1(k) { return k === "A"; }', "gebeurtenis-id van een letter");
+    gevonden('function h1(k) { return k === "AB"; }', "groep-id");
+    gevonden('function h1(k) { return k === "I4"; }', "invariant-id");
+    gevonden('function h1(k) { return k === "cystitis"; }', "toestand");
+    gevonden('function h1(k) { return k === "lisinopril"; }', "comedicatie");
+    gevonden('function h1(k) { return k === "eGFR"; }', "waar-sleutel");
+    gevonden('function h1(k) { return "Kies " + k + " fosfomycine eerst"; }', "middelnaam in een zin");
+    gevonden('function h1(k) { return "Kaart G2 mist"; }', "id als woord in een zin");
+    gevonden("function h1(k) { return `G2`; }", "template-literal");
+    gevonden('function h1(k) { return k === "G" + "2"; }', "samengestelde tekst");
+    gevonden('function h1(k) { return k === "G" + "" + "2"; }', "samengestelde tekst met lege tussenstap");
+    gevonden('function h1(k) { return k === "\\x47\\x32"; }', "hex-escape");
+    gevonden('function h1(k) { return k === "\\u0047\\u0032"; }', "unicode-escape");
+    gevonden('function h1(k) { return k === "\\u{47}2"; }', "unicode-escape met accolades");
+    gevonden('function h1(u) { var x = "http://x"; return u === "G2"; }', "id na een // binnen een tekst");
+    gevonden('function h1(k) { return k.kaart === "V5"; /* "x" */ }', "id gevolgd door commentaar");
+    gevonden('function h1(k) { return /^V\\d+$/.test(k); }', "categorie-patroon als reguliere expressie");
+    gevonden('function h1(k) { return /^[GVO][0-9]$/.test(k) || /G2/.test(k); }', "reguliere expressie met id");
+    gevonden('function h1(k) { return /cystitis/i.test(k); }', "reguliere expressie met toestand");
+    gevonden('function h1(k) { return k.charAt(0) === "V"; }', "letterprefix van kaart-id's");
+    gevonden('function h1(k) { return String.fromCharCode(71, 50) === k; }', "fromCharCode");
+    gevonden('function h1(k) { return atob("RzI=") === k; }', "atob");
+    gevonden('function h1(k) { return k === eval("\'G\' + 2"); }', "eval");
+    gevonden('function h1(k) { return new Function("return 1")(); }', "Function-constructor");
+    gevonden('function h1(k) { return k.G2 === 1; }', "id als eigenschapsnaam");
+    gevonden('function h1(k) { return { Ev1: 1, V5: 2 }; }', "id als objectsleutel");
+    gevonden('function h1(k) { return k.cystitis; }', "toestand als eigenschapsnaam");
+    gevonden('function h1(w) { return w < 30; }', "drempel 30");
+    gevonden('function h1(w) { return w > 29; }', "drempel 29");
+    gevonden('function h1(w) { return w >= 38.5; }', "drempel 38.5");
+    gevonden('function h1(w) { return w * 48; }', "getal 48");
+    gevonden('function h1(w) { return w > 2; }', "elk getal behalve 0 en 1");
+    gevonden('function h1(w) { return w + 0x1F; }', "hexadecimaal getal");
+    gevonden('function h1(w) { return "eGFR 29 uit de jaarlijkse controle"; }', "klinische tekst");
+    gevonden('function h1(w) { return w.kaart === "V5" ? 1 : 0; }', "id in conditie");
+    // geen vals alarm: commentaar mag id's noemen, en de contractwoorden (statussen, triggertypes) zijn geen casuslogica
+    T.gelijk(casuslogicaIn(metExtra("// G2, E3, cystitis, lisinopril, 30 en 48 in commentaar\n  /* V5 Ev1 */"), data), [], "commentaar is geen casuslogica");
+    T.gelijk(casuslogicaIn(metExtra('var _w = "geenVerbetering48"; var _t = "naKaartVanKaart"; var _u = "http://voorbeeld.nl/a"; var _r = /^a+$/; var _k = 1 / 2;'), data), [], "contractwoorden en een deling zijn geen casuslogica");
+  });
+  test("bronscan: de gedragingen van de scan zelf (aanroep met eigen bron, geen omzeiling via lege data)", function () {
+    var data = echteNamen();
+    T.waar(casuslogicaIn('var a = "G2";', data).length > 0);
+    T.gelijk(casuslogicaIn('var a = 1;', data), []);
+    // een scan zonder data bewijst niets: dat moet een fout zijn, geen stil groen
+    T.gooit(function () { casuslogicaIn('var a = "G2";', { ids: {}, namen: {}, drempels: [] }); }, "lege data moet een fout geven");
+  });
+  test("herkansing: nieuw spel zelfde episode, schone staat; poging wordt niet door de engine geteld", function () {
+    var c = maakFixture(), s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
+    speel(s, "K1"); g.Engine.rondAf(s);
+    var h = g.Engine.herkansing(s);
+    T.is(h.afgerond, false); T.gelijk(h.tijdlijn, []); T.is(h.dag, 1); T.is(h.actiesOver, 3); T.is(h.episodeId, "X1");
+    T.is("pogingnummer" in h || "eerstePoging" in h, false);
+    T.is(g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }).dag, 1);
+    T.waar(!/pogingenTeller|pogingnummer|eerstePoging/.test(g.Engine._bron), "geen geheugenteller in de engine");
   });
   test("casus-object wordt niet gemuteerd door een volledig spel", function () {
     var c = maakFixture(), voor = JSON.stringify(c), s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
@@ -446,15 +474,6 @@
     T.is(g.Engine.ontgrendeld(c, "X2", { X1: true }), true);
     T.is(g.Engine.ontgrendeld(c, "BESTAATNIET", ["X1"]), false);
     T.gelijk(g.Engine.ontgrendeldeEpisodes(c, []), ["X1"]); T.gelijk(g.Engine.ontgrendeldeEpisodes(c, ["X1"]), ["X1", "X2"]);
-  });
-  test("herkansing: nieuw spel zelfde episode, schone staat; poging wordt niet door de engine geteld", function () {
-    var c = maakFixture(), s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
-    speel(s, "K1"); g.Engine.rondAf(s);
-    var h = g.Engine.herkansing(s);
-    T.is(h.afgerond, false); T.gelijk(h.tijdlijn, []); T.is(h.dag, 1); T.is(h.actiesOver, 3); T.is(h.episodeId, "X1");
-    T.is("pogingnummer" in h || "eerstePoging" in h, false);
-    T.is(g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }).dag, 1);
-    T.waar(!/pogingenTeller|pogingnummer|eerstePoging/.test(g.Engine._functies.map(function (f) { return Function.prototype.toString.call(f); }).join("")), "geen geheugenteller in de engine");
   });
   test("ontgrendeld met Logging-records (contract 6): poortGehaald===true OF (geen veld poortGehaald en geschonden leeg)", function () {
     var c = maakFixture();
