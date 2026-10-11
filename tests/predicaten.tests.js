@@ -1128,4 +1128,11 @@
     gooitNL(function () { ev({ p: "tel", teller: null, op: ">", waarde: 1 }, c); }, /Een teller moet een object/);
   });
 
+
+  t("uitSet: bij twee definities met dezelfde gebeurtenis-id telt de eerste", function () {
+    var c = mk([R(1, "Q1", 1), R(2, "Q2", 1)], { gebdef: [{ id: "G", zet: { s: ["Q1"] } }, { id: "G", zet: { s: ["Q2"] } }], geb: [{ id: "G", dag: 1 }] });
+    T.is(ev({ p: "actief", middel: "Q1", uitSet: "s" }, c), true);
+    T.is(ev({ p: "actief", middel: "Q2", uitSet: "s" }, c), false);
+  });
+
 })();

@@ -80,6 +80,7 @@ komt in `regels/PREDICATEN.md` (naam, velden, betekenis, voorbeeld).
 - Klachtenstatus voor dag d (berekend door `Engine.volgendeDag`, opgeslagen in `state.klachten[d]`, voor dag 1 = `{status:null}`): kijk naar de antibiotica die AAN HET EINDE VAN DAG d−1 actief waren. Geen → `null`. Minstens één werkzaam (volgens `episode.werkzaamheid` van de dan geldende toestand, inclusief `als`-voorwaarden) → `"af"`. Anders → `"aan"`. Override: heeft gebeurtenis A (of een andere gebeurtenis met `zet.statusNaBeurten: 2`) plaatsgevonden op dag dA, en is d ≥ dA+2, en was aan het einde van dag dA+1 geen werkzaam antibioticum actief → `"geenVerbetering48"` (blijft zo tot een werkzaam antibioticum actief is aan het eind van een dag). Teksten komen uit `episode.statusTeksten` (casus-letterlijk).
 - `klachten`-predicaat is standaard "ooit tijdens de episode" tenzij `op: {dag}` of `op: "laatste"`.
 - Een kaart kan `downside` als string OF als object `{E1: "...", E2: "..."}` hebben (per episode; ontbrekende episode = geen downside voor die episode, TODO_BART).
+- Scores worden door `Evaluatie` geklemd op 1–3 (zie contract §5); data hoeft geen `min`/`max` te geven.
 - Score-regels: `{ als, punten }` (eerste match wint), `{ als, delta }`, of `{ perKeer: <teller>, delta }`.
 
 ## 4. Data — vaste sleutels
