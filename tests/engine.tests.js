@@ -1414,6 +1414,12 @@
     var s = miniSpel(data, rngVast(0)); speelTot(s, 6); T.gelijk(ev(s), ["G@4", "H@5"], "G krijgt de eerste trigger (n=4 na kaart 4), H de tweede (4 na de eerste c = volg 5)");
     var t = miniSpel(data, rngVast(0.99)); speelTot(t, 6); T.gelijk(ev(t), ["H@4", "G@5"], "H is eerst getrokken: krijgt de eerste trigger (4)");
   });
+  test("groepen: drie leden met gelijke n behouden de datavolgorde (stabiele sortering), zichtbaar aan het moment waarop elk afgaat", function () {
+    var data = [ { id: "K1", groep: "G3", trigger: { type: "naKaart", n: 4 }, tekst: "a" }, { id: "K2", groep: "G3", trigger: { type: "naKaartVanKaart", kaart: "c", n: 4 }, tekst: "b" },
+      { id: "K3", groep: "G3", trigger: { type: "naKaartVanKaart", kaart: "d", n: 4 }, tekst: "c" } ];
+    var s = miniSpel(data, rngVast(0)); speel(s, "c"); speel(s, "c"); speel(s, "d"); speelTot(s, 8);
+    T.gelijk(ev(s), ["K1@4", "K2@5", "K3@7"]);
+  });
   test("groepen: een lid zonder trigger op elke plek in de datavolgorde (eerste, midden, laatste) geeft geen fout en gaat nooit af", function () {
     var X = { id: "X", groep: "G3", trigger: { type: "naKaart", n: 2 }, tekst: "x" }, W = { id: "W", groep: "G3", trigger: { type: "naKaart", n: 3 }, tekst: "w" }, Y = { id: "Y", groep: "G3", tekst: "y" };
     // rng 0 = datavolgorde: het lid op plek i krijgt de i-de trigger van de op n gesorteerde lijst; het lid zonder trigger sorteert achteraan

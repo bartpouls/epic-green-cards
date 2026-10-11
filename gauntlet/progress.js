@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 21:31",
+ "updated": "2026-10-11 21:33",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -52,9 +52,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S7 engine",
-   "round": 3,
-   "verdict": "FAIL",
-   "evidence": "r3 FAIL, 7 punten (atomiciteit/testdekking), BLIND=ONS; ronde 4 bouwer bezig",
+   "round": 4,
+   "verdict": "PENDING",
+   "evidence": "r4 gebouwd (129 eigen tests; suite 505 groen Node+Chromium; atomair, herkansing, M6-scan met 35 evasieprobes); criticus r4 bezig",
    "artifact": ""
   },
   {
