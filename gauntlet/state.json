@@ -6,13 +6,13 @@
  "status": "running",
  "round": 2,
  "maxRounds": 5,
- "updated": "2026-10-11 19:57",
+ "updated": "2026-10-11 20:00",
  "units": [
   {
    "name": "S1 data-kaarten",
    "round": 1,
-   "verdict": "PENDING",
-   "evidence": "r1 gebouwd (20 eigen tests groen); criticus bezig",
+   "verdict": "FAIL",
+   "evidence": "r1 FAIL, 3 punten, BLIND=BRON; ronde 2 bouwer bezig",
    "artifact": ""
   },
   {
@@ -91,6 +91,12 @@
    "unit": "S2 data-e1",
    "verdict": "FAIL",
    "note": "alleen N1 haalt poort (geen route-regel/TODO); V1+V2 inconsistente lezing; mutaties niet gevangen door tests; eigen bronkeuze raadplegen zonder TODO. BLIND=BRON (12/13 paren) → ronde 2"
+  },
+  {
+   "round": 1,
+   "unit": "S1 data-kaarten",
+   "verdict": "FAIL",
+   "note": "V3/V5 E2/E3-effect niet uit casus (F1); gekozenLezing K3 onjuist (F2); tests missen titel/labels/todo-inhoud (F3). BLIND=BRON → ronde 2"
   }
  ],
  "open": [

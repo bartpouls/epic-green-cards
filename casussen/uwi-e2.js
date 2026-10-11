@@ -5,27 +5,30 @@ window.CASUSSEN[0].episodes.push({
   level: 2,
   titel: "Episode 2 — level 2",
   startToestanden: ["cystitis"],
-  knoppen: {"actiesPerBeurt":3,"aantalDagen":7,"raadplegenKost":0},
+  knoppen: { actiesPerBeurt: 3, aantalDagen: 7, raadplegenKost: 0 },
   raadplegen: {
     titel: "Richtlijn raadplegen",
-    bronnen: ["NHG","KNMP"],
+    bronnen: ["NHG", "KNMP"],
     TODO_BART: "Welke bronnen horen op de naslagkaart (Richtlijn raadplegen) in episode 2? De casus noemt alleen 'verwijzing naar de bronnen'."
   },
-  antibiotica: ["V3","V4","V5"],
+  antibiotica: ["V3", "V4", "V5"],
   patient: {
     zichtbaar: {
       naam: "Mevrouw V.",
       leeftijd: 78,
       leeftijdTekst: "78 jaar (6 jaar na episode 1)",
       klachten: "Tweede cystitis, geen koorts, nitriettest positief.",
-      medicatie: ["lisinopril","calcium/colecalciferol"],
+      medicatie: ["lisinopril", "calcium/colecalciferol"],
       medicatieTekst: "lisinopril; calcium/colecalciferol",
-      lab: {"eGFR":42,"datum":"van 6 jaar geleden"},
+      lab: { eGFR: 42, datum: "van 6 jaar geleden" },
       labTekst: "laatst bekende eGFR 42, van 6 jaar geleden",
       eerdereUWI: "episode 1, toen geen kweek gedaan"
     },
-    waar: {"eGFR":29,"risicogroep":true},
-    medicatie: [{"id":"lisinopril","label":"lisinopril"},{"id":"calcium","label":"calcium/colecalciferol"}],
+    waar: { eGFR: 29, risicogroep: true },
+    medicatie: [
+      { id: "lisinopril", label: "lisinopril" },
+      { id: "calcium", label: "calcium/colecalciferol" }
+    ],
     ontwerpnoot: "Casus bij de medicatie: calcium/colecalciferol (afleider, bereidt episode 3 voor). Niet voor de speler bedoeld.",
     verborgen: [
       {
@@ -34,7 +37,7 @@ window.CASUSSEN[0].episodes.push({
         waarde: 29,
         onthult: "eGFR 29 uit de jaarlijkse controle",
         zichtbaar: {
-          lab: {"datum":"uit de jaarlijkse controle"},
+          lab: { datum: "uit de jaarlijkse controle" },
           labTekst: "eGFR 29 uit de jaarlijkse controle"
         },
         toelichting: "Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG].",
@@ -42,23 +45,23 @@ window.CASUSSEN[0].episodes.push({
       }
     ]
   },
-  repertoire: ["G1","G2","O1","O2","V1","V2","V3","V4","V5","N1","N2","Ev1","V6","B1","B2"],
+  repertoire: ["G1", "G2", "O1", "O2", "V1", "V2", "V3", "V4", "V5", "N1", "N2", "Ev1", "V6", "B1", "B2"],
   gebeurtenissen: [
     {
       id: "C",
       titel: "Kweekuitslag",
-      trigger: {"type":"naKaart","n":4,"alleenAlsGespeeld":"O1"},
+      trigger: { type: "naKaart", n: 4, alleenAlsGespeeld: "O1" },
       tekst: "E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor nitrofurantoïne, fosfomycine, amoxicilline/clavulaanzuur en ciprofloxacine.",
-      zet: {"resistent":["V5","V10"],"gevoelig":["V3","V4","V8","V7"]},
+      zet: { resistent: ["V5", "V10"], gevoelig: ["V3", "V4", "V8", "V7"] },
       TODO_BART: "De doorlooptijd van de kweek (2–4 dagen) kwam via Mistral en is niet zelf gecheckt. Klopt 'na de 4e gespeelde kaart', en wat als O1 pas na de 4e kaart wordt gespeeld?"
     }
   ],
   werkzaamheid: {
     cystitis: {
-      werkzaam: [{"kaart":"V4"}],
+      werkzaam: [{ kaart: "V4" }],
       nietWerkzaam: [
-        {"kaart":"V3","reden":"geen bactericide concentratie bij eGFR < 30"},
-        {"kaart":"V5","reden":"resistent"}
+        { kaart: "V3", reden: "geen bactericide concentratie bij eGFR < 30" },
+        { kaart: "V5", reden: "resistent" }
       ]
     }
   },
@@ -73,7 +76,7 @@ window.CASUSSEN[0].episodes.push({
       id: "I1",
       ernst: 5,
       geldtIn: ["*"],
-      predicaat: {"p":"nietGespeeld","kaart":"N1"},
+      predicaat: { p: "nietGespeeld", kaart: "N1" },
       vraag: "Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?",
       bron: "NHG",
       TODO_BART: "I1 in episode 2: telt een episode zonder enige route (niets gespeeld) ook als 'een route zonder N1'?"
@@ -82,7 +85,7 @@ window.CASUSSEN[0].episodes.push({
       id: "I4",
       ernst: 5,
       geldtIn: ["*"],
-      predicaat: {"p":"aantalActieveAntibiotica","op":">","n":1},
+      predicaat: { p: "aantalActieveAntibiotica", op: ">", n: 1 },
       vraag: "Wat lost het tweede middel op dat het eerste niet oplost?",
       bron: "[G]"
     },
@@ -92,7 +95,7 @@ window.CASUSSEN[0].episodes.push({
       geldtIn: ["*"],
       predicaat: {
         p: "en",
-        args: [{"p":"gestart","middel":"V3"},{"p":"waar","veld":"eGFR","op":"<","waarde":30}]
+        args: [{ p: "gestart", middel: "V3" }, { p: "waar", veld: "eGFR", op: "<", waarde: 30 }]
       },
       vraag: "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?",
       bron: "NHG"
@@ -104,31 +107,31 @@ window.CASUSSEN[0].episodes.push({
       predicaat: {
         p: "en",
         args: [
-          {"p":"waar","veld":"risicogroep","op":"==","waarde":true},
+          { p: "waar", veld: "risicogroep", op: "==", waarde: true },
           {
             p: "of",
             args: [
-              {"p":"gespeeld","kaart":"V1"},
-              {"p":"gespeeld","kaart":"V2"},
+              { p: "gespeeld", kaart: "V1" },
+              { p: "gespeeld", kaart: "V2" },
               {
                 p: "en",
                 args: [
-                  {"p":"gespeeld","kaart":"V3"},
-                  {"p":"niet","arg":{"p":"voor","a":{"kaart":"O1"},"b":{"kaart":"V3"}}}
+                  { p: "gespeeld", kaart: "V3" },
+                  { p: "niet", arg: { p: "voor", a: { kaart: "O1" }, b: { kaart: "V3" } } }
                 ]
               },
               {
                 p: "en",
                 args: [
-                  {"p":"gespeeld","kaart":"V4"},
-                  {"p":"niet","arg":{"p":"voor","a":{"kaart":"O1"},"b":{"kaart":"V4"}}}
+                  { p: "gespeeld", kaart: "V4" },
+                  { p: "niet", arg: { p: "voor", a: { kaart: "O1" }, b: { kaart: "V4" } } }
                 ]
               },
               {
                 p: "en",
                 args: [
-                  {"p":"gespeeld","kaart":"V5"},
-                  {"p":"niet","arg":{"p":"voor","a":{"kaart":"O1"},"b":{"kaart":"V5"}}}
+                  { p: "gespeeld", kaart: "V5" },
+                  { p: "niet", arg: { p: "voor", a: { kaart: "O1" }, b: { kaart: "V5" } } }
                 ]
               }
             ]
@@ -144,22 +147,22 @@ window.CASUSSEN[0].episodes.push({
               {
                 p: "en",
                 args: [
-                  {"p":"gespeeld","kaart":"V3"},
-                  {"p":"niet","arg":{"p":"voor","a":{"kaart":"O1"},"b":{"kaart":"V3"}}}
+                  { p: "gespeeld", kaart: "V3" },
+                  { p: "niet", arg: { p: "voor", a: { kaart: "O1" }, b: { kaart: "V3" } } }
                 ]
               },
               {
                 p: "en",
                 args: [
-                  {"p":"gespeeld","kaart":"V4"},
-                  {"p":"niet","arg":{"p":"voor","a":{"kaart":"O1"},"b":{"kaart":"V4"}}}
+                  { p: "gespeeld", kaart: "V4" },
+                  { p: "niet", arg: { p: "voor", a: { kaart: "O1" }, b: { kaart: "V4" } } }
                 ]
               },
               {
                 p: "en",
                 args: [
-                  {"p":"gespeeld","kaart":"V5"},
-                  {"p":"niet","arg":{"p":"voor","a":{"kaart":"O1"},"b":{"kaart":"V5"}}}
+                  { p: "gespeeld", kaart: "V5" },
+                  { p: "niet", arg: { p: "voor", a: { kaart: "O1" }, b: { kaart: "V5" } } }
                 ]
               }
             ]
@@ -167,7 +170,7 @@ window.CASUSSEN[0].episodes.push({
           vraag: "Wat vertelt een kweek van urine die al antibioticum heeft gezien?"
         },
         {
-          als: {"p":"of","args":[{"p":"gespeeld","kaart":"V1"},{"p":"gespeeld","kaart":"V2"}]},
+          als: { p: "of", args: [{ p: "gespeeld", kaart: "V1" }, { p: "gespeeld", kaart: "V2" }] },
           vraag: "Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?"
         }
       ],
@@ -181,14 +184,14 @@ window.CASUSSEN[0].episodes.push({
       predicaat: {
         p: "en",
         args: [
-          {"p":"waar","veld":"risicogroep","op":"==","waarde":true},
-          {"p":"gestart","middel":"V5"},
+          { p: "waar", veld: "risicogroep", op: "==", waarde: true },
+          { p: "gestart", middel: "V5" },
           {
             p: "of",
             args: [
               {
                 p: "niet",
-                arg: {"p":"opDagRelatief","kaart":"O2","anker":{"start":"V5"},"van":2,"tot":4}
+                arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 2, tot: 4 }
               },
               {
                 p: "niet",
@@ -197,7 +200,7 @@ window.CASUSSEN[0].episodes.push({
                   kaart: "V6",
                   doel: "V5",
                   optie: "halveren",
-                  anker: {"start":"V5"},
+                  anker: { start: "V5" },
                   van: 3
                 }
               }
@@ -210,9 +213,10 @@ window.CASUSSEN[0].episodes.push({
         {
           als: {
             p: "niet",
-            arg: {"p":"opDagRelatief","kaart":"O2","anker":{"start":"V5"},"van":2,"tot":4}
+            arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 2, tot: 4 }
           },
-          vraag: "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?"
+          vraag: "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?",
+          TODO_BART: "Casus geeft bij I7 twee verschillende vragen (geen kalium / niet gehalveerd). Welke vraag verschijnt als beide eisen ontbreken?"
         },
         {
           als: {
@@ -222,7 +226,7 @@ window.CASUSSEN[0].episodes.push({
               kaart: "V6",
               doel: "V5",
               optie: "halveren",
-              anker: {"start":"V5"},
+              anker: { start: "V5" },
               van: 3
             }
           },
@@ -230,25 +234,25 @@ window.CASUSSEN[0].episodes.push({
         }
       ],
       bron: "NHG, KNMP",
-      TODO_BART: "Lezing van 'dag 2–4 na de start' en 'na dag 3' (I7, episode 2): dag-verschil t.o.v. de dag van V5, waarbij V5 zelf verschil 0 heeft? | Casus geeft bij I7 twee verschillende vragen (geen kalium / niet gehalveerd). Welke vraag verschijnt als beide eisen ontbreken?"
+      TODO_BART: "Lezing van 'dag 2–4 na de start' en 'na dag 3' (I7, episode 2): dag-verschil t.o.v. de dag van V5, waarbij V5 zelf verschil 0 heeft?"
     },
     {
       id: "I8",
       ernst: 4,
-      geldtIn: [{"gebeurtenis":"C"}],
+      geldtIn: [{ gebeurtenis: "C" }],
       predicaat: {
         p: "en",
         args: [
-          {"p":"gebeurtenisGeweest","id":"C"},
-          {"p":"actief","uitSet":"resistent","op":{"eindeBeurtNaGebeurtenis":"C","offset":1}},
-          {"p":"klachten","waarde":"aan"},
+          { p: "gebeurtenisGeweest", id: "C" },
+          { p: "actief", uitSet: "resistent", op: { eindeBeurtNaGebeurtenis: "C", offset: 1 } },
+          { p: "klachten", waarde: "aan" },
           {
             p: "niet",
             arg: {
               p: "of",
               args: [
-                {"p":"binnenBeurten","kaart":"B1","naGebeurtenis":"C","n":2},
-                {"p":"binnenBeurten","kaart":"B2","naGebeurtenis":"C","n":2}
+                { p: "binnenBeurten", kaart: "B1", naGebeurtenis: "C", n: 2 },
+                { p: "binnenBeurten", kaart: "B2", naGebeurtenis: "C", n: 2 }
               ]
             }
           }
@@ -262,7 +266,7 @@ window.CASUSSEN[0].episodes.push({
   score: {
     duurzaamheid: {
       start: 3,
-      regels: [{"perKeer":{"t":"gespeeld","kaart":"B1","terwijlKlachten":"af"},"delta":-1}],
+      regels: [{ perKeer: { t: "gespeeld", kaart: "B1", terwijlKlachten: "af" }, delta: -1 }],
       TODO_BART: "Score episode 2: telt alleen een wissel (B1) op een dag met klachtenstatus 'af' als 'onnodig wisselen', en telt 'de voorschrijfkaart' V1–V5 (niet V6)?"
     },
     doelmatigheid: {
@@ -271,7 +275,7 @@ window.CASUSSEN[0].episodes.push({
           als: {
             p: "en",
             args: [
-              {"p":"gespeeld","kaart":"G2"},
+              { p: "gespeeld", kaart: "G2" },
               {
                 p: "niet",
                 arg: {
@@ -280,36 +284,51 @@ window.CASUSSEN[0].episodes.push({
                     {
                       p: "en",
                       args: [
-                        {"p":"gespeeld","kaart":"V1"},
-                        {"p":"niet","arg":{"p":"voor","a":{"kaart":"G2"},"b":{"kaart":"V1"}}}
+                        { p: "gespeeld", kaart: "V1" },
+                        {
+                          p: "niet",
+                          arg: { p: "voor", a: { kaart: "G2" }, b: { kaart: "V1" } }
+                        }
                       ]
                     },
                     {
                       p: "en",
                       args: [
-                        {"p":"gespeeld","kaart":"V2"},
-                        {"p":"niet","arg":{"p":"voor","a":{"kaart":"G2"},"b":{"kaart":"V2"}}}
+                        { p: "gespeeld", kaart: "V2" },
+                        {
+                          p: "niet",
+                          arg: { p: "voor", a: { kaart: "G2" }, b: { kaart: "V2" } }
+                        }
                       ]
                     },
                     {
                       p: "en",
                       args: [
-                        {"p":"gespeeld","kaart":"V3"},
-                        {"p":"niet","arg":{"p":"voor","a":{"kaart":"G2"},"b":{"kaart":"V3"}}}
+                        { p: "gespeeld", kaart: "V3" },
+                        {
+                          p: "niet",
+                          arg: { p: "voor", a: { kaart: "G2" }, b: { kaart: "V3" } }
+                        }
                       ]
                     },
                     {
                       p: "en",
                       args: [
-                        {"p":"gespeeld","kaart":"V4"},
-                        {"p":"niet","arg":{"p":"voor","a":{"kaart":"G2"},"b":{"kaart":"V4"}}}
+                        { p: "gespeeld", kaart: "V4" },
+                        {
+                          p: "niet",
+                          arg: { p: "voor", a: { kaart: "G2" }, b: { kaart: "V4" } }
+                        }
                       ]
                     },
                     {
                       p: "en",
                       args: [
-                        {"p":"gespeeld","kaart":"V5"},
-                        {"p":"niet","arg":{"p":"voor","a":{"kaart":"G2"},"b":{"kaart":"V5"}}}
+                        { p: "gespeeld", kaart: "V5" },
+                        {
+                          p: "niet",
+                          arg: { p: "voor", a: { kaart: "G2" }, b: { kaart: "V5" } }
+                        }
                       ]
                     }
                   ]
@@ -319,25 +338,25 @@ window.CASUSSEN[0].episodes.push({
           },
           punten: 3
         },
-        {"als":{"p":"waarheid","waarde":true},"punten":2}
+        { als: { p: "waarheid", waarde: true }, punten: 2 }
       ]
     }
   },
   profielen: [
     {
       naam: "Kweekgestuurd, smal",
-      als: {"p":"en","args":[{"p":"gespeeld","kaart":"V4"},{"p":"nietGespeeld","kaart":"B1"}]},
+      als: { p: "en", args: [{ p: "gespeeld", kaart: "V4" }, { p: "nietGespeeld", kaart: "B1" }] },
       reflectievraag: null,
-      TODO_BART: "Reflectievraag voor profiel ontbreekt in de casus (episode 2 geeft alleen de profielnamen, geen reflectievragen). Een route die de poort haalt maar geen van beide profielen matcht (trimethoprim gevolgd door stoppen zonder wissel) heeft in de casus geen profiel."
+      TODO_BART: "Reflectievraag voor profiel ontbreekt in de casus (episode 2 geeft alleen de profielnamen, geen reflectievragen)."
     },
     {
       naam: "Bijgestuurd",
       als: {
         p: "en",
         args: [
-          {"p":"gespeeld","kaart":"V5"},
-          {"p":"gespeeld","kaart":"B1"},
-          {"p":"na","a":{"kaart":"B1"},"b":{"kaart":"V5"}}
+          { p: "gespeeld", kaart: "V5" },
+          { p: "gespeeld", kaart: "B1" },
+          { p: "na", a: { kaart: "B1" }, b: { kaart: "V5" } }
         ]
       },
       reflectievraag: null,
@@ -352,36 +371,36 @@ window.CASUSSEN[0].episodes.push({
           {
             p: "en",
             args: [
-              {"p":"gespeeld","kaart":"V1"},
-              {"p":"niet","arg":{"p":"voor","a":{"kaart":"G2"},"b":{"kaart":"V1"}}}
+              { p: "gespeeld", kaart: "V1" },
+              { p: "niet", arg: { p: "voor", a: { kaart: "G2" }, b: { kaart: "V1" } } }
             ]
           },
           {
             p: "en",
             args: [
-              {"p":"gespeeld","kaart":"V2"},
-              {"p":"niet","arg":{"p":"voor","a":{"kaart":"G2"},"b":{"kaart":"V2"}}}
+              { p: "gespeeld", kaart: "V2" },
+              { p: "niet", arg: { p: "voor", a: { kaart: "G2" }, b: { kaart: "V2" } } }
             ]
           },
           {
             p: "en",
             args: [
-              {"p":"gespeeld","kaart":"V3"},
-              {"p":"niet","arg":{"p":"voor","a":{"kaart":"G2"},"b":{"kaart":"V3"}}}
+              { p: "gespeeld", kaart: "V3" },
+              { p: "niet", arg: { p: "voor", a: { kaart: "G2" }, b: { kaart: "V3" } } }
             ]
           },
           {
             p: "en",
             args: [
-              {"p":"gespeeld","kaart":"V4"},
-              {"p":"niet","arg":{"p":"voor","a":{"kaart":"G2"},"b":{"kaart":"V4"}}}
+              { p: "gespeeld", kaart: "V4" },
+              { p: "niet", arg: { p: "voor", a: { kaart: "G2" }, b: { kaart: "V4" } } }
             ]
           },
           {
             p: "en",
             args: [
-              {"p":"gespeeld","kaart":"V5"},
-              {"p":"niet","arg":{"p":"voor","a":{"kaart":"G2"},"b":{"kaart":"V5"}}}
+              { p: "gespeeld", kaart: "V5" },
+              { p: "niet", arg: { p: "voor", a: { kaart: "G2" }, b: { kaart: "V5" } } }
             ]
           }
         ]
@@ -393,7 +412,7 @@ window.CASUSSEN[0].episodes.push({
     {
       trigger: {
         p: "tel",
-        teller: {"t":"gespeeld","kaart":"B1","terwijlKlachten":"af"},
+        teller: { t: "gespeeld", kaart: "B1", terwijlKlachten: "af" },
         op: ">",
         waarde: 0
       },
@@ -404,13 +423,19 @@ window.CASUSSEN[0].episodes.push({
   ],
   zichtbaarAlsOntbreekt: [
     {
-      trigger: {"p":"en","args":[{"p":"gestart","middel":"V3"},{"p":"nietGespeeld","kaart":"G2"}]},
+      trigger: { p: "en", args: [{ p: "gestart", middel: "V3" }, { p: "nietGespeeld", kaart: "G2" }] },
       tekst: "De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.",
       TODO_BART: "Zichtbaar als kaart ontbreekt (episode 2): 'Nitrofurantoïne zonder G2' en 'V5 zonder O2' - telt G2/O2 dat later (te laat) wordt gespeeld als 'ontbreekt'?"
     },
     {
-      trigger: {"p":"en","args":[{"p":"gestart","middel":"V5"},{"p":"nietGespeeld","kaart":"O2"}]},
+      trigger: { p: "en", args: [{ p: "gestart", middel: "V5" }, { p: "nietGespeeld", kaart: "O2" }] },
       tekst: "De kaliumspiegel is onbekend."
+    }
+  ],
+  open: [
+    {
+      TODO_BART: "Een route die de poort haalt maar geen van beide profielen matcht (trimethoprim gevolgd door stoppen zonder wissel) heeft in de casus geen profiel.",
+      plek: "E2.profielen"
     }
   ],
   brug: "De kweek uit deze episode is het verborgen gegeven in episode 3 (G3)."
@@ -424,8 +449,8 @@ window.CASUSSEN[0].todoBart.push(
   },
   {
     id: "TODO_BART-E2-2",
-    vraag: "Lezing van 'dag 2–4 na de start' en 'na dag 3' (I7, episode 2): dag-verschil t.o.v. de dag van V5, waarbij V5 zelf verschil 0 heeft? (contract TODO_BART-1)",
-    gekozenLezing: "Verschil in dagen t.o.v. de dag van V5 (V5 zelf = 0): O2 op verschil 2 t/m 4 (V5 op dag 1: dag 3-5), V6 halveren op verschil vanaf 3 (dag 4 of later). Anker = start van trimethoprim (V5, of B1 met doel V5).",
+    vraag: "Lezing van 'dag 2–4 na de start' en 'na dag 3' (I7, episode 2): dag-verschil t.o.v. de dag van V5, waarbij V5 zelf verschil 0 heeft?",
+    gekozenLezing: "(Contract TODO_BART-1.) Verschil in dagen t.o.v. de dag van V5 (V5 zelf = 0): O2 op verschil 2 t/m 4 (V5 op dag 1: dag 3-5), V6 halveren op verschil vanaf 3 (dag 4 of later). Anker = start van trimethoprim (V5, of B1 met doel V5).",
     plek: "E2.invarianten.I7"
   },
   {

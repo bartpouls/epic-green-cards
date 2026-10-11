@@ -5,10 +5,11 @@ window.CASUSSEN[0].episodes.push({
   level: 1,
   startToestanden: ["cystitis"],
   knoppen: { actiesPerBeurt: 3, aantalDagen: 5, raadplegenKost: 0 },
-  raadplegen: { titel: "Richtlijn raadplegen", bronnen: ["NHG", "KNMP"] },
+  raadplegen: { titel: "Richtlijn raadplegen", bronnen: ["NHG", "SIDRIK", "Kompas", "KNMP"] },
   antibiotica: ["V3", "V4", "V5"],
   patient: {
     zichtbaar: {
+      kop: "Mevrouw V., 72 jaar.",
       naam: "Mevrouw V.",
       leeftijd: 72,
       klachten: "Eerste cystitis: pijnlijke en frequente mictie sinds 2 dagen, geen koorts, nitriettest positief.",
@@ -39,10 +40,16 @@ window.CASUSSEN[0].episodes.push({
   invarianten: [
     {
       id: "I1", ernst: 5, geldtIn: ["*"],
-      predicaat: { p: "nietGespeeld", kaart: "N1" },
+      predicaat: { p: "of", args: [
+        { p: "nietGespeeld", kaart: "N1" },
+        { p: "niet", arg: { p: "of", args: [
+          { p: "gespeeld", kaart: "V1" }, { p: "gespeeld", kaart: "V2" }, { p: "gespeeld", kaart: "V3" },
+          { p: "gespeeld", kaart: "V4" }, { p: "gespeeld", kaart: "V5" }
+        ] } }
+      ] },
       vraag: "Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?",
       bron: "NHG",
-      TODO_BART: "I1 in episode 1: telt een episode zonder enige route (niets gespeeld) ook als 'een route zonder N1'?"
+      TODO_BART: "I1 in episode 1: telt een episode zonder enige route (niets gespeeld) ook als 'een route zonder N1'? | Telt afronden zonder gekozen route (geen V1, V2, V3, V4 of V5), ook mét N1, als geschonden?"
     },
     {
       id: "I3", ernst: 5, geldtIn: ["*"],
@@ -69,11 +76,14 @@ window.CASUSSEN[0].episodes.push({
           punten: 3
         },
         {
-          als: { p: "en", args: [{ p: "gespeeld", kaart: "V2" }, { p: "nietGespeeld", kaart: "V1" }] },
+          als: { p: "gespeeld", kaart: "V2" },
           punten: 2,
-          TODO_BART: "Duurzaamheid bij V2 (+ middel), zie TODO_BART-5: telt uitgesteld recept met een middel erbij nog als 2?"
+          TODO_BART: "Duurzaamheid bij V2 (+ middel) en bij V1 samen met V2, zie TODO_BART-5: telt uitgesteld recept met een middel erbij, of met V1 erbij, nog als 2?"
         },
-        { als: { p: "waarheid", waarde: true }, punten: 1 }
+        {
+          als: { p: "of", args: [{ p: "gespeeld", kaart: "V3" }, { p: "gespeeld", kaart: "V4" }, { p: "gespeeld", kaart: "V5" }] },
+          punten: 1
+        }
       ]
     },
     doelmatigheid: {
@@ -121,11 +131,11 @@ window.CASUSSEN[0].episodes.push({
   ]
 });
 window.CASUSSEN[0].todoBart.push(
-  { id: "TODO_BART-E1-1", vraag: "I1 in episode 1: telt een episode zonder enige route (niets gespeeld) ook als 'een route zonder N1'?", gekozenLezing: "Strengste lezing: elke afronding zonder N1 schendt I1, ook zonder gekozen route (bouwopdracht 6.1 zegt 'een route gekozen').", plek: "E1.invarianten.I1" },
+  { id: "TODO_BART-E1-1", vraag: "I1 in episode 1: telt een episode zonder enige route (niets gespeeld) ook als 'een route zonder N1'? | Telt afronden zonder gekozen route (geen V1, V2, V3, V4 of V5), ook mét N1, als geschonden?", gekozenLezing: "Strengste lezing: elke afronding zonder N1 schendt I1, ook zonder gekozen route (bouwopdracht 6.1 zegt 'een route gekozen'). Ook afronden mét N1 maar zonder route-kaart (geen V1 t/m V5) schendt I1; de casus noemt dit geval niet, maar zonder deze lezing haalt een lege route de poort zonder profiel of duurzaamheidsscore.", plek: "E1.invarianten.I1" },
   { id: "TODO_BART-E1-2", vraag: "Welke tekst hoort bij welke klachtenstatus in episode 1?", gekozenLezing: "af = 'klachten nemen af', aan = 'klachten houden aan', geenVerbetering48 = 'Na 48 uur geen verbetering.' (letterlijke fragmenten uit E2/E3); in episode 1 komen aan en geenVerbetering48 niet voor.", plek: "E1.statusTeksten" },
   { id: "TODO_BART-E1-3", vraag: "Reflectievraag voor profiel Gedeelde regie ontbreekt in de casus.", gekozenLezing: "reflectievraag = null.", plek: "E1.profielen.Gedeelde regie" },
   { id: "TODO_BART-E1-4", vraag: "Is 'Direct behandelen, 1e/2e/3e keus' één profiel of drie?", gekozenLezing: "Eén profiel 'Direct behandelen' (V3, V4 of V5) met de ene reflectievraag uit de casus.", plek: "E1.profielen.Direct behandelen" },
   { id: "TODO_BART-E1-5", vraag: "Komt de feedbackvraag 'O1 gespeeld' (episode 1) ook bij een poortschending?", gekozenLezing: "Alleen bij gehaalde poort; bij een schending verschijnt maar één vraag (A4).", plek: "E1.feedbackExtra[O1]" },
-  { id: "TODO_BART-E1-6", vraag: "Duurzaamheid bij V2 (+ middel), zie TODO_BART-5: telt uitgesteld recept met een middel erbij nog als 2?", gekozenLezing: "V2 zonder V1 = 2 (ook met middel); V1 samen met V2 of met een antibioticum = 1.", plek: "E1.score.duurzaamheid" }
+  { id: "TODO_BART-E1-6", vraag: "Duurzaamheid bij V2 (+ middel) en bij V1 samen met V2, zie TODO_BART-5: telt uitgesteld recept met een middel erbij, of met V1 erbij, nog als 2?", gekozenLezing: "Gespeeld V2 (ook met V1 of met een middel erbij) = 2, in lijn met profiel Gedeelde regie; V1 zonder V2 en zonder antibioticum = 3; een antibioticum zonder V2 = 1. Zonder gekozen route is er geen score (zie TODO_BART-E1-1).", plek: "E1.score.duurzaamheid" }
 );
 }

@@ -109,6 +109,8 @@ Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat
 - `Engine.volgendeDag` op de laatste dag zet `state.dagenVoorbij=true` (geen verdere beurt); `rondAf` mag daarna.
 - `afrondenPasNaGebeurtenissen` is een instelbare parameter op episode-niveau (standaard false), zie TODO_BART-4.
 
+- `kaart.effect` mag ook `{ alle: "<casuscel verbatim>" }` zijn (of per episode `E1/E2/E3` waar de casus per episode splitst). Engine/UI/overzicht tonen `effect[episodeId] ?? effect.alle`; ontbreekt beide, dan niets (geen verzonnen tekst). Voor V3/V5/O1/Ev1/G2 geldt: de hele casuscel verbatim in `alle` tenzij de casus expliciet per episode (E1:/E2:/E3:) splitst.
+
 ## 5. Evaluatie (`regels/evaluatie.js`)
 `Evaluatie.beoordeel(casus, episodeId, state)` → 
 ```
