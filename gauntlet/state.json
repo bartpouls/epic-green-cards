@@ -24,9 +24,9 @@
   },
   {
    "name": "S3 data-e2",
-   "round": 2,
-   "verdict": "FAIL",
-   "evidence": "r2 FAIL, 3 punten (TODO + testdekking), BLIND=ONS; ronde 3 bouwer bezig",
+   "round": 3,
+   "verdict": "PENDING",
+   "evidence": "r3 gebouwd (54 eigen tests; 1730 mutaties, 12 equivalent; TODO_BART-E2-1…19); criticus r3 bezig",
    "artifact": ""
   },
   {
