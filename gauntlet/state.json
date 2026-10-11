@@ -6,7 +6,7 @@
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 22:41",
+ "updated": "2026-10-11 22:42",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -81,8 +81,8 @@
   {
    "name": "S11 referentie",
    "round": 1,
-   "verdict": "PENDING",
-   "evidence": "r1 gebouwd (40 eigen tests; 840 mutaties, 20 equivalent in vrije tekst; TODO_BART-R1…R5); criticus r1 bezig",
+   "verdict": "FAIL",
+   "evidence": "r1 FAIL, 5 punten, BLIND=BRON; ronde 2 bouwer bezig",
    "artifact": ""
   }
  ],
@@ -254,6 +254,12 @@
    "unit": "S3 data-e2",
    "verdict": "PASS",
    "note": "0 afwijkingen; 60.000 routes 0 afwijkingen (ook tegen Evaluatie 6.000); zonder engine/predicaten 33 tests rood; 559 nieuwe mutaties; BLIND=ONS (23/24 paren identiek, 1 = bewuste meta-verberging)"
+  },
+  {
+   "round": 1,
+   "unit": "S11 referentie",
+   "verdict": "FAIL",
+   "note": "wat erin staat klopt (0 afwijkingen, 121 regels byte-identiek); ontbreekt: E2 kopbullet Kweekuitslag, E3 Trigger-kolom, Repertoire-alinea E2/E3 (F1,F2,F4); samengevoegde R3-string niet in casus (F3); sleutelvolgorde altijdFout ongetest (F5). BLIND=BRON → ronde 2"
   }
  ],
  "open": [
