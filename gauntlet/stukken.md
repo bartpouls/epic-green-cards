@@ -75,3 +75,7 @@ Criteria (vooraf-regel van LEAD, uit S1-criticus: voor het spelen toont een kaar
 
 ## S10 `logging` — engine/logging.js (+ knop "Exporteer resultaten" in S9)
 Criteria: A7, bouwopdracht §5: velden per poging, eerste-poging-vlag (alleen de eerste poging per pseudoniem+episode telt), volledige tijdlijn, localStorage met try/catch en geheugen-terugval, CSV (correct geëscaped, Excel-vriendelijk NL: BOM, `;` of `,` kiezen en documenteren) + JSON, geen netwerk.
+
+## S11 `referentie` — casussen/uwi-referentie.js (casusreferentie voor het overzicht)
+Bestanden: `casussen/uwi-referentie.js`, `tests/data-referentie.tests.js` (voeg toe aan tests.html en run-node als je het bestand hebt aangemaakt: LEAD doet dat; registreer de groep 'data-referentie').
+Criteria: R1 alle onderdelen uit contract §4c, per episode, LETTERLIJK uit casus-uwi.md (secties 4, 5, 6 en de kopjes), geen `**`-opmaak, wel alle leestekens; R2 niets uit de casus dat bij Bart-validatie hoort mag ontbreken: elke tabelrij/bullet van 'Geldige routes', 'Altijd fout', 'Volgorde', 'Score', 'Brug', 'Bronconflict', 'Route bij weefselinvasie', 'Knoppen' en de extra bullets onder Gebeurtenis; R3 niet-circulaire tests (ingebedde referentie uit de casus, eigen parser) + mutatietest; R4 geen klinische inhoud die niet in de casus staat (geen verzonnen tekst); elke twijfel TODO_BART in `casus.todoBart` (zelfstandig leesbaar voor Bart).

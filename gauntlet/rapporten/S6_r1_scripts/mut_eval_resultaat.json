@@ -1,0 +1,2419 @@
+[
+ {
+  "idx": 0,
+  "lijn": 187,
+  "desc": ">= -> <",
+  "tekst": "tx.toestanden.indexOf(x) >= 0;       return ctx.gebe",
+  "status": "gedood",
+  "rood": 16,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 1,
+  "lijn": 250,
+  "desc": "|| -> &&",
+  "tekst": "inv.ernst - b.inv.ernst) || (a.idx - b.idx); });    ",
+  "status": "gedood",
+  "rood": 9,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 2,
+  "lijn": 224,
+  "desc": "&& -> ||",
+  "tekst": "f (r.delta !== undefined && metPlek(n + \", als\", fun",
+  "status": "gedood",
+  "rood": 35,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 3,
+  "lijn": 251,
+  "desc": "0 -> 1",
+  "tekst": " = geschonden.length === 0;      // 2. Downsides: g",
+  "status": "gedood",
+  "rood": 81,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 4,
+  "lijn": 133,
+  "desc": "&& -> ||",
+  "tekst": "& isTekst(x.gebeurtenis) && Object.keys(x).filter(fu",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 5,
+  "lijn": 64,
+  "desc": "return null -> return undefined",
+  "tekst": "=== id) return k[i];     return null;   }    /* ---------- al",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 6,
+  "lijn": 40,
+  "desc": "!== -> ===",
+  "tekst": "peof x === \"string\" && x !== \"\"; }   function lijst(x",
+  "status": "gedood",
+  "rood": 103,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 7,
+  "lijn": 188,
+  "desc": "&& -> ||",
+  "tekst": "unction (ge) { return ge && ge.id === x.gebeurtenis;",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 8,
+  "lijn": 126,
+  "desc": "|| -> &&",
+  "tekst": " if (!ISARR(inv.geldtIn) || !inv.geldtIn.length) fou",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 9,
+  "lijn": 220,
+  "desc": "0 -> 1",
+  "tekst": "     });     var delta = 0;     regels.forEach(func",
+  "status": "gedood",
+  "rood": 24,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 10,
+  "lijn": 72,
+  "desc": "+ 1 -> + 0",
+  "tekst": " && inv.id) || (\"#\" + (i + 1)));       voeg(n + \", pr",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 11,
+  "lijn": 72,
+  "desc": "|| -> &&",
+  "tekst": "ant \" + ((inv && inv.id) || (\"#\" + (i + 1)));       ",
+  "status": "gedood",
+  "rood": 2,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 12,
+  "lijn": 188,
+  "desc": ".some( -> .every(",
+  "tekst": "return ctx.gebeurtenissen.some(function (ge) { return ge",
+  "status": "gedood",
+  "rood": 4,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 13,
+  "lijn": 38,
+  "desc": "! verwijderd",
+  "tekst": "typeof x === \"object\" && !ISARR(x); }   function is",
+  "status": "gedood",
+  "rood": 113,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 14,
+  "lijn": 171,
+  "desc": "!== -> ===",
+  "tekst": "    if (p.reflectievraag !== undefined && p.reflectie",
+  "status": "gedood",
+  "rood": 3,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 15,
+  "lijn": 81,
+  "desc": "+ 1 -> + 0",
+  "tekst": "\" + as + \", regel \" + (i + 1);         if (r.perKeer ",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 16,
+  "lijn": 264,
+  "desc": "|| -> &&",
+  "tekst": " (a, b) { return (a.volg || 0) - (b.volg || 0); }).f",
+  "status": "gedood(crash)",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 17,
+  "lijn": 95,
+  "desc": "!== -> ===",
+  "tekst": "   if (isObj(x) && x.als !== undefined) voeg(\"werkzaa",
+  "status": "gedood",
+  "rood": 89,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 18,
+  "lijn": 126,
+  "desc": "! verwijderd",
+  "tekst": "he 'vraag'.\");       if (!ISARR(inv.geldtIn) || !in",
+  "status": "gedood",
+  "rood": 101,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 19,
+  "lijn": 153,
+  "desc": "=== -> !==",
+  "tekst": "if (a === undefined || a === null) return;       var ",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 20,
+  "lijn": 33,
+  "desc": "3 -> 2",
+  "tekst": "AL_MIN = 1, SCHAAL_MAX = 3;                       /",
+  "status": "gedood",
+  "rood": 34,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 21,
+  "lijn": 176,
+  "desc": "< -> >=",
+  "tekst": "NNEER.indexOf(f.wanneer) < 0) fout(n + \": 'wanneer'",
+  "status": "gedood",
+  "rood": 90,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 22,
+  "lijn": 258,
+  "desc": "! verwijderd",
+  "tekst": "sus, kaartId);       if (!kaart) fout(plek + \": de ",
+  "status": "gedood",
+  "rood": 100,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 23,
+  "lijn": 179,
+  "desc": "|| -> &&",
+  "tekst": "i) {       if (!isObj(z) || !isTekst(z.tekst)) fout(",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 24,
+  "lijn": 187,
+  "desc": "=== -> !==",
+  "tekst": "true;       if (typeof x === \"string\") return ctx.toe",
+  "status": "gedood",
+  "rood": 19,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 25,
+  "lijn": 126,
+  "desc": "! verwijderd",
+  "tekst": " (!ISARR(inv.geldtIn) || !inv.geldtIn.length) fout(",
+  "status": "gedood",
+  "rood": 101,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 26,
+  "lijn": 264,
+  "desc": ".slice() -> ",
+  "tekst": ";     lijst(ctx.tijdlijn).slice().sort(function (a, b) { r",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 27,
+  "lijn": 88,
+  "desc": "&& -> ||",
+  "tekst": "[\" + i + \"], trigger\", z && z.trigger); });     if (",
+  "status": "gedood",
+  "rood": 89,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 28,
+  "lijn": 133,
+  "desc": "0 -> 1",
+  "tekst": "indexOf(\"TODO_BART\") !== 0; }).length === 1) {     ",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 29,
+  "lijn": 101,
+  "desc": "&& -> ||",
+  "tekst": "on (k) {       var d = k && isObj(k.doelen) ? k.doel",
+  "status": "gedood",
+  "rood": 108,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 30,
+  "lijn": 217,
+  "desc": "1 -> 0",
+  "tekst": "naam + \", regel \" + (i + 1) + \", als\", function () ",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 31,
+  "lijn": 147,
+  "desc": "! verwijderd",
+  "tekst": "    if (!isTekst(kid) || !kaartVan(casus, kid)) fou",
+  "status": "gedood",
+  "rood": 2,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 32,
+  "lijn": 147,
+  "desc": "! verwijderd",
+  "tekst": "on (kid) {           if (!isTekst(kid) || !kaartVan",
+  "status": "gedood",
+  "rood": 2,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 33,
+  "lijn": 205,
+  "desc": "return null -> return undefined",
+  "tekst": "= undefined || t === \"\") return null;       if (typeof t !== ",
+  "status": "gedood(crash)",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 34,
+  "lijn": 264,
+  "desc": "0 -> 1",
+  "tekst": ".volg || 0) - (b.volg || 0); }).forEach(function (r",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 35,
+  "lijn": 92,
+  "desc": "|| -> &&",
+  "tekst": "dexOf(\"TODO_BART\") === 0 || !isObj(w)) return;      ",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 36,
+  "lijn": 175,
+  "desc": "! verwijderd",
+  "tekst": ";       if (!isObj(f) || !isTekst(f.vraag)) fout(n ",
+  "status": "gedood",
+  "rood": 90,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 37,
+  "lijn": 159,
+  "desc": "1 -> 0",
+  "tekst": " = n + \", regel \" + (i + 1);         if (!isObj(r))",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 38,
+  "lijn": 63,
+  "desc": "0 -> 1",
+  "tekst": "arten);     for (var i = 0; i < k.length; i++) if (",
+  "status": "gedood",
+  "rood": 41,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 39,
+  "lijn": 186,
+  "desc": "=== -> !==",
+  "tekst": "nction (x) {       if (x === \"*\") return true;       ",
+  "status": "gedood",
+  "rood": 53,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 40,
+  "lijn": 166,
+  "desc": "&& -> ||",
+  "tekst": "tal(r.punten)) || (delta && !isGetal(r.delta))) fout",
+  "status": "gedood",
+  "rood": 94,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 41,
+  "lijn": 166,
+  "desc": "&& -> ||",
+  "tekst": "        else if ((punten && !isGetal(r.punten)) || (",
+  "status": "gedood",
+  "rood": 94,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 42,
+  "lijn": 299,
+  "desc": "0 -> 1",
+  "tekst": "nden.length ? geschonden[0].vraag : null,       sco",
+  "status": "gedood",
+  "rood": 62,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 43,
+  "lijn": 171,
+  "desc": "!== -> ===",
+  "tekst": " typeof p.reflectievraag !== \"string\") fout(plek + \",",
+  "status": "gedood",
+  "rood": 67,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 44,
+  "lijn": 202,
+  "desc": "=== -> !==",
+  "tekst": "d === \"string\") return d === \"\" ? null : d;     if (i",
+  "status": "gedood",
+  "rood": 86,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 45,
+  "lijn": 205,
+  "desc": "|| -> &&",
+  "tekst": "l);       if (t === null || t === undefined || t ===",
+  "status": "gedood",
+  "rood": 66,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 46,
+  "lijn": 166,
+  "desc": "|| -> &&",
+  "tekst": "n && !isGetal(r.punten)) || (delta && !isGetal(r.del",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 47,
+  "lijn": 280,
+  "desc": "true -> false",
+  "tekst": "evraag };         return true;       });     }      //",
+  "status": "gedood",
+  "rood": 4,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 48,
+  "lijn": 55,
+  "desc": "! verwijderd",
+  "tekst": "us, episodeId) {     if (!isObj(casus)) fout(\"Evalu",
+  "status": "gedood",
+  "rood": 111,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 49,
+  "lijn": 133,
+  "desc": "!== -> ===",
+  "tekst": "n s.indexOf(\"TODO_BART\") !== 0; }).length === 1) {   ",
+  "status": "gedood",
+  "rood": 67,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 50,
+  "lijn": 86,
+  "desc": "|| -> &&",
+  "tekst": "ofiel \" + ((p && p.naam) || (\"#\" + (i + 1))) + \", al",
+  "status": "gedood",
+  "rood": 3,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 51,
+  "lijn": 217,
+  "desc": "+ 1 -> + 0",
+  "tekst": "+ naam + \", regel \" + (i + 1) + \", als\", function () ",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 52,
+  "lijn": 216,
+  "desc": "=== -> !==",
+  "tekst": "    if (vast || r.punten === undefined) return;      ",
+  "status": "gedood",
+  "rood": 37,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 53,
+  "lijn": 279,
+  "desc": "=== -> !==",
+  "tekst": "evraag: p.reflectievraag === undefined ? null : p.ref",
+  "status": "gedood",
+  "rood": 17,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 54,
+  "lijn": 139,
+  "desc": "!== -> ===",
+  "tekst": "  if (inv.vraagVarianten !== undefined) {         if ",
+  "status": "gedood",
+  "rood": 100,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 55,
+  "lijn": 311,
+  "desc": "0 -> 1",
+  "tekst": "problemen = [], aantal = 0;     casus.episodes.forE",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 56,
+  "lijn": 156,
+  "desc": "! verwijderd",
+  "tekst": "f (a[v] !== undefined && !isGetal(a[v])) fout(n + \"",
+  "status": "gedood",
+  "rood": 56,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 57,
+  "lijn": 81,
+  "desc": "1 -> 0",
+  "tekst": "+ as + \", regel \" + (i + 1);         if (r.perKeer ",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 58,
+  "lijn": 201,
+  "desc": "=== -> !==",
+  "tekst": "if (d === undefined || d === null) return null;     i",
+  "status": "gedood",
+  "rood": 87,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 59,
+  "lijn": 171,
+  "desc": "!== -> ===",
+  "tekst": "ined && p.reflectievraag !== null && typeof p.reflect",
+  "status": "gedood",
+  "rood": 89,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 60,
+  "lijn": 250,
+  "desc": "ernst omgekeerd",
+  "tekst": "function (a, b) { return (a.inv.ernst - b.inv.ernst) || (a.idx - b.idx); });     var poortGehaal",
+  "status": "gedood",
+  "rood": 12,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 61,
+  "lijn": 201,
+  "desc": "=== -> !==",
+  "tekst": "aart.downside;     if (d === undefined || d === null)",
+  "status": "gedood",
+  "rood": 87,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 62,
+  "lijn": 222,
+  "desc": "+ 1 -> + 0",
+  "tekst": "+ naam + \", regel \" + (i + 1);       if (r.perKeer !=",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 63,
+  "lijn": 165,
+  "desc": "=== -> !==",
+  "tekst": ";         else if (r.als === undefined) fout(rn + \": ",
+  "status": "gedood",
+  "rood": 94,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 64,
+  "lijn": 74,
+  "desc": "&& -> ||",
+  "tekst": "anten[\" + j + \"].als\", v && v.als); });     });     ",
+  "status": "gedood",
+  "rood": 68,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 65,
+  "lijn": 80,
+  "desc": "! verwijderd",
+  "tekst": "ion (r, i) {         if (!isObj(r)) return;        ",
+  "status": "gedood",
+  "rood": 2,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 66,
+  "lijn": 43,
+  "desc": "=== -> !==",
+  "tekst": "tion kopie(x) { return x === undefined ? undefined : ",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 67,
+  "lijn": 205,
+  "desc": "|| -> &&",
+  "tekst": " null || t === undefined || t === \"\") return null;  ",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 68,
+  "lijn": 156,
+  "desc": "!== -> ===",
+  "tekst": "(function (v) { if (a[v] !== undefined && !isGetal(a[",
+  "status": "gedood",
+  "rood": 96,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 69,
+  "lijn": 176,
+  "desc": "0 -> 1",
+  "tekst": "EER.indexOf(f.wanneer) < 0) fout(n + \": 'wanneer' m",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 70,
+  "lijn": 128,
+  "desc": "=== -> !==",
+  "tekst": "tion (x) {         if (x === \"*\") return;         if ",
+  "status": "gedood",
+  "rood": 100,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 71,
+  "lijn": 58,
+  "desc": "0 -> 1",
+  "tekst": "es'.\");     for (var i = 0; i < eps.length; i++) if",
+  "status": "gedood",
+  "rood": 47,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 72,
+  "lijn": 92,
+  "desc": "0 -> 1",
+  "tekst": "indexOf(\"TODO_BART\") === 0 || !isObj(w)) return;   ",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 73,
+  "lijn": 142,
+  "desc": "|| -> &&",
+  "tekst": "           if (!isObj(v) || !isTekst(v.vraag)) fout(",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 74,
+  "lijn": 122,
+  "desc": "! verwijderd",
+  "tekst": "\" + (i + 1)));       if (!isObj(inv)) fout(n + \": e",
+  "status": "gedood",
+  "rood": 101,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 75,
+  "lijn": 327,
+  "desc": "false -> true",
+  "tekst": ", \"_bron\", { enumerable: false, value: evaluatieModule.",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 76,
+  "lijn": 287,
+  "desc": "&& -> ||",
+  "tekst": "\"alleenBijGehaaldePoort\" && !poortGehaald) return;  ",
+  "status": "gedood",
+  "rood": 12,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 77,
+  "lijn": 175,
+  "desc": "! verwijderd",
+  "tekst": "a[\" + i + \"]\";       if (!isObj(f) || !isTekst(f.vr",
+  "status": "gedood",
+  "rood": 90,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 78,
+  "lijn": 123,
+  "desc": "! verwijderd",
+  "tekst": "bject zijn.\");       if (!isTekst(inv.id)) fout(n +",
+  "status": "gedood",
+  "rood": 101,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 79,
+  "lijn": 161,
+  "desc": "!== -> ===",
+  "tekst": "   var punten = r.punten !== undefined, delta = r.del",
+  "status": "gedood",
+  "rood": 96,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 80,
+  "lijn": 72,
+  "desc": "&& -> ||",
+  "tekst": "n = \"invariant \" + ((inv && inv.id) || (\"#\" + (i + 1",
+  "status": "gedood",
+  "rood": 2,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 81,
+  "lijn": 142,
+  "desc": "! verwijderd",
+  "tekst": "n (v, j) {           if (!isObj(v) || !isTekst(v.vr",
+  "status": "gedood",
+  "rood": 68,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 82,
+  "lijn": 227,
+  "desc": "Math.max -> Math.min",
+  "tekst": " return null;     return Math.max(min, Math.min(max, waard",
+  "status": "gedood",
+  "rood": 37,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 83,
+  "lijn": 92,
+  "desc": "! verwijderd",
+  "tekst": "Of(\"TODO_BART\") === 0 || !isObj(w)) return;        ",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 84,
+  "lijn": 264,
+  "desc": "0 -> 1",
+  "tekst": ", b) { return (a.volg || 0) - (b.volg || 0); }).for",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 85,
+  "lijn": 58,
+  "desc": "< -> >=",
+  "tekst": ");     for (var i = 0; i < eps.length; i++) if (eps",
+  "status": "gedood",
+  "rood": 111,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 86,
+  "lijn": 161,
+  "desc": "!== -> ===",
+  "tekst": "defined, delta = r.delta !== undefined, per = r.perKe",
+  "status": "gedood",
+  "rood": 95,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 87,
+  "lijn": 313,
+  "desc": "! verwijderd",
+  "tekst": "unction (ep) {       if (!isObj(ep)) { problemen.pu",
+  "status": "gedood",
+  "rood": 3,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 88,
+  "lijn": 57,
+  "desc": "! verwijderd",
+  "tekst": " casus.episodes;     if (!ISARR(eps)) fout(\"Evaluat",
+  "status": "gedood",
+  "rood": 111,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 89,
+  "lijn": 261,
+  "desc": "!== -> ===",
+  "tekst": " ep.id);       if (tekst !== null) downsides.push({ k",
+  "status": "gedood",
+  "rood": 86,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 90,
+  "lijn": 188,
+  "desc": "=== -> !==",
+  "tekst": "ge) { return ge && ge.id === x.gebeurtenis; });     }",
+  "status": "gedood",
+  "rood": 5,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 91,
+  "lijn": 63,
+  "desc": "< -> >=",
+  "tekst": ");     for (var i = 0; i < k.length; i++) if (k[i] ",
+  "status": "gedood",
+  "rood": 100,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 92,
+  "lijn": 134,
+  "desc": "&& -> ||",
+  "tekst": "       if (gebIds.length && gebIds.indexOf(x.gebeurt",
+  "status": "gedood",
+  "rood": 67,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 93,
+  "lijn": 41,
+  "desc": "|| -> &&",
+  "tekst": ") ? x : (x === undefined || x === null ? [] : [x]); ",
+  "status": "gedood",
+  "rood": 101,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 94,
+  "lijn": 153,
+  "desc": "=== -> !==",
+  "tekst": "p.score[as];       if (a === undefined || a === null)",
+  "status": "gedood",
+  "rood": 22,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 95,
+  "lijn": 58,
+  "desc": "&& -> ||",
+  "tekst": ".length; i++) if (eps[i] && eps[i].id === episodeId)",
+  "status": "gedood",
+  "rood": 66,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 96,
+  "lijn": 112,
+  "desc": "true -> false",
+  "tekst": "(function (t) { set[t] = true; n++; });     lijst(ep.g",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 97,
+  "lijn": 130,
+  "desc": "! verwijderd",
+  "tekst": "       if (toestanden && !heeft(toestanden, x)) fou",
+  "status": "gedood",
+  "rood": 47,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 98,
+  "lijn": 33,
+  "desc": "1 -> 0",
+  "tekst": "rray;   var SCHAAL_MIN = 1, SCHAAL_MAX = 3;        ",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 99,
+  "lijn": 163,
+  "desc": "|| -> &&",
+  "tekst": " if (r.als !== undefined || punten || !isGetal(r.del",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 100,
+  "lijn": 38,
+  "desc": "!== -> ===",
+  "tekst": "tion isObj(x) { return x !== null && typeof x === \"ob",
+  "status": "gedood",
+  "rood": 113,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 101,
+  "lijn": 223,
+  "desc": "!== -> ===",
+  "tekst": " 1);       if (r.perKeer !== undefined) delta += r.de",
+  "status": "gedood",
+  "rood": 39,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 102,
+  "lijn": 170,
+  "desc": "|| -> &&",
+  "tekst": "i) {       if (!isObj(p) || !isTekst(p.naam)) fout(p",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 103,
+  "lijn": 73,
+  "desc": "&& -> ||",
+  "tekst": "g(n + \", predicaat\", inv && inv.predicaat);       li",
+  "status": "gedood",
+  "rood": 100,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 104,
+  "lijn": 133,
+  "desc": "1 -> 0",
+  "tekst": "T\") !== 0; }).length === 1) {           if (gebIds.",
+  "status": "gedood",
+  "rood": 67,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 105,
+  "lijn": 113,
+  "desc": "true -> false",
+  "tekst": "(function (t) { set[t] = true; n++; }); });     return",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 106,
+  "lijn": 171,
+  "desc": "&& -> ||",
+  "tekst": "ectievraag !== undefined && p.reflectievraag !== nul",
+  "status": "gedood",
+  "rood": 93,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 107,
+  "lijn": 309,
+  "desc": "! verwijderd",
+  "tekst": "erCasus(casus) {     if (!isObj(casus)) fout(\"Evalu",
+  "status": "gedood",
+  "rood": 3,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 108,
+  "lijn": 205,
+  "desc": "=== -> !==",
+  "tekst": "     if (t === null || t === undefined || t === \"\") r",
+  "status": "gedood",
+  "rood": 4,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 109,
+  "lijn": 179,
+  "desc": "! verwijderd",
+  "tekst": "ction (z, i) {       if (!isObj(z) || !isTekst(z.te",
+  "status": "gedood",
+  "rood": 89,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 110,
+  "lijn": 92,
+  "desc": "=== -> !==",
+  "tekst": " (t.indexOf(\"TODO_BART\") === 0 || !isObj(w)) return; ",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 111,
+  "lijn": 133,
+  "desc": "&& -> ||",
+  "tekst": "  }         if (isObj(x) && isTekst(x.gebeurtenis) &",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 112,
+  "lijn": 157,
+  "desc": "!== -> ===",
+  "tekst": "; });       if (a.regels !== undefined && !ISARR(a.re",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 113,
+  "lijn": 38,
+  "desc": "=== -> !==",
+  "tekst": "n x !== null && typeof x === \"object\" && !ISARR(x); }",
+  "status": "gedood",
+  "rood": 113,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 114,
+  "lijn": 287,
+  "desc": "! verwijderd",
+  "tekst": "leenBijGehaaldePoort\" && !poortGehaald) return;    ",
+  "status": "gedood",
+  "rood": 17,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 115,
+  "lijn": 153,
+  "desc": "|| -> &&",
+  "tekst": "     if (a === undefined || a === null) return;     ",
+  "status": "gedood",
+  "rood": 22,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 116,
+  "lijn": 121,
+  "desc": "+ 1 -> + 0",
+  "tekst": " && inv.id) || (\"#\" + (i + 1)));       if (!isObj(inv",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 117,
+  "lijn": 38,
+  "desc": "&& -> ||",
+  "tekst": "j(x) { return x !== null && typeof x === \"object\" &&",
+  "status": "gedood",
+  "rood": 110,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 118,
+  "lijn": 51,
+  "desc": "|| -> &&",
+  "tekst": "\": \" + ((e && e.message) || String(e))); }   }    fu",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 119,
+  "lijn": 250,
+  "desc": "gelijke ernst: laatste eerst",
+  "tekst": "function (a, b) { return (a.inv.ernst - b.inv.ernst) || (a.idx - b.idx); });     var poortGehaal",
+  "status": "gedood",
+  "rood": 9,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 120,
+  "lijn": 40,
+  "desc": "=== -> !==",
+  "tekst": "kst(x) { return typeof x === \"string\" && x !== \"\"; } ",
+  "status": "gedood",
+  "rood": 103,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 121,
+  "lijn": 214,
+  "desc": "false -> true",
+  "tekst": " as.start : null, vast = false, regels = lijst(as.regel",
+  "status": "gedood",
+  "rood": 35,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 122,
+  "lijn": 278,
+  "desc": "false -> true",
+  "tekst": "(p.als, ctx); })) return false;         profiel = { naa",
+  "status": "gedood",
+  "rood": 17,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 123,
+  "lijn": 38,
+  "desc": "&& -> ||",
+  "tekst": "&& typeof x === \"object\" && !ISARR(x); }   function ",
+  "status": "gedood",
+  "rood": 110,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 124,
+  "lijn": 187,
+  "desc": "> -> <=",
+  "tekst": "tx.toestanden.indexOf(x) >= 0;       return ctx.geb",
+  "status": "gedood(crash)",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 125,
+  "lijn": 134,
+  "desc": "< -> >=",
+  "tekst": "s.indexOf(x.gebeurtenis) < 0) fout(n + \": geldtIn n",
+  "status": "gedood",
+  "rood": 68,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 126,
+  "lijn": 103,
+  "desc": "!== -> ===",
+  "tekst": "bj(doel) && doel.vereist !== undefined) voeg(\"kaart \"",
+  "status": "gedood",
+  "rood": 43,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 127,
+  "lijn": 157,
+  "desc": "! verwijderd",
+  "tekst": ".regels !== undefined && !ISARR(a.regels)) fout(n +",
+  "status": "gedood",
+  "rood": 96,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 128,
+  "lijn": 163,
+  "desc": "!== -> ===",
+  "tekst": "r) {           if (r.als !== undefined || punten || !",
+  "status": "gedood",
+  "rood": 29,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 129,
+  "lijn": 186,
+  "desc": "true -> false",
+  "tekst": "   if (x === \"*\") return true;       if (typeof x === ",
+  "status": "gedood",
+  "rood": 50,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 130,
+  "lijn": 130,
+  "desc": "&& -> ||",
+  "tekst": "          if (toestanden && !heeft(toestanden, x)) f",
+  "status": "gedood",
+  "rood": 46,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 131,
+  "lijn": 40,
+  "desc": "&& -> ||",
+  "tekst": "rn typeof x === \"string\" && x !== \"\"; }   function l",
+  "status": "gedood",
+  "rood": 69,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 132,
+  "lijn": 58,
+  "desc": "=== -> !==",
+  "tekst": " if (eps[i] && eps[i].id === episodeId) return eps[i]",
+  "status": "gedood",
+  "rood": 111,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 133,
+  "lijn": 121,
+  "desc": "&& -> ||",
+  "tekst": "+ \", invariant \" + ((inv && inv.id) || (\"#\" + (i + 1",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 134,
+  "lijn": 156,
+  "desc": "&& -> ||",
+  "tekst": "{ if (a[v] !== undefined && !isGetal(a[v])) fout(n +",
+  "status": "gedood",
+  "rood": 96,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 135,
+  "lijn": 193,
+  "desc": "0 -> 1",
+  "tekst": "anten);     for (var i = 0; i < vs.length; i++) {  ",
+  "status": "gedood",
+  "rood": 5,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 136,
+  "lijn": 175,
+  "desc": "|| -> &&",
+  "tekst": "\"]\";       if (!isObj(f) || !isTekst(f.vraag)) fout(",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 137,
+  "lijn": 218,
+  "desc": "true -> false",
+  "tekst": "aarde = r.punten; vast = true; }     });     var delta",
+  "status": "gedood",
+  "rood": 18,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 138,
+  "lijn": 125,
+  "desc": "! verwijderd",
+  "tekst": "ernstigst).\");       if (!isTekst(inv.vraag)) fout(",
+  "status": "gedood",
+  "rood": 101,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 139,
+  "lijn": 63,
+  "desc": "&& -> ||",
+  "tekst": " k.length; i++) if (k[i] && k[i].id === id) return k",
+  "status": "gedood(crash)",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 140,
+  "lijn": 95,
+  "desc": "&& -> ||",
+  "tekst": "            if (isObj(x) && x.als !== undefined) voe",
+  "status": "gedood",
+  "rood": 88,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 141,
+  "lijn": 111,
+  "desc": "0 -> 1",
+  "tekst": " {     var set = {}, n = 0;     lijst(ep.startToest",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 142,
+  "lijn": 86,
+  "desc": "+ 1 -> + 0",
+  "tekst": " && p.naam) || (\"#\" + (i + 1))) + \", als\", p && p.als",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 143,
+  "lijn": 147,
+  "desc": "|| -> &&",
+  "tekst": "       if (!isTekst(kid) || !kaartVan(casus, kid)) f",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 144,
+  "lijn": 51,
+  "desc": "&& -> ||",
+  "tekst": " Error(plek + \": \" + ((e && e.message) || String(e))",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 145,
+  "lijn": 87,
+  "desc": "&& -> ||",
+  "tekst": "[\" + i + \"], trigger\", f && f.trigger); });     lijs",
+  "status": "gedood",
+  "rood": 89,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 146,
+  "lijn": 166,
+  "desc": "! verwijderd",
+  "tekst": "(r.punten)) || (delta && !isGetal(r.delta))) fout(r",
+  "status": "gedood",
+  "rood": 28,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 147,
+  "lijn": 45,
+  "desc": "! verwijderd",
+  "tekst": "  function P() {     if (!g.Predicaten) fout(\"De re",
+  "status": "gedood",
+  "rood": 109,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 148,
+  "lijn": 140,
+  "desc": "! verwijderd",
+  "tekst": "undefined) {         if (!ISARR(inv.vraagVarianten)",
+  "status": "gedood",
+  "rood": 68,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 149,
+  "lijn": 39,
+  "desc": "=== -> !==",
+  "tekst": "tal(x) { return typeof x === \"number\" && isFinite(x);",
+  "status": "gedood",
+  "rood": 106,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 150,
+  "lijn": 310,
+  "desc": "! verwijderd",
+  "tekst": ") meegegeven.\");     if (!ISARR(casus.episodes)) fo",
+  "status": "gedood",
+  "rood": 3,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 151,
+  "lijn": 187,
+  "desc": "0 -> 1",
+  "tekst": "toestanden.indexOf(x) >= 0;       return ctx.gebeur",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 152,
+  "lijn": 121,
+  "desc": "|| -> &&",
+  "tekst": "ant \" + ((inv && inv.id) || (\"#\" + (i + 1)));       ",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 153,
+  "lijn": 205,
+  "desc": "=== -> !==",
+  "tekst": "lle : null);       if (t === null || t === undefined ",
+  "status": "gedood",
+  "rood": 69,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 154,
+  "lijn": 77,
+  "desc": "&& -> ||",
+  "tekst": "{       var a = ep.score && ep.score[as];       if (",
+  "status": "gedood",
+  "rood": 4,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 155,
+  "lijn": 265,
+  "desc": "true -> false",
+  "tekst": "     gespeeld[r.kaart] = true;       voegDownside(r.ka",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 156,
+  "lijn": 86,
+  "desc": "1 -> 0",
+  "tekst": "& p.naam) || (\"#\" + (i + 1))) + \", als\", p && p.als",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 157,
+  "lijn": 155,
+  "desc": "! verwijderd",
+  "tekst": " score \" + as;       if (!isObj(a)) fout(n + \": moe",
+  "status": "gedood",
+  "rood": 96,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 158,
+  "lijn": 63,
+  "desc": "=== -> !==",
+  "tekst": "i++) if (k[i] && k[i].id === id) return k[i];     ret",
+  "status": "gedood(crash)",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 159,
+  "lijn": 278,
+  "desc": "! verwijderd",
+  "tekst": "nction (p) {         if (!metPlek(plek + \", profiel",
+  "status": "gedood",
+  "rood": 35,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 160,
+  "lijn": 41,
+  "desc": "=== -> !==",
+  "tekst": " : (x === undefined || x === null ? [] : [x]); }   fu",
+  "status": "gedood",
+  "rood": 47,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 161,
+  "lijn": 212,
+  "desc": "return null -> return undefined",
+  "tekst": "k) {     if (!isObj(as)) return null;     var min = isGetal(a",
+  "status": "gedood",
+  "rood": 4,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 162,
+  "lijn": 145,
+  "desc": "!== -> ===",
+  "tekst": " if (inv.weglaatDownside !== undefined) {         lij",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 163,
+  "lijn": 212,
+  "desc": "! verwijderd",
+  "tekst": "am, ctx, plek) {     if (!isObj(as)) return null;  ",
+  "status": "gedood",
+  "rood": 46,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 164,
+  "lijn": 222,
+  "desc": "1 -> 0",
+  "tekst": "naam + \", regel \" + (i + 1);       if (r.perKeer !=",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 165,
+  "lijn": 39,
+  "desc": "&& -> ||",
+  "tekst": "rn typeof x === \"number\" && isFinite(x); }   functio",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 166,
+  "lijn": 227,
+  "desc": "Math.min -> Math.max",
+  "tekst": "    return Math.max(min, Math.min(max, waarde + delta));  ",
+  "status": "gedood",
+  "rood": 24,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 167,
+  "lijn": 244,
+  "desc": "! verwijderd",
+  "tekst": "n (inv, idx) {       if (!geldt(inv, ctx)) return; ",
+  "status": "gedood",
+  "rood": 64,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 168,
+  "lijn": 287,
+  "desc": "=== -> !==",
+  "tekst": "i) {       if (f.wanneer === \"alleenBijGehaaldePoort\"",
+  "status": "gedood",
+  "rood": 6,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 169,
+  "lijn": 269,
+  "desc": "! verwijderd",
+  "tekst": "ach(function (kid) { if (!heeft(gespeeld, kid)) voe",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 170,
+  "lijn": 251,
+  "desc": "=== -> !==",
+  "tekst": "aald = geschonden.length === 0;      // 2. Downsides:",
+  "status": "gedood",
+  "rood": 94,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 171,
+  "lijn": 185,
+  "desc": ".some( -> .every(",
+  "tekst": " {     return inv.geldtIn.some(function (x) {       if (",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 172,
+  "lijn": 86,
+  "desc": "&& -> ||",
+  "tekst": " { voeg(\"profiel \" + ((p && p.naam) || (\"#\" + (i + 1",
+  "status": "gedood",
+  "rood": 3,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 173,
+  "lijn": 226,
+  "desc": "=== -> !==",
+  "tekst": ";     });     if (waarde === null) return null;     r",
+  "status": "gedood",
+  "rood": 38,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 174,
+  "lijn": 166,
+  "desc": "! verwijderd",
+  "tekst": "     else if ((punten && !isGetal(r.punten)) || (de",
+  "status": "gedood",
+  "rood": 93,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 175,
+  "lijn": 160,
+  "desc": "! verwijderd",
+  "tekst": "\" + (i + 1);         if (!isObj(r)) fout(rn + \": mo",
+  "status": "gedood",
+  "rood": 95,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 176,
+  "lijn": 259,
+  "desc": "true -> false",
+  "tekst": "       gezien[kaartId] = true;       var tekst = downs",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 177,
+  "lijn": 124,
+  "desc": "! verwijderd",
+  "tekst": " mist 'id'.\");       if (!isGetal(inv.ernst)) fout(",
+  "status": "gedood",
+  "rood": 101,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 178,
+  "lijn": 179,
+  "desc": "! verwijderd",
+  "tekst": "{       if (!isObj(z) || !isTekst(z.tekst)) fout(pl",
+  "status": "gedood",
+  "rood": 90,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 179,
+  "lijn": 171,
+  "desc": "&& -> ||",
+  "tekst": ".reflectievraag !== null && typeof p.reflectievraag ",
+  "status": "gedood",
+  "rood": 93,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 180,
+  "lijn": 163,
+  "desc": "|| -> &&",
+  "tekst": " !== undefined || punten || !isGetal(r.delta)) fout(",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 181,
+  "lijn": 103,
+  "desc": "&& -> ||",
+  "tekst": "         if (isObj(doel) && doel.vereist !== undefin",
+  "status": "gedood",
+  "rood": 43,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 182,
+  "lijn": 233,
+  "desc": "! verwijderd",
+  "tekst": "sus, episodeId);     if (!isObj(state)) fout(\"Evalu",
+  "status": "gedood",
+  "rood": 111,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 183,
+  "lijn": 72,
+  "desc": "1 -> 0",
+  "tekst": "& inv.id) || (\"#\" + (i + 1)));       voeg(n + \", pr",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 184,
+  "lijn": 82,
+  "desc": "!== -> ===",
+  "tekst": ");         if (r.perKeer !== undefined) voeg(n + \", p",
+  "status": "gedood",
+  "rood": 95,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 185,
+  "lijn": 170,
+  "desc": "! verwijderd",
+  "tekst": "{       if (!isObj(p) || !isTekst(p.naam)) fout(ple",
+  "status": "gedood",
+  "rood": 93,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 186,
+  "lijn": 159,
+  "desc": "+ 1 -> + 0",
+  "tekst": "rn = n + \", regel \" + (i + 1);         if (!isObj(r))",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 187,
+  "lijn": 224,
+  "desc": "!== -> ===",
+  "tekst": ";       else if (r.delta !== undefined && metPlek(n +",
+  "status": "gedood",
+  "rood": 37,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 188,
+  "lijn": 119,
+  "desc": "&& -> ||",
+  "tekst": "(function (e) { return e && e.id; });     lijst(ep.i",
+  "status": "gedood",
+  "rood": 67,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 189,
+  "lijn": 264,
+  "desc": "|| -> &&",
+  "tekst": " (a.volg || 0) - (b.volg || 0); }).forEach(function ",
+  "status": "gedood",
+  "rood": 1,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 190,
+  "lijn": 134,
+  "desc": "0 -> 1",
+  "tekst": "indexOf(x.gebeurtenis) < 0) fout(n + \": geldtIn noe",
+  "status": "gedood",
+  "rood": 26,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 191,
+  "lijn": 205,
+  "desc": "=== -> !==",
+  "tekst": " || t === undefined || t === \"\") return null;       i",
+  "status": "gedood",
+  "rood": 4,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 192,
+  "lijn": 74,
+  "desc": "&& -> ||",
+  "tekst": "dicaat);       lijst(inv && inv.vraagVarianten).forE",
+  "status": "gedood",
+  "rood": 98,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 193,
+  "lijn": 164,
+  "desc": "=== -> !==",
+  "tekst": "       } else if (punten === delta) fout(rn + \": een ",
+  "status": "gedood",
+  "rood": 95,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 194,
+  "lijn": 202,
+  "desc": "=== -> !==",
+  "tekst": "n null;     if (typeof d === \"string\") return d === \"",
+  "status": "gedood",
+  "rood": 100,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 195,
+  "lijn": 161,
+  "desc": "!== -> ===",
+  "tekst": "defined, per = r.perKeer !== undefined;         if (p",
+  "status": "gedood",
+  "rood": 96,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 196,
+  "lijn": 201,
+  "desc": "|| -> &&",
+  "tekst": "     if (d === undefined || d === null) return null;",
+  "status": "gedood",
+  "rood": 2,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 197,
+  "lijn": 226,
+  "desc": "return null -> return undefined",
+  "tekst": "    if (waarde === null) return null;     return Math.max(min",
+  "status": "gedood",
+  "rood": 4,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 198,
+  "lijn": 86,
+  "desc": "&& -> ||",
+  "tekst": "+ (i + 1))) + \", als\", p && p.als); });     lijst(ep",
+  "status": "gedood",
+  "rood": 93,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 199,
+  "lijn": 170,
+  "desc": "! verwijderd",
+  "tekst": "ction (p, i) {       if (!isObj(p) || !isTekst(p.na",
+  "status": "gedood",
+  "rood": 93,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 200,
+  "lijn": 121,
+  "desc": "1 -> 0",
+  "tekst": "& inv.id) || (\"#\" + (i + 1)));       if (!isObj(inv",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ },
+ {
+  "idx": 201,
+  "lijn": 206,
+  "desc": "!== -> ===",
+  "tekst": "null;       if (typeof t !== \"string\") fout(\"Kaart \" ",
+  "status": "gedood",
+  "rood": 12,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 202,
+  "lijn": 163,
+  "desc": "! verwijderd",
+  "tekst": "= undefined || punten || !isGetal(r.delta)) fout(rn",
+  "status": "gedood",
+  "rood": 29,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 203,
+  "lijn": 277,
+  "desc": ".some( -> .every(",
+  "tekst": "      lijst(ep.profielen).some(function (p) {         if",
+  "status": "gedood",
+  "rood": 18,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 204,
+  "lijn": 276,
+  "desc": "&& -> ||",
+  "tekst": "as] = berekenAs(ep.score && ep.score[as], as, ctx, p",
+  "status": "gedood",
+  "rood": 39,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 205,
+  "lijn": 250,
+  "desc": "sorteer op datavolgorde ipv ernst",
+  "tekst": "function (a, b) { return (a.inv.ernst - b.inv.ernst) || (a.idx - b.idx); });     var poortGehaal",
+  "status": "gedood",
+  "rood": 9,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 206,
+  "lijn": 201,
+  "desc": "return null -> return undefined",
+  "tekst": "undefined || d === null) return null;     if (typeof d === \"s",
+  "status": "gedood",
+  "rood": 2,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 207,
+  "lijn": 41,
+  "desc": "=== -> !==",
+  "tekst": "return ISARR(x) ? x : (x === undefined || x === null ",
+  "status": "gedood",
+  "rood": 101,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 208,
+  "lijn": 193,
+  "desc": "< -> >=",
+  "tekst": ");     for (var i = 0; i < vs.length; i++) {       ",
+  "status": "gedood",
+  "rood": 57,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 209,
+  "lijn": 142,
+  "desc": "! verwijderd",
+  "tekst": "        if (!isObj(v) || !isTekst(v.vraag)) fout(n ",
+  "status": "gedood",
+  "rood": 68,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 210,
+  "lijn": 152,
+  "desc": "&& -> ||",
+  "tekst": "{       var a = ep.score && ep.score[as];       if (",
+  "status": "gedood",
+  "rood": 3,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 211,
+  "lijn": 133,
+  "desc": "=== -> !==",
+  "tekst": "_BART\") !== 0; }).length === 1) {           if (gebId",
+  "status": "gedood",
+  "rood": 67,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 212,
+  "lijn": 78,
+  "desc": "! verwijderd",
+  "tekst": " ep.score[as];       if (!isObj(a)) return;       l",
+  "status": "gedood",
+  "rood": 21,
+  "groepen": [
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 213,
+  "lijn": 216,
+  "desc": "|| -> &&",
+  "tekst": " (r, i) {       if (vast || r.punten === undefined) ",
+  "status": "gedood",
+  "rood": 27,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 214,
+  "lijn": 157,
+  "desc": "&& -> ||",
+  "tekst": " (a.regels !== undefined && !ISARR(a.regels)) fout(n",
+  "status": "gedood",
+  "rood": 96,
+  "groepen": [
+   "evaluatie-routes",
+   "evaluatie"
+  ]
+ },
+ {
+  "idx": 215,
+  "lijn": 328,
+  "desc": "!== -> ===",
+  "tekst": "g() }); })(typeof window !== \"undefined\" ? window : g",
+  "status": "OVERLEEFD",
+  "rood": 0,
+  "groepen": []
+ }
+]

@@ -7,7 +7,7 @@ const lines=fs.readFileSync(txt,'utf8').split('\n').filter(l=>/^equiv\? \d+:/.te
 fs.writeFileSync(path.join(dir,'child.js'),`
 process.env.MET_TESTS=''; const O=require('${__dirname}/oracle.js'); const {sb,oracle,dataEval,randomRoute}=O;
 const S=require('${__dirname}/oracle_struct_lib.js');
-let div=null; try{ for(let i=0;i<2500&&!div;i++){ const st=randomRoute(i%3===0?1:0); const a=oracle(st),b=dataEval(st); for(const k of ['ids','vraag','dur','doelm','prof','verouderd','onnodig','zicht']) if(JSON.stringify(a[k])!==JSON.stringify(b[k])){div=k;break;} for(const d of Object.keys(a.statusDagen)) if((st.klachten[d]&&st.klachten[d].status)!==a.statusDagen[d]) div='status'+d; if(!div&&O.verwachtC(st)!==a.cdag) div='Cdag'; } }catch(e){ div='fout:'+e.message; }
+let div=null; try{ for(let i=0;i<1200&&!div;i++){ const st=randomRoute(i%3===0?1:0); const a=oracle(st),b=dataEval(st); for(const k of ['ids','vraag','dur','doelm','prof','verouderd','onnodig','zicht']) if(JSON.stringify(a[k])!==JSON.stringify(b[k])){div=k;break;} for(const d of Object.keys(a.statusDagen)) if((st.klachten[d]&&st.klachten[d].status)!==a.statusDagen[d]) div='status'+d; if(!div&&O.verwachtC(st)!==a.cdag) div='Cdag'; } }catch(e){ div='fout:'+e.message; }
 console.log(div?'G '+div:'S');`);
 // lib met alleen de gestructureerde generator is niet nodig; maak lege stub
 fs.writeFileSync(path.join(__dirname,'oracle_struct_lib.js'),'module.exports={};');

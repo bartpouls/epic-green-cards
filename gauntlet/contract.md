@@ -128,6 +128,17 @@ Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat
 
 - LEAD-beslissing (na S3-ronde 4): `statusTeksten` zijn de casusfragmenten MET slotpunt, zoals in de casus: `af: "klachten nemen af."`, `aan: "klachten houden aan."` (E1, E2, E3 gelijk), `geenVerbetering48: "Na 48 uur geen verbetering."` (E3; E1/E2: null als de casus geen tekst geeft). De UI toont de tekst zoals hij is.
 
+### 4c. Casusreferentie (nieuw stuk S11, bestand `casussen/uwi-referentie.js`)
+Beschrijvende casustekst die NIET in het spel zit maar die Bart in het overzicht naast `casus-uwi.md` moet kunnen leggen (acceptatiecriterium A8). `window.CASUSSEN[0].referentie = { E1: {...}, E2: {...}, E3: {...} }` met per episode, letterlijk uit de casus (markdown-opmaak `**` weggelaten, tabel- en lijstopbouw behouden als arrays):
+- `geldigeRoutes`: `[ { route, kern, profiel } ]` (E1, E2: tabel 'Geldige routes'; E3: 'Geldige routes (kern)' als `kern: [strings]` bullets, plus `routeBijWeefselinvasie: [ { route, poort, profiel } ]`)
+- `altijdFout`: `{ "<invariantId>": { tekst, bron } }` uit de kolom 'Altijd fout' / 'Bron' van elke invariantentabel (E3 ook 'Geldt in')
+- `volgorde`: array bullets uit 'Volgorde' (E1: 'Volgorde vrij: alle kaarten mogen in elke volgorde.'; E2: de bullets; E3: n.v.t. = null)
+- `score`: array bullets uit 'Score' (letterlijk, incl. 'Duurzaamheid: …' / 'Doelmatigheid: …')
+- `brug`: string of null (E2: 'Brug: …'), `bronconflict`: string of null (E3: 'Bronconflict, geen poort: …')
+- `knoppen`: array bullets uit 'Knoppen' (letterlijk), `gebeurtenisUitleg`: array van extra bullets onder 'Gebeurtenis(sen)' die niet in `gebeurtenissen` zitten (bv. 'Wat de patiënt laat zien, hangt af van de keuze: …'), anders []
+- `volgordeVanSecties`: array met de kopnamen van de casus in volgorde (bv. ['Knoppen','Patiëntkaart','Repertoire','Geldige routes','Invarianten (poort)','Volgorde','Score','Wat er zichtbaar wordt als een kaart ontbreekt','Feedback']) zodat het overzicht dezelfde volgorde en namen gebruikt.
+Het overzicht (S8) leest dit; geen enkel ander onderdeel (engine/evaluatie/UI) gebruikt `referentie`.
+
 ## 5. Evaluatie (`regels/evaluatie.js`)
 `Evaluatie.beoordeel(casus, episodeId, state)` → 
 ```

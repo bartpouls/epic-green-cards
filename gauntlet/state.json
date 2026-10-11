@@ -6,7 +6,7 @@
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 22:17",
+ "updated": "2026-10-11 22:26",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -60,8 +60,8 @@
   {
    "name": "S8 overzicht",
    "round": 1,
-   "verdict": "PENDING",
-   "evidence": "r1 gebouwd (check-overzicht 15 groen; 26 kaarten, 23 invarianten, 56 open vragen, 214 tekstvelden letterlijk); criticus r1 bezig",
+   "verdict": "FAIL",
+   "evidence": "r1 FAIL, 8 punten, BLIND=BRON; ronde 2 bouwer bezig (wacht op S11-data)",
    "artifact": ""
   },
   {
@@ -76,6 +76,13 @@
    "round": 3,
    "verdict": "PASS",
    "evidence": "r3 PASS (min 3 rondes gehaald), BLIND=ONS, 37/37 groen in Chromium; UI-koppeling nog te toetsen in S9",
+   "artifact": ""
+  },
+  {
+   "name": "S11 referentie",
+   "round": 0,
+   "verdict": "PENDING",
+   "evidence": "nieuw stuk: casusreferentie (Geldige routes, Altijd fout, Volgorde, Score, Brug, Bronconflict) voor overzicht; ronde 1 bouwer bezig",
    "artifact": ""
   }
  ],
@@ -235,6 +242,12 @@
    "unit": "S2 data-e1",
    "verdict": "PASS",
    "note": "geen letterlijke afwijking; 20.000 reeksen 0 afwijkingen (ook tegen regels/evaluatie.js 3.000 afrondingen); 1133 mutaties, 2 equivalent; BLIND=ONS (16/16 paren identiek)"
+  },
+  {
+   "round": 1,
+   "unit": "S8 overzicht",
+   "verdict": "FAIL",
+   "note": "data-trouw maar niet casus-trouw: casuskolom Altijd fout (E1/E2), scorezinnen, Geldige routes/Brug/Bronconflict ontbreken in data; sectievolgorde/namen wijken af; hardgecodeerde tekst; jargon; geen index/zoek bij 56 vragen. BLIND=BRON → ronde 2 + nieuw stuk S11 (casusreferentie)"
   }
  ],
  "open": [
