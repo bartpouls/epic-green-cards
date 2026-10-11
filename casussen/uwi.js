@@ -4,6 +4,7 @@ window.CASUSSEN = [
 {
  "id": "uwi-eerstelijn",
  "versie": "1.1",
+ "rollen": { "wissel": "B1", "stop": "B2", "pauzeer": "B3", "hervat": "B5" },
  "titel": "Casus UWI in de eerste lijn — tutorialcasus Epic green cards",
  "bronnen": {
   "NHG": "NHG-Standaard Urineweginfecties, versie juli 2026",

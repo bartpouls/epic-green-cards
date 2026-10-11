@@ -99,6 +99,15 @@
     Test.is(json.indexOf("**"), -1, "markdown ** hoort niet in de data");
   });
 
+  Test.registreer(G, "K1 casus.rollen wijst B1/B2/B3/B5 aan als wissel/stop/pauzeer/hervat; ids bestaan en zijn Bijsturen", function () {
+    Test.gelijk(casus().rollen, { wissel: "B1", stop: "B2", pauzeer: "B3", hervat: "B5" });
+    Object.keys(casus().rollen).forEach(function (r) {
+      var k = kaart(casus().rollen[r]);
+      Test.waar(k, "rol " + r + ": kaart bestaat niet");
+      Test.is(k.categorie, "Bijsturen", "rol " + r + " categorie");
+    });
+  });
+
   Test.registreer(G, "K1 precies 26 kaarten in casusvolgorde (B5 vóór B4)", function () {
     var ids = casus().kaarten.map(function (k) { return k.id; });
     Test.is(ids.length, 26);

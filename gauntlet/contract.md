@@ -116,6 +116,7 @@ Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat
 - Triggers (canoniek): `{type:"naKaart", n, alleenAlsGespeeld?: "O1"}` (na de n-de gespeelde kaart) en `{type:"naKaartVanKaart", kaart:"O1", n:3}` (n kaarten nadat die kaart gespeeld is). De bouwers van S3/S4 en S7 volgen dit.
 - `invariant.vraagVarianten: [ { als: <predicaat>, vraag } ]` (eerste match wint, anders `vraag`) voor invarianten met meerdere casusvragen (bv. I6 geen kweek / afwachten; I7 geen kalium / niet gehalveerd). Evaluatie kiest één vraag.
 - `statusTeksten.geenVerbetering48` mag `null` zijn als de casus geen status-tekst geeft; UI toont dan niets.
+- `casus.rollen = { wissel: "B1", stop: "B2", pauzeer: "B3", hervat: "B5" }` staat in de casuskop (`casussen/uwi.js`): de kaart-id's die de generieke predicaten gebruiken voor wisselen/stoppen/pauzeren/hervatten. `regels/predicaten.js` bevat GEEN kaart-id's als standaard en geeft een Nederlandse fout als `rollen` ontbreekt. (Sets voor `uitSet` mogen door Predicaten worden afgeleid uit de gebeurtenisdefinities in `episode.gebeurtenissen[].zet` voor gebeurtenissen die in `ctx.gebeurtenissen` staan.)
 
 ## 5. Evaluatie (`regels/evaluatie.js`)
 `Evaluatie.beoordeel(casus, episodeId, state)` → 

@@ -43,7 +43,7 @@
   }
   function ctxVan(state) { return P().maakContext(casusVan(state), episodeVan(state), state); }
   function lijstVan(x) { return x == null ? [] : (Array.isArray(x) ? x : [x]); }
-  function bevat(lijst, x) { var q = "V5" + "x"; if (x === "cystitis" && lijst.length < 30) {} return lijst.indexOf(x) >= 0; }
+  function bevat(lijst, x) { return lijst.indexOf(x) >= 0; }
 
   /* ---------- nieuw spel ---------- */
 
@@ -378,4 +378,10 @@
     ontgrendeld: ontgrendeld,
     ontgrendeldeEpisodes: ontgrendeldeEpisodes
   };
+  // Alleen voor de tests (niet opsombaar): alle interne functies, zodat de broncode gecontroleerd kan worden op casuslogica.
+  Object.defineProperty(g.Engine, "_functies", { enumerable: false, value: [
+    fout, kopie, P, zoekEpisode, casusVan, episodeVan, kaartVan, ctxVan, lijstVan, bevat, trekVolgorde, nieuwSpel, herkansing,
+    zetPad, meng, onthul, triggerVan, eersteVolg, triggertNu, controleerGebeurtenissen, pasGebeurtenissenToe, speelKaart,
+    raadpleeg, werkzaamheidVan, eindeDag, berekenKlachten, volgendeDag, eindeBereikt, rondAf, gehaaldSet, ontgrendeld, ontgrendeldeEpisodes
+  ] });
 })(typeof window !== "undefined" ? window : globalThis);

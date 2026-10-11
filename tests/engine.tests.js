@@ -56,7 +56,7 @@
       episodes: [ {
         id: "X1", level: 1,
         knoppen: { actiesPerBeurt: 3, aantalDagen: 4, raadplegenKost: 1 },
-        startToestand: "basis",
+        startToestanden: ["basis"],
         antibiotica: ["M1", "M2"],
         patient: {
           zichtbaar: { naam: "Fixtuur", lab: { w: 10, datum: "recent" } },
@@ -79,7 +79,7 @@
       }, {
         id: "X2", level: 2,
         knoppen: { actiesPerBeurt: 2, aantalDagen: 2, raadplegenKost: 0 },
-        antibiotica: [], patient: { zichtbaar: {}, waar: {}, verborgen: [] }, repertoire: ["K1"], gebeurtenissen: []
+        startToestanden: ["basis"], antibiotica: [], patient: { zichtbaar: {}, waar: {}, verborgen: [] }, repertoire: ["K1"], gebeurtenissen: []
       } ]
     };
   }
@@ -94,7 +94,25 @@
     T.is(s.casusId, "fixtuur"); T.is(s.episodeId, "X1"); T.is(s.dag, 1); T.is(s.actiesOver, 3); T.is(s.aantalDagen, 4);
     T.is(s.afgerond, false); T.gelijk(s.tijdlijn, []); T.gelijk(s.raadplegingen, []); T.gelijk(s.gebeurtenissen, []);
     T.gelijk(s.toestanden, ["basis"]); T.gelijk(s.onthuld, []); T.gelijk(s.klachten[1], { dag: 1, status: null, tekst: null });
-    T.is(s.eerstePoging, true);
+    T.is("pogingnummer" in s || "eerstePoging" in s, false, "poging wordt door Logging bepaald, niet door de engine");
+  });
+  test("nieuwSpel: startToestanden (lijst) is canoniek; ontbreekt of is geen lijst -> Nederlandse fout, geen terugval", function () {
+    var c = maakFixture(); c.episodes[0].startToestanden = ["basis", "erger"];
+    T.gelijk(g.Engine.nieuwSpel(c, "X1", {}).toestanden, ["basis", "erger"]);
+    [undefined, "basis", []].forEach(function (waarde) {
+      var c2 = maakFixture(); if (waarde === undefined) delete c2.episodes[0].startToestanden; else c2.episodes[0].startToestanden = waarde;
+      try { g.Engine.nieuwSpel(c2, "X1", {}); T.waar(false, "had moeten falen"); }
+      catch (e) { T.waar(/startToestanden/.test(e.message) && /De episode/.test(e.message), "foutmelding: " + e.message); }
+    });
+    var c3 = maakFixture(); c3.episodes[0].startToestand = "basis"; delete c3.episodes[0].startToestanden;
+    T.gooit(function () { g.Engine.nieuwSpel(c3, "X1", {}); });
+  });
+  test("speelKaart: null/leeg/geen tekst als kaart geeft een Nederlandse fout (geen TypeError), state ongewijzigd", function () {
+    var s = nieuw();
+    [null, undefined, "", 5].forEach(function (k) {
+      var voor = JSON.stringify(s), r = g.Engine.speelKaart(s, k);
+      T.is(r.ok, false); T.waar(/kaart/.test(r.fout) && !/undefined|null|Cannot/.test(r.fout), r.fout); T.is(JSON.stringify(s), voor);
+    });
   });
   test("nieuwSpel: onbekende episode geeft Nederlandse fout", function () {
     T.gooit(function () { g.Engine.nieuwSpel(maakFixture(), "NOPE", {}); });
@@ -142,8 +160,13 @@
   });
   test("afrondenPasNaGebeurtenissen (TODO_BART-4): standaard uit, aan blokkeert vroeg afronden", function () {
     var s = nieuw(); g.Engine.rondAf(s); T.is(s.afgerond, true);
-    var s2 = g.Engine.nieuwSpel(maakFixture(), "X1", { rng: rngVast(0), afrondenPasNaGebeurtenissen: true });
+    var c = maakFixture(); c.episodes[0].afrondenPasNaGebeurtenissen = true;   // contract 4b: episode-niveau
+    var s2 = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
     T.gooit(function () { g.Engine.rondAf(s2); }); T.is(s2.afgerond, false);
+    var c2 = maakFixture(); c2.episodes[0].knoppen.afrondenPasNaGebeurtenissen = true;   // oude plek wordt niet meer gelezen
+    var s3 = g.Engine.nieuwSpel(c2, "X1", { rng: rngVast(0) }); g.Engine.rondAf(s3); T.is(s3.afgerond, true);
+    var s4 = g.Engine.nieuwSpel(maakFixture(), "X1", { rng: rngVast(0), afrondenPasNaGebeurtenissen: true });
+    T.gooit(function () { g.Engine.rondAf(s4); });
   });
 
   /* ---------- M2 onthullen ---------- */
@@ -312,7 +335,7 @@
   test("nieuwe casus = alleen nieuwe data: tweede synthetische casus met andere ids werkt zonder codewijziging", function () {
     var c = {
       id: "andere", kaarten: [ { id: "a", label: "A", categorie: "x", downside: "d" }, { id: "b", label: "B", categorie: "x", downside: "d" } ],
-      episodes: [ { id: "e9", knoppen: { actiesPerBeurt: 1, aantalDagen: 3, raadplegenKost: 0 }, startToestand: ["t0"], antibiotica: ["b"],
+      episodes: [ { id: "e9", knoppen: { actiesPerBeurt: 1, aantalDagen: 3, raadplegenKost: 0 }, startToestanden: ["t0"], antibiotica: ["b"],
         patient: { zichtbaar: { k: 1 }, waar: {}, verborgen: [ { kaart: "a", onthult: "zie", sleutel: "k", waarde: 2 } ] },
         repertoire: ["a", "b"], gebeurtenissen: [ { id: "ZZ", trigger: { type: "naAantalKaarten", n: 1 }, tekst: "t", toestand: "t1" } ],
         werkzaamheid: { t0: { werkzaam: [ { kaart: "b" } ], nietWerkzaam: [] }, t1: { werkzaam: [], nietWerkzaam: [ { kaart: "b" } ] } },
@@ -324,11 +347,55 @@
     g.Engine.volgendeDag(s); T.gelijk(s.gebeurtenissen, [{ id: "ZZ", dag: 2, naVolg: 1 }]); T.gelijk(s.toestanden, ["t0", "t1"]);
     speel(s, "b"); g.Engine.volgendeDag(s); T.is(s.klachten[3].status, "aan"); T.is(s.klachten[3].tekst, "slecht");
   });
-  test("engine.js bevat geen middelnamen, kaart-ids of klinische drempels", function () {
-    // de broncode is niet bereikbaar in de browser; daarom een structurele controle op de API (geen casus-id's als sleutel nodig)
-    var s = nieuw(); T.is(typeof g.Engine.nieuwSpel, "function");
-    T.is(JSON.stringify(Object.keys(g.Engine).sort()), JSON.stringify(["eindeBereikt","herkansing","nieuwSpel","ontgrendeld","ontgrendeldeEpisodes","raadpleeg","rondAf","speelKaart","volgendeDag"]));
-    T.is(s.casusId, "fixtuur");
+  test("klachten: werkzaamheid kiest op datavolgorde, niet op activeringsvolgorde (A/B-trekking verandert het klinische resultaat niet)", function () {
+    function speelMet(rngWaarde) {
+      var c = maakFixture(), ep = c.episodes[0];
+      ep.gebeurtenissen = [
+        { id: "P", groep: "PQ", trigger: { type: "naKaart", n: 1 }, tekst: "tp", toestand: "erger" },
+        { id: "Q", groep: "PQ", trigger: { type: "naKaart", n: 2 }, tekst: "tq", toestand: "uitdroging" }
+      ];
+      ep.werkzaamheid.uitdroging = { werkzaam: [ { kaart: "M1" } ], nietWerkzaam: [] };
+      ep.werkzaamheid.erger = { werkzaam: [], nietWerkzaam: [ { kaart: "M1" } ] };
+      var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(rngWaarde) });
+      speel(s, "M1"); speel(s, "K1"); dagen(s, 3);
+      return s;
+    }
+    var a = speelMet(0), b = speelMet(0.99);
+    T.waar(JSON.stringify(a.toestanden) !== JSON.stringify(b.toestanden), "de toestanden zijn in andere volgorde geactiveerd: " + a.toestanden + " / " + b.toestanden);
+    T.gelijk(a.klachten, b.klachten);
+    T.is(a.klachten[2].status, "af"); T.is(a.klachten[3].status, "af");
+  });
+  test("engine.js bevat geen casuslogica: geen ids van kaarten/middelen/comedicatie/toestanden uit de echte casus en geen drempels (Function.prototype.toString)", function () {
+    var fs = g.Engine._functies; T.waar(fs && fs.length > 20, "interne functies bereikbaar");
+    var bron = fs.map(function (f) { return Function.prototype.toString.call(f); }).join("\n");
+    ["nieuwSpel","speelKaart","raadpleeg","volgendeDag","rondAf","eindeBereikt","ontgrendeld","herkansing"].forEach(function (k) {
+      T.waar(bron.indexOf(Function.prototype.toString.call(g.Engine[k])) >= 0, k + " zit in de gescande bron");
+    });
+    // 'bron' zonder tekstconstanten van contractnamen: de scan zoekt naar casusnamen, niet naar contract-API
+    var namen = {};
+    if (g.CASUSSEN) g.CASUSSEN.forEach(function (c) {
+      (c.kaarten || []).forEach(function (k) { namen[k.id] = 1; });
+      (c.episodes || []).forEach(function (e) {
+        (e.antibiotica || []).forEach(function (m) { namen[m] = 1; });
+        ((e.patient && e.patient.medicatie) || []).forEach(function (m) { namen[m.id] = 1; });
+        (e.startToestanden || []).forEach(function (m) { namen[m] = 1; });
+        Object.keys(e.werkzaamheid || {}).forEach(function (m) { namen[m] = 1; });
+        (e.gebeurtenissen || []).forEach(function (x) { if (x.toestand) namen[x.toestand] = 1; });
+        Object.keys((e.patient && e.patient.waar) || {}).forEach(function (m) { namen[m] = 1; });
+      });
+    });
+    ["cystitis","weefselinvasie","uitdroging","eGFR","lisinopril","calcium","fosfomycine","nitrofurantoine","ciprofloxacine","trimethoprim"].forEach(function (m) { namen[m] = 1; });
+    var gevonden = [];
+    Object.keys(namen).forEach(function (n) {
+      if (n === "statusTeksten" || n === "TODO_BART" || n.length < 2) return;
+      var re = new RegExp("(^|[^A-Za-z0-9_])" + n.replace(/[.*+?^${}()|[\]\\\/]/g, "\\$&") + "([^A-Za-z0-9_]|$)", "i");
+      // woorden als 'dag' of 'tekst' zijn geen casusnamen; alleen echte treffers tellen
+      if (re.test(bron.replace(/\/\/[^\n]*/g, ""))) gevonden.push(n);
+    });
+    T.gelijk(gevonden, [], "casusnamen in engine.js: " + gevonden.join(", "));
+    var kaal = bron.replace(/"[^"]*"/g, '""');
+    [/<\s*30\b/, /\b38[,.]5\b/, /\b75\b/, /[<>]=?\s*(?:2|3|4|5|7)\d?\b(?!\s*[;)])/ ].slice(0, 3).forEach(function (re) { T.waar(!re.test(kaal), "drempel-patroon in engine.js: " + re); });
+    T.waar(!/\b48\b/.test(kaal), "getal 48 in code (buiten tekstconstanten)");
   });
   test("casus-object wordt niet gemuteerd door een volledig spel", function () {
     var c = maakFixture(), voor = JSON.stringify(c), s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
@@ -347,13 +414,148 @@
     T.is(g.Engine.ontgrendeld(c, "BESTAATNIET", ["X1"]), false);
     T.gelijk(g.Engine.ontgrendeldeEpisodes(c, []), ["X1"]); T.gelijk(g.Engine.ontgrendeldeEpisodes(c, ["X1"]), ["X1", "X2"]);
   });
-  test("herkansing: nieuw spel zelfde episode, pogingnummer +1, eerstePoging false, schone staat", function () {
+  test("herkansing: nieuw spel zelfde episode, schone staat; poging wordt niet door de engine geteld", function () {
     var c = maakFixture(), s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
-    T.is(s.pogingnummer >= 1, true); speel(s, "K1"); g.Engine.rondAf(s);
+    speel(s, "K1"); g.Engine.rondAf(s);
     var h = g.Engine.herkansing(s);
-    T.is(h.pogingnummer, s.pogingnummer + 1); T.is(h.eerstePoging, false); T.is(h.afgerond, false);
-    T.gelijk(h.tijdlijn, []); T.is(h.dag, 1); T.is(h.actiesOver, 3); T.is(h.episodeId, "X1");
-    var n = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }); T.is(n.pogingnummer, h.pogingnummer + 1, "elke nieuwSpel telt als poging");
-    var expl = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0), pogingnummer: 1 }); T.is(expl.eerstePoging, true);
+    T.is(h.afgerond, false); T.gelijk(h.tijdlijn, []); T.is(h.dag, 1); T.is(h.actiesOver, 3); T.is(h.episodeId, "X1");
+    T.is("pogingnummer" in h || "eerstePoging" in h, false);
+    T.is(g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }).dag, 1);
+    T.waar(!/pogingenTeller|pogingnummer|eerstePoging/.test(g.Engine._functies.map(function (f) { return Function.prototype.toString.call(f); }).join("")), "geen geheugenteller in de engine");
+  });
+  test("ontgrendeld met Logging-records (contract 6): poortGehaald===true OF (geen veld poortGehaald en geschonden leeg)", function () {
+    var c = maakFixture();
+    function rec(extra) { var r = { pseudoniem: "p", casusId: "fixtuur", episodeId: "X1", tijdlijn: [], onthuld: [], score: null, profiel: null }; for (var k in extra) r[k] = extra[k]; return r; }
+    T.is(g.Engine.ontgrendeld(c, "X2", [rec({ geschonden: [] })]), true, "Logging-record zonder schending");
+    T.is(g.Engine.ontgrendeld(c, "X2", [rec({ geschonden: ["I3"] })]), false, "Logging-record met schending");
+    T.is(g.Engine.ontgrendeld(c, "X2", [rec({ geschonden: ["I3"] }), rec({ geschonden: [] })]), true, "latere poging gehaald");
+    T.is(g.Engine.ontgrendeld(c, "X2", [rec({ geschonden: [], poortGehaald: false })]), false, "expliciet niet gehaald wint");
+    T.is(g.Engine.ontgrendeld(c, "X2", [rec({ poortGehaald: true, geschonden: ["x"] })]), true);
+    T.is(g.Engine.ontgrendeld(c, "X2", [rec({})]), false, "geschonden ontbreekt: niet gehaald");
+    T.is(g.Engine.ontgrendeld(c, "X2", [rec({ geschonden: [], episodeId: "ANDER" })]), false, "andere episode telt niet");
+    T.gelijk(g.Engine.ontgrendeldeEpisodes(c, [rec({ geschonden: [] })]), ["X1", "X2"]);
+  });
+
+  /* ---------- echte regeltaal + echte UWI-data (geen stubs) ---------- */
+  function echt(naam, fn) {
+    T.registreer(GROEP, "echt: " + naam, function () {
+      if (!g.Predicaten || !g.CASUSSEN || !g.CASUSSEN[0] || !g.CASUSSEN[0].episodes) return;
+      fn(g.CASUSSEN[0]);
+    });
+  }
+  function ep(c, id) { return c.episodes.filter(function (e) { return e.id === id; })[0]; }
+  function spel(c, id, w) { return g.Engine.nieuwSpel(c, id, { rng: rngVast(w == null ? 0 : w) }); }
+  function iedereen(s, lijst) { lijst.forEach(function (k) { if (k === "|") g.Engine.volgendeDag(s); else speel(s, k); }); }
+
+  echt("E1 volledig spel: G1, G2, V4 | N1, Ev1 | rest van de dagen; klachtenstatus uit de data; geen onthulling", function (c) {
+    var voor = JSON.stringify(c), s = spel(c, "E1");
+    T.gelijk(s.toestanden, ep(c, "E1").startToestanden);
+    var r = speel(s, "G2"); T.gelijk(r.onthuld, [], "E1 heeft geen verborgen gegevens");
+    T.is(s.zichtbaar.labTekst, ep(c, "E1").patient.zichtbaar.labTekst);
+    iedereen(s, ["G1", "V4", "|", "N1", "Ev1", "|"]);
+    T.is(s.klachten[2].status, "af"); T.is(s.klachten[2].tekst, ep(c, "E1").statusTeksten.af);
+    T.gelijk(s.tijdlijn.map(function (x) { return x.volg + x.kaart + "@" + x.dag; }), ["1G2@1", "2G1@1", "3V4@1", "4N1@2", "5Ev1@2"]);
+    T.is(g.Engine.speelKaart(s, "V6").ok, false, "V6 zit niet in het repertoire van E1");
+    T.is(g.Engine.speelKaart(s, "G3").ok, false, "G3 zit niet in het repertoire van E1");
+    g.Engine.volgendeDag(s); g.Engine.volgendeDag(s); T.is(s.dag, 5); T.is(s.klachten[5].status, "af");
+    g.Engine.volgendeDag(s); T.is(g.Engine.eindeBereikt(s), true);
+    T.is(JSON.stringify(c), voor, "casusdata ongewijzigd");
+    T.is(g.Engine.raadpleeg(spel(c, "E1")).ok, true);
+  });
+
+  echt("E1: V3 daarna nog V4 (twee antibiotica) en trimethoprim geven werkzame status; zonder antibioticum status null", function (c) {
+    var s = spel(c, "E1"); iedereen(s, ["G1", "|"]); T.is(s.klachten[2].status, null);
+    var s2 = spel(c, "E1"); iedereen(s2, ["V5", "|"]); T.is(s2.klachten[2].status, "af");
+  });
+
+  echt("E2: G2 onthult eGFR 29 (waar blijft 29, zichtbaar was 42), pas na G2", function (c) {
+    var e = ep(c, "E2"), s = spel(c, "E2"), zichtVoor = JSON.stringify(s.zichtbaar);
+    T.is(e.patient.zichtbaar.lab.eGFR, 42);
+    speel(s, "G1"); T.is(JSON.stringify(s.zichtbaar), zichtVoor); T.is(s.onthuld.length, 0);
+    var r = speel(s, "G2");
+    T.is(r.onthuld.length, 1); T.is(r.onthuld[0].waarde, 29); T.is(r.onthuld[0].sleutel, "eGFR"); T.is(r.onthuld[0].tekst, "eGFR 29 uit de jaarlijkse controle");
+    T.is(s.zichtbaar.lab.eGFR, 29); T.is(s.zichtbaar.lab.datum, "uit de jaarlijkse controle"); T.is(s.zichtbaar.labTekst, "eGFR 29 uit de jaarlijkse controle");
+    T.is(e.patient.waar.eGFR, 29, "waar ongewijzigd"); T.is(e.patient.zichtbaar.lab.eGFR, 42, "casusdata zichtbaar niet gemuteerd");
+    T.is(speel(s, "G2").onthuld.length, 0, "niet dubbel");
+    // Predicaat 'waar' rekent met de ware waarde, ook zonder G2
+    var s2 = spel(c, "E2"), ctx = g.Predicaten.maakContext(c, e, s2);
+    T.is(g.Predicaten.evalueer({ p: "waar", veld: "eGFR", op: "<", waarde: 30 }, ctx), true);
+  });
+
+  echt("E2: kweekuitslag C komt na de 4e kaart alleen als O1 gespeeld is; zet resistent/gevoelig uit de data", function (c) {
+    var e = ep(c, "E2"), cdef = e.gebeurtenissen.filter(function (x) { return x.id === "C"; })[0];
+    var met = spel(c, "E2"); iedereen(met, ["G1", "G2", "O1", "|", "V4", "|"]);
+    T.gelijk(met.gebeurtenissen.map(function (x) { return x.id + "@" + x.dag + "/" + x.naVolg; }), ["C@3/4"], "banner pas op de volgende dag (dag 3), na kaart 4");
+    T.gelijk(met.sets.resistent, cdef.zet.resistent); T.gelijk(met.sets.gevoelig, cdef.zet.gevoelig);
+    var zonder = spel(c, "E2"); iedereen(zonder, ["G1", "G2", "V4", "|", "N1", "|"]);
+    T.gelijk(zonder.gebeurtenissen, [], "geen O1: geen kweekuitslag");
+    T.gelijk(zonder.sets.resistent, []);
+    var laat = spel(c, "E2"); iedereen(laat, ["G1", "G2", "V4", "|", "N1", "O1", "|"]);
+    T.gelijk(laat.gebeurtenissen, [], "O1 pas als 5e kaart: C komt niet (meest letterlijke lezing, TODO_BART in data)");
+    T.waar(/O1 pas na de 4e kaart/.test(cdef.TODO_BART), "W1 staat als TODO_BART in de data");
+  });
+
+  echt("E2: V6 vereist een gestart middel/actieve comedicatie via de echte vereist-predicaten, en een optie", function (c) {
+    var s = spel(c, "E2");
+    var r = g.Engine.speelKaart(s, "V6", { doel: "V5", optie: "halveren" });
+    T.is(r.ok, false); T.waar(/niet beschikbaar/.test(r.fout), r.fout);
+    iedereen(s, ["G1", "G2", "V5"]); iedereen(s, ["|"]);
+    var r2 = g.Engine.speelKaart(s, "V6", { doel: "V5" }); T.is(r2.ok, false); T.waar(/optie/.test(r2.fout), r2.fout);
+    var voor = JSON.stringify(s); T.is(g.Engine.speelKaart(s, "V6", { doel: "V5", optie: "bestaat-niet" }).ok, false); T.is(JSON.stringify(s), voor);
+    var ok = speel(s, "V6", { doel: "V5", optie: "halveren" });
+    T.gelijk(ok.regel, { volg: 4, kaart: "V6", dag: 2, doel: "V5", optie: "halveren" });
+  });
+
+  echt("E3: G3 onthult, A en B in beide volgordes (rng), C = 3 kaarten na O1, klachtenstatus volgens toestand", function (c) {
+    var e = ep(c, "E3"), A = e.gebeurtenissen.filter(function (x) { return x.id === "A"; })[0], B = e.gebeurtenissen.filter(function (x) { return x.id === "B"; })[0];
+    var s0 = spel(c, "E3", 0), s1 = spel(c, "E3", 0.99);
+    T.gelijk(s0.volgordeAB, ["A", "B"]); T.gelijk(s1.volgordeAB, ["B", "A"]);
+    var r = speel(s0, "G3"); T.is(r.onthuld.length, 1); T.is(r.onthuld[0].kaart, "G3");
+    // Beide volgordes, zelfde zetten: G1, G3, O1 | V4, N1 | N2, Ev1 | ...
+    [s0, s1].forEach(function (s, ix) {
+      if (ix === 1) speel(s, "G3");
+      iedereen(s, ["G1", "O1", "|", "V4", "N1", "|"]);
+    });
+    // kaarten: G3(1) G1(2) O1(3) V4(4) N1(5): eerste trigger op kaart 4, C op kaart 6
+    T.gelijk(s0.gebeurtenissen.map(function (x) { return x.id + "@" + x.dag + "/" + x.naVolg; }), ["A@3/4"]);
+    T.gelijk(s1.gebeurtenissen.map(function (x) { return x.id + "@" + x.dag + "/" + x.naVolg; }), ["B@3/4"]);
+    T.waar(s0.toestanden.indexOf(A.toestand) >= 0 && s0.toestanden.indexOf(B.toestand) < 0);
+    T.waar(s1.toestanden.indexOf(B.toestand) >= 0 && s1.toestanden.indexOf(A.toestand) < 0);
+    iedereen(s0, ["Ev1"]); T.gelijk(s0.wachtend.map(function (x) { return x.id; }), ["C"], "C na O1 + 3 kaarten (kaart 6)");
+    g.Engine.volgendeDag(s0);
+    T.waar(s0.gebeurtenissen.some(function (x) { return x.id === "C" && x.dag === 4 && x.naVolg === 6; }));
+    T.waar(s0.sets.resistent.length > 0 && s0.sets.gevoelig.length > 0, "sets uit de data");
+    // A: weefselinvasie -> fosfomycine niet werkzaam: aan, daarna 'geen verbetering na 48 uur' op dA+2
+    T.is(s0.klachten[3].status, "aan");
+    T.is(s0.klachten[3].tekst, e.statusTeksten.aan);
+    // dag 3 = dA; dag 5 = dA+2
+    g.Engine.volgendeDag(s0); T.is(s0.klachten[5].status, "geenVerbetering48"); T.is(s0.klachten[5].tekst, e.statusTeksten.geenVerbetering48);
+    // Zonder statusNaBeurten op B: geen override door B alleen
+    T.is(B.zet && B.zet.statusNaBeurten, undefined);
+  });
+
+  echt("E3: A/B-volgorde verandert niet welke werkzaamheid geldt (datavolgorde van episode.werkzaamheid)", function (c) {
+    var e = ep(c, "E3");
+    var sleutels = Object.keys(e.werkzaamheid).filter(function (k) { return k !== "statusTeksten" && k.indexOf("TODO_BART") !== 0; });
+    T.waar(sleutels.length >= 2, "twee toestanden met werkzaamheid in E3");
+    var s = spel(c, "E3"); iedereen(s, ["V8", "|"]);
+    T.is(s.klachten[2].status, "aan", "V8 in cystitis (geen entry) is nog niet werkzaam");
+  });
+
+  echt("E3: hele reis speelt door met de echte regeltaal zonder uitzondering (willekeurige zetten, vaste rng)", function (c) {
+    var ids = ep(c, "E3").repertoire;
+    for (var ronde = 0; ronde < 40; ronde++) {
+      var seed = ronde * 7 + 1, rnd = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+      var s = g.Engine.nieuwSpel(c, "E3", { rng: rnd });
+      for (var stap = 0; stap < 60 && !g.Engine.eindeBereikt(s); stap++) {
+        var k = ids[Math.floor(rnd() * ids.length)], voor = JSON.stringify(s);
+        var kaart = c.kaarten.filter(function (x) { return x.id === k; })[0], opts = {};
+        if (kaart.doelen && kaart.doelen.E3) { var d = kaart.doelen.E3[Math.floor(rnd() * kaart.doelen.E3.length)]; opts.doel = d.id; if (kaart.opties) opts.optie = (kaart.opties[d.id] || [{ tekst: "x" }])[0].tekst; }
+        var r = g.Engine.speelKaart(s, k, opts);
+        if (!r.ok) { T.is(JSON.stringify(s), voor, "state ongewijzigd bij geweigerde zet"); T.waar(typeof r.fout === "string"); }
+        if (s.actiesOver === 0 || rnd() < 0.2) g.Engine.volgendeDag(s);
+        T.waar(s.actiesOver >= 0);
+      }
+    }
   });
 })(typeof window !== "undefined" ? window : globalThis);

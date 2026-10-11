@@ -1,5 +1,5 @@
 /* Tests voor regels/predicaten.js. Uitsluitend synthetische tijdlijnen met willekeurige ids (P2):
-   geen casusdata nodig. Rolkaarten B1/B2/B3/B5 volgen het contract; een test toont dat ze instelbaar zijn. */
+   geen casusdata nodig. De rolkaarten komen uit een synthetische casus.rollen (hier B1/B2/B3/B5); zonder rollen volgt een fout. */
 (function () {
   var G = "predicaten", T = Test, P = window.Predicaten;
   function t(naam, fn) { T.registreer(G, naam, fn); }
@@ -7,10 +7,12 @@
   // regel: [volg, kaart, dag, doel, optie]
   function R(volg, kaart, dag, doel, optie) { return { volg: volg, kaart: kaart, dag: dag, doel: doel || null, optie: optie || null }; }
   // ctx bouwen via maakContext met een synthetische casus/episode/state
+  var ROLLEN = { wissel: "B1", stop: "B2", pauze: "B3", hervat: "B5" };
+  var MEDICATIE = ["m", "m1", "m2", "m3"].map(function (id) { return { id: id, label: id }; });
   function mk(tijdlijn, o) {
     o = o || {};
     var ep = {
-      id: "EX", antibiotica: o.ab || ["Q1", "Q2", "Q3"], patient: { waar: o.waar || {} },
+      id: "EX", antibiotica: o.ab || ["Q1", "Q2", "Q3"], patient: { waar: o.waar || {}, medicatie: o.medicatie || MEDICATIE },
       gebeurtenissen: o.gebdef || [], sets: o.sets
     };
     if (o.extra) Object.keys(o.extra).forEach(function (k) { ep[k] = o.extra[k]; });
@@ -19,7 +21,7 @@
       tijdlijn: tijdlijn, gebeurtenissen: o.geb || [], toestanden: o.toest || [], klachten: o.klachten || [],
       dag: o.dag || 1, aantalDagen: o.dagen || 7
     };
-    return P.maakContext({ id: "cx", rollen: o.rollen, episodes: [ep] }, ep, st);
+    return P.maakContext({ id: "cx", rollen: o.zonderRollen ? undefined : (o.rollen || ROLLEN), episodes: [ep] }, ep, st);
   }
   function ev(pred, ctx) { return P.evalueer(pred, ctx); }
   function K(kaart, doel, optie) { var k = { kaart: kaart }; if (doel) k.doel = doel; if (optie) k.optie = optie; return k; }
@@ -746,7 +748,9 @@
     var slecht = { p: "gespeeld", kaart: "X1", optiee: "a" };
     gooitNL(function () { ev({ p: "en", args: [{ p: "waarheid", waarde: true }, slecht] }, c); }, /Onbekend veld 'optiee'/);
     gooitNL(function () { ev({ p: "niet", arg: { p: "of", args: [slecht] } }, c); }, /Onbekend veld/);
-    gooitNL(function () { ev({ p: "alsDan", als: { p: "waarheid", waarde: false }, dan: slecht }, c); }, /Onbekend veld/, "ook als de tak niet nodig is? alsDan evalueert dan niet");
+    gooitNL(function () { ev({ p: "alsDan", als: { p: "waarheid", waarde: false }, dan: slecht }, c); }, /Onbekend veld/, "ook als de tak niet nodig is");
+    gooitNL(function () { ev({ p: "of", args: [{ p: "waarheid", waarde: true }, slecht] }, c); }, /Onbekend veld/, "of kortsluit niet");
+    gooitNL(function () { ev({ p: "en", args: [{ p: "waarheid", waarde: false }, slecht] }, c); }, /Onbekend veld/, "en kortsluit niet");
   });
   t("typfouten: tellers en moment 'op' controleren hun velden", function () {
     var c = mk([R(1, "X1", 1)], CTX_E);
@@ -775,8 +779,6 @@
     T.is(ev({ p: "actief", uitSet: "resistent" }, mk([R(1, "Q1", 1)], { geb: [{ id: "G", dag: 1 }], gebdef: CTX_E.gebdef })), true);
   });
   t("uitSet: een set-naam die ook een prototype-sleutel is, werkt alleen als de data hem echt bevat", function () {
-    var c = mk([R(1, "Q1", 1)], { extra: { constructor: ["Q1"] } });
-    c.episode = c.episode;   // eigen sleutel 'constructor' op de episode
     var ep = { id: "EX", antibiotica: ["Q1"], patient: { waar: {}, medicatie: MEDICATIE } };
     Object.defineProperty(ep, "toString", { value: ["Q1"], enumerable: true });
     var c2 = P.maakContext({ rollen: ROLLEN }, ep, { tijdlijn: [R(1, "Q1", 1)] });

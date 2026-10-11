@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:07",
+ "updated": "2026-10-11 20:08",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -26,21 +26,21 @@ window.GAUNTLET = {
    "name": "S3 data-e2",
    "round": 1,
    "verdict": "PENDING",
-   "evidence": "r1 gebouwd (42 eigen tests groen; 14 TODO_BART-E2); criticus bezig",
+   "evidence": "r1 gebouwd (14 TODO_BART-E2); criticus bezig",
    "artifact": ""
   },
   {
    "name": "S4 data-e3",
    "round": 1,
    "verdict": "PENDING",
-   "evidence": "ronde 1: bouwer bezig",
+   "evidence": "r1 gebouwd (36 eigen tests groen; 19 TODO_BART-E3); criticus bezig",
    "artifact": ""
   },
   {
    "name": "S5 predicaten",
    "round": 1,
-   "verdict": "PENDING",
-   "evidence": "r1 gebouwd (92 eigen tests groen); criticus bezig",
+   "verdict": "FAIL",
+   "evidence": "r1 FAIL, 4 punten, BLIND=ONS; ronde 2 bouwer bezig",
    "artifact": ""
   },
   {
@@ -115,6 +115,12 @@ window.GAUNTLET = {
    "unit": "S10 logging",
    "verdict": "PASS",
    "note": "alle r1/r2-punten weg; 37/37 logging-tests groen in Node én Chromium; geen echte download; BLIND=ONS. Open: UI-koppeling bij S9"
+  },
+  {
+   "round": 1,
+   "unit": "S5 predicaten",
+   "verdict": "FAIL",
+   "note": "typfouten in platte vorm stil genegeerd (F1); uitSet/medicatieActief stil false/true (F2); volg-sortering en waar==-onbekend ongetest (F3); B1/B2/B3/B5 hardcoded (F4, vraagt casus.rollen). BLIND=ONS → ronde 2"
   }
  ],
  "open": [
@@ -122,7 +128,8 @@ window.GAUNTLET = {
   "TODO_BART-K1…K4 (S1): '—'-downsides N1/N2/N3/Ev1; E1-voorvoegsel V3/V5/O1; G2/O1/Ev1 ongesplitst; doelenlijsten afgeleid",
   "S9 (UI) moet een pseudoniem afdwingen vóór Logging.bewaar (leeg pseudoniem geeft een fout)",
   "S4 (E3-data): gebeurtenis A mist zet.statusNaBeurten:2 → geenVerbetering48 (I14/I16) werkt niet (gemeld door S7-criticus)",
-  "S9 moet bewaarUitSpel aanroepen, Logging.opslagStatus() melden ('Resultaten staan alleen in dit tabblad: exporteer nu.') en lege pseudoniem afvangen"
+  "S9 moet bewaarUitSpel aanroepen, Logging.opslagStatus() melden ('Resultaten staan alleen in dit tabblad: exporteer nu.') en lege pseudoniem afvangen",
+  "Let op: bouwers mogen NIET git stash/pull/checkout gebruiken (gebeurde één keer, conflict hersteld door LEAD)"
  ],
  "belowBar": []
 };
