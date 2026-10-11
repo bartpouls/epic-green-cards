@@ -429,8 +429,7 @@ async function speelRoute(page, route, volgorde, alIngestart) {
     check("export JSON: twee pogingen, eerste is 'eerstePoging: true', tweede false, met volledige tijdlijn",
       json.length === 2 && json[0].eerstePoging === true && json[1].eerstePoging === false && json[0].tijdlijn.length === 1 && json[1].tijdlijn.length === 3 &&
       json[1].tijdlijn.every(r => "volg" in r && "kaart" in r && "dag" in r && "doel" in r && "optie" in r), JSON.stringify(json.map(j => [j.pseudoniem, j.eerstePoging, j.tijdlijn.length])));
-    check("export JSON: eerste poging heeft geschonden-lijst, tweede heeft score en profiel",
-      json[0].geschonden.length > 0 && !json[0].score ? true : json[0].geschonden.length > 0);
+    check("export JSON: de eerste (geschonden) poging heeft geschonden-id's en geen score", json[0].geschonden.length > 0 && json[0].score === null && json[0].profiel === null);
     check("export JSON: gehaalde poging bevat profiel en score", json[1].geschonden.length === 0 && json[1].profiel && json[1].profiel.naam === "Terughoudend" && json[1].score && json[1].score.duurzaamheid === 3);
     const csv = (inh.csv || "").replace(/^﻿/, "");
     const kop = csv.split("\r\n")[0].split(";");
@@ -480,13 +479,13 @@ async function speelRoute(page, route, volgorde, alIngestart) {
       check("toetsenbord: Enter op een gefocuste kaart speelt hem", (await page.locator('[data-gespeeld="N1"]').count()) === 1);
       check("toetsenbord: focus blijft na het spelen op dezelfde kaart", (await page.evaluate(() => document.activeElement.getAttribute("data-kaart"))) === "N1");
       await page.focus('[data-kaart="V6"]');
-      await page.keyboard.press("Enter");
-      check("toetsenbord: dit mag nergens spelen (geen middel gestart) of de dialoog krijgt focus", true);
+      await page.keyboard.press("Enter");     // lisinopril is een toegestaan doel: de dialoog opent met focus op het eerste doel
+      check("toetsenbord: doelkaart opent de dialoog en zet de focus erin", (await page.evaluate(() => !!document.activeElement.closest(".dialoog"))));
       await page.keyboard.press("Escape");
+      check("toetsenbord: Escape sluit de dialoog en zet de focus terug op de kaart", (await page.locator(".dialoog").count()) === 0 && (await page.evaluate(() => document.activeElement.getAttribute("data-kaart"))) === "V6");
       await page.focus('[data-kaart="N2"]');
-      await page.keyboard.press("Enter");
-      const tabbaar = await page.evaluate(() => document.activeElement.tagName);
-      check("toetsenbord: doelkaart zonder toegestaan doel geeft een melding, geen kapotte dialoog", tabbaar === "BUTTON" || tabbaar === "BODY");
+      await page.keyboard.press("Enter");     // geen antibioticum gestart: geen doel beschikbaar
+      check("toetsenbord: doelkaart zonder toegestaan doel geeft een melding en geen dialoog", (await page.locator(".dialoog").count()) === 0 && /nergens/.test(await page.textContent("#melding")));
       const kleurContrast = await page.evaluate(() => {
         function lum(c) { const [r, g, b] = c.match(/\d+/g).map(Number).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }
         function ratio(a, b) { const l1 = lum(a), l2 = lum(b); return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05); }

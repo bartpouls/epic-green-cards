@@ -143,8 +143,9 @@ p.fout:empty { display: none; }
 .bronnen { display: grid; gap: 6px; }
 
 /* evaluatie */
-.omgeklapt { list-style: none; padding: 0; display: grid; gap: 6px; margin-top: 6px; }
-.omgeklapt li { display: grid; gap: 2px; background: #f7f4ea; border: 1px solid #d9cfa7; border-radius: 6px; padding: 6px 10px; }
+.smal.eind { max-width: 1000px; }
+.omgeklapt { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 6px; margin-top: 6px; }
+.omgeklapt li { display: grid; gap: 2px; align-content: start; background: #f7f4ea; border: 1px solid #d9cfa7; border-radius: 6px; padding: 5px 10px; font-size: .93rem; line-height: 1.35; }
 .dsgroep + .dsgroep { margin-top: 12px; }
 .uitslag.niet { border: 3px solid var(--fout); }
 .uitslag.goed { border: 3px solid var(--informeren); }
@@ -158,11 +159,16 @@ p.fout:empty { display: none; }
 
 /* 13 inch, smalle schermen */
 @media (max-width: 1180px) {
-  .raster { grid-template-columns: 250px minmax(0, 1fr); }
-  .rechts { grid-column: 1 / -1; position: static; max-height: none; }
-  .links { top: 92px; }
+  .raster { grid-template-columns: 210px minmax(0, 1fr) 245px; gap: 12px; padding: 12px; }
+  .links, .rechts { top: 100px; max-height: calc(100vh - 112px); }
+  .kaart { padding: 6px 10px; }
+  .balk { padding: 6px 12px; }
 }
-@media (max-width: 760px) {
+@media (max-width: 900px) {
+  .raster { grid-template-columns: 220px minmax(0, 1fr); }
+  .rechts { grid-column: 1 / -1; position: static; max-height: none; }
+}
+@media (max-width: 640px) {
   .raster { grid-template-columns: 1fr; }
   .links { position: static; max-height: none; }
   .episode { flex-direction: column; align-items: stretch; }
