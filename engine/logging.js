@@ -47,8 +47,21 @@
       var ruw = o.getItem(SLEUTEL);
       if (ruw === null || ruw === undefined || ruw === "") return [];
       var lijst = JSON.parse(ruw);
-      return Array.isArray(lijst) ? lijst : null;
+      return Array.isArray(lijst) ? alleenObjecten(lijst) : null;
     } catch (e) { return null; }
+  }
+
+  // Kapotte elementen (null, getallen, tekst) in de opslag worden genegeerd, zodat bewaar/export nooit crasht.
+  function alleenObjecten(lijst) {
+    return lijst.filter(function (p) { return p !== null && typeof p === "object" && !Array.isArray(p); });
+  }
+
+  // Genormaliseerde sleutel voor "dezelfde student/casus/episode": hoofdletters, spaties en
+  // Unicode-samenstelling (NFC) maken geen verschil. De oorspronkelijke schrijfwijze blijft bewaard.
+  function sleutelVan(s) {
+    var t = schoon(s);
+    try { t = t.normalize("NFC"); } catch (e) { /* oude omgeving */ }
+    return t.toLowerCase();
   }
 
   function schrijfOpslag(lijst) {
@@ -63,7 +76,7 @@
   function alle() {
     var uitOpslag = leesOpslag();
     var bron = (uitOpslag && uitOpslag.length >= geheugen.length) ? uitOpslag : geheugen;
-    return kopie(bron) || [];
+    return alleenObjecten(kopie(bron) || []);
   }
 
   function schoon(s) { return (s === undefined || s === null) ? "" : String(s).trim(); }
@@ -74,8 +87,11 @@
     var pseudoniem = schoon(poging.pseudoniem);
     var casusId = schoon(poging.casusId);
     var episodeId = schoon(poging.episodeId);
+    if (pseudoniem === "") throw new Error("Vul eerst een pseudoniem in; zonder pseudoniem kan de poging niet worden bewaard.");
+    var sleutel = [sleutelVan(pseudoniem), sleutelVan(casusId), sleutelVan(episodeId)];
     var eerder = lijst.filter(function (p) {
-      return schoon(p.pseudoniem) === pseudoniem && schoon(p.casusId) === casusId && schoon(p.episodeId) === episodeId;
+      return sleutelVan(p.pseudoniem) === sleutel[0] && sleutelVan(p.casusId) === sleutel[1] &&
+        sleutelVan(p.episodeId) === sleutel[2];
     }).length;
     var rec = {
       pseudoniem: pseudoniem,
