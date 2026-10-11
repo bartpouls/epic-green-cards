@@ -1,0 +1,230 @@
+// Logging en export (stuk S10). Global: window.Logging. Klassiek script, geen modules, geen netwerk.
+//
+// Per poging wordt bewaard (bouwopdracht 5, contract 6):
+//   { pseudoniem, casusId, episodeId, pogingnummer, eerstePoging, tijdlijn, onthuld,
+//     geschonden: [ids], score, profiel, tijdstempel }
+// - pogingnummer en eerstePoging worden HIER bepaald (niet door de aanroeper): het pogingnummer is het aantal
+//   al bewaarde pogingen van dezelfde pseudoniem + casus + episode, plus 1. Alleen pogingnummer 1 is de
+//   "eerste poging".
+// - Opslag: localStorage (sleutel "egc.logging.v1") in try/catch; bij ontbreken of fout val terug op geheugen.
+//
+// CSV-keuzes (gedocumenteerd):
+// - scheidingsteken ";" (Nederlandse Excel verwacht dit), regeleinde CRLF, UTF-8 met BOM zodat Excel
+//   tekens als "ë" goed toont.
+// - cellen met ; " of regeleinde staan tussen aanhalingstekens, " wordt "".
+// - een pseudoniem dat begint met = + - @ (of tab/CR) krijgt een voorloop-' zodat Excel het niet als formule
+//   uitvoert; het JSON-bestand bevat altijd de ongewijzigde waarde.
+// - eerstePoging in de CSV is "ja" of "nee"; in JSON true/false.
+// - tijdlijn en onthuld staan als JSON-tekst in één cel.
+(function (g) {
+  "use strict";
+
+  var SLEUTEL = "egc.logging.v1";
+  var SCHEIDER = ";";
+  var BOM = "﻿";
+  var KOLOMMEN = ["pseudoniem", "casusId", "episodeId", "pogingnummer", "eerstePoging", "tijdstempel",
+    "geschonden", "scoreDuurzaamheid", "scoreDoelmatigheid", "profiel", "aantalKaarten", "tijdlijn", "onthuld"];
+
+  var geheugen = [];
+  var opslagOverride; // undefined = gebruik window.localStorage; null = geen opslag; object = nepopslag
+
+  function opslag() {
+    if (opslagOverride !== undefined) return opslagOverride;
+    try { return (g.localStorage && typeof g.localStorage.getItem === "function") ? g.localStorage : null; }
+    catch (e) { return null; }
+  }
+
+  function kopie(x) {
+    if (x === undefined) return null;
+    try { return JSON.parse(JSON.stringify(x)); } catch (e) { return null; }
+  }
+
+  function leesOpslag() {
+    // geeft array of null als opslag onbruikbaar is
+    try {
+      var o = opslag();
+      if (!o) return null;
+      var ruw = o.getItem(SLEUTEL);
+      if (ruw === null || ruw === undefined || ruw === "") return [];
+      var lijst = JSON.parse(ruw);
+      return Array.isArray(lijst) ? lijst : null;
+    } catch (e) { return null; }
+  }
+
+  function schrijfOpslag(lijst) {
+    try {
+      var o = opslag();
+      if (!o) return false;
+      o.setItem(SLEUTEL, JSON.stringify(lijst));
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function alle() {
+    var uitOpslag = leesOpslag();
+    var bron = (uitOpslag && uitOpslag.length >= geheugen.length) ? uitOpslag : geheugen;
+    return kopie(bron) || [];
+  }
+
+  function schoon(s) { return (s === undefined || s === null) ? "" : String(s).trim(); }
+
+  function bewaar(poging) {
+    if (!poging || typeof poging !== "object") throw new Error("Er is geen poging om te bewaren.");
+    var lijst = alle();
+    var pseudoniem = schoon(poging.pseudoniem);
+    var casusId = schoon(poging.casusId);
+    var episodeId = schoon(poging.episodeId);
+    var eerder = lijst.filter(function (p) {
+      return schoon(p.pseudoniem) === pseudoniem && schoon(p.casusId) === casusId && schoon(p.episodeId) === episodeId;
+    }).length;
+    var rec = {
+      pseudoniem: pseudoniem,
+      casusId: casusId,
+      episodeId: episodeId,
+      pogingnummer: eerder + 1,
+      eerstePoging: eerder === 0,
+      tijdlijn: kopie(poging.tijdlijn) || [],
+      onthuld: kopie(poging.onthuld) || [],
+      geschonden: (Array.isArray(poging.geschonden) ? poging.geschonden : []).map(function (x) {
+        return (x && typeof x === "object") ? x.id : x;
+      }),
+      score: kopie(poging.score),
+      profiel: kopie(poging.profiel),
+      tijdstempel: poging.tijdstempel || new Date().toISOString()
+    };
+    lijst.push(rec);
+    geheugen = kopie(lijst);
+    schrijfOpslag(lijst);
+    return kopie(rec);
+  }
+
+  // Bouwt een poging uit spelstaat + uitkomst van Evaluatie.beoordeel / Engine.rondAf.
+  function maakPoging(state, uitkomst, pseudoniem) {
+    state = state || {};
+    uitkomst = uitkomst || {};
+    return {
+      pseudoniem: pseudoniem,
+      casusId: state.casusId,
+      episodeId: state.episodeId,
+      tijdlijn: state.tijdlijn,
+      onthuld: state.onthuld,
+      geschonden: uitkomst.geschonden,
+      score: uitkomst.score,
+      profiel: uitkomst.profiel
+    };
+  }
+
+  function bewaarUitSpel(state, uitkomst, pseudoniem) {
+    return bewaar(maakPoging(state, uitkomst, pseudoniem));
+  }
+
+  function wis() {
+    geheugen = [];
+    try { var o = opslag(); if (o && typeof o.removeItem === "function") o.removeItem(SLEUTEL); } catch (e) { /* geen opslag */ }
+  }
+
+  // ---------- CSV ----------
+  function cel(waarde) {
+    var s = (waarde === undefined || waarde === null) ? "" : String(waarde);
+    if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+    if (/[;"\r\n]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+
+  // Tijdlijn/onthuld zijn JSON en beginnen met [ of { ; geen formule-bescherming nodig, wel escapen.
+  function celJson(waarde) {
+    var s = JSON.stringify(waarde === undefined ? null : waarde);
+    if (/[;"\r\n]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+
+  function celTekst(waarde) { // uit data; wel escapen en formule-bescherming
+    return cel(waarde);
+  }
+
+  function exportCSV() {
+    var regels = [KOLOMMEN.join(SCHEIDER)];
+    alle().forEach(function (p) {
+      var sc = p.score || {};
+      regels.push([
+        celTekst(p.pseudoniem),
+        celTekst(p.casusId),
+        celTekst(p.episodeId),
+        String(p.pogingnummer),
+        p.eerstePoging ? "ja" : "nee",
+        celTekst(p.tijdstempel),
+        celTekst((p.geschonden || []).join(", ")),
+        (sc.duurzaamheid === undefined || sc.duurzaamheid === null) ? "" : String(sc.duurzaamheid),
+        (sc.doelmatigheid === undefined || sc.doelmatigheid === null) ? "" : String(sc.doelmatigheid),
+        celTekst(p.profiel && p.profiel.naam ? p.profiel.naam : ""),
+        String((p.tijdlijn || []).length),
+        celJson(p.tijdlijn || []),
+        celJson(p.onthuld || [])
+      ].join(SCHEIDER));
+    });
+    return BOM + regels.join("\r\n") + "\r\n";
+  }
+
+  function exportJSON() {
+    return JSON.stringify(alle(), null, 2);
+  }
+
+  // ---------- Download (Blob) ----------
+  // omgeving mag worden meegegeven voor tests: { document, Blob, URL }
+  function download(bestandsnaam, inhoud, mime, omgeving) {
+    try {
+      omgeving = omgeving || {};
+      var doc = omgeving.document || g.document;
+      var BlobK = omgeving.Blob || g.Blob;
+      var urlK = omgeving.URL || g.URL;
+      if (!doc || !BlobK || !urlK || typeof urlK.createObjectURL !== "function") return false;
+      var blob = new BlobK([inhoud], { type: mime || "application/octet-stream" });
+      var url = urlK.createObjectURL(blob);
+      var a = doc.createElement("a");
+      a.href = url;
+      a.download = bestandsnaam;
+      if (a.style) a.style.display = "none";
+      var parent = doc.body || doc.documentElement;
+      if (parent && typeof parent.appendChild === "function") parent.appendChild(a);
+      a.click();
+      if (parent && typeof parent.removeChild === "function") { try { parent.removeChild(a); } catch (e) { /* al weg */ } }
+      var opruim = omgeving.setTimeout || g.setTimeout;
+      if (typeof urlK.revokeObjectURL === "function") {
+        if (typeof opruim === "function") opruim(function () { urlK.revokeObjectURL(url); }, 1000);
+        else urlK.revokeObjectURL(url);
+      }
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function datumTekst(d) {
+    function t(n) { return (n < 10 ? "0" : "") + n; }
+    return d.getFullYear() + "-" + t(d.getMonth() + 1) + "-" + t(d.getDate()) + "_" + t(d.getHours()) + t(d.getMinutes());
+  }
+
+  // Voor de knop "Exporteer resultaten": downloadt CSV én JSON. Geeft { csv: bool, json: bool }.
+  function downloadAlles(omgeving) {
+    var stempel = datumTekst(new Date());
+    return {
+      csv: download("resultaten_" + stempel + ".csv", exportCSV(), "text/csv;charset=utf-8", omgeving),
+      json: download("resultaten_" + stempel + ".json", exportJSON(), "application/json;charset=utf-8", omgeving)
+    };
+  }
+
+  g.Logging = {
+    SLEUTEL: SLEUTEL,
+    SCHEIDER: SCHEIDER,
+    KOLOMMEN: KOLOMMEN.slice(),
+    bewaar: bewaar,
+    bewaarUitSpel: bewaarUitSpel,
+    maakPoging: maakPoging,
+    alle: alle,
+    wis: wis,
+    exportCSV: exportCSV,
+    exportJSON: exportJSON,
+    download: download,
+    downloadAlles: downloadAlles,
+    // alleen voor tests: undefined = standaard localStorage, null = geen opslag, object = nepopslag
+    _zetOpslag: function (o) { opslagOverride = o; geheugen = []; }
+  };
+})(typeof window !== "undefined" ? window : globalThis);
