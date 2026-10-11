@@ -157,7 +157,8 @@ window.CASUSSEN[0].episodes.push({
       geldtInTekst: "E1–E3",
       predicaat: { p: "aantalActieveAntibiotica", op: ">", n: 1 },
       vraag: "Wat lost het tweede middel op dat het eerste niet oplost?",
-      bron: "[G]"
+      bron: "[G]",
+      TODO_BART: "De ernst-volgorde van de invarianten is een voorstel van Claude (bouwopdracht 6.1) en niet door Bart bevestigd."
     },
     {
       id: "I5",
@@ -167,7 +168,8 @@ window.CASUSSEN[0].episodes.push({
       geldtInTekst: "E2, E3",
       predicaat: { p: "en", args: [{ p: "gestart", middel: "V3" }, { p: "waar", veld: "eGFR", op: "<", waarde: 30 }] },
       vraag: "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?",
-      bron: "NHG"
+      bron: "NHG",
+      TODO_BART: "Terugkoppeling van weggelaten kaarten: de casus noemt niet welke weggelaten kaart welke downside toont."
     },
     {
       id: "I6",
@@ -246,7 +248,7 @@ window.CASUSSEN[0].episodes.push({
           {
             p: "of",
             args: [
-              { p: "niet", arg: { p: "opDagRelatief", K: { kaart: "O2" }, anker: { start: "V5" }, van: 2, tot: 4 } },
+              { p: "niet", arg: { p: "opDagRelatief", K: { kaart: "O2" }, anker: { start: "V5" }, van: 1, tot: 3 } },
               {
                 p: "niet",
                 arg: {
@@ -264,7 +266,7 @@ window.CASUSSEN[0].episodes.push({
       bron: "NHG, KNMP",
       vraagVarianten: [
         {
-          als: { p: "niet", arg: { p: "opDagRelatief", K: { kaart: "O2" }, anker: { start: "V5" }, van: 2, tot: 4 } },
+          als: { p: "niet", arg: { p: "opDagRelatief", K: { kaart: "O2" }, anker: { start: "V5" }, van: 1, tot: 3 } },
           vraag: "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?"
         },
         {
@@ -471,7 +473,8 @@ window.CASUSSEN[0].episodes.push({
         }
       },
       vraag: "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?",
-      bron: "SIDRIK"
+      bron: "SIDRIK",
+      TODO_BART: "I15: de casus zegt bij I15 en bij Ev1 'monitoring binnen 1–3 dagen'; bouwopdracht 6.1 schrijft voor dat alle vier de sick day-maatregelen, dus ook Ev1, binnen 2 beurten na B komen. Welke lezing geldt?"
     },
     {
       id: "I16",
@@ -737,13 +740,13 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-15",
     vraag: "De ernst-volgorde van de invarianten is een voorstel van Claude (bouwopdracht 6.1) en niet door Bart bevestigd.",
     gekozenLezing: "Ernst overgenomen uit bouwopdracht 6.1: I12=1; I5, I10, I15=2; I7, I9, I13, I14, I16=3; I6, I8, I11=4; I1, I4=5. Instelbaar in de data.",
-    plek: "E3.invarianten[].ernst"
+    plek: "E3.invarianten[].ernst (markering op I4)"
   },
   {
     id: "TODO_BART-E3-16",
     vraag: "Terugkoppeling van weggelaten kaarten: de casus noemt niet welke weggelaten kaart welke downside toont.",
     gekozenLezing: "Geen `weglaatDownside` in episode 3; de teksten bij ontbrekende kaarten staan in zichtbaarAlsOntbreekt.",
-    plek: "E3.invarianten[].weglaatDownside"
+    plek: "E3.invarianten[].weglaatDownside (markering op I5)"
   },
   {
     id: "TODO_BART-E3-17",
@@ -760,8 +763,8 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-19",
     vraag: "I7 in episode 3: wat betekent 'dag 2–4 na de start' en 'vanaf dag 3 na de start'? (TODO_BART-1)",
-    gekozenLezing: "Verschil in dagen t.o.v. de dag van de start van trimethoprim (het anker zelf is verschil 0): O2 op verschil 2 t/m 4, V6 halveren op verschil 3 of meer (opDagRelatief).",
-    plek: "E3.invarianten.I7"
+    gekozenLezing: "Lezing A (LEAD-beslissing contract TODO_BART-1, identiek aan episode 2): cursusdag = verschil in dagen t.o.v. de dag van de start van trimethoprim plus 1 (het anker zelf is verschil 0, cursusdag 1). Dus O2 op verschil 1 t/m 3 (cursusdag 2–4; casusroute V5 dag 1, O2 dag 2 slaagt) en V6 halveren op verschil 3 of meer (cursusdag 4 of later, vgl. feedback \"Dag 4.\"). Alternatief (lezing B, bouwopdracht 6.1 opDagRelatief(O2,V5,2,4)): O2 op verschil 2 t/m 4, dan faalt de casusroute V5 dag 1, O2 dag 2.",
+    plek: "E3.invarianten.I7; contract TODO_BART-1"
   },
   {
     id: "TODO_BART-E3-20",
@@ -786,6 +789,12 @@ window.CASUSSEN[0].todoBart.push(
     vraag: "I8 in episode 3: op welke dag moeten 'de klachten houden aan' gelden, en wanneer telt 'doorgaan met een resistent middel'? Bouwopdracht 6.1 noemt geen dag.",
     gekozenLezing: "Bouwopdracht 6.1 letterlijk: schending als na C het resistente middel (set 'resistent': V5, V10) aan het eind van de tweede beurt (dag van C + 1) nog actief is én de klachten op de dag van C 'aan' of 'geen verbetering na 48 uur' zijn. Niet gedekt: een resistent middel dat pas op of na de dag van C wordt gestart (bijvoorbeeld V4 naar V10 via B1 op de dag na C). Alternatief (strenger): klachten 'aan' op elke dag vanaf C meetellen.",
     plek: "E3.invarianten.I8"
+  },
+  {
+    id: "TODO_BART-E3-24",
+    vraag: "I15: de casus zegt bij I15 en bij Ev1 'monitoring binnen 1–3 dagen'; bouwopdracht 6.1 schrijft voor dat alle vier de sick day-maatregelen, dus ook Ev1, binnen 2 beurten na B komen. Welke lezing geldt?",
+    gekozenLezing: "Casus is de bron, maar de strengere lezing wordt aangehouden: alle vier de maatregelen (B3 op spironolacton, V6 halveren op lisinopril, N3, Ev1) binnen 2 beurten na B, dus op de dag van B of de dag erna (binnenBeurten n=2, bouwopdracht 6.1). Alternatief (casus-lezing 'binnen 1–3 dagen'): Ev1 mag tot en met drie dagen na B (dB+3); dan geeft Ev1 op dB+2 of dB+3 nu ten onrechte I15. Vraag aan Bart: welke van de twee?",
+    plek: "E3.invarianten.I15 (Ev1-onderdeel); casus sectie 6 regels I15 en Ev1"
   }
 );
 }

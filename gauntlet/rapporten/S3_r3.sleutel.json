@@ -1,0 +1,110 @@
+[
+ {
+  "nr": 1,
+  "naam": "Patiëntkop + klachten (regel 1 patiëntkaart)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "nr": 2,
+  "naam": "Medicatie",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "nr": 3,
+  "naam": "Lab op de kaart (vóór G2)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "nr": 4,
+  "naam": "Eerdere UWI",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "nr": 5,
+  "naam": "Onthulling G2 (na kaart)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "nr": 6,
+  "naam": "Gebeurtenis C: kweekuitslagtekst",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "nr": 7,
+  "naam": "I5 vraag",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "nr": 8,
+  "naam": "I6 vraag 'geen kweek'",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "nr": 9,
+  "naam": "I6 vraag 'afwachten'",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "nr": 10,
+  "naam": "I7 vraag 'geen kalium'",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "nr": 11,
+  "naam": "I7 vraag 'niet gehalveerd'",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "nr": 12,
+  "naam": "I8 vraag",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "nr": 13,
+  "naam": "Verouderde eGFR vraag",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "nr": 14,
+  "naam": "Onnodig gewisseld vraag",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "nr": 15,
+  "naam": "Zichtbaar: nitrofurantoïne zonder G2",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "nr": 16,
+  "naam": "Zichtbaar: V5 zonder O2",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "nr": 17,
+  "naam": "Brug",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "nr": 18,
+  "naam": "Statusteksten (fragmenten Trimethoprim/Fosfomycine)",
+  "X": "spel",
+  "Y": "bron"
+ }
+]

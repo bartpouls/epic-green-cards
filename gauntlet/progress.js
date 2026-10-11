@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 4,
  "maxRounds": 5,
- "updated": "2026-10-11 21:01",
+ "updated": "2026-10-11 21:06",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -31,9 +31,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S4 data-e3",
-   "round": 2,
-   "verdict": "FAIL",
-   "evidence": "r2 FAIL, 1 punt (ontbrekende TODO I15), BLIND=ONS; ronde 3 bouwer bezig",
+   "round": 3,
+   "verdict": "PENDING",
+   "evidence": "r3 gebouwd (59 eigen tests; 494 nieuwe mutaties 0 overlevers; TODO_BART-E3-1…24; I7 gelijkgetrokken met E2); criticus r3 bezig",
    "artifact": ""
   },
   {
