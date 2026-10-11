@@ -4,43 +4,43 @@ window.GAUNTLET = {
  "budget": "per stuk min 3 / max 5 rondes; stop ook bij 2 rondes zonder verbetering",
  "level": "blind (verse criticus per ronde; A/B-labels procedureel verborgen, niet door aparte context)",
  "status": "running",
- "round": 0,
+ "round": 1,
  "maxRounds": 5,
  "updated": "2026-10-11 19:51",
  "units": [
   {
    "name": "S1 data-kaarten",
-   "round": 0,
+   "round": 1,
    "verdict": "PENDING",
-   "evidence": "nog niet gestart",
+   "evidence": "ronde 1: bouwer bezig",
    "artifact": ""
   },
   {
    "name": "S2 data-e1",
-   "round": 0,
+   "round": 1,
    "verdict": "PENDING",
-   "evidence": "nog niet gestart",
+   "evidence": "ronde 1: bouwer bezig",
    "artifact": ""
   },
   {
    "name": "S3 data-e2",
-   "round": 0,
+   "round": 1,
    "verdict": "PENDING",
-   "evidence": "nog niet gestart",
+   "evidence": "ronde 1: bouwer bezig",
    "artifact": ""
   },
   {
    "name": "S4 data-e3",
-   "round": 0,
+   "round": 1,
    "verdict": "PENDING",
-   "evidence": "nog niet gestart",
+   "evidence": "ronde 1: bouwer bezig",
    "artifact": ""
   },
   {
    "name": "S5 predicaten",
-   "round": 0,
+   "round": 1,
    "verdict": "PENDING",
-   "evidence": "nog niet gestart",
+   "evidence": "ronde 1: bouwer bezig",
    "artifact": ""
   },
   {
@@ -52,9 +52,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S7 engine",
-   "round": 0,
+   "round": 1,
    "verdict": "PENDING",
-   "evidence": "nog niet gestart",
+   "evidence": "ronde 1: bouwer bezig",
    "artifact": ""
   },
   {
@@ -73,9 +73,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S10 logging",
-   "round": 0,
+   "round": 1,
    "verdict": "PENDING",
-   "evidence": "nog niet gestart",
+   "evidence": "ronde 1: bouwer bezig",
    "artifact": ""
   }
  ],
