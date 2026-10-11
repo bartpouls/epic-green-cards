@@ -1,0 +1,136 @@
+# Technisch contract tussen de lagen (alleen LEAD wijzigt dit bestand)
+
+Alles is klassieke JavaScript (geen modules, geen build, geen npm), werkt via `file://` in de browser én in Node via
+`vm` (zie `gauntlet/tools/run-node.js` wanneer aanwezig). Eén globale namespace per laag:
+
+| Laag | Bestand | Global |
+|---|---|---|
+| Data | `casussen/uwi.js` | `window.CASUSSEN = [ {...} ]` (alleen data, geen functies) |
+| Regeltaal | `regels/predicaten.js` | `window.Predicaten` |
+| Poort/score/profiel | `regels/evaluatie.js` | `window.Evaluatie` |
+| Spelmotor | `engine/engine.js` | `window.Engine` |
+| UI | `ui/ui.js`, `ui/stijl.css` | `window.UI` |
+| Logging/export | `engine/logging.js` | `window.Logging` |
+
+In Node: elk bestand moet laadbaar zijn met `vm.runInContext` in een context waar `window` = het globale object
+(`globalThis.window = globalThis`) en `localStorage`/`document` mogen ontbreken (try/catch).
+Geen casuslogica, middelnamen of klinische drempels buiten `casussen/uwi.js`.
+
+## 1. Tijdlijn (gedeeld formaat)
+Een gespeelde kaart: `{ volg: 1, kaart: "V5", dag: 1, doel: null | "V5" | "lisinopril", optie: null | "halveren" }`.
+- `volg` = 1-gebaseerd aantal gespeelde KAARTEN in de episode (raadplegen telt niet mee).
+- `dag` = beurt (1-gebaseerd). `doel`-ids: middel-kaart-id (bv. "V5") of comedicatie-id (bv. "lisinopril").
+- Tijdlijn is de enige bron voor regels, score, profiel en logging.
+
+## 2. Spelstaat (`Engine.nieuwSpel(casus, episodeId, opties)` → `state`)
+```
+state = {
+  casusId, episodeId, dag, actiesOver, aantalDagen, afgerond: false,
+  tijdlijn: [ ...zie 1... ],
+  raadplegingen: [ { dag } ],
+  gebeurtenissen: [ { id: "A", dag: 3, naVolg: 4 } ],   // dag = dag waarop de banner verscheen (begin van de dag)
+  toestanden: ["cystitis", ...],                        // actief; namen komen uit de data
+  onthuld: [ { kaart: "G2", dag: 1, sleutel: "eGFR", tekst: "...", waarde: 29 } ],
+  zichtbaar: { ...kopie van patient.zichtbaar, bijgewerkt door onthullen... },
+  volgordeAB: ["B","A"],                                // gekozen random volgorde (per poging)
+  klachten: [ { dag: 2, status: "af" | "aan" | null, tekst: "..." | null } ],  // klinische status per dag
+  rng: ...                                              // injecteerbaar voor tests: opties.rng = () => 0..1
+}
+```
+Engine-API (alle functies zuiver t.o.v. `state`, mutatie in place toegestaan, geef `state` terug of gooi `Error` met Nederlandse tekst):
+- `Engine.nieuwSpel(casus, episodeId, {rng})`
+- `Engine.speelKaart(state, kaartId, {doel, optie})` — valideert repertoire, actiebudget, doelen (`doelen` met `vereist`-predicaat), geeft `{ok, onthuld?, fout?}`
+- `Engine.raadpleeg(state)` — kost `raadplegenKost` acties; geeft de bronverwijzing uit de data terug
+- `Engine.volgendeDag(state)` — sluit de beurt: berekent klachtenstatus, triggert gebeurtenissen, `dag++`
+- `Engine.rondAf(state)` — zet `afgerond = true`, roept `Evaluatie.beoordeel` aan, geeft de uitkomst
+- `Engine.eindeBereikt(state)`
+
+## 3. Predicaten (`regels/predicaten.js`)
+`Predicaten.evalueer(pred, ctx)` → boolean. `ctx = Predicaten.maakContext(casus, episode, state)` bouwt:
+`{ tijdlijn, gebeurtenissen, toestanden, waar (= episode.patient.waar), aantalDagen, laatsteDag, casus, episode, status(dag) }`.
+Alle predicaten zijn JSON-objecten (geen functies) zodat ze in de data en in overzicht.html leesbaar zijn.
+
+Notatie: een **kaartverwijzing** `K = { kaart: "V6", doel?: "V5", optie?: "halveren", optieNiet?: [...] }` matcht tijdlijnregels.
+Dag-rekenen: `dag(x) − dag(anker)`; het anker zelf is verschil 0. (Zie TODO_BART-1: lezing van "dag 2–4 na de start".)
+
+| Predicaat (`p`) | Velden | Betekenis |
+|---|---|---|
+| `gespeeld` | `K` | tijdlijn bevat een regel die K matcht |
+| `nietGespeeld` | `K` | omgekeerde |
+| `voor` / `na` | `a: K, b: K` | eerste match van a ligt (strikt, op `volg`) vóór / na eerste match van b |
+| `binnenBeurten` | `K, naGebeurtenis, n` | K gespeeld op dag(gebeurtenis) … dag(gebeurtenis)+n−1 |
+| `opDagRelatief` | `K, anker: K, van, tot` | ∃ match van K met `van ≤ dag(K) − dag(eerste anker) ≤ tot` (`tot` weglaten = oneindig) |
+| `gestart` | `middel` | middel is gestart: V-kaart-id gespeeld, óf B1 met doel = middel |
+| `actief` | `middel?`, `op?` | middel actief (gestart, niet gestopt via B2, niet vervangen via B1). `op: {eindeBeurtNaGebeurtenis:"A", offset:0}` of `{dag:n}` = toestand aan het EINDE van die beurt. Zonder middel: elk antibioticum uit `episode.antibiotica`. Met `uitSet: "resistent"` een benoemde set uit de data. |
+| `aantalActieveAntibiotica` | `op: ">", n: 1` | vergelijking; telt op eind van elke dag én op `volg`-niveau (zie I4 in data) — max over de episode |
+| `medicatieActief` | `id, op?` | comedicatie actief (niet gepauzeerd via B3, wel/niet hervat via B5) |
+| `waar` | `veld, op, waarde` | vergelijkt `ctx.waar[veld]` (ware waarde, ook als speler hem niet ziet) |
+| `inToestand` / `gebeurtenisGeweest` | `t` / `id` | |
+| `klachten` | `waarde: "af"\|"aan"\|"geenVerbetering48"`, `op?` | klinische status volgens de werkzaamheidstabel van de data |
+| `en` / `of` / `niet` | `args` / `args` / `arg` | |
+| `alsDan` | `als, dan` | `niet(als) of dan` |
+| `waarheid` | `waarde: true\|false` | constanten |
+
+Welke ingrediënten de invarianten (bouwopdracht 6.1 + casus) nodig hebben, mag de bouwer van `predicaten.js`
+UITBREIDEN met generieke predicaten (bv. `inZelfdeOfVolgendeBeurt`), maar uitsluitend generiek. Elke uitbreiding
+komt in `regels/PREDICATEN.md` (naam, velden, betekenis, voorbeeld).
+
+### 3b. Tellers en klachtenstatus
+- `Predicaten.tel(teller, ctx)` → getal. Teller-objecten: `{ t: "gespeeld", K, terwijlKlachten?: "af"|"aan" }` (aantal matchende tijdlijnregels; met `terwijlKlachten` alleen regels waarvan `state.klachten[dag].status` die waarde had op de dag van spelen) en `{ t: "aantalActieveAntibiotica", op: "max" }`. Uitbreidbaar, generiek, gedocumenteerd in `regels/PREDICATEN.md`.
+- Klachtenstatus voor dag d (berekend door `Engine.volgendeDag`, opgeslagen in `state.klachten[d]`, voor dag 1 = `{status:null}`): kijk naar de antibiotica die AAN HET EINDE VAN DAG d−1 actief waren. Geen → `null`. Minstens één werkzaam (volgens `episode.werkzaamheid` van de dan geldende toestand, inclusief `als`-voorwaarden) → `"af"`. Anders → `"aan"`. Override: heeft gebeurtenis A (of een andere gebeurtenis met `zet.statusNaBeurten: 2`) plaatsgevonden op dag dA, en is d ≥ dA+2, en was aan het einde van dag dA+1 geen werkzaam antibioticum actief → `"geenVerbetering48"` (blijft zo tot een werkzaam antibioticum actief is aan het eind van een dag). Teksten komen uit `episode.statusTeksten` (casus-letterlijk).
+- `klachten`-predicaat is standaard "ooit tijdens de episode" tenzij `op: {dag}` of `op: "laatste"`.
+- Een kaart kan `downside` als string OF als object `{E1: "...", E2: "..."}` hebben (per episode; ontbrekende episode = geen downside voor die episode, TODO_BART).
+- Score-regels: `{ als, punten }` (eerste match wint), `{ als, delta }`, of `{ perKeer: <teller>, delta }`.
+
+## 4. Data — vaste sleutels
+**Bestandsindeling tijdens de bouw** (zodat stukken parallel kunnen; LEAD voegt ze aan het eind met `cat` samen tot ÉÉN `casussen/uwi.js`, conform de bouwopdracht):
+- `casussen/uwi.js` — casuskop + `kaarten` (bibliotheek, 26 kaarten) + `todoBart: []` + `episodes: []`. Definieert `window.CASUSSEN = [ {...} ]`.
+- `casussen/uwi-e1.js`, `uwi-e2.js`, `uwi-e3.js` — elk precies één statement: `window.CASUSSEN[0].episodes.push({...});` en eventueel `window.CASUSSEN[0].todoBart.push({...});`. Alleen data.
+Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat:
+- `casus.antibiotica` is NIET nodig op casusniveau; per episode: `episode.antibiotica: ["V3","V4","V5"]`.
+- `kaart.doelen`: `{ E1: [ { id, label, vereist?: <predicaat> } ], E2: [...], E3: [...] }` voor doelkaarten. Label van een antibioticum-doel = kaartlabel; comedicatie-labels staan in `episode.patient.medicatie: [ { id, label } ]`.
+- `kaart.opties` (V6): `{ "<doelId>": [ { tekst, goed?: true } ] }`; `goed` is alleen informatief (overzicht), de poort gebruikt de invarianten.
+- `episode.werkzaamheid`: per toestand `{ werkzaam: [ { kaart, als?: <predicaat> } ], nietWerkzaam: [ { kaart } ] }` + `statusTeksten: { af, aan, geenVerbetering48 }` (casus-letterlijk).
+- `episode.gebeurtenissen[i]`: `{ id, trigger: { type: "naKaart", n } | { type: "naKaartVanKaart", kaart:"O1", n:3, alleenAlsGespeeld:"O1" } | { type:"naAantalKaarten", n }, groep?: "AB", tekst, toestand?, zet?: { resistent:[...], gevoelig:[...] } }`. Gebeurtenissen met dezelfde `groep` worden per poging in willekeurige volgorde aan de triggers (`n`, `m`) gekoppeld: de eerste trigger activeert de eerst-getrokken gebeurtenis.
+- `episode.invarianten[i]`: `{ id, ernst, geldtIn: ["*"] | [toestandsnamen/gebeurtenissen], predicaat, vraag, weglaatDownside?, bron }`. `predicaat` = de SCHENDINGSvoorwaarde (waar = geschonden). `geldtIn` mag toestandsnamen, `"*"`, of `{ gebeurtenis:"C" }` bevatten.
+- `episode.score`: `{ duurzaamheid: { start?, regels:[ { als: <pred>, punten | delta } ... ] }, doelmatigheid: {...} }`, uitkomst 1–3 per as. Eerste matchende `punten`-regel bepaalt de waarde (regels op volgorde); `delta`-regels tellen op/af vanaf `start`.
+- `episode.profielen[i]`: `{ naam, als: <pred>, reflectievraag }` — eerste match (op volgorde) wint.
+- `episode.feedbackExtra[i]`: `{ trigger: <pred>, vraag, wanneer: "altijd"|"alleenBijGehaaldePoort" }` — de overige casus-feedbackvragen (O1 gespeeld, bronconflict ciprofloxacine, Automatische herstart, Verouderde eGFR, Onnodig gewisseld, …).
+- `episode.zichtbaarAlsOntbreekt[i]`: `{ trigger: <pred>, tekst }` — de "Wat er zichtbaar wordt als een kaart ontbreekt"-zinnen, casus-letterlijk.
+- `episode.open`/`TODO_BART`: elke twijfel als `{ id: "TODO_BART-n", vraag, gekozenLezing, plek }` in `casus.todoBart[]` en (bij kaart/regel) als `"TODO_BART": "<vraag>"` op de plek zelf.
+- `episode.raadplegen`: `{ titel, bronnen: ["NHG", ...] }` (verwijzing, geen richtlijntekst).
+
+## 5. Evaluatie (`regels/evaluatie.js`)
+`Evaluatie.beoordeel(casus, episodeId, state)` → 
+```
+{
+ geschonden: [ { id, ernst, vraag } ],         // ALLE geschonden, gesorteerd op ernst oplopend (1 eerst)
+ poortGehaald: boolean,
+ downsides: [ { kaart, label, tekst, soort: "gespeeld"|"weggelaten" } ],   // uit data.downside; weggelaten alleen als invariant `weglaatDownside` verwijst
+ vraag: "..." | null,                          // alleen bij schending: de vraag van de ernstigste (laagste ernst-getal; bij gelijke ernst: eerste in data)
+ score: { duurzaamheid: n, doelmatigheid: n } | null,   // null bij schending
+ profiel: { naam, reflectievraag } | null,     // null bij schending
+ extraVragen: [...],                           // feedbackExtra die van toepassing zijn
+ zichtbaar: [ ...zichtbaarAlsOntbreekt die van toepassing zijn ]
+}
+```
+Evaluatie rekent met de tijdlijn en `ctx` — nooit met namen of drempels in de code.
+Schendingen worden bepaald op de EINDSTAND: eisen die nog niet vervuld zijn bij afronden (ook door vroeg afronden) tellen als geschonden (zie TODO_BART-3).
+
+## 6. Logging (`engine/logging.js`)
+Per poging (zie bouwopdracht §5): `{ pseudoniem, casusId, episodeId, pogingnummer, eerstePoging: true|false, tijdlijn, onthuld, geschonden: [ids], score, profiel, tijdstempel }`.
+`Logging.bewaar`, `Logging.alle`, `Logging.exportCSV()` (één regel per poging, tijdlijn als JSON-string in één cel), `Logging.exportJSON()`, `Logging.download(...)`. Altijd try/catch rond `localStorage`; val terug op geheugen.
+
+## 7. Tests (`tests/tests.html`)
+Laadt de lagen met `<script>`-tags en `tests/testlib.js` + `tests/routes.js`. Elke test: naam, groen/rood. Moet ook headless draaien in Node
+(`node gauntlet/tools/run-node.js` laadt dezelfde bestanden en print `PASS/FAIL` + exitcode ≠ 0 bij rood).
+Routes in tests worden gespeeld via `Engine` (niet door tijdlijnen te hardcoden in de evaluatie), met `rng` vast zodat A/B-volgorde deterministisch is, plus een variant met omgekeerde volgorde.
+
+## 8. Gedeelde TODO_BART-lijst (beginstand; bouwers vullen aan in `casus.todoBart`, nooit zelf klinisch invullen)
+- TODO_BART-1 "dag 2–4 na de start" / "vanaf dag 3 na de start": gekozen lezing = verschil in dagen t.o.v. de dag van V5 (V5 op dag 1 → O2 op dag 3–5? of 2–4?). Bouwer kiest de letterlijke lezing uit bouwopdracht 6.1 (`opDagRelatief(O2, V5, 2, 4)`; `V6 halveren` op verschil ≥ 3) en meldt.
+- TODO_BART-2 I9: casus zegt "geen O2 ÉN geen Ev2" (schending alleen als beide ontbreken); bouwopdracht 6.1 zegt "O2 OF Ev2 ontbreekt". Casus is de bron → implementeer de casus-lezing, meld het conflict.
+- TODO_BART-3 Eisen "binnen n beurten" bij vroeg afronden: onvervulde eis telt als schending.
+- TODO_BART-4 Vroeg afronden vóór gebeurtenis A/B/C (en dus ontlopen van E3-invarianten); instelbare parameter `afrondenPasNaGebeurtenissen` (standaard uit).
+- TODO_BART-5 V2 "(+ middel)": casus noemt "V2 (+ middel)" maar V2 is geen doelkaart; profiel/duurzaamheid/I4 bij V2 + V3/V4/V5.
+- TODO_BART-6 Tweede O1 in E3 (na A): komt er een tweede kweekuitslag? C triggert maar één keer.
+- TODO_BART-7 Statuswoord "klachten nemen toe": komt niet in de casus voor; wordt niet gebruikt.

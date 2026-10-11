@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Regeltests — Epic green cards (UWI)</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; max-width: 960px; margin: 24px auto; padding: 0 16px; }
+  h1 { font-size: 1.3rem; }
+  #samenvatting { font-weight: 700; padding: 8px 12px; border-radius: 6px; margin: 12px 0; }
+  .groen { background: #e3f4e8; color: #1f7a3d; }
+  .rood { background: #fbe7e5; color: #b3261e; }
+  ul { list-style: none; padding: 0; }
+  li { padding: 3px 8px; border-bottom: 1px solid #eee; }
+  li.ok::before { content: "● "; color: #1f7a3d; }
+  li.fout::before { content: "● "; color: #b3261e; }
+  .groep { margin-top: 16px; font-weight: 700; }
+  .melding { color: #b3261e; font-size: .9em; margin-left: 18px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>Regeltests — groen of rood</h1>
+<div id="samenvatting">Bezig…</div>
+<div id="uitslag"></div>
+<script>
+  // Lagen in vaste volgorde; ontbrekende bestanden worden overgeslagen.
+  var BESTANDEN = [
+    "../casussen/uwi.js", "../casussen/uwi-e1.js", "../casussen/uwi-e2.js", "../casussen/uwi-e3.js",
+    "../regels/predicaten.js", "../regels/evaluatie.js", "../engine/engine.js", "../engine/logging.js",
+    "testlib.js",
+    "data-kaarten.tests.js", "data-e1.tests.js", "data-e2.tests.js", "data-e3.tests.js",
+    "predicaten.tests.js", "evaluatie.tests.js", "engine.tests.js", "logging.tests.js", "ui.tests.js"
+  ];
+  var i = 0;
+  function volgende() {
+    if (i >= BESTANDEN.length) { klaar(); return; }
+    var s = document.createElement("script");
+    s.src = BESTANDEN[i++];
+    s.onload = volgende; s.onerror = volgende;
+    document.head.appendChild(s);
+  }
+  function klaar() {
+    var res = (window.Test ? window.Test.draaiAlles() : []);
+    var fout = res.filter(function (r) { return !r.ok; }).length;
+    var s = document.getElementById("samenvatting");
+    s.textContent = (res.length - fout) + " groen, " + fout + " rood, " + res.length + " totaal";
+    s.className = fout === 0 && res.length > 0 ? "groen" : "rood";
+    var u = document.getElementById("uitslag"), groep = null, ul = null;
+    res.forEach(function (r) {
+      if (r.groep !== groep) { groep = r.groep; var h = document.createElement("div"); h.className = "groep"; h.textContent = groep; u.appendChild(h); ul = document.createElement("ul"); u.appendChild(ul); }
+      var li = document.createElement("li"); li.className = r.ok ? "ok" : "fout"; li.textContent = r.naam;
+      if (!r.ok) { var m = document.createElement("div"); m.className = "melding"; m.textContent = r.fout; li.appendChild(m); }
+      ul.appendChild(li);
+    });
+    window.TESTRESULTATEN = res;
+  }
+  volgende();
+</script>
+</body>
+</html>
