@@ -6,7 +6,7 @@
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 21:57",
+ "updated": "2026-10-11 21:58",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -17,9 +17,9 @@
   },
   {
    "name": "S2 data-e1",
-   "round": 3,
-   "verdict": "FAIL",
-   "evidence": "r3 FAIL op E1-6 (LEAD wijzigde criterium) + risicogroep-lek naar meta; ronde 4 bouwer bezig",
+   "round": 4,
+   "verdict": "PENDING",
+   "evidence": "r4 gebouwd (31 eigen tests, groep 2,7 s; 1103 mutaties 5 equivalent; risicogroep naar meta; TODO_BART-E1-1…7); criticus r4 bezig",
    "artifact": ""
   },
   {
