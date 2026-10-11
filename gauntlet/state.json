@@ -4,9 +4,9 @@
  "budget": "per stuk min 3 / max 5 rondes; stop ook bij 2 rondes zonder verbetering",
  "level": "blind (verse criticus per ronde; A/B-labels procedureel verborgen, niet door aparte context)",
  "status": "running",
- "round": 1,
+ "round": 2,
  "maxRounds": 5,
- "updated": "2026-10-11 19:55",
+ "updated": "2026-10-11 19:56",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -73,9 +73,9 @@
   },
   {
    "name": "S10 logging",
-   "round": 1,
-   "verdict": "FAIL",
-   "evidence": "r1 FAIL, 3 punten, BLIND onbeslist; ronde 2 bouwer bezig",
+   "round": 2,
+   "verdict": "PENDING",
+   "evidence": "r2 gebouwd (35 eigen tests groen); criticus r2 bezig",
    "artifact": ""
   }
  ],
@@ -89,7 +89,8 @@
  ],
  "open": [
   "TODO_BART-1…7 staan vooraf in gauntlet/contract.md §8; bouwers vullen aan (casus.todoBart)",
-  "TODO_BART-K1…K4 (S1): '—'-downsides N1/N2/N3/Ev1; E1-voorvoegsel V3/V5/O1; G2/O1/Ev1 ongesplitst; doelenlijsten afgeleid"
+  "TODO_BART-K1…K4 (S1): '—'-downsides N1/N2/N3/Ev1; E1-voorvoegsel V3/V5/O1; G2/O1/Ev1 ongesplitst; doelenlijsten afgeleid",
+  "S9 (UI) moet een pseudoniem afdwingen vóór Logging.bewaar (leeg pseudoniem geeft een fout)"
  ],
  "belowBar": []
 }
