@@ -12,7 +12,6 @@ window.CASUSSEN[0].episodes.push({
     casusTekst: ["volledig repertoire (26 kaarten)", "acties per beurt krap", "2 gebeurtenissen in vrije volgorde, plus de kweekuitslag"],
     TODO_BART: "Acties per beurt in episode 3: de casus noemt 'krap', bouwopdracht 6.6 zegt 3 (zelfde als E1 en E2)."
   },
-  raadplegen: { titel: "Richtlijn raadplegen", bronnen: ["NHG", "SIDRIK", "Kompas", "KNMP"] },
   antibiotica: ["V3", "V4", "V5", "V7", "V8", "V9", "V10"],
   patient: {
     zichtbaar: {
@@ -21,6 +20,7 @@ window.CASUSSEN[0].episodes.push({
       leeftijd: 79,
       klachten: "Cystitis, geen koorts.",
       medicatie: ["lisinopril", "spironolacton", "calcium/colecalciferol"],
+      medicatieTekst: "lisinopril, spironolacton (hypertensie), calcium/colecalciferol.",
       lab: { eGFR: 28, datum: "recent" },
       labTekst: "eGFR 28, recent.",
       risicogroep: "Risicogroep [NHG]."
@@ -31,7 +31,7 @@ window.CASUSSEN[0].episodes.push({
       { id: "spironolacton", label: "spironolacton" },
       { id: "calcium", label: "calcium/colecalciferol" }
     ],
-    casusMedicatieregel: "lisinopril, spironolacton (hypertensie), calcium/colecalciferol",
+    casusMedicatieregel: "lisinopril, spironolacton (hypertensie), calcium/colecalciferol.",
     toelichting: "Wie spironolacton heeft gestart en waarom, staat er bewust niet op. Het leerpunt: als de nierfunctie daalt, kijk je niet alleen naar wat je nu voorschrijft, maar naar alles wat de patiënt al gebruikt. In de praktijk wordt dat vaak gemist.",
     verborgen: [
       {
@@ -42,7 +42,7 @@ window.CASUSSEN[0].episodes.push({
         toelichting: "Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG]."
       }
     ],
-    TODO_BART: "Patiëntkaart: 'spironolacton (hypertensie)' in de medicatieregel, terwijl bij spironolacton bewust niet staat wie het startte en waarom."
+    TODO_BART: "Patiëntkaart: de casusregel luidt 'spironolacton (hypertensie)', terwijl de regel eronder zegt dat wie spironolacton startte en waarom bewust niet op de kaart staat. Mag de reden (hypertensie) zichtbaar zijn?"
   },
   repertoire: [
     "G1",
@@ -81,7 +81,7 @@ window.CASUSSEN[0].episodes.push({
       zet: { statusNaBeurten: 2 },
       tekst: "Weefselinvasie: koorts 38,6 °C en flankpijn",
       opmerking: "De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.",
-      TODO_BART: "Vroeg afronden vóór gebeurtenis A of B (en dus ontlopen van I10, I11, I15, I16)? (TODO_BART-4)"
+      TODO_BART: "Vroeg afronden vóór gebeurtenis A, B of C (en dus ontlopen van I8, I10, I11, I15, I16)? (TODO_BART-4)"
     },
     {
       id: "B",
@@ -298,7 +298,8 @@ window.CASUSSEN[0].episodes.push({
         ]
       },
       vraag: "De kweek is binnen en de klachten blijven. Waar wacht je nog op?",
-      bron: "NHG; hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten"
+      bron: "NHG; hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten",
+      TODO_BART: "I8 in episode 3: op welke dag moeten 'de klachten houden aan' gelden, en wanneer telt 'doorgaan met een resistent middel'? Bouwopdracht 6.1 noemt geen dag."
     },
     {
       id: "I9",
@@ -494,6 +495,7 @@ window.CASUSSEN[0].episodes.push({
     }
   ],
   score: {
+    TODO_BART: "Feedback 'O1 gespeeld' en 'Onnodig gewisseld' (en de duurzaamheidsregel 'wisselen terwijl het middel werkt') staan alleen bij episode 1 en 2; I1 en I4–I8 blijven in episode 3 gelden. Geldt dat ook voor deze feedback en deze score in episode 3?",
     duurzaamheid: {
       casusTekst: "de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op.",
       regels: [
@@ -514,6 +516,7 @@ window.CASUSSEN[0].episodes.push({
     },
     doelmatigheid: {
       casusTekst: "G3 gebruiken vóór de eerste keuze levert punten op.",
+      TODO_BART: "Doelmatigheid 'G3 gebruiken vóór de eerste keuze': welke kaarten tellen als 'de eerste keuze'? Bouwopdracht 6.5 zegt 'de eerste V-kaart', de casus 'de eerste keuze'.",
       regels: [
         {
           als: {
@@ -522,18 +525,22 @@ window.CASUSSEN[0].episodes.push({
               { p: "gespeeld", K: { kaart: "G3" } },
               {
                 p: "alsDan",
-                als: { p: "gespeeld", K: { kaart: ["V1", "V2", "V3", "V4", "V5", "V7", "V8", "V9", "V10"] } },
+                als: { p: "gespeeld", K: { kaart: ["V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10"] } },
                 dan: {
                   p: "voor",
                   a: { kaart: "G3" },
-                  b: { kaart: ["V1", "V2", "V3", "V4", "V5", "V7", "V8", "V9", "V10"] }
+                  b: { kaart: ["V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10"] }
                 }
               }
             ]
           },
           punten: 3
         },
-        { als: { p: "waarheid", waarde: true }, punten: 2 }
+        {
+          als: { p: "waarheid", waarde: true },
+          punten: 2,
+          TODO_BART: "Worden Ev3 ('Onnodig verwijzen kost doelmatigheid', kaartdownside) en 'geen overbodig onderzoek' (casus sectie 7) in episode 3 gescoord? De casus noemt voor episode 3 alleen 'G3 gebruiken vóór de eerste keuze'."
+        }
       ]
     }
   },
@@ -656,9 +663,9 @@ window.CASUSSEN[0].todoBart.push(
   },
   {
     id: "TODO_BART-E3-3",
-    vraag: "Vroeg afronden vóór gebeurtenis A of B (en dus ontlopen van I10, I11, I15, I16)? (TODO_BART-4)",
-    gekozenLezing: "De data legt geen regel vast; de engine-parameter 'afrondenPasNaGebeurtenissen' (standaard uit) is hier bepalend. I10, I11, I15 en I16 gelden alleen in de toestand van hun gebeurtenis.",
-    plek: "E3.gebeurtenissen A, B; E3.invarianten.I10, I11, I15, I16"
+    vraag: "Vroeg afronden vóór gebeurtenis A, B of C (en dus ontlopen van I8, I10, I11, I15, I16)? (TODO_BART-4)",
+    gekozenLezing: "LEAD-beslissing (contract TODO_BART-4): afrondenPasNaGebeurtenissen blijft standaard UIT, want bouwopdracht 4.1 laat de speler vrij afronden. Gevolg: de speler kan afronden voordat A, B of C is opgetreden (bijvoorbeeld G3, O1, V4, N1, O2 en direct afronden) en ontloopt dan de invarianten die alleen na een gebeurtenis gelden (I8 na C, I10, I11 en I16 na A, I15 na B). Dat is de milde lezing: de episode is dan te omzeilen. Alternatief: episode.afrondenPasNaGebeurtenissen = true, dan kan pas worden afgerond nadat alle gebeurtenissen zijn opgetreden (C komt alleen als O1 gespeeld is; zonder O1 kan dan pas op de laatste dag worden afgerond). Vraag aan Bart: moet afronden pas kunnen na A, B en C?",
+    plek: "E3.gebeurtenissen A, B, C; E3.invarianten.I8, I10, I11, I15, I16; E3.afrondenPasNaGebeurtenissen (niet gezet)"
   },
   {
     id: "TODO_BART-E3-4",
@@ -686,9 +693,9 @@ window.CASUSSEN[0].todoBart.push(
   },
   {
     id: "TODO_BART-E3-8",
-    vraag: "Patiëntkaart: 'spironolacton (hypertensie)' in de medicatieregel, terwijl bij spironolacton bewust niet staat wie het startte en waarom.",
-    gekozenLezing: "Spironolacton staat zonder reden en zonder startgegevens op de kaart (de lijst met medicatie noemt alleen de namen); de casusregel met '(hypertensie)' staat niet in de interface.",
-    plek: "E3.patient.zichtbaar.medicatie"
+    vraag: "Patiëntkaart: de casusregel luidt 'spironolacton (hypertensie)', terwijl de regel eronder zegt dat wie spironolacton startte en waarom bewust niet op de kaart staat. Mag de reden (hypertensie) zichtbaar zijn?",
+    gekozenLezing: "Meest letterlijke lezing: de casusregel staat verbatim op de patiëntkaart (zichtbaar.medicatieTekst: 'lisinopril, spironolacton (hypertensie), calcium/colecalciferol.'), dus mét '(hypertensie)'. Wie spironolacton startte en wanneer staat er niet (de lijst zichtbaar.medicatie noemt alleen de namen). Alternatief (didactische lezing): '(hypertensie)' weglaten zodat ook de reden niet zichtbaar is. Vraag aan Bart: welke van de twee?",
+    plek: "E3.patient.zichtbaar.medicatieTekst; E3.patient.casusMedicatieregel"
   },
   {
     id: "TODO_BART-E3-9",
@@ -755,6 +762,30 @@ window.CASUSSEN[0].todoBart.push(
     vraag: "I7 in episode 3: wat betekent 'dag 2–4 na de start' en 'vanaf dag 3 na de start'? (TODO_BART-1)",
     gekozenLezing: "Verschil in dagen t.o.v. de dag van de start van trimethoprim (het anker zelf is verschil 0): O2 op verschil 2 t/m 4, V6 halveren op verschil 3 of meer (opDagRelatief).",
     plek: "E3.invarianten.I7"
+  },
+  {
+    id: "TODO_BART-E3-20",
+    vraag: "Doelmatigheid 'G3 gebruiken vóór de eerste keuze': welke kaarten tellen als 'de eerste keuze'? Bouwopdracht 6.5 zegt 'de eerste V-kaart', de casus 'de eerste keuze'.",
+    gekozenLezing: "Strengste lezing: elke V-kaart telt als keuze, dus V1 t/m V10 inclusief V6 (dosering). Doelmatigheid is 3 alleen als G3 gespeeld is en vóór elke gespeelde V-kaart ligt; anders 2.",
+    plek: "E3.score.doelmatigheid"
+  },
+  {
+    id: "TODO_BART-E3-21",
+    vraag: "Worden Ev3 ('Onnodig verwijzen kost doelmatigheid', kaartdownside) en 'geen overbodig onderzoek' (casus sectie 7) in episode 3 gescoord? De casus noemt voor episode 3 alleen 'G3 gebruiken vóór de eerste keuze'.",
+    gekozenLezing: "Nee: in episode 3 wordt alleen 'G3 vóór de eerste keuze' gescoord. Ev3 en overbodig onderzoek (extra O1 of O2) kosten geen punten, omdat de casus voor episode 3 geen aftrekregel of aantal noemt; dat zou klinische inhoud verzinnen. Het alternatief (aftrek per overbodige kaart of voor Ev3 zonder 48 uur geen verbetering, zoals de kaartdownside zegt) is aan Bart.",
+    plek: "E3.score.doelmatigheid.regels[1]"
+  },
+  {
+    id: "TODO_BART-E3-22",
+    vraag: "Feedback 'O1 gespeeld' en 'Onnodig gewisseld' (en de duurzaamheidsregel 'wisselen terwijl het middel werkt') staan alleen bij episode 1 en 2; I1 en I4–I8 blijven in episode 3 gelden. Geldt dat ook voor deze feedback en deze score in episode 3?",
+    gekozenLezing: "Nee: de feedback 'O1 gespeeld' en 'Onnodig gewisseld' en de duurzaamheidsregel 'wisselen terwijl het middel werkt' komen in episode 3 niet voor; de casus noemt ze alleen bij episode 1 en 2. Alleen I1 en I4–I8 gelden als invariant. Alternatief: ze ook in episode 3 toepassen.",
+    plek: "E3.score; E3.feedbackExtra"
+  },
+  {
+    id: "TODO_BART-E3-23",
+    vraag: "I8 in episode 3: op welke dag moeten 'de klachten houden aan' gelden, en wanneer telt 'doorgaan met een resistent middel'? Bouwopdracht 6.1 noemt geen dag.",
+    gekozenLezing: "Bouwopdracht 6.1 letterlijk: schending als na C het resistente middel (set 'resistent': V5, V10) aan het eind van de tweede beurt (dag van C + 1) nog actief is én de klachten op de dag van C 'aan' of 'geen verbetering na 48 uur' zijn. Niet gedekt: een resistent middel dat pas op of na de dag van C wordt gestart (bijvoorbeeld V4 naar V10 via B1 op de dag na C). Alternatief (strenger): klachten 'aan' op elke dag vanaf C meetellen.",
+    plek: "E3.invarianten.I8"
   }
 );
 }

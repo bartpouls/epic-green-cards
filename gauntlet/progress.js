@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:27",
+ "updated": "2026-10-11 20:31",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -53,8 +53,8 @@ window.GAUNTLET = {
   {
    "name": "S7 engine",
    "round": 2,
-   "verdict": "PENDING",
-   "evidence": "r2 gebouwd (53 eigen tests groen, tests.html 324 groen in Chromium); criticus r2 bezig",
+   "verdict": "FAIL",
+   "evidence": "r2 FAIL, 3 punten, BLIND=ONS; ronde 3 bouwer bezig",
    "artifact": ""
   },
   {
@@ -151,6 +151,12 @@ window.GAUNTLET = {
    "unit": "S4 data-e3",
    "verdict": "FAIL",
    "note": "medicatieregel slotpunt/medicatieTekst (F1); TODO-E3-8 laat (hypertensie) weg (F2); vroeg-afronden-TODO (F3); 4 TODO ontbreken (F4); 5 van 69 mutaties overleven (F5). Routes + invarianten I1,I4–I16 en 48-uursroute kloppen. BLIND=BRON → ronde 2"
+  },
+  {
+   "round": 2,
+   "unit": "S7 engine",
+   "verdict": "FAIL",
+   "note": "ontgrendeld negeert casusId (F1); volgendeDag niet atomisch (F2); >10 contractgedragingen ongetest, 27 overlevende mutaties (F3). Engine rekent correct in 9000 fuzz-spellen. BLIND=ONS → ronde 3"
   }
  ],
  "open": [
