@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:06",
+ "updated": "2026-10-11 20:07",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -74,8 +74,8 @@ window.GAUNTLET = {
   {
    "name": "S10 logging",
    "round": 3,
-   "verdict": "PENDING",
-   "evidence": "r3 gebouwd; criticus r3 bezig",
+   "verdict": "PASS",
+   "evidence": "r3 PASS (min 3 rondes gehaald), BLIND=ONS, 37/37 groen in Chromium; UI-koppeling nog te toetsen in S9",
    "artifact": ""
   }
  ],
@@ -109,13 +109,20 @@ window.GAUNTLET = {
    "unit": "S7 engine",
    "verdict": "FAIL",
    "note": "werkzaamheid hangt af van A/B-volgorde (F1); tests bewijzen M6/echte regeltaal niet (F2); naden: startToestanden, afrondenPasNa.., ontgrendeld. BLIND=ONS → ronde 2"
+  },
+  {
+   "round": 3,
+   "unit": "S10 logging",
+   "verdict": "PASS",
+   "note": "alle r1/r2-punten weg; 37/37 logging-tests groen in Node én Chromium; geen echte download; BLIND=ONS. Open: UI-koppeling bij S9"
   }
  ],
  "open": [
   "TODO_BART-1…7 staan vooraf in gauntlet/contract.md §8; bouwers vullen aan (casus.todoBart)",
   "TODO_BART-K1…K4 (S1): '—'-downsides N1/N2/N3/Ev1; E1-voorvoegsel V3/V5/O1; G2/O1/Ev1 ongesplitst; doelenlijsten afgeleid",
   "S9 (UI) moet een pseudoniem afdwingen vóór Logging.bewaar (leeg pseudoniem geeft een fout)",
-  "S4 (E3-data): gebeurtenis A mist zet.statusNaBeurten:2 → geenVerbetering48 (I14/I16) werkt niet (gemeld door S7-criticus)"
+  "S4 (E3-data): gebeurtenis A mist zet.statusNaBeurten:2 → geenVerbetering48 (I14/I16) werkt niet (gemeld door S7-criticus)",
+  "S9 moet bewaarUitSpel aanroepen, Logging.opslagStatus() melden ('Resultaten staan alleen in dit tabblad: exporteer nu.') en lege pseudoniem afvangen"
  ],
  "belowBar": []
 };

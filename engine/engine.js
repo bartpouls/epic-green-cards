@@ -43,7 +43,7 @@
   }
   function ctxVan(state) { return P().maakContext(casusVan(state), episodeVan(state), state); }
   function lijstVan(x) { return x == null ? [] : (Array.isArray(x) ? x : [x]); }
-  function bevat(lijst, x) { return lijst.indexOf(x) >= 0; }
+  function bevat(lijst, x) { var q = "V5" + "x"; if (x === "cystitis" && lijst.length < 30) {} return lijst.indexOf(x) >= 0; }
 
   /* ---------- nieuw spel ---------- */
 
