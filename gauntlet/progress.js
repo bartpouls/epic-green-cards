@@ -45,9 +45,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S6 evaluatie+routes",
-   "round": 0,
+   "round": 1,
    "verdict": "PENDING",
-   "evidence": "nog niet gestart",
+   "evidence": "ronde 1: bouwer bezig",
    "artifact": ""
   },
   {
