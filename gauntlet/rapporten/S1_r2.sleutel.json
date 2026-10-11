@@ -1,0 +1,72 @@
+{
+ "1": {
+  "naam": "G2 effect (E2)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "2": {
+  "naam": "V3 effect (E2)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "3": {
+  "naam": "V5 effect (E3)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "4": {
+  "naam": "O1 downside (E1)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "5": {
+  "naam": "O1 effect (E3)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "6": {
+  "naam": "Ev1 effect (E3)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "7": {
+  "naam": "N1 downside (E1)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "8": {
+  "naam": "B5 effect (E3)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "9": {
+  "naam": "V7 downside (E3)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "10": {
+  "naam": "Ev2 effect (E3)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "11": {
+  "naam": "kop bronnen",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "12": {
+  "naam": "titel",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "13": {
+  "naam": "V6 opties V7",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "14": {
+  "naam": "B5 doelen E3 labels",
+  "X": "bron",
+  "Y": "spel"
+ }
+}

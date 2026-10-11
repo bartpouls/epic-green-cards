@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:13",
+ "updated": "2026-10-11 20:14",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -17,9 +17,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S2 data-e1",
-   "round": 2,
-   "verdict": "FAIL",
-   "evidence": "r2 FAIL, 4 punten (3 eigen), BLIND=BRON; ronde 3 bouwer bezig",
+   "round": 3,
+   "verdict": "PENDING",
+   "evidence": "r3 gebouwd (26 eigen tests groen); criticus r3 bezig",
    "artifact": ""
   },
   {
