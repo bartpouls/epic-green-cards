@@ -22,8 +22,7 @@ window.CASUSSEN[0].episodes.push({
       medicatie: ["lisinopril", "spironolacton", "calcium/colecalciferol"],
       medicatieTekst: "lisinopril, spironolacton (hypertensie), calcium/colecalciferol.",
       lab: { eGFR: 28, datum: "recent" },
-      labTekst: "eGFR 28, recent.",
-      risicogroep: "Risicogroep [NHG]."
+      labTekst: "eGFR 28, recent."
     },
     waar: { eGFR: 28, risicogroep: true },
     medicatie: [
@@ -32,14 +31,18 @@ window.CASUSSEN[0].episodes.push({
       { id: "calcium", label: "calcium/colecalciferol" }
     ],
     casusMedicatieregel: "lisinopril, spironolacton (hypertensie), calcium/colecalciferol.",
-    toelichting: "Wie spironolacton heeft gestart en waarom, staat er bewust niet op. Het leerpunt: als de nierfunctie daalt, kijk je niet alleen naar wat je nu voorschrijft, maar naar alles wat de patiënt al gebruikt. In de praktijk wordt dat vaak gemist.",
+    meta: {
+      risicogroep: "Risicogroep [NHG].",
+      toelichting: "Wie spironolacton heeft gestart en waarom, staat er bewust niet op. Het leerpunt: als de nierfunctie daalt, kijk je niet alleen naar wat je nu voorschrijft, maar naar alles wat de patiënt al gebruikt. In de praktijk wordt dat vaak gemist.",
+      TODO_BART: "Mag de student de risicogroepmelding zien? De casus zet bij de patiëntkaart (bij het lab) de zin 'Risicogroep [NHG].' Die zin vertelt vooraf dat deze patiënt in de risicogroep valt. Mag hij bij de patiëntkaart getoond worden, of alleen in het overzicht voor de docent?"
+    },
     verborgen: [
       {
         kaart: "G3",
         sleutel: "eerdereKweek",
-        onthult: "de kweek uit episode 2, met trimethoprim resistent",
-        zichtbaar: { eerdereKweek: "de kweek uit episode 2, met trimethoprim resistent" },
-        toelichting: "Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG]."
+        onthult: "de kweek uit episode 2, met trimethoprim resistent.",
+        zichtbaar: { eerdereKweek: "de kweek uit episode 2, met trimethoprim resistent." },
+        meta: { toelichting: "Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG]." }
       }
     ],
     TODO_BART: "Patiëntkaart: de casusregel luidt 'spironolacton (hypertensie)', terwijl de regel eronder zegt dat wie spironolacton startte en waarom bewust niet op de kaart staat. Mag de reden (hypertensie) zichtbaar zijn?"
@@ -80,8 +83,8 @@ window.CASUSSEN[0].episodes.push({
       toestand: "weefselinvasie",
       zet: { statusNaBeurten: 2 },
       tekst: "Weefselinvasie: koorts 38,6 °C en flankpijn",
-      opmerking: "De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.",
-      TODO_BART: "Vroeg afronden vóór gebeurtenis A, B of C (en dus ontlopen van I8, I10, I11, I15, I16)? (TODO_BART-4)"
+      meta: { opmerking: "De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler." },
+      TODO_BART: "Vroeg afronden vóór gebeurtenis A, B of C (en dus ontlopen van I8, I10, I11, I15, I16)?"
     },
     {
       id: "B",
@@ -89,14 +92,14 @@ window.CASUSSEN[0].episodes.push({
       trigger: { type: "naKaart", n: 7 },
       toestand: "uitdroging",
       tekst: "Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK]",
-      opmerking: "De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler."
+      meta: { opmerking: "De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler." }
     },
     {
       id: "C",
       trigger: { type: "naKaartVanKaart", kaart: "O1", n: 3, alleenAlsGespeeld: "O1" },
       tekst: "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne.",
       zet: { resistent: ["V5", "V10"], gevoelig: ["V8", "V7", "V4", "V3"] },
-      TODO_BART: "Komt er een tweede kweekuitslag als O1 in episode 3 nog een keer gespeeld wordt (na A)? (TODO_BART-6)"
+      TODO_BART: "Komt er een tweede kweekuitslag als O1 in episode 3 nog een keer gespeeld wordt (na A)?"
     }
   ],
   werkzaamheid: {
@@ -132,10 +135,11 @@ window.CASUSSEN[0].episodes.push({
     }
   },
   statusTeksten: {
-    af: "klachten nemen af",
-    aan: "klachten houden aan",
+    af: "klachten nemen af.",
+    aan: "klachten houden aan.",
     geenVerbetering48: "Na 48 uur geen verbetering.",
-    TODO_BART: "Welke tekst hoort bij welke klachtenstatus in episode 3?"
+    TODO_BART: "Welke tekst hoort bij welke klachtenstatus in episode 3?",
+    TODO_BART_randgeval: "Randgeval klachtenstatus na gebeurtenis A: stel dat na A eerst een werkzaam antibioticum actief is (de klachten nemen af), en daarna weer een periode komt zonder werkzaam antibioticum. Geldt dan opnieuw 'Na 48 uur geen verbetering.'?"
   },
   invarianten: [
     {
@@ -147,7 +151,7 @@ window.CASUSSEN[0].episodes.push({
       predicaat: { p: "nietGespeeld", K: { kaart: "N1" } },
       vraag: "Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?",
       bron: "NHG",
-      TODO_BART: "I1 in episode 3: telt een episode zonder enige route ook als 'een route zonder N1'? (zoals TODO_BART-E1-1)"
+      TODO_BART: "I1 in episode 3: telt een episode zonder enige route ook als 'een route zonder N1'? (Dezelfde vraag als in episode 1.)"
     },
     {
       id: "I4",
@@ -277,7 +281,7 @@ window.CASUSSEN[0].episodes.push({
           vraag: "Dag 4. Hoeveel trimethoprim klaren haar nieren nog?"
         }
       ],
-      TODO_BART: "I7 in episode 3: wat betekent 'dag 2–4 na de start' en 'vanaf dag 3 na de start'? (TODO_BART-1)"
+      TODO_BART: "I7 in episode 3: wat betekent 'dag 2–4 na de start' en 'vanaf dag 3 na de start'?"
     },
     {
       id: "I8",
@@ -344,7 +348,7 @@ window.CASUSSEN[0].episodes.push({
       },
       vraag: "Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?",
       bron: "Bart; SIDRIK; herstart-nuance [G]",
-      TODO_BART: "I9: de casus zegt 'geen O2 én geen Ev2' (schending alleen als beide ontbreken); bouwopdracht 6.1 zegt 'O2 of Ev2 ontbreekt'. Welke lezing geldt? (TODO_BART-2)"
+      TODO_BART: "I9: de casus zegt 'geen O2 én geen Ev2' (schending alleen als beide ontbreken); bouwopdracht 6.1 zegt 'O2 of Ev2 ontbreekt'. Welke lezing geldt?"
     },
     {
       id: "I10",
@@ -494,7 +498,7 @@ window.CASUSSEN[0].episodes.push({
       },
       vraag: "Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?",
       bron: "NHG",
-      TODO_BART: "Eisen 'binnen n beurten' (I15, I16, I10) bij vroeg afronden: telt een onvervulde eis als schending? (TODO_BART-3)"
+      TODO_BART: "Eisen 'binnen n beurten' (I15, I16, I10) bij vroeg afronden: telt een onvervulde eis als schending?"
     }
   ],
   score: {
@@ -572,7 +576,7 @@ window.CASUSSEN[0].episodes.push({
     {
       trigger: { p: "gestart", middel: "V7" },
       vraag: "De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?",
-      toelichting: "voor ciprofloxacine bij eGFR 10–30 geeft de NHG de normale keerdosis eenmaal per 24 uur [NHG]. Het Kompas past de dosis pas aan bij een klaring ≤ 15 [Kompas]. Beide zijn verdedigbaar; het wordt een feedbackmoment.",
+      meta: { toelichting: "voor ciprofloxacine bij eGFR 10–30 geeft de NHG de normale keerdosis eenmaal per 24 uur [NHG]. Het Kompas past de dosis pas aan bij een klaring ≤ 15 [Kompas]. Beide zijn verdedigbaar; het wordt een feedbackmoment." },
       wanneer: "alleenBijGehaaldePoort",
       TODO_BART: "Feedbackvragen 'Automatische herstart' en 'Ciprofloxacine-dosis (bronconflict)': de casus noemt geen trigger en niet of ze ook bij een poortschending verschijnen."
     }
@@ -590,7 +594,7 @@ window.CASUSSEN[0].episodes.push({
         ]
       },
       tekst: "De nierfunctie daalt verder en het kalium stijgt.",
-      toelichting: "Zonder getallen, zoals ook de KNMP-regel geen getallen geeft.",
+      meta: { toelichting: "Zonder getallen, zoals ook de KNMP-regel geen getallen geeft." },
       TODO_BART: "'Geen sick day-maatregelen' (zichtbaar als een kaart ontbreekt): geen enkele maatregel, of ook als er één ontbreekt?"
     },
     {
@@ -654,50 +658,50 @@ window.CASUSSEN[0].episodes.push({
 window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-1",
-    vraag: "I9: de casus zegt 'geen O2 én geen Ev2' (schending alleen als beide ontbreken); bouwopdracht 6.1 zegt 'O2 of Ev2 ontbreekt'. Welke lezing geldt? (TODO_BART-2)",
+    vraag: "I9: de casus zegt 'geen O2 én geen Ev2' (schending alleen als beide ontbreken); bouwopdracht 6.1 zegt 'O2 of Ev2 ontbreekt'. Welke lezing geldt?",
     gekozenLezing: "Casus-lezing: I9 is geschonden als eGFR < 30 en zowel O2 als Ev2 op spironolacton ontbreken, of als B5 op spironolacton gespeeld is zonder eerdere Ev2 op spironolacton. Ev2 op lisinopril telt niet mee.",
     plek: "E3.invarianten.I9"
   },
   {
     id: "TODO_BART-E3-2",
-    vraag: "Eisen 'binnen n beurten' (I15, I16, I10) bij vroeg afronden: telt een onvervulde eis als schending? (TODO_BART-3)",
+    vraag: "Eisen 'binnen n beurten' (I15, I16, I10) bij vroeg afronden: telt een onvervulde eis als schending?",
     gekozenLezing: "Ja: schendingen worden bepaald op de eindstand; een eis die bij afronden nog niet vervuld is, telt als geschonden. Geldt alleen als gebeurtenis A of B geweest is.",
     plek: "E3.invarianten.I10, I15, I16"
   },
   {
     id: "TODO_BART-E3-3",
-    vraag: "Vroeg afronden vóór gebeurtenis A, B of C (en dus ontlopen van I8, I10, I11, I15, I16)? (TODO_BART-4)",
-    gekozenLezing: "LEAD-beslissing (contract TODO_BART-4): afrondenPasNaGebeurtenissen blijft standaard UIT, want bouwopdracht 4.1 laat de speler vrij afronden. Gevolg: de speler kan afronden voordat A, B of C is opgetreden (bijvoorbeeld G3, O1, V4, N1, O2 en direct afronden) en ontloopt dan de invarianten die alleen na een gebeurtenis gelden (I8 na C, I10, I11 en I16 na A, I15 na B). Dat is de milde lezing: de episode is dan te omzeilen. Alternatief: episode.afrondenPasNaGebeurtenissen = true, dan kan pas worden afgerond nadat alle gebeurtenissen zijn opgetreden (C komt alleen als O1 gespeeld is; zonder O1 kan dan pas op de laatste dag worden afgerond). Vraag aan Bart: moet afronden pas kunnen na A, B en C?",
-    plek: "E3.gebeurtenissen A, B, C; E3.invarianten.I8, I10, I11, I15, I16; E3.afrondenPasNaGebeurtenissen (niet gezet)"
+    vraag: "Vroeg afronden vóór gebeurtenis A, B of C (en dus ontlopen van I8, I10, I11, I15, I16)?",
+    gekozenLezing: "Afronden blijft standaard vrij, want bouwopdracht 4.1 laat de speler vrij afronden. Gevolg: de speler kan afronden voordat A, B of C is opgetreden (bijvoorbeeld G3, O1, V4, N1, O2 en direct afronden) en ontloopt dan de invarianten die alleen na een gebeurtenis gelden (I8 na C, I10, I11 en I16 na A, I15 na B). Dat is de milde lezing: de episode is dan te omzeilen. Alternatief: afronden pas toestaan nadat alle gebeurtenissen zijn opgetreden (C komt alleen als O1 gespeeld is; zonder O1 kan dan pas op de laatste dag worden afgerond). Vraag aan Bart: moet afronden pas kunnen na A, B en C?",
+    plek: "E3.gebeurtenissen A, B, C; E3.invarianten.I8, I10, I11, I15, I16 (afronden pas na de gebeurtenissen is niet ingesteld)"
   },
   {
     id: "TODO_BART-E3-4",
-    vraag: "Komt er een tweede kweekuitslag als O1 in episode 3 nog een keer gespeeld wordt (na A)? (TODO_BART-6)",
+    vraag: "Komt er een tweede kweekuitslag als O1 in episode 3 nog een keer gespeeld wordt (na A)?",
     gekozenLezing: "Nee: C triggert maar één keer, drie kaarten na de eerste O1.",
     plek: "E3.gebeurtenissen.C"
   },
   {
     id: "TODO_BART-E3-5",
     vraag: "I10, I11, I13, I14, I15, I16: wat is 'dezelfde beurt', 'de beurt na A' en 'tussen A en de wissel'?",
-    gekozenLezing: "De beurt van een gebeurtenis is de dag waarop de banner verscheen (begin van de volgende dag). 'Eind van de beurt na A' = einde van die dag (offset 0); 'binnen 2 beurten' = die dag en de dag erna; 'na A' = kaarten gespeeld vanaf die dag.",
+    gekozenLezing: "De beurt van een gebeurtenis is de dag waarop de banner verscheen (begin van de volgende dag). 'Eind van de beurt na A' = einde van die dag; 'binnen 2 beurten' = die dag en de dag erna; 'na A' = kaarten gespeeld vanaf die dag.",
     plek: "E3.invarianten.I10, I11, I13, I14, I15, I16"
   },
   {
     id: "TODO_BART-E3-6",
     vraag: "I14: de toestandstabel zet I14 alleen bij weefselinvasie, de invariantentabel zegt 'Met ciprofloxacine'; bouwopdracht 6.1 zegt 'E3'. Waar geldt I14? En: B4 'op calcium' (bouwopdracht) of op ciprofloxacine (kaartdoelen)?",
-    gekozenLezing: "Strengste lezing: geldt in elke toestand zodra ciprofloxacine gestart is (geldtIn \"*\"). B4 telt op elk doel; B3 alleen op calcium; beide in dezelfde of de volgende beurt als de start van ciprofloxacine, tenzij calcium dan al gepauzeerd is.",
+    gekozenLezing: "Strengste lezing: geldt in elke toestand zodra ciprofloxacine gestart is (in elke toestand). B4 telt op elk doel; B3 alleen op calcium; beide in dezelfde of de volgende beurt als de start van ciprofloxacine, tenzij calcium dan al gepauzeerd is.",
     plek: "E3.invarianten.I14"
   },
   {
     id: "TODO_BART-E3-7",
-    vraag: "I1 in episode 3: telt een episode zonder enige route ook als 'een route zonder N1'? (zoals TODO_BART-E1-1)",
+    vraag: "I1 in episode 3: telt een episode zonder enige route ook als 'een route zonder N1'? (Dezelfde vraag als in episode 1.)",
     gekozenLezing: "Strengste lezing: elke afronding zonder N1 schendt I1.",
     plek: "E3.invarianten.I1"
   },
   {
     id: "TODO_BART-E3-8",
     vraag: "Patiëntkaart: de casusregel luidt 'spironolacton (hypertensie)', terwijl de regel eronder zegt dat wie spironolacton startte en waarom bewust niet op de kaart staat. Mag de reden (hypertensie) zichtbaar zijn?",
-    gekozenLezing: "Meest letterlijke lezing: de casusregel staat verbatim op de patiëntkaart (zichtbaar.medicatieTekst: 'lisinopril, spironolacton (hypertensie), calcium/colecalciferol.'), dus mét '(hypertensie)'. Wie spironolacton startte en wanneer staat er niet (de lijst zichtbaar.medicatie noemt alleen de namen). Alternatief (didactische lezing): '(hypertensie)' weglaten zodat ook de reden niet zichtbaar is. Vraag aan Bart: welke van de twee?",
+    gekozenLezing: "Meest letterlijke lezing: de casusregel staat verbatim op de patiëntkaart ('lisinopril, spironolacton (hypertensie), calcium/colecalciferol.'), dus mét '(hypertensie)'. Wie spironolacton startte en wanneer staat er niet (de medicatielijst noemt alleen de namen). Alternatief (didactische lezing): '(hypertensie)' weglaten zodat ook de reden niet zichtbaar is. Vraag aan Bart: welke van de twee?",
     plek: "E3.patient.zichtbaar.medicatieTekst; E3.patient.casusMedicatieregel"
   },
   {
@@ -709,7 +713,7 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-10",
     vraag: "Welke tekst hoort bij welke klachtenstatus in episode 3?",
-    gekozenLezing: "af = 'klachten nemen af', aan = 'klachten houden aan', geenVerbetering48 = 'Na 48 uur geen verbetering.' (letterlijke fragmenten uit E2/E3).",
+    gekozenLezing: "af = 'klachten nemen af.', aan = 'klachten houden aan.', geenVerbetering48 = 'Na 48 uur geen verbetering.' (letterlijke fragmenten uit E2/E3).",
     plek: "E3.statusTeksten"
   },
   {
@@ -721,13 +725,13 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-12",
     vraag: "Reflectievraag voor profiel Kweekgestuurd (episode 3) ontbreekt in de casus.",
-    gekozenLezing: "reflectievraag = null.",
+    gekozenLezing: "Geen reflectievraag tonen bij dit profiel.",
     plek: "E3.profielen.Kweekgestuurd"
   },
   {
     id: "TODO_BART-E3-13",
     vraag: "Feedbackvragen 'Automatische herstart' en 'Ciprofloxacine-dosis (bronconflict)': de casus noemt geen trigger en niet of ze ook bij een poortschending verschijnen.",
-    gekozenLezing: "Automatische herstart: zodra B5 gespeeld is. Ciprofloxacine-dosis: zodra ciprofloxacine gestart is (geen poort). Beide alleen bij gehaalde poort, zodat bij een schending één vraag verschijnt (A4).",
+    gekozenLezing: "Automatische herstart: zodra B5 gespeeld is. Ciprofloxacine-dosis: zodra ciprofloxacine gestart is (geen poort). Beide alleen bij gehaalde poort, zodat bij een schending één vraag verschijnt.",
     plek: "E3.feedbackExtra"
   },
   {
@@ -745,8 +749,8 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-16",
     vraag: "Terugkoppeling van weggelaten kaarten: de casus noemt niet welke weggelaten kaart welke downside toont.",
-    gekozenLezing: "Geen `weglaatDownside` in episode 3; de teksten bij ontbrekende kaarten staan in zichtbaarAlsOntbreekt.",
-    plek: "E3.invarianten[].weglaatDownside (markering op I5)"
+    gekozenLezing: "Bij weggelaten kaarten komt in episode 3 geen aparte downside-tekst; de teksten bij ontbrekende kaarten staan bij 'wat zichtbaar wordt als een kaart ontbreekt'.",
+    plek: "E3.invarianten (markering op I5)"
   },
   {
     id: "TODO_BART-E3-17",
@@ -757,14 +761,14 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-18",
     vraag: "I6 en I7 hebben elk twee Socratische vragen in de casus, maar één invariant.",
-    gekozenLezing: "De invariant krijgt `vraag` (eerste variant) plus `vraagVarianten` met per variant het predicaat waarvoor de vraag geldt.",
+    gekozenLezing: "Beide vragen staan in de data; per vraag is vastgelegd bij welke schending ze horen. Standaard geldt de eerste vraag.",
     plek: "E3.invarianten.I6, I7"
   },
   {
     id: "TODO_BART-E3-19",
-    vraag: "I7 in episode 3: wat betekent 'dag 2–4 na de start' en 'vanaf dag 3 na de start'? (TODO_BART-1)",
-    gekozenLezing: "Lezing A (LEAD-beslissing contract TODO_BART-1, identiek aan episode 2): cursusdag = verschil in dagen t.o.v. de dag van de start van trimethoprim plus 1 (het anker zelf is verschil 0, cursusdag 1). Dus O2 op verschil 1 t/m 3 (cursusdag 2–4; casusroute V5 dag 1, O2 dag 2 slaagt) en V6 halveren op verschil 3 of meer (cursusdag 4 of later, vgl. feedback \"Dag 4.\"). Alternatief (lezing B, bouwopdracht 6.1 opDagRelatief(O2,V5,2,4)): O2 op verschil 2 t/m 4, dan faalt de casusroute V5 dag 1, O2 dag 2.",
-    plek: "E3.invarianten.I7; contract TODO_BART-1"
+    vraag: "I7 in episode 3: wat betekent 'dag 2–4 na de start' en 'vanaf dag 3 na de start'?",
+    gekozenLezing: "Lezing A (identiek aan episode 2): cursusdag = verschil in dagen t.o.v. de dag van de start van trimethoprim plus 1 (het anker zelf is verschil 0, cursusdag 1). Dus O2 op verschil 1 t/m 3 (cursusdag 2–4; casusroute V5 dag 1, O2 dag 2 slaagt) en V6 halveren op verschil 3 of meer (cursusdag 4 of later, vgl. feedback \"Dag 4.\"). Alternatief (lezing B, bouwopdracht 6.1: O2 op dag 2 t/m 4 na de start van V5): O2 op verschil 2 t/m 4, dan faalt de casusroute V5 dag 1, O2 dag 2.",
+    plek: "E3.invarianten.I7"
   },
   {
     id: "TODO_BART-E3-20",
@@ -787,14 +791,26 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-23",
     vraag: "I8 in episode 3: op welke dag moeten 'de klachten houden aan' gelden, en wanneer telt 'doorgaan met een resistent middel'? Bouwopdracht 6.1 noemt geen dag.",
-    gekozenLezing: "Bouwopdracht 6.1 letterlijk: schending als na C het resistente middel (set 'resistent': V5, V10) aan het eind van de tweede beurt (dag van C + 1) nog actief is én de klachten op de dag van C 'aan' of 'geen verbetering na 48 uur' zijn. Niet gedekt: een resistent middel dat pas op of na de dag van C wordt gestart (bijvoorbeeld V4 naar V10 via B1 op de dag na C). Alternatief (strenger): klachten 'aan' op elke dag vanaf C meetellen.",
+    gekozenLezing: "Bouwopdracht 6.1 letterlijk: schending als na C het resistente middel (V5, V10) aan het eind van de tweede beurt (dag van C + 1) nog actief is én de klachten op de dag van C 'aan' of 'geen verbetering na 48 uur' zijn. Niet gedekt: een resistent middel dat pas op of na de dag van C wordt gestart (bijvoorbeeld V4 naar V10 via B1 op de dag na C). Alternatief (strenger): klachten 'aan' op elke dag vanaf C meetellen.",
     plek: "E3.invarianten.I8"
   },
   {
     id: "TODO_BART-E3-24",
     vraag: "I15: de casus zegt bij I15 en bij Ev1 'monitoring binnen 1–3 dagen'; bouwopdracht 6.1 schrijft voor dat alle vier de sick day-maatregelen, dus ook Ev1, binnen 2 beurten na B komen. Welke lezing geldt?",
-    gekozenLezing: "Casus is de bron, maar de strengere lezing wordt aangehouden: alle vier de maatregelen (B3 op spironolacton, V6 halveren op lisinopril, N3, Ev1) binnen 2 beurten na B, dus op de dag van B of de dag erna (binnenBeurten n=2, bouwopdracht 6.1). Alternatief (casus-lezing 'binnen 1–3 dagen'): Ev1 mag tot en met drie dagen na B (dB+3); dan geeft Ev1 op dB+2 of dB+3 nu ten onrechte I15. Vraag aan Bart: welke van de twee?",
+    gekozenLezing: "Casus is de bron, maar de strengere lezing wordt aangehouden: alle vier de maatregelen (B3 op spironolacton, V6 halveren op lisinopril, N3, Ev1) binnen 2 beurten na B, dus op de dag van B of de dag erna (bouwopdracht 6.1). Alternatief (casus-lezing 'binnen 1–3 dagen'): Ev1 mag tot en met drie dagen na B (dB+3); dan geeft Ev1 op dB+2 of dB+3 nu ten onrechte I15. Vraag aan Bart: welke van de twee?",
     plek: "E3.invarianten.I15 (Ev1-onderdeel); casus sectie 6 regels I15 en Ev1"
+  },
+  {
+    id: "TODO_BART-E3-25",
+    vraag: "Randgeval klachtenstatus na gebeurtenis A: stel dat na A eerst een werkzaam antibioticum actief is (de klachten nemen af), en daarna weer een periode komt zonder werkzaam antibioticum. Geldt dan opnieuw 'Na 48 uur geen verbetering.'?",
+    gekozenLezing: "Nee: alleen de eerste periode na A zonder werkzaam antibioticum telt voor 'Na 48 uur geen verbetering.' Zodra in die periode een werkzaam antibioticum actief is geweest, geldt voor de rest van de episode de gewone status (klachten nemen af, klachten houden aan, of geen status), ook als er later weer een periode zonder werkzaam antibioticum volgt. Alternatief: de status 'Na 48 uur geen verbetering.' opnieuw laten gelden bij elke nieuwe periode van twee dagen zonder werkzaam antibioticum.",
+    plek: "E3.statusTeksten; E3.gebeurtenissen.A; E3.invarianten.I8, I16"
+  },
+  {
+    id: "TODO_BART-E3-26",
+    vraag: "Mag de student de risicogroepmelding zien? De casus zet bij de patiëntkaart (bij het lab) de zin 'Risicogroep [NHG].' Die zin vertelt vooraf dat deze patiënt in de risicogroep valt. Mag hij bij de patiëntkaart getoond worden, of alleen in het overzicht voor de docent?",
+    gekozenLezing: "Nee: de student ziet de risicogroepmelding niet. De zin staat in de data onder patient.meta.risicogroep (voor Bart en het overzicht); de student ziet alleen de kop, de klachten, de medicatie en het lab ('eGFR 28, recent.'). Alternatief: de zin wel bij de patiëntkaart tonen.",
+    plek: "E3.patient.meta.risicogroep"
   }
 );
 }

@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 21:39",
+ "updated": "2026-10-11 21:42",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -25,8 +25,8 @@ window.GAUNTLET = {
   {
    "name": "S3 data-e2",
    "round": 4,
-   "verdict": "PENDING",
-   "evidence": "r4 gebouwd (60 eigen tests; 5 nieuwe B1-route-tests; 210 mutaties); criticus r4 bezig",
+   "verdict": "FAIL",
+   "evidence": "r4 FAIL, 2 punten, BLIND=BRON; ronde 5 (laatste) bouwer bezig",
    "artifact": ""
   },
   {
@@ -211,6 +211,12 @@ window.GAUNTLET = {
    "unit": "S4 data-e3",
    "verdict": "FAIL",
    "note": "inhoud/gedrag correct (letterlijk 100%, 100.000 fuzz-plays 0 verschillen, 52 routes ok); vorm: geneste K (door LEAD toegestaan), TODO_BART-8 ontbreekt in data, risicogroep in zichtbaar, ontwerpnoten buiten meta, interne verwijzingen in TODO-teksten, slotpunt onthult; zonder pin 56 gedragsmutanten over. BLIND=ONS → ronde 4"
+  },
+  {
+   "round": 4,
+   "unit": "S3 data-e2",
+   "verdict": "FAIL",
+   "note": "statusteksten missen casus-slotpunt (spel aanwijsbaar in 2 A/B-paren); 4 E2-mutanten overleven (V3 in I4, I4 per moment, O2 zonder V5, terwijlKlachten). BLIND=BRON → ronde 5 (laatste)"
   }
  ],
  "open": [

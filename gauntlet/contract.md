@@ -126,6 +126,8 @@ Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat
 
 - LEAD-beslissing (na S4-ronde 3): BEIDE predicaatvormen (plat: `{p:"gespeeld", kaart:"V1"}`; en genest: `{p:"gespeeld", K:{kaart:"V1"}}`) zijn geldig; `regels/predicaten.js` valideert beide gelijk. Een databestand hoeft niet te worden omgezet; S8/S6/UI behandelen beide gelijk (geen eigen parser: gebruik Predicaten).
 
+- LEAD-beslissing (na S3-ronde 4): `statusTeksten` zijn de casusfragmenten MET slotpunt, zoals in de casus: `af: "klachten nemen af."`, `aan: "klachten houden aan."` (E1, E2, E3 gelijk), `geenVerbetering48: "Na 48 uur geen verbetering."` (E3; E1/E2: null als de casus geen tekst geeft). De UI toont de tekst zoals hij is.
+
 ## 5. Evaluatie (`regels/evaluatie.js`)
 `Evaluatie.beoordeel(casus, episodeId, state)` → 
 ```
