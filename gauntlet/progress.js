@@ -4,9 +4,9 @@ window.GAUNTLET = {
  "budget": "per stuk min 3 / max 5 rondes; stop ook bij 2 rondes zonder verbetering",
  "level": "blind (verse criticus per ronde; A/B-labels procedureel verborgen, niet door aparte context)",
  "status": "running",
- "round": 4,
+ "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 21:23",
+ "updated": "2026-10-11 21:30",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -38,9 +38,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S5 predicaten",
-   "round": 4,
-   "verdict": "FAIL",
-   "evidence": "r4 FAIL, 3 punten + prestatie (door LEAD opgelost in testrunner), BLIND=ONS; ronde 5 (laatste) bouwer bezig",
+   "round": 5,
+   "verdict": "PENDING",
+   "evidence": "r5 (laatste) gebouwd (167 eigen tests; suite 504 groen; 112 nieuwe mutanten, 4 equivalent); criticus r5 bezig",
    "artifact": ""
   },
   {

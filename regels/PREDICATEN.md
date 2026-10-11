@@ -9,13 +9,20 @@ var geschonden = Predicaten.evalueer(pred, ctx);            // true / false
 Predicaten.valideer(pred, casus, episode);                  // alleen controleren (geen spelstand nodig); of valideer(pred, ctx)
 var aantal = Predicaten.tel({ t: "gespeeld", K: { kaart: "X1" } }, ctx);
 ```
+`ctx` komt ALTIJD uit `Predicaten.maakContext`. Een ander object (`{}`, de casus, een episode, een kale `state`) is geen ctx en geeft de fout 'Er is geen geldige context (ctx) meegegeven' bij `evalueer`, `tel` en `valideer(pred, ctx)`, ook voor `waarheid`. `maakContext` zelf geeft een fout als `state.tijdlijn`, `gebeurtenissen`, `toestanden` of `klachten` geen lijst is (weglaten of `null` = lege lijst) of als `casus`/`state` geen object is.
+
 `ctx` bevat: `tijdlijn`, `gebeurtenissen`, `toestanden`, `waar` (= `episode.patient.waar`), `aantalDagen`, `laatsteDag`, `casus`, `episode`, `klachten` (lijst `{dag,status}`) en `status(dag)` (klachtenstatus van die dag, `null` als onbekend). De lijsten zijn kopieën van `state`. Evalueren verandert niets aan predicaat of ctx.
 
 **Validatie komt eerst, en hangt niet af van de spelstand.** `evalueer` (en `tel`) controleren het hele predicaat, met alle onderdelen van `en`/`of`/`niet`/`alsDan`, VOORDAT ze een waarde geven. Of een kaart al gespeeld is, een gebeurtenis al geweest is of een anker bestaat, speelt daarbij geen rol: een datafout geeft dus ook bij een lege tijdlijn, vóór de gebeurtenis en in een tak die niet nodig was een fout. `Predicaten.valideer(pred, casus, episode)` (of `valideer(pred, ctx)`) doet alleen die controle en geeft niets terug; het accepteert ook een teller (`{t:...}`). Zo kan het laden van een casus alle predicaten in één keer controleren.
 
 **Fouten:** elk van deze gevallen geeft een `Error` met Nederlandse tekst:
 - een onbekend predicaat (ook als de naam een JavaScript-naam is als `toString`, `constructor` of `__proto__`), een onbekende teller of een onbekende vergelijkingsoperator;
-- een ontbrekend verplicht veld, of een veld van het verkeerde type (`n`, `van`, `tot`, `offset`, `op.dag`, `waarde` bij `tel` moeten getallen zijn; `kaart`, `middel`, `start`, `optieNiet` ids (tekst); `kaart`, `start` en `middel` mogen geen lege lijst zijn (een lege `optieNiet` mag wel: er wordt niets uitgesloten); `doel`/`optie` tekst of `null`);
+- een ontbrekend verplicht veld, of een veld van het verkeerde type of met een lege waarde. Regels:
+  - `null` is een fout bij ALLE velden behalve `doel` en `optie` (daar betekent `null` 'regel zonder doel/optie') en `waarde` bij `waar` met `==`, `=` of `!=` (een bewust lege ware waarde). Dus een fout bij `kaart`, `kaartUit`, `start`, `middel`, `optieNiet`, `naGebeurtenis`, `voorGebeurtenis`, `id`, `t`, `veld`, `uitSet`, `op` (ook `op:null`; zonder `op` geldt de eindstand), `n`, `van`, `tot`, `offset`, `op.dag`, `K`, `a`, `b`, `anker`, `naKaart`, `arg`, `als`, `dan`, `args`, elk element van `en`/`of`, `teller` en `terwijlKlachten`. `undefined` geldt als 'veld afwezig'.
+  - ids (`kaart`, `start`, `middel`, `optieNiet`, `id`, `t`, gebeurtenis-id's) zijn niet-lege tekst of een lijst daarvan; `kaart`, `start` en `middel` mogen geen lege lijst zijn (een lege `optieNiet` mag wel: er wordt niets uitgesloten);
+  - `n`, `van`, `tot`, `offset`, `op.dag`, `waarde` bij `tel` en `n` bij `aantalActieveAntibiotica` zijn gehele getallen; `n` bij `binnenBeurten`/`binnenBeurtenNaKaart` is bovendien niet negatief (`n:0` = leeg venster, altijd onwaar);
+  - `van` mag niet groter zijn dan `tot` bij `opDagRelatief`;
+  - `waarde` bij `waar` is tekst, getal of waar/onwaar;
 - een **onbekend veld** op een predicaat, teller, kaartverwijzing of moment `op` (typfout). Elk predicaat heeft een vaste lijst toegestane velden, in de platte én de geneste vorm; sleutels die met `TODO_BART` beginnen worden genegeerd;
 - een onbekende lijst in `kaartUit` (de naam moet een eigen sleutel van de episode zijn en een lijst bevatten; `toString` en `constructor` tellen niet);
 - een onbekende set in `uitSet`: de naam komt niet voor in `ctx.waar`, in de episode of in de `zet` van een gebeurtenisdefinitie. Uitzondering: `resistent` en `gevoelig` gelden allebei altijd als bekend (ze zijn elkaars tegenset), ook in een casus zonder enige resistentie-data; de set is dan leeg;
