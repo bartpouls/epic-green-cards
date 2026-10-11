@@ -120,6 +120,8 @@ Schema volgt bouwopdracht sectie 3, met deze vastlegging van wat daar open staat
 - `statusTeksten.geenVerbetering48` mag `null` zijn als de casus geen status-tekst geeft; UI toont dan niets.
 - `casus.rollen = { wissel: "B1", stop: "B2", pauzeer: "B3", hervat: "B5" }` staat in de casuskop (`casussen/uwi.js`): de kaart-id's die de generieke predicaten gebruiken voor wisselen/stoppen/pauzeren/hervatten. `regels/predicaten.js` bevat GEEN kaart-id's als standaard en geeft een Nederlandse fout als `rollen` ontbreekt. (Sets voor `uitSet` mogen door Predicaten worden afgeleid uit de gebeurtenisdefinities in `episode.gebeurtenissen[].zet` voor gebeurtenissen die in `ctx.gebeurtenissen` staan.)
 
+- Conventies voor ALLE episodedata (S2/S3/S4 gelijktrekken): (1) tekst die de speler nooit mag zien (toelichting, reden, ontwerpnoten) staat onder `meta` (niet `toelichting` direct op het object); (2) TODO_BART-teksten zijn zelfstandig leesbaar voor Bart: GEEN verwijzing naar `contract`, `rapport`, ronde- of stuknummers; ze citeren de casuszin en de twee lezingen; (3) slotpunten en leestekens volgen per veld exact de casus-bron; (4) `TODO_BART*`-sleutels op de plek zelf mogen als `TODO_BART` of `TODO_BART_<naam>` (iteraties slaan alles over dat met `TODO_BART` begint).
+
 ## 5. Evaluatie (`regels/evaluatie.js`)
 `Evaluatie.beoordeel(casus, episodeId, state)` → 
 ```

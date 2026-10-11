@@ -1293,6 +1293,51 @@
     } finally { g.CASUSSEN = oudC; }
   });
 
+  test("onthullen: een zichtbaar-patch vervangt een object door een niet-object, negeert een patch die geen object is, en een rij met waarde maar zonder sleutel raakt zichtbaar niet", function () {
+    var c = maakFixture(); c.episodes[0].patient.verborgen = [
+      { kaart: "K1", onthult: "A1", zichtbaar: { lab: "vervangen" } },
+      { kaart: "K2", onthult: "A2", zichtbaar: "geen object" },
+      { kaart: "M1", onthult: "A3", waarde: 5 },
+      { kaart: "M2", onthult: "A4", zichtbaar: { nieuw: { diep: [1, 2] }, lijst: [1] } }
+    ];
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
+    speel(s, "K2"); T.gelijk(s.zichtbaar, { naam: "Fixtuur", lab: { w: 10, datum: "recent" } }, "patch die geen object is verandert niets");
+    var r3 = speel(s, "M1"); T.gelijk(r3.onthuld, [{ kaart: "M1", dag: 1, sleutel: null, tekst: "A3", waarde: 5 }]); T.gelijk(s.zichtbaar, { naam: "Fixtuur", lab: { w: 10, datum: "recent" } });
+    speel(s, "K1"); T.is(s.zichtbaar.lab, "vervangen", "een object wordt door een niet-object vervangen"); T.is(s.zichtbaar.naam, "Fixtuur");
+    var s2 = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }); speel(s2, "M2");
+    T.gelijk(s2.zichtbaar.nieuw, { diep: [1, 2] }); T.gelijk(s2.zichtbaar.lijst, [1]); T.gelijk(s2.zichtbaar.lab, { w: 10, datum: "recent" }, "samenvoegen laat bestaande objecten staan");
+    c.episodes[0].patient.verborgen[3].zichtbaar.nieuw.diep.push(3); T.gelijk(s2.zichtbaar.nieuw.diep, [1, 2], "patch is gekopieerd, niet gedeeld");
+  });
+  test("onthullen: een patch voegt samen in bestaande geneste objecten (lab.datum verandert, lab.w blijft)", function () {
+    var c = maakFixture(); c.episodes[0].patient.verborgen = [ { kaart: "K1", onthult: "A", zichtbaar: { lab: { datum: "vandaag" } } } ];
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }); speel(s, "K1"); T.gelijk(s.zichtbaar.lab, { w: 10, datum: "vandaag" });
+    T.gelijk(c.episodes[0].patient.zichtbaar.lab, { w: 10, datum: "recent" }, "casusdata ongemoeid");
+  });
+  test("volgordeAB is een kopie van de getrokken groep AB (geen alias); zonder groep AB is hij leeg", function () {
+    var data = [ { id: "A1", groep: "AB", trigger: { type: "naKaart", n: 1 }, tekst: "a" }, { id: "B1", groep: "AB", trigger: { type: "naKaart", n: 2 }, tekst: "b" } ];
+    var s = miniSpel(data, rngVast(0.99));
+    T.gelijk(s.volgordeAB, ["B1", "A1"]); T.gelijk(s.groepen.AB, ["B1", "A1"]);
+    s.volgordeAB.push("X"); T.gelijk(s.groepen.AB, ["B1", "A1"], "wijzigen van volgordeAB raakt de groepen niet");
+    T.is(s.volgordeAB !== s.groepen.AB, true);
+    T.gelijk(miniSpel([]).volgordeAB, []); T.gelijk(miniSpel([ { id: "P", groep: "PQ", trigger: { type: "naKaart", n: 1 }, tekst: "p" } ]).volgordeAB, []);
+  });
+  test("groepen: een lid zonder (numerieke) trigger wordt achteraan gesorteerd en veroorzaakt geen fout", function () {
+    var data = [ { id: "X", groep: "XY", trigger: { type: "naKaart", n: 2 }, tekst: "x" }, { id: "Y", groep: "XY", tekst: "y" } ];
+    var s0 = miniSpel(data, rngVast(0)); speelTot(s0, 4); T.gelijk(ev(s0), ["X@2"], "Y heeft geen trigger en gaat nooit af");
+    var s1 = miniSpel(data, rngVast(0.99)); speelTot(s1, 4); T.gelijk(ev(s1), ["Y@2"], "de eerst-getrokken (Y) krijgt de vroegste trigger; X krijgt de ontbrekende");
+    var z = [ { id: "X", groep: "XY", trigger: { type: "naKaartVanKaart", kaart: "c", n: 2 }, tekst: "x" }, { id: "Y", groep: "XY", trigger: { type: "naKaart", n: 3 }, tekst: "y" } ];
+    var s2 = miniSpel(z, rngVast(0)); speelTot(s2, 5); T.gelijk(ev(s2), ["X@3", "Y@3"], "naKaartVanKaart-trigger (n=2 na de eerste c) en naKaart 3 in een groep");
+  });
+  test("atomisch herstel bewaart ook de identiteit van de elementen in arrays (tijdlijnregels, onthuld-rijen)", function () {
+    var c = maakFixture(); c.episodes[0].patient.verborgen.push({ kaart: "K1", onthult: "Tweede", sleutel: "lab.datum", waarde: "x" });
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }); speel(s, "K2");
+    var regel = s.tijdlijn[0], rij = s.onthuld[0], kl = s.klachten[1];
+    c.episodes[0].patient.verborgen[1].sleutel = 9;
+    gooitMet(function () { g.Engine.speelKaart(s, "K1"); }, /./);
+    T.waar(s.tijdlijn[0] === regel && s.onthuld[0] === rij && s.klachten[1] === kl, "elementen behouden hun identiteit");
+    T.is(s.tijdlijn.length, 1); T.is(s.onthuld.length, 1);
+  });
+
   /* klachtenstatus: randgevallen volgens de LEAD-beslissing in contract 3b (F7) */
   function spelDagen(aantal, wijzig) { var c = maakFixture(); c.episodes[0].knoppen.aantalDagen = aantal; if (wijzig) wijzig(c.episodes[0]); return g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }); }
   function statussen(s) { return s.klachten.slice(1).map(function (k) { return k.status; }); }
