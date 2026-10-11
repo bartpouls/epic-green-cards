@@ -926,21 +926,25 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
       tr.appendChild(el('td', null, vraag));
       tb.appendChild(tr);
     }
+    function wanneer(inhoud) { return el('details', { 'class': 'klein' }, [el('summary', null, 'Wanneer precies'), inhoud]); }
     (e.invarianten || []).forEach(function (i, n) {
-      rij([el('b', null, i.id)], isLeeg(i.vraag) ? el('span', { 'class': 'zacht' }, '(leeg)') : i.vraag, { 'data-feedback': e.id + ':inv:' + i.id });
-      (i.vraagVarianten || []).forEach(function (v, m) {
-        rij([el('b', null, i.id), el('div', { 'class': 'klein zacht' }, [el('span', { 'class': 'etiket' }, 'Als: '), pred(v.als)])], [v.vraag, badges(v)], { 'data-feedback': e.id + ':inv:' + i.id + ':' + m });
+      var varianten = i.vraagVarianten || [];
+      // De standaardvraag staat al als variant in de lijst als de tekst gelijk is: dan geen dubbele rij.
+      var dubbel = varianten.some(function (v) { return v.vraag === i.vraag; });
+      if (!dubbel) rij([el('b', null, i.id)], isLeeg(i.vraag) ? el('span', { 'class': 'zacht' }, '(leeg)') : i.vraag, { 'data-feedback': e.id + ':inv:' + i.id });
+      varianten.forEach(function (v, m) {
+        rij([el('b', null, i.id), wanneer(pred(v.als))], [v.vraag, badges(v)], { 'data-feedback': e.id + ':inv:' + i.id + ':' + m });
       });
     });
     (e.feedbackExtra || []).forEach(function (x, i) {
-      var kel = [predBlok(x.trigger), el('div', { 'class': 'klein zacht' }, [el('span', { 'class': 'etiket' }, 'Verschijnt: '), WANNEER[x.wanneer] || String(x.wanneer)])];
+      var kel = [wanneer(predBlok(x.trigger)), el('div', { 'class': 'klein zacht' }, [el('span', { 'class': 'etiket' }, 'Verschijnt: '), WANNEER[x.wanneer] || String(x.wanneer)])];
       if (x.meta) kel.push(metaBox(x.meta));
       var ov = rest(x, ['trigger', 'vraag', 'wanneer', 'meta']);
       if (ov) kel.push(ov);
       rij(kel, [isLeeg(x.vraag) ? '' : x.vraag, badges(x)], { 'data-feedback': e.id + ':' + i });
     });
     (e.profielen || []).forEach(function (p, i) {
-      var kel = [el('b', null, 'Profiel ' + p.naam), badges(p), predBlok(p.als, 'Profiel als')];
+      var kel = [el('b', null, 'Profiel ' + p.naam), badges(p), wanneer(predBlok(p.als, 'Profiel als'))];
       if (p.casusTekst) kel.push(casusQuote(p.casusTekst));
       if (p.meta) kel.push(metaBox(p.meta));
       var ov = rest(p, ['naam', 'als', 'reflectievraag', 'casusTekst', 'meta']);
