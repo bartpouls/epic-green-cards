@@ -6,7 +6,7 @@
  "status": "running",
  "round": 4,
  "maxRounds": 5,
- "updated": "2026-10-11 21:21",
+ "updated": "2026-10-11 21:23",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -39,8 +39,8 @@
   {
    "name": "S5 predicaten",
    "round": 4,
-   "verdict": "PENDING",
-   "evidence": "r4 gebouwd (142 eigen tests; 385 predicaten in data foutloos); criticus r4 bezig",
+   "verdict": "FAIL",
+   "evidence": "r4 FAIL, 3 punten + prestatie (door LEAD opgelost in testrunner), BLIND=ONS; ronde 5 (laatste) bouwer bezig",
    "artifact": ""
   },
   {
@@ -193,6 +193,12 @@
    "unit": "S3 data-e2",
    "verdict": "FAIL",
    "note": "data 0 afwijkingen (125.000 routes, 18 A/B-paren identiek); route-tests slagen leeg zonder Engine (F1); geen foutroute met B1 als start (I5/I7 via B1) (F2). BLIND=ONS → ronde 4"
+  },
+  {
+   "round": 4,
+   "unit": "S5 predicaten",
+   "verdict": "FAIL",
+   "note": "null als id stil geaccepteerd (F1); evalueer met lege ctx stil false (F2); 14 overlevende mutanten waaronder alsDan.als (F3); prestatie run-node 110 s was runner-probleem (vm-context) → door LEAD opgelost, suite nu 14 s / 479 groen. BLIND=ONS → ronde 5 (laatste)"
   }
  ],
  "open": [
@@ -207,7 +213,6 @@
   "N2 (Gebruik en verwachting uitleggen) kan niet op V2/V1; route 'V2 (+ middel)' speelbaar alleen met extra V3/V4/V5 (hangt aan TODO_BART-5) — Bart",
   "S9 geeft Logging.alle() gefilterd op pseudoniem mee aan Engine.ontgrendeld (API heeft bewust geen pseudoniem-parameter)",
   "Opruimen bij integratie: mini-evaluators in tests/data-e1/e2/e3.tests.js vervangen door Evaluatie (S6); tests/data-e2: C komt niet als O1 de 5e kaart is (TODO_BART-E2-6, literale lezing)",
-  "Prestatie: testgroep data-e1 duurt >100 s sinds eager validatie in S5 (valideert bij elke evaluatie); wordt in S5 r4-criticus/r5 opgelost (validatie cachen)",
   "TODO_BART-8: klachtenstatus na een werkzaam interlude — LEAD-keuze: geenVerbetering48 alleen in de eerste nul-periode (contract §3b)"
  ],
  "belowBar": []

@@ -219,6 +219,7 @@
     T.is(s.casusId, "fixtuur"); T.is(s.episodeId, "X1"); T.is(s.dag, 1); T.is(s.actiesOver, 3); T.is(s.aantalDagen, 4);
     T.is(s.afgerond, false); T.gelijk(s.tijdlijn, []); T.gelijk(s.raadplegingen, []); T.gelijk(s.gebeurtenissen, []);
     T.gelijk(s.toestanden, ["basis"]); T.gelijk(s.onthuld, []); T.gelijk(s.klachten[1], { dag: 1, status: null, tekst: null });
+    T.gelijk(s.klachten, [{ dag: 0, status: null, tekst: null }, { dag: 1, status: null, tekst: null }], "klachten[0] is een lege plaatsvervanger, index = dag");
     T.is("pogingnummer" in s || "eerstePoging" in s, false, "poging wordt door Logging bepaald, niet door de engine");
   });
   test("nieuwSpel: startToestanden (lijst) is canoniek; ontbreekt of is geen lijst -> Nederlandse fout, geen terugval", function () {
@@ -236,7 +237,7 @@
     var s = nieuw();
     [null, undefined, "", 5].forEach(function (k) {
       var voor = JSON.stringify(s), r = g.Engine.speelKaart(s, k);
-      T.is(r.ok, false); T.waar(/kaart/.test(r.fout) && !/undefined|null|Cannot/.test(r.fout), r.fout); T.is(JSON.stringify(s), voor);
+      T.is(r.ok, false); T.is(r.fout, "Kies eerst een kaart om te spelen."); T.is(JSON.stringify(s), voor);
     });
   });
   test("nieuwSpel: onbekende episode geeft Nederlandse fout", function () {
@@ -1209,6 +1210,10 @@
     var s = miniSpel(data, reeks([0.5, 0.5]));
     T.gelijk(s.groepen.XYZ, ["Y", "Z", "X"]); speelTot(s, 9); T.gelijk(ev(s), ["Y@3", "Z@6", "X@9"]);
     T.gelijk(miniSpel(data, rngVast(0)).groepen.XYZ, ["X", "Y", "Z"], "rng 0: datavolgorde");
+    T.gelijk(miniSpel(data, reeks([0, 0.4])).groepen.XYZ, ["X", "Y", "Z"], "tweede trekking 0.4 uit twee plekken: blijft staan");
+    T.gelijk(miniSpel(data, reeks([0.9, 0.4])).groepen.XYZ, ["Z", "Y", "X"]);
+    T.gelijk(miniSpel(data, reeks([0.4, 0.6])).groepen.XYZ, ["Y", "Z", "X"]);
+    T.gelijk(miniSpel(data, reeks([0.7, 0.9])).groepen.XYZ, ["Z", "X", "Y"]);
     T.gelijk(miniSpel(data, rngVast(1)).groepen.XYZ, ["Z", "X", "Y"], "rng 1");
     T.gelijk(miniSpel(data, rngVast(0.9999999)).groepen.XYZ, ["Z", "X", "Y"], "rng net onder 1 geeft hetzelfde als 1");
     T.gelijk(miniSpel(data, rngVast(2)).groepen.XYZ, ["Z", "X", "Y"], "rng 2 wordt begrensd");
@@ -1344,6 +1349,107 @@
     gooitMet(function () { g.Engine.speelKaart(s, "K1"); }, /./);
     T.waar(s.tijdlijn[0] === regel && s.onthuld[0] === rij && s.klachten[1] === kl, "elementen behouden hun identiteit");
     T.is(s.tijdlijn.length, 1); T.is(s.onthuld.length, 1);
+  });
+
+  test("speelKaart: alle foutmeldingen zijn Nederlands, letterlijk, met het kaartlabel (niet het id) en laten de state ongemoeid", function () {
+    var c = maakFixture();
+    c.kaarten.push({ id: "Q1", categorie: "x", label: "Lege doelkaart", doelkaart: true, downside: "d" });          // doelkaart zonder doelen in deze episode
+    c.kaarten.push({ id: "Q2", categorie: "x", label: "Doelen zonder vlag", downside: "d", doelen: { X1: [ { id: "M1", label: "Middel een" } ] } });
+    c.kaarten.push({ id: "Q3", categorie: "x", label: "Opties zonder doelen", downside: "d", opties: { M1: [ { tekst: "o1" } ], M2: [] } });
+    c.kaarten.push({ id: "Q4", categorie: "x", label: "Zonder vlag of doelen", downside: "d" });
+    c.kaarten.push({ id: "Q5", categorie: "x", doelkaart: false, downside: "d" });                                  // geen label: het id wordt gebruikt
+    c.episodes[0].repertoire.push("Q1", "Q2", "Q3", "Q4", "Q5");
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) });
+    function fout(kaart, opts, verwacht, wat) {
+      var voor = JSON.stringify(s), r = g.Engine.speelKaart(s, kaart, opts);
+      T.is(r.ok, false, wat); T.is(r.fout, verwacht, wat); T.is(JSON.stringify(s), voor, wat + ": state ongewijzigd");
+    }
+    fout("ONBEKEND", {}, "Onbekende kaart: ONBEKEND.", "onbekende kaart");
+    fout("Z", {}, "Deze kaart zit niet in het repertoire van deze episode.", "buiten repertoire");
+    fout("K1", { doel: "M1" }, "De kaart “Kaart een” heeft geen doel of optie.", "doel bij gewone kaart");
+    fout("K1", { optie: "x" }, "De kaart “Kaart een” heeft geen doel of optie.", "optie bij gewone kaart");
+    fout("Q5", { doel: "M1" }, "De kaart “Q5” heeft geen doel of optie.", "geen label: id");
+    fout("Q1", {}, "De kaart “Lege doelkaart” kan in deze episode op geen enkel doel worden gespeeld.", "doelkaart zonder doelen in deze episode");
+    fout("Q1", { doel: "M1" }, "De kaart “Lege doelkaart” kan in deze episode op geen enkel doel worden gespeeld.", "doelkaart zonder doelen, met doel");
+    fout("Q2", {}, "Kies eerst een doel voor de kaart “Doelen zonder vlag”.", "doelen zonder doelkaart-vlag vragen om een doel");
+    fout("Q2", { doel: "M2" }, "Dit doel kan niet bij de kaart “Doelen zonder vlag”.", "doel niet toegestaan");
+    fout("Q2", { doel: "M1", optie: "x" }, "De kaart “Doelen zonder vlag” heeft geen opties.", "optie bij kaart zonder opties");
+    fout("Q3", {}, "Kies eerst een doel voor de kaart “Opties zonder doelen”.", "opties zonder doelen vragen om een doel");
+    fout("Q3", { doel: "M2" }, "Voor dit doel zijn bij de kaart “Opties zonder doelen” geen opties beschikbaar.", "doel zonder opties");
+    fout("Q3", { doel: "M1" }, "Kies eerst een optie voor de kaart “Opties zonder doelen”.", "optie ontbreekt");
+    fout("Q3", { doel: "M1", optie: "zzz" }, "Deze optie hoort niet bij dit doel.", "optie onbekend");
+    fout("Q3", { doel: "M3", optie: "o1" }, "Dit doel kan niet bij de kaart “Opties zonder doelen”.", "doel niet in opties");
+    fout("S", { doel: "M2" }, "Dit doel is nu niet beschikbaar voor de kaart “Stop”.", "vereist niet vervuld");
+    T.is(g.Engine.speelKaart(s, "Q4").ok, true, "kaart zonder vlag en zonder doelen is een gewone kaart");
+    T.is(g.Engine.speelKaart(s, "Q2", { doel: "M1" }).ok, true); T.is(g.Engine.speelKaart(s, "Q3", { doel: "M1", optie: "o1" }).ok, true);
+    s.actiesOver = 0; fout("K1", {}, "Je hebt vandaag geen acties meer. Ga naar de volgende dag of rond de episode af.", "geen acties");
+    s.actiesOver = 3; g.Engine.rondAf(s); fout("K1", {}, "Deze episode is al afgerond.", "afgerond");
+    var t = nieuw(); dagen(t, 3); g.Engine.volgendeDag(t); T.is(g.Engine.speelKaart(t, "K1").fout, "De laatste dag is voorbij.");
+    T.is(g.Engine.raadpleeg(t).fout, "De laatste dag is voorbij.");
+    var u = nieuw(); speel(u, "K1"); speel(u, "K2"); speel(u, "M1"); T.is(g.Engine.raadpleeg(u).fout, "Je hebt niet genoeg acties over om de richtlijn te raadplegen.");
+    g.Engine.rondAf(u); T.is(g.Engine.raadpleeg(u).fout, "Deze episode is al afgerond.");
+  });
+  test("speelKaart: een doelkaart-vlag zonder doelen, of doelen zonder vlag, of opties zonder beide: telkens wordt een doel gevraagd; een gewone kaart in een andere episode blijft gewoon", function () {
+    var c = maakFixture3(); c.episodes[1].repertoire = ["K1", "S", "D"]; c.episodes[1].gebeurtenissen = [];
+    var s = g.Engine.nieuwSpel(c, "X2", { rng: rngVast(0) });
+    T.is(g.Engine.speelKaart(s, "S").ok, false); T.is(g.Engine.speelKaart(s, "S").fout, "De kaart “Stop” kan in deze episode op geen enkel doel worden gespeeld.");
+    T.is(g.Engine.speelKaart(s, "K1").ok, true);
+  });
+  test("triggers: een onbekend trigger-type of ontbrekende trigger gaat nooit af; naKaartVanKaart zonder de kaart evenmin", function () {
+    var s = miniSpel([ { id: "O", trigger: { type: "bestaatniet", n: 1 }, tekst: "o" }, { id: "Z", tekst: "z" }, { id: "V", trigger: { type: "naKaartVanKaart", kaart: "d", n: 1 }, tekst: "v" },
+      { id: "L", trigger: { type: "naKaart", n: 2, alleenAlsGespeeld: "d" }, tekst: "l" } ]);
+    speelTot(s, 6); T.gelijk(ev(s), [], "geen enkele gebeurtenis zonder geldige trigger"); T.is(s.wachtend.length, 0);
+    speel(s, "d"); T.gelijk(s.wachtend.map(function (x) { return x.id; }), [], "na de kaart d: V wacht op de kaart NA d, niet op d zelf");
+    speel(s, "c"); T.gelijk(s.wachtend.map(function (x) { return x.id; }), ["V"]);
+  });
+  test("triggers: naKaartVanKaart telt vanaf de EERSTE keer dat de kaart gespeeld is, en alleenAlsGespeeld kijkt naar de hele tijdlijn", function () {
+    var s = miniSpel([ { id: "V", trigger: { type: "naKaartVanKaart", kaart: "d", n: 2 }, tekst: "v" }, { id: "L", trigger: { type: "naKaart", n: 3, alleenAlsGespeeld: "d" }, tekst: "l" } ]);
+    speel(s, "c"); speel(s, "d"); speel(s, "d"); g.Engine.volgendeDag(s); speel(s, "c"); g.Engine.volgendeDag(s);
+    T.gelijk(ev(s), ["L@3", "V@4"], "beide gebeurtenissen gaan af");
+    T.is(s.gebeurtenissen.filter(function (x) { return x.id === "V"; })[0].naVolg, 4, "eerste d op volg 2, dus n=2 later is volg 4");
+    T.is(s.gebeurtenissen.filter(function (x) { return x.id === "L"; })[0].naVolg, 3);
+  });
+  test("groepen: bij gelijke n beslist de datavolgorde (verschillende triggers, dus zichtbaar in wanneer elk lid afgaat)", function () {
+    var data = [ { id: "G", groep: "GH", trigger: { type: "naKaart", n: 4 }, tekst: "g" }, { id: "H", groep: "GH", trigger: { type: "naKaartVanKaart", kaart: "c", n: 4 }, tekst: "h" } ];
+    var s = miniSpel(data, rngVast(0)); speelTot(s, 6); T.gelijk(ev(s), ["G@4", "H@5"], "G krijgt de eerste trigger (n=4 na kaart 4), H de tweede (4 na de eerste c = volg 5)");
+    var t = miniSpel(data, rngVast(0.99)); speelTot(t, 6); T.gelijk(ev(t), ["H@4", "G@5"], "H is eerst getrokken: krijgt de eerste trigger (4)");
+  });
+  test("groepen: een lid zonder trigger op elke plek in de datavolgorde (eerste, midden, laatste) geeft geen fout en gaat nooit af", function () {
+    var X = { id: "X", groep: "G3", trigger: { type: "naKaart", n: 2 }, tekst: "x" }, W = { id: "W", groep: "G3", trigger: { type: "naKaart", n: 3 }, tekst: "w" }, Y = { id: "Y", groep: "G3", tekst: "y" };
+    // rng 0 = datavolgorde: het lid op plek i krijgt de i-de trigger van de op n gesorteerde lijst; het lid zonder trigger sorteert achteraan
+    var verwacht = [ [[Y, X, W], ["Y@2", "X@3"]], [[X, Y, W], ["X@2", "Y@3"]], [[X, W, Y], ["X@2", "W@3"]] ];
+    verwacht.forEach(function (v, i) { var s = miniSpel(v[0], rngVast(0)); speelTot(s, 5); T.gelijk(ev(s), v[1], "variant " + i); });
+  });
+  test("groepen: een lid dat na het trekken uit de data verdwijnt laat de overige leden hun eigen trigger houden (geen fout)", function () {
+    var data = [ { id: "X", groep: "G3", trigger: { type: "naKaart", n: 2 }, tekst: "x" }, { id: "Y", groep: "G3", trigger: { type: "naKaart", n: 3 }, tekst: "y" }, { id: "Z", groep: "G3", trigger: { type: "naKaart", n: 5 }, tekst: "z" } ];
+    var c = maakMini(data), s = g.Engine.nieuwSpel(c, "m1", { rng: rngVast(0) });
+    T.gelijk(s.groepen.G3, ["X", "Y", "Z"]);
+    c.episodes[0].gebeurtenissen.shift();                             // X verdwijnt: Y en Z schuiven op in de gesorteerde triggers
+    speelTot(s, 6); T.gelijk(ev(s), ["Y@5", "Z@5"], "Y (plek 1) krijgt de tweede trigger (5); Z (plek 2) bestaat niet meer in de lijst en houdt de eigen trigger (5)");
+  });
+  test("klachten: een toestand die als TODO_BART-sleutel in werkzaamheid staat telt niet als werkzaamheid-entry", function () {
+    var s = miniSpel([], rngVast(0), function (e) {
+      e.startToestanden = ["basis", "TODO_BART-9"];
+      e.werkzaamheid = { basis: { werkzaam: [ { kaart: "a" } ], nietWerkzaam: [] }, "TODO_BART-9": { werkzaam: [], nietWerkzaam: [ { kaart: "a" } ] } };
+    });
+    speel(s, "a"); g.Engine.volgendeDag(s); T.is(s.klachten[2].status, "af", "de TODO_BART-sleutel is geen data");
+  });
+  test("ontgrendeld: een Logging-record met uitkomst die geen object is, of een gehaald dat een tekst of getal is, opent niets en geeft geen fout", function () {
+    var c = maakFixture();
+    T.is(g.Engine.ontgrendeld(c, "X2", [{ episodeId: "X1", uitkomst: "tekst" }]), false);
+    T.is(g.Engine.ontgrendeld(c, "X2", [{ episodeId: "X1", uitkomst: 5 }]), false);
+    T.is(g.Engine.ontgrendeld(c, "X2", [{ episodeId: "X1", uitkomst: null, geschonden: [] }]), true, "uitkomst null: val terug op geschonden leeg");
+    T.is(g.Engine.ontgrendeld(c, "X2", "X1"), false); T.is(g.Engine.ontgrendeld(c, "X2", 5), false); T.is(g.Engine.ontgrendeld(c, "X2", true), false);
+    var nummers = maakFixture(); nummers.episodes[0].id = "0"; nummers.episodes[1].id = "1";
+    T.is(g.Engine.ontgrendeld(nummers, "1", "ab"), false, "een losse tekst is geen lijst en geen object: geen tekenposities als episode-id's");
+    T.is(g.Engine.ontgrendeld(nummers, "1", ["0"]), true);
+  });
+  test("speelKaart is atomair: een patch die een object door een niet-object vervangt, of een tekst door een object, wordt netjes teruggedraaid", function () {
+    var c = maakFixture(); c.episodes[0].patient.verborgen = [
+      { kaart: "K2", onthult: "T1", zichtbaar: { lab: "vervangen" } }, { kaart: "K2", onthult: "T2", sleutel: "naam.sub", waarde: 1 }, { kaart: "K2", onthult: "T3", sleutel: 7, waarde: 1 } ];
+    var s = g.Engine.nieuwSpel(c, "X1", { rng: rngVast(0) }), voor = JSON.stringify(s);
+    gooitMet(function () { g.Engine.speelKaart(s, "K2"); }, /./);
+    T.is(JSON.stringify(s), voor); T.gelijk(s.zichtbaar, { naam: "Fixtuur", lab: { w: 10, datum: "recent" } });
   });
 
   /* klachtenstatus: randgevallen volgens de LEAD-beslissing in contract 3b (F7) */

@@ -2,9 +2,8 @@
 // Exitcode 1 bij rood of als er geen tests zijn.
 const fs = require("fs"), path = require("path"), vm = require("vm");
 const root = path.resolve(__dirname, "../..");
-const sandbox = { console, setTimeout, clearTimeout };
-sandbox.window = sandbox; sandbox.globalThis = sandbox;
-vm.createContext(sandbox);
+// Draait in de hoofdcontext (vm.runInThisContext): globals als Object/Array zijn in een aparte vm-context ~8x trager.
+const sandbox = globalThis; sandbox.window = globalThis;
 const bestanden = [
   "casussen/uwi.js", "casussen/uwi-e1.js", "casussen/uwi-e2.js", "casussen/uwi-e3.js",
   "regels/predicaten.js", "regels/evaluatie.js", "engine/engine.js", "engine/logging.js",
@@ -16,7 +15,7 @@ const geladen = [], overgeslagen = [];
 for (const f of bestanden) {
   const p = path.join(root, f);
   if (!fs.existsSync(p)) { overgeslagen.push(f); continue; }
-  try { vm.runInContext(fs.readFileSync(p, "utf8"), sandbox, { filename: f }); geladen.push(f); }
+  try { vm.runInThisContext(fs.readFileSync(p, "utf8"), { filename: f }); geladen.push(f); }
   catch (e) { console.error("LAADFOUT in " + f + ": " + e.message); process.exit(2); }
 }
 const args = process.argv.slice(2);
