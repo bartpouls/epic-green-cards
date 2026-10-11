@@ -59,9 +59,9 @@ window.GAUNTLET = {
   },
   {
    "name": "S8 overzicht",
-   "round": 0,
+   "round": 1,
    "verdict": "PENDING",
-   "evidence": "nog niet gestart",
+   "evidence": "ronde 1: bouwer bezig",
    "artifact": ""
   },
   {
