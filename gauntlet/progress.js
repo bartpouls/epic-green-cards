@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 3,
  "maxRounds": 5,
- "updated": "2026-10-11 20:44",
+ "updated": "2026-10-11 20:46",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -25,8 +25,8 @@ window.GAUNTLET = {
   {
    "name": "S3 data-e2",
    "round": 2,
-   "verdict": "PENDING",
-   "evidence": "r2 gebouwd (50 eigen tests, 32 mutaties 0 overlevers; TODO_BART-E2-1…17); criticus r2 bezig",
+   "verdict": "FAIL",
+   "evidence": "r2 FAIL, 3 punten (TODO + testdekking), BLIND=ONS; ronde 3 bouwer bezig",
    "artifact": ""
   },
   {
@@ -169,6 +169,12 @@ window.GAUNTLET = {
    "unit": "S5 predicaten",
    "verdict": "FAIL",
    "note": "geneste K.naGebeurtenis bij binnenBeurten stil false (F1); PREDICATEN.md claimt gevoelig altijd bekend (F2); hardcode-mutaties stop-rol/kaartUit-lijstnaam onzichtbaar (F3); 9 testgaten (F4); gestart op onbekend middel stil (F5). Naad: I7 E3 gebruikt van:2,tot:4 vs E2 1–3 (S4). BLIND=ONS → ronde 4"
+  },
+  {
+   "round": 2,
+   "unit": "S3 data-e2",
+   "verdict": "FAIL",
+   "note": "data letterlijk en gedragsmatig correct (60.000 routes, 0 verschillen); ontbrekende TODO ernst-volgorde en weglaatDownside (F1); geen I8-route/O2-zelfde-dag-test (F2); lab.datum ongetest (F3). BLIND=ONS → ronde 3"
   }
  ],
  "open": [
@@ -181,7 +187,8 @@ window.GAUNTLET = {
   "tests/data-e2.tests.js regel ~110 gebruikt k.effect.E2 → moet effect[ep] ?? effect.alle worden (S3 ronde 2); idem controleren in data-e1/e3, engine, UI, overzicht",
   "TODO_BART-1 (I7 dag-lezing): LEAD koos cursusdag-lezing (O2 verschil 1–3; V6 halveren verschil ≥3) omdat de casusroute anders niet speelbaar is; Bart bevestigt",
   "N2 (Gebruik en verwachting uitleggen) kan niet op V2/V1; route 'V2 (+ middel)' speelbaar alleen met extra V3/V4/V5 (hangt aan TODO_BART-5) — Bart",
-  "S9 geeft Logging.alle() gefilterd op pseudoniem mee aan Engine.ontgrendeld (API heeft bewust geen pseudoniem-parameter)"
+  "S9 geeft Logging.alle() gefilterd op pseudoniem mee aan Engine.ontgrendeld (API heeft bewust geen pseudoniem-parameter)",
+  "Opruimen bij integratie: mini-evaluators in tests/data-e1/e2/e3.tests.js vervangen door Evaluatie (S6); tests/data-e2: C komt niet als O1 de 5e kaart is (TODO_BART-E2-6, literale lezing)"
  ],
  "belowBar": []
 };

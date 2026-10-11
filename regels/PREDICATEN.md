@@ -15,13 +15,14 @@ var aantal = Predicaten.tel({ t: "gespeeld", K: { kaart: "X1" } }, ctx);
 
 **Fouten:** elk van deze gevallen geeft een `Error` met Nederlandse tekst:
 - een onbekend predicaat (ook als de naam een JavaScript-naam is als `toString`, `constructor` of `__proto__`), een onbekende teller of een onbekende vergelijkingsoperator;
-- een ontbrekend verplicht veld, of een veld van het verkeerde type (`n`, `van`, `tot`, `offset`, `op.dag`, `waarde` bij `tel` moeten getallen zijn; `kaart`, `middel`, `start`, `optieNiet` ids (tekst); `doel`/`optie` tekst of `null`);
+- een ontbrekend verplicht veld, of een veld van het verkeerde type (`n`, `van`, `tot`, `offset`, `op.dag`, `waarde` bij `tel` moeten getallen zijn; `kaart`, `middel`, `start`, `optieNiet` ids (tekst); `kaart`, `start` en `middel` mogen geen lege lijst zijn (een lege `optieNiet` mag wel: er wordt niets uitgesloten); `doel`/`optie` tekst of `null`);
 - een **onbekend veld** op een predicaat, teller, kaartverwijzing of moment `op` (typfout). Elk predicaat heeft een vaste lijst toegestane velden, in de platte én de geneste vorm; sleutels die met `TODO_BART` beginnen worden genegeerd;
 - een onbekende lijst in `kaartUit` (de naam moet een eigen sleutel van de episode zijn en een lijst bevatten; `toString` en `constructor` tellen niet);
-- een onbekende set in `uitSet`: de naam komt niet voor in `ctx.waar`, in de episode of in de `zet` van een gebeurtenisdefinitie. Uitzondering: `resistent` (en zijn tegenset `gevoelig`) geldt altijd als bekend, ook in een casus zonder enige resistentie-data; de set is dan leeg;
+- een onbekende set in `uitSet`: de naam komt niet voor in `ctx.waar`, in de episode of in de `zet` van een gebeurtenisdefinitie. Uitzondering: `resistent` en `gevoelig` gelden allebei altijd als bekend (ze zijn elkaars tegenset), ook in een casus zonder enige resistentie-data; de set is dan leeg;
 - een gebeurtenis-id (`naGebeurtenis`, `voorGebeurtenis`, `eindeBeurtNaGebeurtenis`, `gebeurtenisGeweest`) die niet in `episode.gebeurtenissen` staat. Dit wordt alleen gecontroleerd als die lijst bestaat en niet leeg is;
 - een `medicatieActief` met een id dat niet in `episode.patient.medicatie` staat (of een episode zonder die lijst);
-- een `actief` met een `middel` dat niet in `episode.antibiotica` staat (een andere kaart kan nooit "actief" zijn), of een episode zonder die lijst;
+- een `actief` of `gestart` met een `middel` dat niet in `episode.antibiotica` staat (een andere kaart kan nooit "actief" of een startmiddel zijn), of een episode zonder die lijst;
+- een `en`/`of` waarvan `args` geen lijst is, en een `niet`/`alsDan` zonder `arg`/`als`/`dan`: altijd de Nederlandse tekst, nooit een JavaScript-fout;
 - een `waar` met een veld dat niet in `episode.patient.waar` staat, bij elke operator (ook `==`, `=`, `!=`); en een ordenende operator (`<`, `<=`, `>`, `>=`) waarbij het veld of de `waarde` geen getal is;
 - een moment `op` dat niet precies één van `dag`, `eindeBeurtNaGebeurtenis` of `naKaart` heeft, of een `offset` zonder `eindeBeurtNaGebeurtenis`;
 - een casus zonder `rollen` (of met een lege rol) bij elk predicaat dat de rollen nodig heeft: `actief`, `gestart`, `medicatieActief`, `aantalActieveAntibiotica`, de teller `aantalActieveAntibiotica` en elke kaartverwijzing met `start` (ook in `naKaart`, `anker` en `op.naKaart`).
@@ -35,7 +36,7 @@ Wat er niet gecontroleerd wordt: kaart-id's (`kaart`, `doel`, `start`) en toesta
 - **plat** (de vorm in de casusdata): de K-velden staan direct op het predicaat, `{p:"gespeeld", kaart:"X1", doel:"Y1"}`;
 - **genest**: `{p:"gespeeld", K:{kaart:"X1", doel:"Y1"}}`.
 
-Beide vormen mengen (`K` én losse K-velden) is een fout. Bij `voor`/`na` staan de verwijzingen altijd in `a` en `b`, bij `opDagRelatief` ook in `anker` en bij `binnenBeurtenNaKaart` in `naKaart` (steeds geneste objecten). Bij `binnenBeurten` is `naGebeurtenis` altijd een eigen veld van het predicaat (ook in de platte vorm). Een K-veld dat niet in de tabel hieronder staat is een fout.
+Beide vormen mengen (`K` én losse K-velden) is een fout. Bij `voor`/`na` staan de verwijzingen altijd in `a` en `b`, bij `opDagRelatief` ook in `anker` en bij `binnenBeurtenNaKaart` in `naKaart` (steeds geneste objecten). Bij `binnenBeurten` is `naGebeurtenis` altijd een eigen veld van het predicaat (ook in de platte vorm). Een `naGebeurtenis` of `voorGebeurtenis` binnen een geneste `K` wordt overal gevalideerd (ook bij `binnenBeurten`), als elk ander gebeurtenis-id. Een K-veld dat niet in de tabel hieronder staat is een fout.
 
 | Veld | Betekenis |
 |---|---|
@@ -61,7 +62,7 @@ Voor `actief`, `gestart`, `medicatieActief`, `aantalActieveAntibiotica` en `star
 | `na` | `a`, `b` | eerste match van a ligt strikt ná de eerste match van b; ontbreekt a of b: `false` | `{p:"na", a:{kaart:"X1"}, b:{kaart:"X2"}}` |
 | `binnenBeurten` | `K`, `naGebeurtenis` (id), `n` | K gespeeld op een dag van dag(gebeurtenis) t/m dag(gebeurtenis)+n−1 (randen inclusief). Gebeurtenis niet geweest: `false`. `n` = 0: `false` | `{p:"binnenBeurten", K:{kaart:"X1"}, naGebeurtenis:"E", n:2}` |
 | `opDagRelatief` | `K`, `anker` (K), `van`, `tot?` | er is een match van K met `van ≤ dag(K) − dag(eerste match anker) ≤ tot`; `tot` weglaten = oneindig; het anker zelf heeft verschil 0; geen anker: `false` | `{p:"opDagRelatief", K:{kaart:"X3"}, anker:{kaart:"X1"}, van:2, tot:4}` |
-| `gestart` | `middel` (id of lijst) | er is een regel waarmee het middel start (de kaart zelf, of de wissel-kaart met doel = middel) | `{p:"gestart", middel:"Q1"}` |
+| `gestart` | `middel` (id of lijst, antibiotica uit `episode.antibiotica`) | er is een regel waarmee het middel start (de kaart zelf, of de wissel-kaart met doel = middel) | `{p:"gestart", middel:"Q1"}` |
 | `actief` | `middel?`, `op?`, `uitSet?` | middel is gestart en niet gestopt (stop-kaart) of vervangen (wissel-kaart). Zonder `middel`: elk antibioticum uit `episode.antibiotica`. `middel` mag een lijst zijn (één ervan) en moet in `episode.antibiotica` staan. Zonder `op`: eindstand van de tijdlijn. Met `uitSet`: het actieve middel moet ook in die benoemde set zitten (zie hieronder). Zie `op` hieronder | `{p:"actief", middel:"Q1", op:{dag:3}}` |
 | `aantalActieveAntibiotica` | `op`, `n` | het maximum aantal gelijktijdig actieve antibiotica, gemeten na élke gespeelde kaart (dus ook binnen een dag), vergeleken met `n`. Hier is `op` de vergelijkingsoperator | `{p:"aantalActieveAntibiotica", op:">", n:1}` |
 | `medicatieActief` | `id`, `op?` | comedicatie is actief: niet gepauzeerd (pauzeer-kaart), of na pauze weer hervat (hervat-kaart). Zonder pauze is een bekend id actief. Het id moet in `episode.patient.medicatie` staan (lijst van `{id,label}` of van ids), anders een fout. Moment-`op` als bij `actief` | `{p:"medicatieActief", id:"m1", op:{dag:2}}` |
@@ -82,7 +83,7 @@ Precies één van de drie vormen; een `offset` hoort alleen bij `eindeBeurtNaGeb
 - `{naKaart:K}` *(uitbreiding)*: direct na de eerste regel die K matcht (op `volg`-niveau). Geen match: `false`.
 
 ### Benoemde sets (`uitSet`)
-`uitSet:"resistent"` (of een andere naam). De set begint met de lijst `ctx.waar[naam]` of anders `episode[naam]` (als die bestaan) en wordt aangevuld met `zet[naam]` van elke gebeurtenis die op dat moment geweest is (`episode.gebeurtenissen[i].zet`). Voor `resistent` verwijdert `zet.gevoelig` middelen weer uit de set. Een naam die nergens in de data voorkomt: fout (ook `toString`, `constructor`, `__proto__`), met als enige uitzondering `resistent`/`gevoelig` (altijd bekend, zie Fouten). Gebeurtenissen met dezelfde id als een eerdere definitie worden genegeerd (de eerste definitie telt).
+`uitSet:"resistent"` (of een andere naam). De set begint met de lijst `ctx.waar[naam]` of anders `episode[naam]` (als die bestaan) en wordt aangevuld met `zet[naam]` van elke gebeurtenis die op dat moment geweest is (`episode.gebeurtenissen[i].zet`). Voor `resistent` verwijdert `zet.gevoelig` middelen weer uit de set; omgekeerd verwijdert voor `gevoelig` een `zet.resistent` ze weer. Een naam die nergens in de data voorkomt: fout (ook `toString`, `constructor`, `__proto__`), met als enige uitzondering `resistent` en `gevoelig` (allebei altijd bekend, zie Fouten). Gebeurtenissen met dezelfde id als een eerdere definitie worden genegeerd (de eerste definitie telt).
 
 ## Uitbreidingen (generiek) op het contract
 | `p` | Velden | Betekenis | Voorbeeld |
@@ -105,4 +106,4 @@ Een onbekende teller of `op` is een fout.
 - Volgorde komt uit `volg` (1-gebaseerd, ook als de tijdlijn ongesorteerd binnenkomt); dag-rekenen uit `dag`.
 - "Eerste match" is steeds de regel met de laagste `volg`.
 - `aantalActieveAntibiotica`, `actief` zonder middel en `kaartUit:"antibiotica"` vragen `episode.antibiotica`; ontbreekt die lijst dan volgt een fout.
-- Tests: `tests/predicaten.tests.js` (testgroep `predicaten`), met alleen synthetische tijdlijnen.
+- Tests: `tests/predicaten.tests.js` (testgroep `predicaten`), met alleen synthetische tijdlijnen en twee synthetische casussen met verschillende rol-id's (B1/B2/B3/B5 en R1/R2/R3/R4) en lijstnamen (`antibiotica`, `reserve`), zodat hardgecodeerde rollen of lijstnamen rood geven.

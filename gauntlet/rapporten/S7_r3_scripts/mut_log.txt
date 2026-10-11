@@ -1,0 +1,3 @@
+basis {"rood":0,"totaal":78}
+aantal mutanten: 380
+uniek 374

@@ -1,0 +1,119 @@
+#1 [Patiëntkaart: kop en klachten]
+X: Mevrouw V., 79 jaar (1 jaar na episode 2). Cystitis, geen koorts.
+Y: Mevrouw V., 79 jaar (1 jaar na episode 2). Cystitis, geen koorts.
+
+#2 [Patiëntkaart: medicatieregel]
+X: lisinopril, spironolacton (hypertensie), calcium/colecalciferol.
+Y: lisinopril, spironolacton (hypertensie), calcium/colecalciferol.
+
+#3 [Patiëntkaart: lab en risicogroep]
+X: eGFR 28, recent. Risicogroep [NHG].
+Y: eGFR 28, recent. Risicogroep [NHG].
+
+#4 [Patiëntkaart: toelichting spironolacton]
+X: - Wie spironolacton heeft gestart en waarom, staat er bewust niet op. Het leerpunt: als de nierfunctie daalt, kijk je niet alleen naar wat je nu voorschrijft, maar naar alles wat de patiënt al gebruikt. In de praktijk wordt dat vaak gemist.
+Y: - Wie spironolacton heeft gestart en waarom, staat er bewust niet op. Het leerpunt: als de nierfunctie daalt, kijk je niet alleen naar wat je nu voorschrijft, maar naar alles wat de patiënt al gebruikt. In de praktijk wordt dat vaak gemist.
+
+#5 [Verborgen achter G3]
+X: de kweek uit episode 2, met trimethoprim resistent. Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG].
+Y: de kweek uit episode 2, met trimethoprim resistent. Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG].
+
+#6 [Gebeurtenis A]
+X: Weefselinvasie: koorts 38,6 °C en flankpijn
+Y: Weefselinvasie: koorts 38,6 °C en flankpijn
+
+#7 [Gebeurtenis B]
+X: Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK]
+Y: Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK]
+
+#8 [Gebeurtenis C]
+X: Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne.
+Y: Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne.
+
+#9 [Vraag I1]
+X: Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?
+Y: Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?
+
+#10 [Vraag I4]
+X: Wat lost het tweede middel op dat het eerste niet oplost?
+Y: Wat lost het tweede middel op dat het eerste niet oplost?
+
+#11 [Vraag I5]
+X: Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?
+Y: Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?
+
+#12 [Vraag I6 geen kweek]
+X: Wat vertelt een kweek van urine die al antibioticum heeft gezien?
+Y: Wat vertelt een kweek van urine die al antibioticum heeft gezien?
+
+#13 [Vraag I6 afwachten]
+X: Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?
+Y: Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?
+
+#14 [Vraag I7 geen kalium]
+X: Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?
+Y: Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?
+
+#15 [Vraag I7 niet gehalveerd]
+X: Dag 4. Hoeveel trimethoprim klaren haar nieren nog?
+Y: Dag 4. Hoeveel trimethoprim klaren haar nieren nog?
+
+#16 [Vraag I8]
+X: De kweek is binnen en de klachten blijven. Waar wacht je nog op?
+Y: De kweek is binnen en de klachten blijven. Waar wacht je nog op?
+
+#17 [Vraag I9]
+X: Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?
+Y: Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?
+
+#18 [Vraag I10]
+X: Fosfomycine werkt in de blaas. Waar zit de infectie nu?
+Y: Fosfomycine werkt in de blaas. Waar zit de infectie nu?
+
+#19 [Vraag I11]
+X: Je wisselt. Waarop baseer je de wissel daarna?
+Y: Je wisselt. Waarop baseer je de wissel daarna?
+
+#20 [Vraag I12]
+X: Cotrimoxazol naast spironolacton bij een eGFR van 28. Wat doet dat met haar kalium?
+Y: Cotrimoxazol naast spironolacton bij een eGFR van 28. Wat doet dat met haar kalium?
+
+#21 [Vraag I13]
+X: Clavulaanzuur bij een eGFR van 28. Waar blijft het?
+Y: Clavulaanzuur bij een eGFR van 28. Waar blijft het?
+
+#22 [Vraag I14]
+X: Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?
+Y: Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?
+
+#23 [Vraag I15]
+X: Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?
+Y: Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?
+
+#24 [Vraag I16]
+X: Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?
+Y: Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?
+
+#25 [Zichtbaar: geen sick day-maatregelen]
+X: Geen sick day-maatregelen: "De nierfunctie daalt verder en het kalium stijgt." Zonder getallen, zoals ook de KNMP-regel geen getallen geeft.
+Y: Geen sick day-maatregelen: "De nierfunctie daalt verder en het kalium stijgt." Zonder getallen, zoals ook de KNMP-regel geen getallen geeft.
+
+#26 [Zichtbaar: ciprofloxacine zonder B4/B3]
+X: Ciprofloxacine zonder B4/B3: "Na 48 uur geen verbetering."
+Y: Ciprofloxacine zonder B4/B3: "Na 48 uur geen verbetering."
+
+#27 [Zichtbaar: I9 gemist]
+X: I9 gemist: "Het kalium is onbekend, en niemand heeft naar spironolacton gekeken."
+Y: I9 gemist: "Het kalium is onbekend, en niemand heeft naar spironolacton gekeken."
+
+#28 [Profiel ciprofloxacine reflectie]
+X: Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?
+Y: Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?
+
+#29 [Bronconflict ciprofloxacine (feedbackmoment)]
+X: voor ciprofloxacine bij eGFR 10–30 geeft de NHG de normale keerdosis eenmaal per 24 uur [NHG]. Het Kompas past de dosis pas aan bij een klaring ≤ 15 [Kompas]. Beide zijn verdedigbaar; het wordt een feedbackmoment. | De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?
+Y: voor ciprofloxacine bij eGFR 10–30 geeft de NHG de normale keerdosis eenmaal per 24 uur [NHG]. Het Kompas past de dosis pas aan bij een klaring ≤ 15 [Kompas]. Beide zijn verdedigbaar; het wordt een feedbackmoment. | De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?
+
+#30 [Automatische herstart]
+X: De koorts is weg. Wat herstart je, en wat juist niet zonder overleg?
+Y: De koorts is weg. Wat herstart je, en wat juist niet zonder overleg?

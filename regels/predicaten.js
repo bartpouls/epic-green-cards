@@ -10,7 +10,7 @@
   // Rollen van de bijsturingskaarten staan in de data: casus.rollen = { wissel, stop, pauzeer, hervat }.
   var ROL_NAMEN = ["wissel", "stop", "pauzeer", "hervat"];
   // Benoemde sets die door een gebeurtenis (zet) worden aangevuld, met hun tegenset (verwijdert uit de set).
-  var TEGENSET = { resistent: "gevoelig" };
+  var TEGENSET = { resistent: "gevoelig", gevoelig: "resistent" };
   var VERGELIJK = ["<", "<=", ">", ">=", "==", "=", "!="];
   var K_VELDEN = ["kaart", "kaartUit", "start", "doel", "optie", "optieNiet", "naGebeurtenis", "voorGebeurtenis"];
   // Toegestane velden per predicaat (plat: K-velden direct op het predicaat; genest: onder 'K'). Elk ander
@@ -234,7 +234,7 @@
     defs.forEach(function (d) {
       if (d && isObj(d.zet) && heeft(d.zet, naam)) bekend = true;
     });
-    if (tegen !== null) bekend = true;   // een set met een tegenset (resistent/gevoelig) is altijd bekend
+    if (tegen !== null) bekend = true;   // een set met een tegenset (resistent en gevoelig) is altijd bekend
     if (!bekend) fout("Onbekende set '" + naam + "' (niet in de data van de episode).");
     return { basis: basis, tegen: tegen, defs: defs };
   }
@@ -285,6 +285,10 @@
   function valLijstTekst(x, wat) {
     lijst(x).forEach(function (v) { if (typeof v !== "string") fout("'" + wat + "' moet een id (tekst) of een lijst van ids zijn (kreeg " + JSON.stringify(x) + ")."); });
   }
+  function valNietLeeg(x, wat) {
+    valLijstTekst(x, wat);
+    if (Array.isArray(x) && x.length === 0) fout("'" + wat + "' mag geen lege lijst zijn.");
+  }
   function valGebeurtenis(ctx, id, wat) {
     if (typeof id !== "string") fout("'" + wat + "' moet een gebeurtenis-id (tekst) zijn.");
     var defs = ctx.episode && ctx.episode.gebeurtenissen;
@@ -296,18 +300,17 @@
   function valOperator(op) { if (VERGELIJK.indexOf(op) < 0) fout("Onbekende vergelijkingsoperator '" + op + "'."); }
   function valK(p, veld, ctx) {
     var K = leesK(p, veld);
-    if (K.kaart !== undefined) valLijstTekst(K.kaart, "kaart");
+    if (K.kaart !== undefined) valNietLeeg(K.kaart, "kaart");
     if (K.kaartUit !== undefined) {
       if (typeof K.kaartUit !== "string" || !isObj(ctx.episode) || !heeft(ctx.episode, K.kaartUit) || !Array.isArray(ctx.episode[K.kaartUit])) {
         fout("Onbekende set '" + K.kaartUit + "' in de episode (kaartUit).");
       }
     }
-    if (K.start !== undefined) { valLijstTekst(K.start, "start"); rollen(ctx); }
+    if (K.start !== undefined) { valNietLeeg(K.start, "start"); rollen(ctx); }
     if (K.doel !== undefined && K.doel !== null && typeof K.doel !== "string") fout("'doel' moet een id (tekst) of null zijn.");
     if (K.optie !== undefined && K.optie !== null && typeof K.optie !== "string") fout("'optie' moet een tekst of null zijn.");
     if (K.optieNiet !== undefined) valLijstTekst(K.optieNiet, "optieNiet");
-    // Bij binnenBeurten is naGebeurtenis een eigen veld en valt buiten de kaartverwijzing; elders is het een K-veld.
-    if (K.naGebeurtenis !== undefined && p.p !== "binnenBeurten") valGebeurtenis(ctx, K.naGebeurtenis, "naGebeurtenis");
+    if (K.naGebeurtenis !== undefined) valGebeurtenis(ctx, K.naGebeurtenis, "naGebeurtenis");
     if (K.voorGebeurtenis !== undefined) valGebeurtenis(ctx, K.voorGebeurtenis, "voorGebeurtenis");
     return K;
   }
@@ -351,12 +354,17 @@
       valK(p, "K", ctx); valK(p, "anker", ctx); vereis(p, ["van"]); valGetal(p.van, "van");
       if (p.tot !== undefined) valGetal(p.tot, "tot");
     },
-    gestart: function (p, ctx) { vereis(p, ["middel"]); valLijstTekst(p.middel, "middel"); rollen(ctx); },
+    gestart: function (p, ctx) {
+      vereis(p, ["middel"]); valNietLeeg(p.middel, "middel"); rollen(ctx);
+      lijst(p.middel).forEach(function (x) {
+        if (antibiotica(ctx).indexOf(x) < 0) fout("'" + x + "' is geen antibioticum (niet in episode.antibiotica); 'gestart' geldt alleen voor antibiotica.");
+      });
+    },
     actief: function (p, ctx) {
       valMoment(p.op, ctx);
       valAntibiotica(ctx);
       if (p.middel !== undefined) {
-        valLijstTekst(p.middel, "middel");
+        valNietLeeg(p.middel, "middel");
         lijst(p.middel).forEach(function (x) {
           if (antibiotica(ctx).indexOf(x) < 0) fout("'" + x + "' is geen antibioticum (niet in episode.antibiotica); 'actief' geldt alleen voor antibiotica.");
         });

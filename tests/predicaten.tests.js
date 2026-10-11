@@ -226,8 +226,8 @@
     T.is(ev({ p: "gestart", middel: "Q2" }, mk([R(1, "B3", 1, "Q2")])), false);
   });
   t("gestart: middel als lijst = één van de middelen", function () {
-    T.is(ev({ p: "gestart", middel: ["Q9", "Q1"] }, mk([R(1, "Q1", 1)])), true);
-    T.is(ev({ p: "gestart", middel: ["Q9", "Q8"] }, mk([R(1, "Q1", 1)])), false);
+    T.is(ev({ p: "gestart", middel: ["Q3", "Q1"] }, mk([R(1, "Q1", 1)])), true);
+    T.is(ev({ p: "gestart", middel: ["Q3", "Q2"] }, mk([R(1, "Q1", 1)])), false);
   });
   t("actief: gestart en niet gestopt; stoppen met B2 (op dat doel)", function () {
     var a = { p: "actief", middel: "Q1" };
@@ -1133,6 +1133,193 @@
     var c = mk([R(1, "Q1", 1), R(2, "Q2", 1)], { gebdef: [{ id: "G", zet: { s: ["Q1"] } }, { id: "G", zet: { s: ["Q2"] } }], geb: [{ id: "G", dag: 1 }] });
     T.is(ev({ p: "actief", middel: "Q1", uitSet: "s" }, c), true);
     T.is(ev({ p: "actief", middel: "Q2", uitSet: "s" }, c), false);
+  });
+
+
+  /* ---------- tweede synthetische casus: andere rol-id's en andere lijstnaam (regressiewacht tegen hardcode) ---------- */
+  var ROL2 = { wissel: "R1", stop: "R2", pauzeer: "R3", hervat: "R4" };
+  function mk2(tijdlijn, o) {
+    o = o || {};
+    var ep = {
+      id: "EY", antibiotica: ["Z1", "Z2", "Z3"], reserve: ["Z2", "Y7"], patient: { waar: {}, medicatie: [{ id: "c1" }, { id: "c2" }] },
+      gebeurtenissen: o.gebdef || []
+    };
+    var st = { tijdlijn: tijdlijn, gebeurtenissen: o.geb || [], dag: 1, aantalDagen: 7 };
+    return P.maakContext({ id: "cy", rollen: o.rollen || ROL2, episodes: [ep] }, ep, st);
+  }
+  t("tweede casus: stop-rol komt uit casus.rollen (R2), B2 is daar een gewone kaart", function () {
+    var a = { p: "actief", middel: "Z1" };
+    T.is(ev(a, mk2([R(1, "Z1", 1), R(2, "R2", 2, "Z1")])), false, "gestopt via R2");
+    T.is(ev(a, mk2([R(1, "Z1", 1), R(2, "B2", 2, "Z1")])), true, "B2 is hier geen stop");
+    T.is(ev({ p: "actief", middel: "Z1", op: { dag: 1 } }, mk2([R(1, "Z1", 1), R(2, "R2", 2, "Z1")])), true);
+  });
+  t("tweede casus: wissel-rol (R1) vervangt alle antibiotica, doel null verandert niets, B1 is geen wissel", function () {
+    var c = mk2([R(1, "Z1", 1), R(2, "Z2", 1), R(3, "R1", 2, "Z3")]);
+    T.is(ev({ p: "actief", middel: "Z3" }, c), true);
+    T.is(ev({ p: "actief", middel: ["Z1", "Z2"] }, c), false);
+    T.is(ev({ p: "actief", middel: "Z1" }, mk2([R(1, "Z1", 1), R(2, "R1", 2)])), true, "wissel zonder doel wist niets");
+    T.is(ev({ p: "actief", middel: "Z1" }, mk2([R(1, "Z1", 1), R(2, "B1", 2, "Z3")])), true, "B1 is hier geen wissel");
+    T.is(ev({ p: "actief", middel: "Z3" }, mk2([R(1, "Z1", 1), R(2, "B1", 2, "Z3")])), false);
+    T.is(ev({ p: "gestart", middel: "Z3" }, mk2([R(1, "R1", 1, "Z3")])), true, "gestart via wissel-doel");
+    T.is(ev({ p: "gestart", middel: "Z3" }, mk2([R(1, "B1", 1, "Z3")])), false);
+    T.is(ev({ p: "gespeeld", K: { start: "Z3" } }, mk2([R(1, "R1", 1, "Z3")])), true);
+    T.is(ev({ p: "gespeeld", K: { start: "Z3" } }, mk2([R(1, "B1", 1, "Z3")])), false);
+  });
+  t("tweede casus: pauzeer- en hervat-rol (R3, R4) voor medicatieActief", function () {
+    var m = { p: "medicatieActief", id: "c1" };
+    T.is(ev(m, mk2([])), true);
+    T.is(ev(m, mk2([R(1, "R3", 1, "c1")])), false);
+    T.is(ev(m, mk2([R(1, "R3", 1, "c1"), R(2, "R4", 2, "c1")])), true);
+    T.is(ev(m, mk2([R(1, "B3", 1, "c1")])), true, "B3 is hier geen pauze");
+    T.is(ev(m, mk2([R(1, "R3", 1, "c1"), R(2, "B5", 2, "c1")])), false, "B5 is hier geen hervat");
+    T.is(ev({ p: "medicatieActief", id: "c1", op: { dag: 1 } }, mk2([R(1, "R3", 1, "c1")])), false);
+  });
+  t("tweede casus: maximum aantal actieve antibiotica en eigen ids", function () {
+    var c = mk2([R(1, "Z1", 1), R(2, "Z2", 1), R(3, "R2", 2, "Z1"), R(4, "R1", 3, "Z3")]);
+    T.is(P.tel({ t: "aantalActieveAntibiotica", op: "max" }, c), 2);
+    T.is(ev({ p: "aantalActieveAntibiotica", op: "==", n: 2 }, c), true);
+  });
+  t("tweede casus: kaartUit leest de lijst met de opgegeven naam (reserve), niet vast 'antibiotica'", function () {
+    var c = mk2([R(1, "Z1", 1), R(2, "Y7", 2)]);
+    T.is(ev({ p: "gespeeld", kaartUit: "reserve" }, c), true, "Y7 staat in reserve");
+    T.is(ev({ p: "gespeeld", kaartUit: "reserve", kaart: "Z1" }, c), false, "Z1 staat niet in reserve");
+    T.is(ev({ p: "gespeeld", kaartUit: "antibiotica", kaart: "Y7" }, c), false, "Y7 is geen antibioticum");
+    T.is(ev({ p: "gespeeld", kaartUit: "antibiotica", kaart: "Z1" }, c), true);
+    T.is(P.tel({ t: "gespeeld", K: { kaartUit: "reserve" } }, c), 1);
+    T.is(ev({ p: "gespeeld", kaartUit: "reserve" }, mk2([R(1, "Z1", 1)])), false);
+    gooitNL(function () { ev({ p: "gespeeld", kaartUit: "ontbreekt" }, c); }, /Onbekende set 'ontbreekt'/);
+  });
+  t("tweede casus: de rollen van een casus mogen niet door die van een andere casus worden overschreven", function () {
+    var c1 = mk([R(1, "B2", 2, "Q1"), R(0, "Q1", 1)]);
+    var c2 = mk2([R(1, "Z1", 1), R(2, "R2", 2, "Z1")]);
+    T.is(ev({ p: "actief", middel: "Q1" }, c1), false);
+    T.is(ev({ p: "actief", middel: "Z1" }, c2), false);
+    T.is(ev({ p: "actief", middel: "Q1" }, c1), false, "na de tweede casus nog steeds dezelfde uitkomst");
+  });
+
+  /* ---------- gevoelig / resistent: beide altijd bekend ---------- */
+  t("uitSet: resistent en gevoelig zijn beide bekend, ook zonder enige data; de set is dan leeg", function () {
+    var c = mk([R(1, "Q1", 1)]);
+    T.is(ev({ p: "actief", middel: "Q1", uitSet: "resistent" }, c), false);
+    T.is(ev({ p: "actief", middel: "Q1", uitSet: "gevoelig" }, c), false);
+    P.valideer({ p: "actief", uitSet: "gevoelig" }, c);
+    gooitNL(function () { ev({ p: "actief", uitSet: "onbekendeSet" }, c); }, /Onbekende set 'onbekendeSet'/);
+    gooitNL(function () { ev({ p: "actief", uitSet: "toString" }, c); }, /Onbekende set/);
+  });
+  t("uitSet: gevoelig wordt aangevuld door zet.gevoelig en verkleind door zet.resistent", function () {
+    var def = [{ id: "G1", zet: { gevoelig: ["Q1", "Q2"] } }, { id: "G2", zet: { resistent: ["Q2"] } }];
+    var c = mk([R(1, "Q1", 1), R(2, "Q2", 1)], { gebdef: def, geb: [{ id: "G1", dag: 1 }, { id: "G2", dag: 2 }] });
+    T.is(ev({ p: "actief", middel: "Q1", uitSet: "gevoelig" }, c), true);
+    T.is(ev({ p: "actief", middel: "Q2", uitSet: "gevoelig" }, c), false);
+    T.is(ev({ p: "actief", middel: "Q2", uitSet: "resistent" }, c), true);
+    T.is(ev({ p: "actief", middel: "Q1", uitSet: "resistent" }, c), false);
+  });
+
+  /* ---------- geneste kaartverwijzing bij binnenBeurten ---------- */
+  t("binnenBeurten: geneste K.naGebeurtenis wordt gevalideerd (onbekend id en niet-tekst geven een fout)", function () {
+    var c = mk([R(1, "Q1", 3)], { gebdef: [{ id: "E" }], geb: [{ id: "E", dag: 3 }] });
+    gooitNL(function () { ev({ p: "binnenBeurten", K: { kaart: "Q1", naGebeurtenis: "Nooit" }, naGebeurtenis: "E", n: 2 }, c); }, /Onbekende gebeurtenis 'Nooit'/);
+    gooitNL(function () { ev({ p: "binnenBeurten", K: { kaart: "Q1", naGebeurtenis: 5 }, naGebeurtenis: "E", n: 2 }, c); }, /moet een gebeurtenis-id/);
+    gooitNL(function () { ev({ p: "binnenBeurten", K: { kaart: "Q1", voorGebeurtenis: "Nooit" }, naGebeurtenis: "E", n: 2 }, c); }, /Onbekende gebeurtenis 'Nooit'/);
+    gooitNL(function () { ev({ p: "binnenBeurten", kaart: "Q1", naGebeurtenis: "Nooit", n: 2 }, c); }, /Onbekende gebeurtenis 'Nooit'/);
+    T.is(ev({ p: "binnenBeurten", K: { kaart: "Q1", naGebeurtenis: "E" }, naGebeurtenis: "E", n: 2 }, c), true, "geldige geneste vorm");
+    T.is(ev({ p: "binnenBeurten", kaart: "Q1", naGebeurtenis: "E", n: 1 }, c), true, "platte vorm");
+  });
+
+  /* ---------- stille gevallen: onbekend/niet-antibiotisch middel, lege lijsten ---------- */
+  t("gestart: onbekend of niet-antibiotisch middel geeft een fout; ook in een lijst", function () {
+    var c = mk([R(1, "Q1", 1)]);
+    gooitNL(function () { ev({ p: "gestart", middel: "ZZ" }, c); }, /'ZZ' is geen antibioticum/);
+    gooitNL(function () { ev({ p: "gestart", middel: "B1" }, c); }, /'B1' is geen antibioticum/);
+    gooitNL(function () { ev({ p: "gestart", middel: ["Q1", "ZZ"] }, c); }, /'ZZ' is geen antibioticum/);
+    gooitNL(function () { ev({ p: "gestart", middel: "Q1" }, mk([], { zonderAb: true })); }, /geen lijst 'antibiotica'/);
+    T.is(ev({ p: "gestart", middel: "Q1" }, c), true);
+  });
+  t("actief: een niet-antibioticum geeft een fout (ook in een lijst)", function () {
+    var c = mk([R(1, "Q1", 1)]);
+    gooitNL(function () { ev({ p: "actief", middel: "ZZ" }, c); }, /'ZZ' is geen antibioticum/);
+    gooitNL(function () { ev({ p: "actief", middel: ["Q1", "ZZ"] }, c); }, /'ZZ' is geen antibioticum/);
+  });
+  t("lege lijsten in kaart, start, middel geven een Nederlandse fout (geen stil false/true)", function () {
+    var c = mk([R(1, "Q1", 1)]);
+    ["gespeeld", "nietGespeeld"].forEach(function (p) {
+      gooitNL(function () { ev({ p: p, kaart: [] }, c); }, /'kaart' mag geen lege lijst zijn/, p);
+      gooitNL(function () { ev({ p: p, K: { kaart: [] } }, c); }, /'kaart' mag geen lege lijst zijn/, p + " genest");
+      gooitNL(function () { ev({ p: p, start: [] }, c); }, /'start' mag geen lege lijst zijn/, p);
+    });
+    gooitNL(function () { ev({ p: "gestart", middel: [] }, c); }, /'middel' mag geen lege lijst zijn/);
+    gooitNL(function () { ev({ p: "actief", middel: [] }, c); }, /'middel' mag geen lege lijst zijn/);
+    gooitNL(function () { ev({ p: "voor", a: { kaart: [] }, b: { kaart: "Q1" } }, c); }, /'kaart' mag geen lege lijst zijn/);
+    gooitNL(function () { P.tel({ t: "gespeeld", K: { kaart: [] } }, c); }, /'kaart' mag geen lege lijst zijn/);
+    T.is(ev({ p: "gespeeld", K: { kaart: "Q1", optieNiet: [] } }, c), true, "lege optieNiet is wel geldig (niets uitgesloten)");
+  });
+
+  /* ---------- overige gaten uit de mutatiesets ---------- */
+  t("TODO_BART-sleutels: alleen sleutels die ermee BEGINNEN worden genegeerd", function () {
+    var c = mk([R(1, "Q1", 1)]);
+    T.is(ev({ p: "gespeeld", kaart: "Q1", TODO_BART: "x" }, c), true);
+    T.is(ev({ p: "gespeeld", kaart: "Q1", TODO_BART_3: "x" }, c), true);
+    gooitNL(function () { ev({ p: "gespeeld", kaart: "Q1", xTODO_BARTx: "x" }, c); }, /Onbekend veld 'xTODO_BARTx'/);
+    gooitNL(function () { ev({ p: "gespeeld", kaart: "Q1", mijnTODO_BART: "x" }, c); }, /Onbekend veld 'mijnTODO_BART'/);
+    gooitNL(function () { ev({ p: "gespeeld", K: { kaart: "Q1", xTODO_BART: 1 } }, c); }, /Onbekend veld 'xTODO_BART'/);
+  });
+  t("tel: operatoren < en > bij een asymmetrisch geval (teller 3, waarde 1)", function () {
+    var c = mk([R(1, "X", 1), R(2, "X", 1), R(3, "X", 2)]);
+    function tl(op, w) { return ev({ p: "tel", teller: { t: "gespeeld", K: { kaart: "X" } }, op: op, waarde: w }, c); }
+    T.is(tl(">", 1), true); T.is(tl("<", 1), false); T.is(tl(">=", 1), true); T.is(tl("<=", 1), false);
+    T.is(tl("<", 5), true); T.is(tl(">", 5), false); T.is(tl("==", 3), true); T.is(tl("!=", 3), false);
+    function ak(op, n) { return ev({ p: "aantalActieveAntibiotica", op: op, n: n }, mk([R(1, "Q1", 1), R(2, "Q2", 1), R(3, "Q3", 1)])); }
+    T.is(ak(">", 1), true); T.is(ak("<", 1), false); T.is(ak("<", 5), true); T.is(ak(">", 5), false);
+  });
+  t("ctx.status: dag met een klachtenregel zonder status geeft null (niet undefined)", function () {
+    var c = mk([], { klachten: [{ dag: 2 }, { dag: 3, status: "af" }] });
+    T.is(c.status(2), null); T.is(c.status(3), "af"); T.is(c.status(4), null);
+    T.waar(c.status(2) === null, "null en niet undefined");
+  });
+  t("wissel zonder doel (null) verandert niets aan de actieve middelen", function () {
+    var c = mk([R(1, "Q1", 1), R(2, "Q2", 1), R(3, "B1", 2)]);
+    T.is(ev({ p: "actief", middel: "Q1" }, c), true);
+    T.is(ev({ p: "actief", middel: "Q2" }, c), true);
+    T.is(ev({ p: "aantalActieveAntibiotica", op: "==", n: 2 }, c), true);
+  });
+  t("voor/na: de b- (voor) en a-verwijzing (na) worden ook gevalideerd", function () {
+    var c = mk([R(1, "Q1", 1)], { gebdef: [{ id: "E" }] });
+    gooitNL(function () { ev({ p: "voor", a: { kaart: "Q1" }, b: { kaart: "Q1", kaartUit: "bestaatNiet" } }, c); }, /Onbekende set 'bestaatNiet'/);
+    gooitNL(function () { ev({ p: "voor", a: { kaart: "Q1", kaartUit: "bestaatNiet" }, b: { kaart: "Q1" } }, c); }, /Onbekende set 'bestaatNiet'/);
+    gooitNL(function () { ev({ p: "na", a: { kaart: "Q1" }, b: { kaart: "Q1", naGebeurtenis: "Nooit" } }, c); }, /Onbekende gebeurtenis 'Nooit'/);
+    gooitNL(function () { ev({ p: "na", a: { kaart: "Q1", naGebeurtenis: "Nooit" }, b: { kaart: "Q1" } }, c); }, /Onbekende gebeurtenis 'Nooit'/);
+    gooitNL(function () { ev({ p: "voor", a: { kaart: "Q1" }, b: { kaart: "Q1", start: 3 } }, c); }, /'start' moet een id/);
+    gooitNL(function () { ev({ p: "na", a: { kaart: "Q1", start: 3 }, b: { kaart: "Q1" } }, c); }, /'start' moet een id/);
+  });
+  t("start met een niet-tekst geeft een fout", function () {
+    var c = mk([R(1, "Q1", 1)]);
+    gooitNL(function () { ev({ p: "gespeeld", start: 3 }, c); }, /'start' moet een id/);
+    gooitNL(function () { ev({ p: "gespeeld", K: { start: [3] } }, c); }, /'start' moet een id/);
+    gooitNL(function () { ev({ p: "gespeeld", K: { start: { x: 1 } } }, c); }, /'start' moet een id/);
+  });
+  t("en/of met niet-lijst args geven de Nederlandse tekst (geen TypeError)", function () {
+    var c = mk([]);
+    ["en", "of"].forEach(function (p) {
+      [undefined, null, "x", 5, {}, { length: 1 }, true].forEach(function (a) {
+        var pred = { p: p }; if (a !== undefined) pred.args = a;
+        gooitNL(function () { ev(pred, c); }, new RegExp("Het predicaat '" + p + "' vraagt een lijst 'args'"), p + " " + JSON.stringify(a));
+        gooitNL(function () { P.valideer(pred, c); }, new RegExp("Het predicaat '" + p + "' vraagt een lijst 'args'"), "valideer " + p);
+      });
+    });
+    gooitNL(function () { ev({ p: "niet" }, c); }, /mist het veld 'arg'/);
+    gooitNL(function () { ev({ p: "niet", arg: 5 }, c); }, /Een predicaat moet een object zijn/);
+  });
+  t("extra veld bij tel-predicaat en in het moment op geven een fout", function () {
+    var c = mk([R(1, "Q1", 1)]);
+    gooitNL(function () { ev({ p: "tel", teller: { t: "gespeeld", K: { kaart: "Q1" } }, op: ">=", waarde: 1, n: 1 }, c); }, /Onbekend veld 'n' in predicaat 'tel'/);
+    gooitNL(function () { ev({ p: "actief", middel: "Q1", op: { dag: 1, x: 1 } }, c); }, /Onbekend veld 'x' in moment/);
+    gooitNL(function () { ev({ p: "medicatieActief", id: "m1", op: { dag: 1, x: 1 } }, c); }, /Onbekend veld 'x' in moment/);
+    gooitNL(function () { ev({ p: "klachten", waarde: "af", op: { dag: 1, x: 1 } }, c); }, /Onbekend veld 'x' in moment/);
+  });
+  t("resistent zonder enige resistentiedata is een lege set (false, geen fout)", function () {
+    var c = mk([R(1, "Q1", 1)]);
+    T.is(ev({ p: "actief", middel: "Q1", uitSet: "resistent" }, c), false);
+    T.is(ev({ p: "actief", uitSet: "resistent" }, c), false);
   });
 
 })();
