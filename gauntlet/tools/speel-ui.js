@@ -55,6 +55,8 @@ async function nieuwePagina(browser, opts) {
   page.on("pageerror", e => page.problemen.push("pagina: " + e.message));
   page.downloads = [];
   page.on("download", d => page.downloads.push(d));
+  // De uitleg bij de start van een episode (dialoog met "Begin") sluit vanzelf, ook bij herkansingen.
+  if (typeof page.addLocatorHandler === "function") await page.addLocatorHandler(page.locator("#btn-begin"), async () => { await page.locator("#btn-begin").click(); });
   await page.goto(URL);
   return page;
 }
@@ -67,6 +69,8 @@ async function start(page, pseudo) {
 async function kies(page, ep) {
   await page.click(`[data-start="${ep}"]`);
   await page.waitForSelector("#dagtelling");
+  // Uitleg bij de start van de episode (dialoog): sluiten met "Begin".
+  if ((await page.locator("#btn-begin").count()) > 0) { await page.click("#btn-begin"); await page.waitForSelector(".dialoog", { state: "detached" }); }
 }
 async function dag(page) { return parseInt(await page.getAttribute("#dagtelling", "data-dag"), 10); }
 async function acties(page) { return parseInt(await page.getAttribute("#acties", "data-over"), 10); }
@@ -116,7 +120,7 @@ async function leesUitslag(page) {
     return {
       koptekst: een("#uitslag-kop"), vraag: een("#socratisch"), profiel: een("#profiel"), reflectie: een("#reflectie"), scores,
       extra: t("[data-extra]"), zichtbaar: t("[data-zichtbaar]"),
-      downsides: Array.from(document.querySelectorAll("[data-downside]")).map(li => li.querySelectorAll("span")[0].textContent.trim()),
+      downsides: Array.from(document.querySelectorAll("[data-downside]")).map(li => li.querySelectorAll("span")[0]).filter(Boolean).map(sp => sp.textContent.trim()),
       aantalVragen: document.querySelectorAll(".vraag").length
     };
   });

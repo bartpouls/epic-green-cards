@@ -107,6 +107,7 @@
       rng: rng,
       uitkomst: null
     };
+    if (ep.escalatie && ep.escalatie.aan) state.klachten[1].reeks = 1;
     Object.defineProperty(state, "_casus", { value: casus, enumerable: false, writable: true, configurable: true });
     var bewaard = {}; for (var ok in opties) if (ok !== "rng") bewaard[ok] = opties[ok];
     Object.defineProperty(state, "_opties", { value: bewaard, enumerable: false, writable: true, configurable: true });
@@ -203,6 +204,40 @@
       if (gehad) return;
       if (triggertNu(state, triggerVan(state, ep, e), volg)) state.wachtend.push({ id: e.id, naVolg: volg });
     });
+  }
+
+  // Gebeurtenis op tijd: trigger { type: "naDagenNaKaart", kaart, dagen, nummer? }: `dagen` dagen nadat de kaart (de nummer-ste keer, standaard
+  // de eerste) is gespeeld, aan het begin van die dag. Geeft de dag, of null als het niet (meer) kan komen.
+  function dagVanTrigger(state, t) {
+    if (!t || t.type !== "naDagenNaKaart") return null;
+    var teller = 0;
+    for (var i = 0; i < state.tijdlijn.length; i++) {
+      if (state.tijdlijn[i].kaart === t.kaart && ++teller === (t.nummer || 1)) return state.tijdlijn[i].dag + t.dagen;
+    }
+    return null;
+  }
+  function isBezig(state, id) {
+    return state.gebeurtenissen.some(function (x) { return x.id === id; }) || state.wachtend.some(function (x) { return x.id === id; });
+  }
+  function controleerTijd(state, ep, nieuweDag) {
+    (ep.gebeurtenissen || []).forEach(function (e) {
+      if (!isBezig(state, e.id) && dagVanTrigger(state, e.trigger) === nieuweDag) state.wachtend.push({ id: e.id, naVolg: state.tijdlijn.length });
+    });
+  }
+  // Gebeurtenissen die nog op tijd komen: [{ id, dag, tekst }] (tekst = e.aankondiging uit de data), voor "uitslag verwacht op dag X".
+  function komend(state) {
+    var ep = episodeVan(state), uit = [];
+    (ep.gebeurtenissen || []).forEach(function (e) {
+      var dag = dagVanTrigger(state, e.trigger);
+      if (dag !== null && dag > state.dag && dag <= state.aantalDagen && !isBezig(state, e.id)) uit.push({ id: e.id, dag: dag, tekst: e.aankondiging || null });
+    });
+    return uit;
+  }
+  // Dagen (tot en met de huidige) waarop geen enkele kaart is gespeeld.
+  function legeDagen(state) {
+    var n = 0;
+    for (var d = 1; d <= state.dag; d++) if (!state.tijdlijn.some(function (r) { return r.dag === d; })) n++;
+    return n;
   }
 
   function pasGebeurtenissenToe(state, ep, nieuweDag) {
@@ -339,7 +374,13 @@
     else if (!vorige.actief.length) status = null;
     else status = vorige.werkzaam ? "af" : "aan";
     var teksten = ep.statusTeksten || (ep.werkzaamheid && ep.werkzaamheid.statusTeksten) || {};
-    return { dag: d, status: status, tekst: status && teksten[status] != null ? teksten[status] : null };
+    // Aanhoudende klachten (escalatie): aantal dagen op rij zonder werkzaam antibioticum; stopt bij "af", en na de escalatie zelf.
+    var ec = ep.escalatie, uit = { dag: d, status: status, tekst: status && teksten[status] != null ? teksten[status] : null };
+    if (ec && ec.aan) {
+      var vorigeReeks = d === 1 ? 0 : (state.klachten[d - 1] && state.klachten[d - 1].reeks) || 0;
+      uit.reeks = isBezig(state, ec.doelEvent) || status === "af" ? 0 : vorigeReeks + 1;
+    }
+    return uit;
   }
 
   // Momentopname van de HELE state (alles wat JSON-baar is; functies zoals rng blijven dezelfde verwijzing). Herstel gebeurt
@@ -376,7 +417,12 @@
     if (state.dag >= state.aantalDagen) { state.dagenVoorbij = true; return state; }
     // Atomisch: gaat er halverwege iets mis (bv. een kapot predicaat in de data), dan blijft de state precies zoals hij was.
     return atomisch(state, function () {
-      var nieuw = state.dag + 1;
+      var nieuw = state.dag + 1, ec = ep.escalatie;
+      // Escalatie: houden de klachten `dagen` dagen aan, dan volgt de gebeurtenis ec.doelEvent (als die nog niet is geweest).
+      if (ec && ec.aan && !isBezig(state, ec.doelEvent) && berekenKlachten(state, ep, nieuw).reeks >= ec.dagen) {
+        state.wachtend.push({ id: ec.doelEvent, naVolg: state.tijdlijn.length });
+      }
+      controleerTijd(state, ep, nieuw);
       pasGebeurtenissenToe(state, ep, nieuw);
       state.dag = nieuw;
       state.actiesOver = ep.knoppen.actiesPerBeurt;
@@ -393,9 +439,11 @@
     if (state.afgerond) return state.uitkomst;
     var casus = casusVan(state), ep = episodeVan(state);
     return atomisch(state, function () {
-      if (state.afrondenPasNaGebeurtenissen && !state.dagenVoorbij) {
+      if (state.afrondenPasNaGebeurtenissen && !state.dagenVoorbij && state.dag < state.aantalDagen) {
+        // Een gebeurtenis op tijd telt alleen mee als de kaart die haar aankondigt is gespeeld; die op kaartaantal telt altijd mee.
         var open = (ep.gebeurtenissen || []).some(function (e) {
-          return !state.gebeurtenissen.some(function (x) { return x.id === e.id; });
+          if (state.gebeurtenissen.some(function (x) { return x.id === e.id; })) return false;
+          return !(e.trigger && e.trigger.type === "naDagenNaKaart") || dagVanTrigger(state, e.trigger) !== null;
         });
         if (open) throw new Error("Je kunt deze episode pas afronden nadat de gebeurtenissen zich hebben voorgedaan.");
       }
@@ -447,6 +495,8 @@
     volgendeDag: volgendeDag,
     rondAf: rondAf,
     eindeBereikt: eindeBereikt,
+    komend: komend,
+    legeDagen: legeDagen,
     ontgrendeld: ontgrendeld,
     ontgrendeldeEpisodes: ontgrendeldeEpisodes
   };

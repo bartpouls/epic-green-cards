@@ -394,7 +394,7 @@
         T.gelijk(sleutels(b.attrs), ["class", "data-fokus", "data-kaart", "type"].filter(function (s) { return b.attrs[s] !== undefined; }), "geen extra attributen op " + k.id);
       });
       T.waar(!/aanbevolen|eerste keus|beste/i.test(tekst), "geen aanbevolen/eerste keus");
-      T.is(metId(root, "dagtelling").textContent, "Dag 1 van 5");
+      T.is(metId(root, "dagtelling").textContent, "Dag 1 van 14");
       T.waar(!/TODO_BART|Geen risicogroep/.test(tekst), "geen risicogroep of TODO in beeld");
       T.waar(tekst.indexOf(ep("E1").patient.zichtbaar.kop) >= 0, "patiëntkop");
     });
@@ -429,7 +429,7 @@
       T.is(metAttr(root, "data-kaart", "V1").getAttribute("disabled"), "");
       klik(metId(root, "btn-volgende-dag"));
       T.is(metId(root, "acties").getAttribute("data-over"), "3");
-      T.is(metId(root, "dagtelling").textContent, "Dag 2 van 5");
+      T.is(metId(root, "dagtelling").textContent, "Dag 2 van 14");
     });
   });
 

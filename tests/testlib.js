@@ -2,14 +2,31 @@
 (function (g) {
   var lijst = [];
   function tekst(x) { try { return JSON.stringify(x); } catch (e) { return String(x); } }
-  // De echte casus zonder de 'één keer per doel'-regel (casus.limiet): de oudere regel- en routetests gebruiken herhaalde vulkaarten.
-  // De limiet zelf wordt getest in tests/engine.tests.js en tests/limiet.tests.js met de echte casus.
-  var zonderLimiet = null;
+  // De echte casus in de instelling van vóór iteratie 1 ("oude regels"): geen grens op herhalen, afronden vrij, geen escalatie, kweekuitslag
+  // op kaartaantal, 5/7/7 dagen. De oudere regel- en routetests (invarianten, score, profiel) gebruiken herhaalde vulkaarten en dagplannen
+  // die daarop zijn gebouwd; ze toetsen de REGELS (predicaten) op de echte data. Het nieuwe gedrag (limiet, kweek na 3 dagen, escalatie,
+  // 14 dagen, afronden pas na gebeurtenissen) wordt apart getoetst met de echte instellingen in tests/iteratie1.tests.js.
+  var oudeRegels = null;
+  function maakOudeRegels() {
+    var c = JSON.parse(JSON.stringify(g.CASUSSEN[0]));
+    delete c.limiet;
+    c.kaarten.forEach(function (k) { delete k.limiet; });
+    var dagen = { E1: 5, E2: 7, E3: 7 };
+    c.episodes.forEach(function (ep) {
+      ep.afrondenPasNaGebeurtenissen = false;
+      if (ep.escalatie) ep.escalatie.aan = false;
+      ep.knoppen.aantalDagen = dagen[ep.id];
+      ep.gebeurtenissen = ep.gebeurtenissen.filter(function (e) { return e.id !== "C2"; });
+      ep.gebeurtenissen.forEach(function (e) {
+        if (e.id !== "C") return;
+        delete e.aankondiging;
+        e.trigger = ep.id === "E2" ? { type: "naKaart", n: 4, alleenAlsGespeeld: "O1" } : { type: "naKaartVanKaart", kaart: "O1", n: 3, alleenAlsGespeeld: "O1" };
+      });
+    });
+    return c;
+  }
   g.Test = {
-    zonderLimiet: function () {
-      if (!zonderLimiet) { zonderLimiet = JSON.parse(JSON.stringify(g.CASUSSEN[0])); delete zonderLimiet.limiet; }
-      return zonderLimiet;
-    },
+    oudeRegels: function () { if (!oudeRegels) oudeRegels = maakOudeRegels(); return oudeRegels; },
     registreer: function (groep, naam, fn) { lijst.push({ groep: groep, naam: naam, fn: fn }); },
     is: function (a, b, msg) { if (a !== b) throw new Error((msg || "is") + ": verwacht " + tekst(b) + ", kreeg " + tekst(a)); },
     gelijk: function (a, b, msg) { if (tekst(a) !== tekst(b)) throw new Error((msg || "gelijk") + ": verwacht " + tekst(b) + ", kreeg " + tekst(a)); },

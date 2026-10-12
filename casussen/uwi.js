@@ -1039,6 +1039,24 @@ window.CASUSSEN = [
    "plek": "casus.gevolgzinnen"
   },
   {
+   "id": "TODO_BART-N1",
+   "vraag": "Aanhoudende klachten leiden tot weefselinvasie. Drie vragen: (1) Geldt '4 dagen aanhoudende klachten leiden tot weefselinvasie' ook in episode 2 (daar komt de kweekuitslag op dag 4)? (2) Tellen die 4 dagen vanaf de start van het middel of vanaf het begin van de klachten? (3) Op de dag waarop de teller 4 bereikt, begint de weefselinvasie; is dat de bedoeling? De NHG-termijnen zijn niet gecheckt; leg (1) en (2) voor aan een huisarts.",
+   "gekozenLezing": "Alleen in episode 3 aan (episode 1 en 2: escalatie.aan = false). De teller telt de dagen op rij vanaf dag 1 van de episode waarop geen werkzaam antibioticum actief was (ook als er niets is voorgeschreven); een werkzaam antibioticum stopt de teller. Op de dag dat de teller 4 bereikt volgt weefselinvasie (gebeurtenis A), tenzij A al eerder kwam.",
+   "plek": "E1.escalatie; E2.escalatie; E3.escalatie"
+  },
+  {
+   "id": "TODO_BART-N2",
+   "vraag": "Concepttekst: de uitleg bij de start van elke episode, de waarschuwing 'Klachten houden aan: dag 1, 2, 3.' en de sturende uitleg 'Houden de klachten aan, dan wordt het erger. Kies nu een middel of stuur bij.' Keur je deze teksten goed of pas je ze aan?",
+   "gekozenLezing": "Teksten zoals in de data (episode.startUitleg en episode.escalatie.waarschuwing/uitleg). Het zijn concepten, geen klinische inhoud uit de casus.",
+   "plek": "E1-E3.startUitleg; E3.escalatie"
+  },
+  {
+   "id": "TODO_BART-N3",
+   "vraag": "Vroeg afronden: niet toegestaan zolang er nog gebeurtenissen aankomen of de dagen niet om zijn (instelling afrondenPasNaGebeurtenissen, nu aan in alle episodes). Een gebeurtenis op tijd (de kweekuitslag) telt alleen mee als Urinekweek inzetten is gespeeld. Heb je dit zo bedoeld?",
+   "gekozenLezing": "Aan in E1, E2 en E3. Wie geen kaart speelt die een gebeurtenis aankondigt, kan pas op de laatste dag afronden.",
+   "plek": "E1-E3.afrondenPasNaGebeurtenissen"
+  },
+  {
    "id": "TODO_BART-K5",
    "vraag": "De casus noemt voor het raadplegen alleen \"een eigen naslagkaart met verwijzing naar de bronnen\", zonder te zeggen welke bronnen erop staan. Zijn de vier bronnen uit de casuskop (NHG, SIDRIK, Kompas, KNMP) de bedoelde keuze, en blijft de naslagkaart voor alle episodes hetzelfde?",
    "gekozenLezing": "Alle vier de bronnen uit de casuskop, in kopvolgorde, als verwijzing op casusniveau (casus.raadplegen), voor elke episode gelijk; geen richtlijntekst toegevoegd.",
@@ -1056,7 +1074,10 @@ window.CASUSSEN[0].episodes.push({
   id: "E1",
   level: 1,
   startToestanden: ["cystitis"],
-  knoppen: { actiesPerBeurt: 3, aantalDagen: 5, raadplegenKost: 0 },
+  knoppen: { actiesPerBeurt: 3, aantalDagen: 14, raadplegenKost: 0 },
+  afrondenPasNaGebeurtenissen: true,
+  startUitleg: "Het doel: de klachten nemen zo snel mogelijk af. Houden ze aan, dan wordt het erger.",
+  escalatie: { aan: false, dagen: 4 },
   antibiotica: ["V3", "V4", "V5"],
   patient: {
     zichtbaar: {
@@ -1203,7 +1224,10 @@ window.CASUSSEN[0].episodes.push({
   level: 2,
   titel: "Episode 2 — level 2",
   startToestanden: ["cystitis"],
-  knoppen: { actiesPerBeurt: 3, aantalDagen: 7, raadplegenKost: 0 },
+  knoppen: { actiesPerBeurt: 3, aantalDagen: 14, raadplegenKost: 0 },
+  afrondenPasNaGebeurtenissen: true,
+  startUitleg: "Het doel: de klachten nemen zo snel mogelijk af. Houden ze aan, dan wordt het erger.",
+  escalatie: { aan: false, dagen: 4 },
   antibiotica: ["V3", "V4", "V5"],
   patient: {
     zichtbaar: {
@@ -1244,10 +1268,11 @@ window.CASUSSEN[0].episodes.push({
     {
       id: "C",
       titel: "Kweekuitslag",
-      trigger: { type: "naKaart", n: 4, alleenAlsGespeeld: "O1" },
+      trigger: { type: "naDagenNaKaart", kaart: "O1", dagen: 3 },
+      aankondiging: "Uitslag verwacht",
       tekst: "E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor nitrofurantoïne, fosfomycine, amoxicilline/clavulaanzuur en ciprofloxacine.",
       zet: { resistent: ["V5", "V10"], gevoelig: ["V3", "V4", "V8", "V7"] },
-      TODO_BART: "De doorlooptijd van de kweek (2–4 dagen) kwam via Mistral en is niet zelf gecheckt. Klopt 'na de 4e gespeelde kaart', en wat als O1 pas na de 4e kaart wordt gespeeld?"
+      TODO_BART: "De 3 dagen tot de uitslag zijn Barts keuze; de oorspronkelijke 2–4 dagen kwamen via Mistral en zijn niet gecheckt. Een huisarts of lab moet dit bevestigen."
     }
   ],
   werkzaamheid: {
@@ -1668,8 +1693,8 @@ window.CASUSSEN[0].todoBart.push(
   },
   {
     id: "TODO_BART-E2-6",
-    vraag: "De doorlooptijd van de kweek (2–4 dagen) kwam via Mistral en is niet zelf gecheckt. Klopt 'na de 4e gespeelde kaart', en wat als O1 pas na de 4e kaart wordt gespeeld?",
-    gekozenLezing: "Letterlijk: trigger na de 4e gespeelde kaart, alleen als O1 dan gespeeld is. Is O1 op dat moment niet gespeeld, dan komt er geen kweekuitslag in deze poging.",
+    vraag: "De 3 dagen tot de uitslag zijn Barts keuze; de oorspronkelijke 2–4 dagen kwamen via Mistral en zijn niet gecheckt. Een huisarts of lab moet dit bevestigen.",
+    gekozenLezing: "De uitslag komt 3 dagen nadat Urinekweek inzetten is gespeeld, aan het begin van die dag (instelling: trigger.dagen in de data). Is O1 niet gespeeld, dan komt er geen kweekuitslag in deze poging.",
     plek: "E2.gebeurtenissen.C"
   },
   {
@@ -1745,10 +1770,17 @@ window.CASUSSEN[0].episodes.push({
   startToestanden: ["cystitis"],
   knoppen: {
     actiesPerBeurt: 3,
-    aantalDagen: 7,
+    aantalDagen: 14,
     raadplegenKost: 1,
     casusTekst: ["volledig repertoire (26 kaarten)", "acties per beurt krap", "2 gebeurtenissen in vrije volgorde, plus de kweekuitslag"],
     TODO_BART: "Acties per beurt in episode 3: de casus noemt 'krap', bouwopdracht 6.6 zegt 3 (zelfde als E1 en E2)."
+  },
+  afrondenPasNaGebeurtenissen: true,
+  startUitleg: "Het doel: de klachten nemen zo snel mogelijk af. Houden ze aan, dan wordt het erger.",
+  escalatie: {
+    aan: true, dagen: 4, doelEvent: "A",
+    waarschuwing: "Klachten houden aan: dag",
+    uitleg: "Houden de klachten aan, dan wordt het erger. Kies nu een middel of stuur bij."
   },
   antibiotica: ["V3", "V4", "V5", "V7", "V8", "V9", "V10"],
   patient: {
@@ -1834,10 +1866,19 @@ window.CASUSSEN[0].episodes.push({
     },
     {
       id: "C",
-      trigger: { type: "naKaartVanKaart", kaart: "O1", n: 3, alleenAlsGespeeld: "O1" },
+      trigger: { type: "naDagenNaKaart", kaart: "O1", dagen: 3 },
+      aankondiging: "Uitslag verwacht",
+      tekst: "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne.",
+      zet: { resistent: ["V5", "V10"], gevoelig: ["V8", "V7", "V4", "V3"] }
+    },
+    {
+      id: "C2",
+      titel: "Kweekuitslag (nieuwe kweek)",
+      trigger: { type: "naDagenNaKaart", kaart: "O1", dagen: 3, nummer: 2 },
+      aankondiging: "Uitslag verwacht",
       tekst: "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne.",
       zet: { resistent: ["V5", "V10"], gevoelig: ["V8", "V7", "V4", "V3"] },
-      TODO_BART: "Komt er een tweede kweekuitslag als O1 in episode 3 nog een keer gespeeld wordt (na A)?"
+      TODO_BART: "Een tweede kweekuitslag in episode 3 (nieuwe O1 na weefselinvasie): voorlopig komt er een tweede kweekuitslag, 3 dagen na de nieuwe kweek, met dezelfde bacterie en dezelfde gevoeligheden. Kan de gevoeligheid bij weefselinvasie afwijken? (Vraag voor de huisarts.) De 3 dagen zijn Barts keuze; de oorspronkelijke 2–4 dagen kwamen via Mistral en zijn niet gecheckt."
     }
   ],
   werkzaamheid: {
@@ -1985,8 +2026,8 @@ window.CASUSSEN[0].episodes.push({
       predicaat: {
         p: "en",
         args: [
-          { p: "waar", veld: "risicogroep", op: "==", waarde: true },
           { p: "gestart", middel: "V5" },
+          { p: "waar", veld: "risicogroep", op: "==", waarde: true },
           {
             p: "of",
             args: [
@@ -2422,14 +2463,14 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-3",
     vraag: "Vroeg afronden vóór gebeurtenis A, B of C (en dus ontlopen van I8, I10, I11, I15, I16)?",
-    gekozenLezing: "Afronden blijft standaard vrij, want bouwopdracht 4.1 laat de speler vrij afronden. Gevolg: de speler kan afronden voordat A, B of C is opgetreden (bijvoorbeeld G3, O1, V4, N1, O2 en direct afronden) en ontloopt dan de invarianten die alleen na een gebeurtenis gelden (I8 na C, I10, I11 en I16 na A, I15 na B). Dat is de milde lezing: de episode is dan te omzeilen. Alternatief: afronden pas toestaan nadat alle gebeurtenissen zijn opgetreden (C komt alleen als O1 gespeeld is; zonder O1 kan dan pas op de laatste dag worden afgerond). Vraag aan Bart: moet afronden pas kunnen na A, B en C?",
+    gekozenLezing: "Vroeg afronden is niet toegestaan zolang er nog gebeurtenissen aankomen of de dagen niet om zijn (de instelling 'afronden pas na de gebeurtenissen' staat aan). Een gebeurtenis op kaartaantal (A en B) telt altijd mee; een kweekuitslag telt alleen mee als Urinekweek inzetten is gespeeld. Wie niets speelt dat een gebeurtenis in gang zet, kan pas op de laatste dag afronden. Het ontlopen van de invarianten na A, B of C (I8, I10, I11, I15, I16) is daarmee niet meer mogelijk. Alternatief: afronden weer vrij laten (de instelling uitzetten).",
     plek: "E3.gebeurtenissen A, B, C; E3.invarianten.I8, I10, I11, I15, I16 (afronden pas na de gebeurtenissen is niet ingesteld)"
   },
   {
     id: "TODO_BART-E3-4",
-    vraag: "Komt er een tweede kweekuitslag als O1 in episode 3 nog een keer gespeeld wordt (na A)?",
-    gekozenLezing: "Nee: C triggert maar één keer, drie kaarten na de eerste O1.",
-    plek: "E3.gebeurtenissen.C"
+    vraag: "Een tweede kweekuitslag in episode 3 (nieuwe O1 na weefselinvasie): voorlopig komt er een tweede kweekuitslag, 3 dagen na de nieuwe kweek, met dezelfde bacterie en dezelfde gevoeligheden. Kan de gevoeligheid bij weefselinvasie afwijken? (Vraag voor de huisarts.) De 3 dagen zijn Barts keuze; de oorspronkelijke 2–4 dagen kwamen via Mistral en zijn niet gecheckt.",
+    gekozenLezing: "Ja: gebeurtenis C2 geeft 3 dagen na de tweede O1 een tweede uitslag met dezelfde gegevens als C. De invarianten (I8) kijken alleen naar de eerste uitslag C.",
+    plek: "E3.gebeurtenissen.C2"
   },
   {
     id: "TODO_BART-E3-5",

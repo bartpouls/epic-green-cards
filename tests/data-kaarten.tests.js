@@ -265,7 +265,7 @@
   // Sleutelverzamelingen: geen stray velden (bv. "aanbevolen": true) op kop, kaarten, doelen, opties of raadplegen.
   Test.registreer(G, "K0 exacte sleutelverzamelingen: kop, kaarten, doelen, opties en raadplegen hebben geen onbekende velden", function () {
     function sleutels(o) { return Object.keys(o).sort(); }
-    Test.gelijk(sleutels(casus()), ["bronnen","episodes","id","kaarten","limiet","raadplegen","referentie","rollen","titel","todoBart","versie"], "casuskop");
+    Test.gelijk(sleutels(casus()), ["bronnen","episodes","gevolgzinnen","id","kaarten","limiet","raadplegen","referentie","rollen","titel","todoBart","versie"], "casuskop");
     var basis = ["bron","categorie","doelen","doelkaart","downside","effect","id","label","opties","vanafEpisode"];
     casus().kaarten.forEach(function (k) {
       var verwacht = basis.slice();

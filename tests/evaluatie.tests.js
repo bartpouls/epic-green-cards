@@ -157,7 +157,7 @@
       if (h("V1") && !h("Ev1")) inv.push("I3");
       if (nAb > 1) inv.push("I4");
       // Spelen: kaarten in een wisselende volgorde (even/oneven gekozen set omgedraaid), 3 per dag.
-      var volgorde = (m % 2) ? gekozen.slice().reverse() : gekozen, state = g.Engine.nieuwSpel(g.Test.zonderLimiet(), "E1", { rng: function () { return 0; } });
+      var volgorde = (m % 2) ? gekozen.slice().reverse() : gekozen, state = g.Engine.nieuwSpel(g.Test.oudeRegels(), "E1", { rng: function () { return 0; } });
       volgorde.forEach(function (k, i) {
         if (i > 0 && i % 3 === 0) g.Engine.volgendeDag(state);
         var r = g.Engine.speelKaart(state, k);
@@ -231,7 +231,7 @@
   t("API: beoordeel en valideerCasus bestaan; uitkomst heeft precies de velden van contract 5 en is JSON-baar", function () {
     T.is(typeof E().beoordeel, "function"); T.is(typeof E().valideerCasus, "function");
     var u = beoordeel(maakEp({ invarianten: [inv("A", 2)] }));
-    T.gelijk(Object.keys(u).sort(), ["downsides", "extraVragen", "geschonden", "poortGehaald", "profiel", "score", "vraag", "zichtbaar"]);
+    T.gelijk(Object.keys(u).sort(), ["downsides", "extraVragen", "geschonden", "gevolg", "poortGehaald", "profiel", "score", "vraag", "zichtbaar"]);
     T.gelijk(JSON.parse(js(u)), JSON.parse(js(u)));
     T.is(u.poortGehaald, false); T.is(u.vraag, "vraag A"); T.gelijk(u.geschonden, [{ id: "A", ernst: 2, vraag: "vraag A" }]);
     var gehaald = beoordeel(maakEp({ invarianten: [inv("A", 2, ONWAAR)] }));

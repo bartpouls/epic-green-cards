@@ -186,19 +186,19 @@
   e2("E2-fout-I6-beide-varianten", "Afwachten én antibioticum zonder O1: eerste variant in de data (geen kweek)",
     ["G2", "V1", "V4", "|", "N1", "|", "=7"], fout(["I6"], VRAAG.I6geenKweek), "fout");
   e2("E2-fout-I7-kalium", "Trimethoprim zonder O2 (V6 wel op tijd)",
-    ["G2", "O1", "V5", "|", "N1", "B1>V4", "|", "|", "V6>V5>halveren", "=7"], fout(["I7"], VRAAG.I7kalium, [ZICHT.V5]), "fout");
+    ["G2", "O1", "V5", "|", "N1", "|", "|", "B1>V4", "=7"], fout(["I7"], VRAAG.I7kalium, [ZICHT.V5]), "fout");
   e2("E2-fout-I7-halveren", "Trimethoprim met O2 maar zonder V6 halveren",
-    ["G2", "O1", "V5", "|", "O2", "N1", "|", "B1>V4", "|", "=7"], fout(["I7"], VRAAG.I7halveren), "fout");
+    ["G2", "O1", "V5", "|", "|", "|", "O2", "N1", "|", "B1>V4", "=7"], fout(["I7"], VRAAG.I7halveren), "fout");
   e2("E2-fout-I7-te-vroeg-halveren", "Trimethoprim met O2, V6 halveren al op dag 3 (te vroeg)",
-    ["G2", "O1", "V5", "|", "O2", "N1", "|", "B1>V4", "V6>V5>halveren", "=7"], fout(["I7"], VRAAG.I7halveren), "fout");
+    ["G2", "O1", "V5", "|", "|", "V6>V5>halveren", "|", "O2", "N1", "|", "B1>V4", "=7"], fout(["I7"], VRAAG.I7halveren), "fout");
   e2("E2-fout-I7-O2-te-laat", "Trimethoprim, O2 pas op dag 5 (te laat)",
-    ["G2", "O1", "V5", "|", "N1", "B1>V4", "|", "|", "V6>V5>halveren", "|", "O2", "=7"], fout(["I7"], VRAAG.I7kalium), "fout");
+    ["G2", "O1", "V5", "|", "N1", "|", "|", "B1>V4", "|", "O2", "=7"], fout(["I7"], VRAAG.I7kalium), "fout");
   e2("E2-fout-I8", "Na de kweekuitslag doorgaan met trimethoprim terwijl de klachten aanhouden",
     ["G2", "O1", "V5", "|", "O2", "N1", "|", "|", "V6>V5>halveren", "=7"], fout(["I8"], VRAAG.I8), "fout");
   e2("E2-fout-I8-te-laat", "Trimethoprim, wissel pas twee dagen na de uitslag (buiten 2 beurten)",
     ["G2", "O1", "V5", "|", "O2", "N1", "|", "|", "V6>V5>halveren", "|", "B1>V4", "=7"], fout(["I8"], VRAAG.I8), "fout");
   e2("E2-fout-I7-I6", "Ernst: I7 (3) gaat voor I6 (4), hoewel I6 eerder in de data staat",
-    ["G2", "V5", "O1", "|", "N1", "B1>V4", "|", "|", "=7"], fout(["I7", "I6"], VRAAG.I7kalium, [ZICHT.V5]), "fout");
+    ["G2", "V5", "O1", "|", "N1", "|", "|", "B1>V4", "=7"], fout(["I7", "I6"], VRAAG.I7kalium, [ZICHT.V5]), "fout");
   e2("E2-fout-I5-I1", "Ernst: I5 (2) gaat voor I1 (5)", ["G2", "O1", "V3", "|", "|", "=7"], fout(["I5", "I1"], VRAAG.I5), "fout");
   e2("E2-fout-I6-I8", "Gelijke ernst 4: I6 en I8; eerste in de data (I6)",
     ["G2", "V5", "O1", "|", "O2", "N1", "|", "|", "V6>V5>halveren", "=7"], fout(["I6", "I8"], VRAAG.I6geenKweek), "fout");
@@ -251,8 +251,14 @@
   e3("E3-fout-I5", "Nitrofurantoïne bij eGFR 28", [["V4", "V3"]], fout(["I5"], VRAAG.I5), "fout");
   e3("E3-fout-I6-geenKweek", "Fosfomycine voor de kweek", [{ ruil: ["O1", "V4"] }], fout(["I6"], VRAAG.I6geenKweek), "fout");
   e3("E3-fout-I6-afwachten", "Afwachtend beleid (V1) in de risicogroep", [["O2", "V1"]], fout(["I6"], VRAAG.I6afwachten), "fout");
-  e3("E3-fout-I7", "Trimethoprim zonder V6 halveren (A,B: ook O2 te laat op dag 5; B,A: O2 valt op dag 4 = verschil 3, op tijd)", [["V4", "V5"]],
-    fout(["I7"], VRAAG.I7kalium), "fout", { "B,A": fout(["I7"], VRAAG.I7halveren) });
+  // Casus 1.2: I7 geldt alleen als trimethoprim nog actief is (de 7-daagse kuur); de wissel naar V8 komt daarom pas op dag 4 (A,B) of dag 5 (B,A).
+  e3plannen("E3-fout-I7", "Trimethoprim zonder V6 halveren (A,B: O2 te laat op dag 6; B,A: O2 valt op dag 4 = verschil 3, op tijd)",
+    {
+      "A,B": ["G3", "O1", "V5", "|", "N1", "|", "O1", "|", "B1>V8", V6_V8, "Ev1", "|", "B3>spironolacton", "V6>lisinopril>halveren", "N3", "|", "Ev1", "O2",
+        "Ev2>spironolacton", "=7"],
+      "B,A": ["G3", "O1", "V5", "|", "N1", "|", "B3>spironolacton", "V6>lisinopril>halveren", "|", "N3", "Ev1", "O2", "|", "O1", "B1>V8", V6_V8,
+        "|", "Ev1", "Ev2>spironolacton", "=7"]
+    }, fout(["I7"], VRAAG.I7kalium), "fout", { "B,A": fout(["I7"], VRAAG.I7halveren) });
   e3("E3-fout-I8", "Amoxicilline (resistent) na de uitslag laten doorlopen; verwijzen om I16 uit te sluiten",
     [["V4", "V10"], ["B1>V8", "G1"], [V6_V8, "G1"], { eind: ["Ev3"] }], fout(["I8"], VRAAG.I8), "fout");
   e3("E3-fout-I9-geen-O2-Ev2", "Geen O2 en geen Ev2 op spironolacton", [["O2", "G1"], ["Ev2>spironolacton", "G1"]], fout(["I9"], VRAAG.I9, [ZICHT.I9]), "fout");
@@ -317,7 +323,7 @@
   }
   function planVan(route, sleutel) { return (route.plannen && route.plannen[sleutel]) || route.plan; }
   function speel(route, volgorde) {
-    var casus = g.Test.zonderLimiet(), rngWaarde = volgorde.rng;
+    var casus = g.Test.oudeRegels(), rngWaarde = volgorde.rng;
     var state = g.Engine.nieuwSpel(casus, route.ep, { rng: function () { return rngWaarde; } });
     planVan(route, volgorde.sleutel).forEach(function (tok, i) {
       var s = stap(tok), wat = "route " + route.id + " (" + volgorde.sleutel + "), stap " + (i + 1) + " '" + tok + "'";

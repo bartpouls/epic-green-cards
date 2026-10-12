@@ -93,7 +93,7 @@
     T.is(effectVoor(kaarten.filter(function (x) { return x.id === "G2"; })[0], "E1"), e.patient.zichtbaar.labTekst, "G2-effect in E1 gelijk aan de lab-regel van de patiëntkaart");
   });
   reg("E1-2 knoppen (raadplegenKost 0), geen episode.raadplegen en geen gebeurtenissen", function (e) {
-    T.gelijk(e.knoppen, { actiesPerBeurt: 3, aantalDagen: 5, raadplegenKost: 0 });
+    T.gelijk(e.knoppen, { actiesPerBeurt: 3, aantalDagen: 14, raadplegenKost: 0 });
     T.gelijk(e.gebeurtenissen, []);
     T.waar(!("raadplegen" in e), "raadplegen staat alleen op casusniveau (S1), niet in episode 1");
     T.is(e.knoppen.raadplegenKost, 0, "casus: richtlijn raadplegen kost niets");
@@ -364,7 +364,8 @@
   // Exacte sleutelwhitelist: elk object in de episode heeft PRECIES de sleutels hieronder (TODO_BART* wordt apart gepind in S-TODO).
   // Een extra veld (bv. een hint voor de student) of een ontbrekend veld in welk object ook geeft rood.
   var SLEUTELS = {
-    "E1": ["id", "level", "startToestanden", "knoppen", "antibiotica", "patient", "repertoire", "gebeurtenissen", "werkzaamheid", "statusTeksten", "invarianten", "score", "profielen", "feedbackExtra", "zichtbaarAlsOntbreekt"],
+    "E1": ["id", "level", "startToestanden", "knoppen", "afrondenPasNaGebeurtenissen", "startUitleg", "escalatie", "antibiotica", "patient", "repertoire", "gebeurtenissen", "werkzaamheid", "statusTeksten", "invarianten", "score", "profielen", "feedbackExtra", "zichtbaarAlsOntbreekt"],
+    "E1.escalatie": ["aan", "dagen"],
     "E1.knoppen": ["actiesPerBeurt", "aantalDagen", "raadplegenKost"],
     "E1.patient": ["zichtbaar", "waar", "medicatie", "verborgen", "meta"],
     "E1.patient.zichtbaar": ["kop", "naam", "leeftijd", "klachten", "medicatie", "medicatieTekst", "lab", "labTekst"],

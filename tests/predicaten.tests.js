@@ -166,6 +166,20 @@
     T.is(ev({ p: "binnenBeurten", K: K("A", "d1", "o1"), naGebeurtenis: "E", n: 2 }, c), true);
     T.is(ev({ p: "binnenBeurten", K: K("A", "d2"), naGebeurtenis: "E", n: 2 }, c), false);
   });
+  t("actiefNaDagen: middel nog actief aan het einde van dag(anker)+na; wie eerder stopt of wisselt valt erbuiten", function () {
+    function a(na, tl) { return ev({ p: "actiefNaDagen", middel: "Q1", anker: K("Q1"), na: na }, mk(tl)); }
+    // Q1 start op dag 1; actief aan het einde van dag 1+na?
+    T.is(a(2, [R(1, "Q1", 1)]), true, "nooit gestopt");
+    T.is(a(2, [R(1, "Q1", 1), R(2, "B2", 3, "Q1")]), false, "gestopt op dag 3 = einde van dag 3 niet meer actief");
+    T.is(a(2, [R(1, "Q1", 1), R(2, "B2", 4, "Q1")]), true, "gestopt op dag 4: aan het einde van dag 3 nog actief");
+    T.is(a(3, [R(1, "Q1", 1), R(2, "B2", 4, "Q1")]), false, "na=3: einde van dag 4");
+    T.is(a(2, [R(1, "Q1", 1), R(2, "B1", 3, "Q2")]), false, "vervangen via de wissel-kaart op dag 3");
+    T.is(a(0, [R(1, "Q1", 1)]), true, "na=0: einde van de startdag");
+    T.is(ev({ p: "actiefNaDagen", middel: "Q1", anker: K("Q3"), na: 2 }, mk([R(1, "Q1", 1)])), false, "anker niet gespeeld");
+    T.is(ev({ p: "actiefNaDagen", middel: "Q1", anker: { start: "Q1" }, na: 2 }, mk([R(1, "Q2", 1), R(2, "B1", 2, "Q1")])), true, "start via wissel op dag 2: einde van dag 4 nog actief");
+    T.gooit(function () { ev({ p: "actiefNaDagen", middel: "Q1", anker: K("Q1") }, mk([])); }, "na ontbreekt");
+    T.gooit(function () { ev({ p: "actiefNaDagen", middel: "Q9", anker: K("Q1"), na: 1 }, mk([])); }, "geen antibioticum");
+  });
   t("binnenBeurtenNaKaart: venster vanaf de dag van de eerste ankerkaart (n=1 is dezelfde beurt)", function () {
     function b(dag, n) { return ev({ p: "binnenBeurtenNaKaart", K: K("B"), naKaart: K("A"), n: n }, mk([R(1, "A", 2), R(2, "B", dag)])); }
     T.is(b(2, 1), true); T.is(b(3, 1), false); T.is(b(3, 2), true); T.is(b(4, 2), false); T.is(b(1, 2), false);
@@ -1552,7 +1566,7 @@
   });
   t("Predicaten.tellerNamen en namen zijn precies de ondersteunde namen", function () {
     T.gelijk(P.tellerNamen.slice().sort(), ["aantalActieveAntibiotica", "gespeeld"]);
-    T.gelijk(P.namen.slice().sort(), ["actief", "aantalActieveAntibiotica", "binnenBeurten", "binnenBeurtenNaKaart", "en", "gebeurtenisGeweest", "gespeeld",
+    T.gelijk(P.namen.slice().sort(), ["actief", "actiefNaDagen", "aantalActieveAntibiotica", "binnenBeurten", "binnenBeurtenNaKaart", "en", "gebeurtenisGeweest", "gespeeld",
       "gestart", "inToestand", "klachten", "medicatieActief", "na", "niet", "nietGespeeld", "of", "alsDan", "opDagRelatief", "tel", "voor", "waar", "waarheid"].sort());
     P.tellerNamen.forEach(function (n) { T.is(typeof n, "string"); });
   });

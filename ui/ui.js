@@ -170,6 +170,15 @@
     return "";
   }
 
+  // "Klachten houden aan: dag 1, 2, 3." als de escalatie aan staat en de klachten aanhouden; anders null. De tekst staat in de data.
+  function aanhoudendTekst(ep, kl) {
+    var ec = ep && ep.escalatie, n = kl && kl.reeks;
+    if (!ec || !ec.aan || !ec.waarschuwing || !(n > 0)) return null;
+    var dagen = [];
+    for (var i = 1; i <= n; i++) dagen.push(i);
+    return ec.waarschuwing + " " + dagen.join(", ") + ".";
+  }
+
   // Tijdlijn: voor elke dag tot en met de huidige: banners, klachtenstatus, gespeelde kaarten en raadplegingen.
   function dagenModel(casus, ep, state) {
     var uit = [];
@@ -181,6 +190,7 @@
         banners: lijst(state.gebeurtenissen).filter(function (x) { return x.dag === d; })
           .map(function (x) { return { id: x.id, tekst: gebeurtenisTekst(ep, x.id) }; }),
         status: kl && kl.tekst ? kl.tekst : null,
+        waarschuwing: aanhoudendTekst(ep, kl),
         kaarten: lijst(state.tijdlijn).filter(function (r) { return r.dag === d; }).map(function (r) {
           return { volg: r.volg, kaart: r.kaart, titel: regelTitel(casus, ep, r), na: naSpelenTekst(casus, ep, state, r.kaart) };
         }),
@@ -450,6 +460,7 @@
       app.ep = ep;
       app.uitkomst = null;
       naarScherm("spel");
+      if (ep.startUitleg) { app.dialoog = { type: "start", tekst: ep.startUitleg }; app.fokus = "dlg-eerste"; render(); }
     } catch (e) {
       app.melding = (e && e.message) || "De episode kon niet starten.";
       app.downloadFout = true;
@@ -589,6 +600,15 @@
     );
   }
 
+  // "Uitslag verwacht op dag X." zodra een gebeurtenis op tijd is aangekondigd (tekst uit de data).
+  function verwachtView() {
+    var lijstV = [];
+    try { lijstV = g.Engine.komend(app.spel); } catch (e) { lijstV = []; }
+    var regels = lijstV.filter(function (v) { return v.tekst; });
+    if (!regels.length) return null;
+    return h("p", { klasse: "info", id: "verwacht", role: "status" }, regels.map(function (v) { return v.tekst + " op dag " + v.dag + "."; }).join(" "));
+  }
+
   function nieuwVandaagView() {
     var st = app.spel, dagen = dagenModel(app.casus, app.ep, st), nu = dagen[dagen.length - 1];
     var heeft = nu.banners.length || nu.status;
@@ -598,6 +618,9 @@
         return h("p", { klasse: "banner", role: "status", "data-gebeurtenis": b.id }, b.tekst);
       }),
       nu.status ? h("p", { klasse: "klachtenstatus", "data-status": "ja" }, h("span", { klasse: "kopje" }, "Patiënt: "), nu.status) : null,
+      nu.waarschuwing ? h("p", { klasse: "waarschuwing", role: "status", id: "aanhoudend" }, nu.waarschuwing,
+        app.ep.escalatie && app.ep.escalatie.uitleg ? " " + app.ep.escalatie.uitleg : null) : null,
+      verwachtView(),
       !heeft ? h("p", { klasse: "uitleg" }, "Kies een kaart om te spelen.") : null
     );
   }
@@ -612,6 +635,7 @@
           h("h3", null, "Dag " + d.dag),
           d.banners.map(function (b) { return h("p", { klasse: "banner klein", "data-gebeurtenis": b.id }, b.tekst); }),
           d.status ? h("p", { klasse: "klachtenstatus klein" }, h("span", { klasse: "kopje" }, "Patiënt: "), d.status) : null,
+          d.waarschuwing ? h("p", { klasse: "waarschuwing klein" }, d.waarschuwing) : null,
           d.kaarten.length || d.raadplegingen ? h("ol", { klasse: "gespeeld" },
             d.kaarten.map(function (k) {
               return h("li", { "data-gespeeld": k.kaart },
@@ -658,7 +682,14 @@
 
   function dialoogView() {
     var d = app.dialoog, titel, inhoud;
-    if (d.type === "raadplegen") {
+    if (d.type === "start") {
+      titel = "Episode " + episodeNummer(app.casus, app.ep);
+      inhoud = [
+        h("p", null, "Deze episode duurt " + app.spel.aantalDagen + " dagen. Elke dag kun je een aantal kaarten spelen."),
+        h("p", { id: "start-uitleg" }, d.tekst),
+        fokusMarkeer(knop("Begin", { klasse: "knop hoofd", id: "btn-begin" }, sluitDialoog), "dlg-eerste")
+      ];
+    } else if (d.type === "raadplegen") {
       titel = d.model.titel;
       inhoud = [
         h("ul", { klasse: "bronnen" }, d.model.bronnen.map(function (b) {
@@ -700,6 +731,12 @@
   }
 
   /* ---------- eind ---------- */
+
+  function legeDagenTekst() {
+    var n = 0, van = app.spel ? app.spel.dag : 0;
+    try { n = g.Engine.legeDagen(app.spel); } catch (e) { n = 0; }
+    return n + " van " + van + ".";
+  }
 
   function eindScherm() {
     var m = evaluatieModel(app.uitkomst), epNr = episodeNummer(app.casus, app.ep);
@@ -749,6 +786,7 @@
         h("h2", { id: "ds-kop" }, "Wat je keuzes kosten"),
         downsideLijst("Gespeelde kaarten", gespeeld), downsideLijst("Niet gespeelde kaarten", weg)) : null,
       kern,
+      h("p", { klasse: "uitleg", id: "legedagen" }, "Dagen zonder actie: " + legeDagenTekst()),
       meldingView(),
       h("p", { klasse: "onderknoppen" }, exportKnop(),
         m.gehaald ? knop("Deze episode opnieuw spelen", { id: "btn-nogmaals", klasse: "knop rand" }, function () { startEpisode(app.ep.id); }) : null)
@@ -776,7 +814,7 @@
     episodeOverzicht: episodeOverzicht, kaartenPerCategorie: kaartenPerCategorie, toegestaneDoelen: toegestaneDoelen,
     isDoelkaart: isDoelkaart, optiesVoor: optiesVoor, regelTitel: regelTitel, naSpelenTekst: naSpelenTekst,
     dagenModel: dagenModel, patientVelden: patientVelden, evaluatieModel: evaluatieModel, raadpleegModel: raadpleegModel,
-    opslagMelding: opslagMelding, actieDots: actieDots, doelLabel: doelLabel,
+    aanhoudendTekst: aanhoudendTekst, opslagMelding: opslagMelding, actieDots: actieDots, doelLabel: doelLabel,
     nadeelTekst: nadeelTekst, anderenZin: anderenZin, gespeeldeKaarten: gespeeldeKaarten,
     _rng: null,                                       // alleen voor tests: vaste toevalsbron voor de volgorde van opties
     _toestand: function () { return app; }            // alleen voor tests

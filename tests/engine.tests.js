@@ -115,7 +115,7 @@
     "use strict", "undefined" /* alleen buiten de modulefunctie: typeof window */, "function", "object", "string", "number", ".",                       // taal en typeof
     "_casus", "_opties", "rng", "_bron", "poortGehaald", "TODO_BART", "statusTeksten",              // vaste sleutels (contract / engine)
     "actief", "af", "aan", "geenVerbetering48",                                                    // predicaat- en statuswaarden (contract 3, 3b)
-    "naKaart", "naAantalKaarten", "naKaartVanKaart",                                               // triggertypes (contract 4b)
+    "naKaart", "naAantalKaarten", "naKaartVanKaart", "naDagenNaKaart",                                               // triggertypes (contract 4b)
     "De regeltaal (Predicaten) is niet geladen.", "De beoordeling (Evaluatie) is niet geladen.",    // foutmeldingen (Nederlands, engine-eigen)
     "De casus bij dit spel is niet gevonden.", "De episode bij dit spel is niet gevonden.", "Onbekende episode: ",
     "De episode mist de knoppen (actiesPerBeurt, aantalDagen) in de data.",
@@ -133,7 +133,7 @@
   ];
   var TOEGESTANE_EIGENSCHAPPEN = [
     // contract- en state-velden
-    "AB", "CASUSSEN", "Engine", "Evaluatie", "Predicaten", "_casus", "_opties", "aantalDagen", "actief", "actiesOver", "actiesPerBeurt", "afgerond",
+    "AB", "CASUSSEN", "aan", "dagen", "escalatie", "doelEvent", "nummer", "reeks", "aankondiging", "Engine", "Evaluatie", "Predicaten", "_casus", "_opties", "aantalDagen", "actief", "actiesOver", "actiesPerBeurt", "afgerond",
     "afrondenPasNaGebeurtenissen", "alleenAlsGespeeld", "als", "antibiotica", "beoordeel", "bronnen", "casusId", "dag", "dagenVoorbij", "doel", "doelen",
     "doelkaart", "episodeId", "episodes", "evalueer", "gebeurtenissen", "geschonden", "gevoelig", "groep", "groepen", "id", "kaart", "kaarten",
     "klachten", "knoppen", "label", "limiet", "maakContext", "naVolg", "onthuld", "onthult", "optie", "opties", "patient", "poortGehaald", "raadplegen",
@@ -1050,7 +1050,7 @@
       // Nooit stil terugkeren: ontbreekt de echte regeltaal of de echte data, dan is deze test ROOD (niet groen zonder bewijs).
       T.waar(!!g.Predicaten && typeof g.Predicaten.evalueer === "function", "echte regeltaal (regels/predicaten.js, window.Predicaten) ontbreekt: deze test bewijst niets en is daarom rood");
       T.waar(!!g.CASUSSEN && !!g.CASUSSEN[0] && Array.isArray(g.CASUSSEN[0].episodes) && g.CASUSSEN[0].episodes.length > 0, "echte casusdata (window.CASUSSEN[0].episodes uit casussen/uwi*.js) ontbreekt: deze test bewijst niets en is daarom rood");
-      fn(g.Test.zonderLimiet());
+      fn(g.Test.oudeRegels());
     });
   }
   function ep(c, id) { return c.episodes.filter(function (e) { return e.id === id; })[0]; }
@@ -1106,7 +1106,7 @@
     T.gelijk(zonder.sets.resistent, []);
     var laat = spel(c, "E2"); iedereen(laat, ["G1", "G2", "V4", "|", "N1", "O1", "|"]);
     T.gelijk(laat.gebeurtenissen, [], "O1 pas als 5e kaart: C komt niet (meest letterlijke lezing, TODO_BART in data)");
-    T.waar(/O1 pas na de 4e kaart/.test(cdef.TODO_BART), "W1 staat als TODO_BART in de data");
+    T.waar(/Barts keuze/.test(cdef.TODO_BART), "de 3 dagen staan als TODO_BART in de data (oude timing)");
   });
 
   echt("E2: V6 vereist een gestart middel/actieve comedicatie via de echte vereist-predicaten, en een optie", function (c) {

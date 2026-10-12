@@ -7,7 +7,7 @@
   var T = g.Test;
   var VOORSCHRIJF = ["V1", "V2", "V3", "V4", "V5"];
 
-  function casus() { return g.CASUSSEN && g.CASUSSEN[0] && g.Test.zonderLimiet(); }
+  function casus() { return g.CASUSSEN && g.CASUSSEN[0]; }
   function e2() {
     var c = casus();
     if (!c) throw new Error("casussen/uwi.js ontbreekt of heeft geen casus: window.CASUSSEN[0] bestaat niet. Laad uwi.js vóór uwi-e2.js.");
@@ -28,8 +28,8 @@
   function zonderO1(v) { return { p: "en", args: [{ p: "gespeeld", kaart: v }, { p: "niet", arg: { p: "voor", a: { kaart: "O1" }, b: { kaart: "V" + v.slice(1) } } }] }; }
   var KWEEK_ALS = { p: "of", args: [zonderO1("V3"), zonderO1("V4"), zonderO1("V5")] };
   var AFWACHTEN_ALS = { p: "of", args: [{ p: "gespeeld", kaart: "V1" }, { p: "gespeeld", kaart: "V2" }, GEEN_ANTIBIOTICUM] };
-  var I7_O2 = { p: "niet", arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 1, tot: 3 } };
-  var I7_V6 = { p: "niet", arg: { p: "opDagRelatief", kaart: "V6", doel: "V5", optie: "halveren", anker: { start: "V5" }, van: 3 } };
+  var I7_O2 = { p: "en", args: [{ p: "actiefNaDagen", middel: "V5", anker: { start: "V5" }, na: 2 }, { p: "niet", arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 1, tot: 3 } }] };
+  var I7_V6 = { p: "en", args: [{ p: "actiefNaDagen", middel: "V5", anker: { start: "V5" }, na: 3 }, { p: "niet", arg: { p: "opDagRelatief", kaart: "V6", doel: "V5", optie: "halveren", anker: { start: "V5" }, van: 3 } }] };
   function bibliotheek() { var k = casus() && casus().kaarten; return k && k.length ? k : null; }
 
   // Alle predicaten van de episode, met een pad (voor foutmeldingen).
@@ -119,7 +119,7 @@
     });
   });
   reg("E2-2 knoppen, antibiotica en begintoestand", function (e) {
-    T.gelijk(e.knoppen, { actiesPerBeurt: 3, aantalDagen: 7, raadplegenKost: 0 });
+    T.gelijk(e.knoppen, { actiesPerBeurt: 3, aantalDagen: 14, raadplegenKost: 0 });
     T.waar(e.raadplegen === undefined, "raadplegen staat alleen op casusniveau (contract §4), niet in de episode");
     T.gelijk(e.antibiotica, ["V3", "V4", "V5"]);
     T.gelijk(e.startToestanden, ["cystitis"]);
@@ -129,9 +129,10 @@
     T.is(e.gebeurtenissen[0].id, "C");
     T.waar(e.gebeurtenissen[0].groep === undefined, "C hoort niet in een groep");
   });
-  reg("E2-2 gebeurtenis C: trigger na de 4e kaart, alleen als O1 gespeeld is", function (e) {
+  reg("E2-2 gebeurtenis C: trigger 3 dagen na O1", function (e) {
     var c = e.gebeurtenissen[0];
-    T.gelijk(c.trigger, { type: "naKaart", n: 4, alleenAlsGespeeld: "O1" });
+    // Echte data: 3 dagen na Urinekweek inzetten (iteratie 1). De oude regels (na de 4e kaart) staan in Test.oudeRegels().
+    T.gelijk(c.trigger, { type: "naDagenNaKaart", kaart: "O1", dagen: 3 });
     T.is(c.titel, "Kweekuitslag");
   });
   reg("E2-2 gebeurtenis C: tekst letterlijk en zet resistent/gevoelig", function (e) {
@@ -242,9 +243,11 @@
     T.gelijk(p.args[1], { p: "gestart", middel: "V5" });
     var of_ = p.args[2];
     T.is(of_.p, "of");
-    T.gelijk(of_.args[0], { p: "niet", arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 1, tot: 3 } });
-    T.gelijk(of_.args[1], { p: "niet", arg: { p: "opDagRelatief", kaart: "V6", doel: "V5", optie: "halveren", anker: { start: "V5" }, van: 3 } });
-    T.waar(of_.args[1].arg.tot === undefined, "'vanaf dag 3' heeft geen bovengrens");
+    // Casus 1.2: de kaliumcontrole en het halveren gelden alleen als trimethoprim nog actief is (de 7-daagse kuur): wie het middel op
+    // kuurdag 3 of eerder vervangt of stopt, krijgt geen schending. Kalium: actief aan het einde van start+2; halveren: start+3.
+    T.gelijk(of_.args[0], I7_O2);
+    T.gelijk(of_.args[1], I7_V6);
+    T.waar(of_.args[1].args[1].arg.tot === undefined, "'vanaf dag 3' heeft geen bovengrens");
     T.waar(typeof vindInv(e, "I7").TODO_BART === "string", "I7 heeft TODO_BART (dag-lezing)");
   });
   reg("E2-3 predicaat I8: na C nog een resistent middel actief aan het einde van beurt 2 (dag van C + 1) bij klachten 'aan'", function (e) {
@@ -260,7 +263,7 @@
     T.waar(typeof i8.TODO_BART === "string", "I8 heeft TODO_BART (grens)");
   });
   reg("E2-3 alle predicaten gebruiken bekende predicaatnamen met geldige velden", function (e) {
-    var bekend = ["gespeeld", "nietGespeeld", "voor", "na", "binnenBeurten", "opDagRelatief", "gestart", "actief",
+    var bekend = ["gespeeld", "nietGespeeld", "voor", "na", "binnenBeurten", "opDagRelatief", "gestart", "actief", "actiefNaDagen",
       "aantalActieveAntibiotica", "medicatieActief", "waar", "inToestand", "gebeurtenisGeweest", "klachten", "tel", "en", "of", "niet", "alsDan", "waarheid"];
     var ops = ["<", "<=", ">", ">=", "==", "=", "!="];
     var n = 0;
@@ -445,7 +448,7 @@
     T.waar(e.ontwerpnoot === undefined && e.patient.ontwerpnoot === undefined, "ontwerpnoot is verzonnen tekst");
     T.gelijk(e.patient.meta, { medicatieNoot: "afleider, bereidt episode 3 voor" });
     e.patient.verborgen.forEach(function (v) { T.waar(v.toelichting === undefined, "toelichting hoort onder meta"); });
-    T.gelijk(Object.keys(e).sort(), ["antibiotica", "feedbackExtra", "gebeurtenissen", "id", "invarianten", "knoppen", "level", "meta", "patient", "profielen", "repertoire", "score", "startToestanden", "statusTeksten", "titel", "werkzaamheid", "zichtbaarAlsOntbreekt"]);
+    T.gelijk(Object.keys(e).sort(), ["afrondenPasNaGebeurtenissen", "antibiotica", "escalatie", "feedbackExtra", "gebeurtenissen", "id", "invarianten", "knoppen", "level", "meta", "patient", "profielen", "repertoire", "score", "startToestanden", "startUitleg", "statusTeksten", "titel", "werkzaamheid", "zichtbaarAlsOntbreekt"]);
   });
   reg("S-TODO: de drie extra onduidelijkheden zijn gemeld (route zonder antibioticum, vroeg afronden vs I8, I7 bij vroege wissel) en de dag-lezing noemt beide lezingen", function (e) {
     var lijst = casus().todoBart.filter(function (t) { return /^TODO_BART-E2-/.test(t.id); });
@@ -477,8 +480,14 @@
   });
 
   // Speelt een route: elke 'dag' is een lijst [kaart, doel, optie]; tussen de dagen volgendeDag.
-  function route(dagen) {
-    var st = g.Engine.nieuwSpel(casus(), "E2", { rng: function () { return 0; } });
+  // I7-routes: zonder kweekuitslag, zodat I8 het kalium-/halveren-gedrag niet overlapt (de timing van C wordt apart getoetst).
+  var zonderKweek = null;
+  function routeI7(dagen) {
+    if (!zonderKweek) { zonderKweek = JSON.parse(JSON.stringify(g.Test.oudeRegels())); zonderKweek.episodes.forEach(function (x) { if (x.id === "E2") x.gebeurtenissen = []; }); }
+    return route(dagen, zonderKweek);
+  }
+  function route(dagen, casusData) {
+    var st = g.Engine.nieuwSpel(casusData || g.Test.oudeRegels(), "E2", { rng: function () { return 0; } });
     dagen.forEach(function (kaarten, d) {
       if (d > 0) g.Engine.volgendeDag(st);
       kaarten.forEach(function (k) {
@@ -522,22 +531,28 @@
   reg("E2-route (I7): O2 op verschil 3 (dag 4) slaagt nog; O2 op verschil 4 (dag 5) en O2 vóór V5 (verschil −1) falen met de kalium-vraag", function (e) {
     vereisEngine();
     function mijn(o2dag) {
-      var dagen = [[["G2"], ["O1"], ["V5"]], [["N1"]], [["B1", "V4"]], [["V6", "V5", "halveren"]], []];
+      // V5 blijft actief tot dag 4: de 7-daagse kuur, dus de kaliumcontrole telt (casus 1.2). Wisseling op dag 4: geen halveren nodig.
+      var dagen = [[["G2"], ["O1"], ["V5"]], [["N1"]], [], [["B1", "V4"]], []];
       dagen[o2dag - 1].push(["O2"]);
-      return schending(route(dagen), e);
+      return schending(routeI7(dagen), e);
     }
     T.gelijk(mijn(4).ids, []);
     T.gelijk(mijn(5).ids, ["I7"]); T.is(mijn(5).vraag, VR_KALIUM);
-    var nul = route([[["G2"], ["O1"], ["O2"]], [["V5"], ["N1"]], [["B1", "V4"]], [["V6", "V5", "halveren"]]]);
+    var nul = routeI7([[["G2"], ["O1"], ["O2"]], [["V5"], ["N1"]], [], [], [["B1", "V4"]]]);
     T.gelijk(schending(nul, e).ids, ["I7"]);
+    // Casus 1.2: wie trimethoprim op dag 3 vervangt (geen 7-daagse kuur), krijgt geen schending, ook zonder O2 en zonder halveren.
+    var vroegWissel = routeI7([[["G2"], ["O1"], ["V5"]], [["N1"]], [["B1", "V4"]]]);
+    T.gelijk(schending(vroegWissel, e).ids, [], "wissel op dag 3");
+    var vroegStop = routeI7([[["G2"], ["O1"], ["V5"]], [["N1"]], [["B2", "V5"]]]);
+    T.gelijk(schending(vroegStop, e).ids, [], "stoppen op dag 3");
   });
   reg("E2-route (I7): V6 halveren op verschil 2 (dag 3) of 'verdubbelen' faalt met de halveren-vraag; zonder beide eerst de kalium-vraag", function (e) {
     vereisEngine();
-    var vroeg = route([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [["B1", "V4"], ["V6", "V5", "halveren"]]]);
+    var vroeg = routeI7([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [["V6", "V5", "halveren"]], [], [["B1", "V4"]]]);
     var s1 = schending(vroeg, e); T.gelijk(s1.ids, ["I7"]); T.is(s1.vraag, VR_HALVEREN);
-    var geen = route([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [["B1", "V4"]]]);
+    var geen = routeI7([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [], [], [["B1", "V4"]]]);
     var s2 = schending(geen, e); T.gelijk(s2.ids, ["I7"]); T.is(s2.vraag, VR_HALVEREN);
-    var niets = route([[["G2"], ["O1"], ["V5"]], [["N1"]], [["B1", "V4"]]]);
+    var niets = routeI7([[["G2"], ["O1"], ["V5"]], [["N1"]], [], [], [["B1", "V4"]]]);
     var s3 = schending(niets, e); T.gelijk(s3.ids, ["I7"]); T.is(s3.vraag, VR_KALIUM);
   });
   reg("E2-route (I6): vraagkeuze geen kweek vs afwachten en route zonder antibioticum", function (e) {
@@ -581,19 +596,19 @@
   });
   reg("E2-route (I7, rand): O2 op dezelfde dag als V5 (verschil 0) faalt met de kalium-vraag; op de dag erna slaagt", function (e) {
     vereisEngine();
-    var zelfde = schending(route([[["G2"], ["O1"], ["N1"]], [["V5"], ["O2"]], [["B1", "V4"]], [], [["V6", "V5", "halveren"]]]), e);
+    var zelfde = schending(routeI7([[["G2"], ["O1"], ["N1"]], [["V5"], ["O2"]], [], [], [["V6", "V5", "halveren"]], [["B1", "V4"]]]), e);
     T.gelijk(zelfde.ids, ["I7"]); T.is(zelfde.vraag, VR_KALIUM);
-    T.gelijk(schending(route([[["G2"], ["O1"], ["N1"]], [["V5"]], [["B1", "V4"], ["O2"]], [], [["V6", "V5", "halveren"]]]), e).ids, [], "O2 een dag na V5");
+    T.gelijk(schending(routeI7([[["G2"], ["O1"], ["N1"]], [["V5"]], [["O2"]], [], [["V6", "V5", "halveren"]], [["B1", "V4"]]]), e).ids, [], "O2 een dag na V5");
   });
   reg("E2-route (I7): V6 op V5 met een andere optie dan halveren, of halveren op een ander doel (lisinopril), telt niet: halveren-vraag", function (e) {
     vereisEngine();
     ["verdubbelen", "interval 48 uur"].forEach(function (optie) {
-      var r = schending(route([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [["B1", "V4"]], [["V6", "V5", optie]]]), e);
+      var r = schending(routeI7([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [], [["V6", "V5", optie]], [["B1", "V4"]]]), e);
       T.gelijk(r.ids, ["I7"], "V6 " + optie); T.is(r.vraag, VR_HALVEREN, "V6 " + optie);
     });
-    var anders = schending(route([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [["B1", "V4"]], [["V6", "lisinopril", "halveren"]]]), e);
+    var anders = schending(routeI7([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [], [["V6", "lisinopril", "halveren"]], [["B1", "V4"]]]), e);
     T.gelijk(anders.ids, ["I7"], "V6 halveren op lisinopril"); T.is(anders.vraag, VR_HALVEREN);
-    var goed = schending(route([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [["B1", "V4"]], [["V6", "lisinopril", "halveren"], ["V6", "V5", "halveren"]]]), e);
+    var goed = schending(routeI7([[["G2"], ["O1"], ["V5"]], [["O2"], ["N1"]], [], [["V6", "lisinopril", "halveren"], ["V6", "V5", "halveren"]], [["B1", "V4"]]]), e);
     T.gelijk(goed.ids, [], "V6 op lisinopril ernaast verstoort de V5-eis niet");
   });
   reg("E2-route (A5): regels rekenen met de ware eGFR 29, ook zonder G2", function (e) {
@@ -609,12 +624,12 @@
   });
   reg("E2-route (I7, anker via wissel): trimethoprim gestart via B1 naar V5 telt als start: O2 + V6 halveren op tijd slaagt", function (e) {
     vereisEngine();
-    var goed = route([[["G2"], ["O1"], ["V4"]], [["N1"], ["B1", "V5"]], [["O2"]], [["B1", "V4"]], [["V6", "V5", "halveren"]]]);
+    var goed = routeI7([[["G2"], ["O1"], ["V4"]], [["N1"], ["B1", "V5"]], [["O2"]], [], [["V6", "V5", "halveren"]], [["B1", "V4"]]]);
     T.gelijk(schending(goed, e).ids, [], "B1 naar V5 op dag 2, O2 dag 3, V6 halveren dag 5");
   });
   reg("E2-route (I7, anker via wissel): zonder O2 na een start via B1 naar V5 schendt precies I7 met de kalium-vraag", function (e) {
     vereisEngine();
-    var r = schending(route([[["G2"], ["O1"], ["V4"]], [["N1"], ["B1", "V5"]], [], [["B1", "V4"]], [["V6", "V5", "halveren"]]]), e);
+    var r = schending(routeI7([[["G2"], ["O1"], ["V4"]], [["N1"], ["B1", "V5"]], [], [], [["V6", "V5", "halveren"]], [["B1", "V4"]]]), e);
     T.gelijk(r.ids, ["I7"]); T.is(r.vraag, VR_KALIUM);
   });
   reg("E2-route (I7, anker via wissel): O2 op dezelfde dag als de wissel naar V5 (verschil 0) schendt precies I7", function (e) {
@@ -789,7 +804,7 @@
   });
   reg("E2-knoppen (Engine + E2-data): maximaal 3 acties per beurt en alleen kaarten uit het repertoire van E2", function (e) {
     vereisEngine();
-    var st = g.Engine.nieuwSpel(casus(), "E2", { rng: function () { return 0; } });
+    var st = g.Engine.nieuwSpel(g.Test.oudeRegels(), "E2", { rng: function () { return 0; } });
     ["G2", "O1", "V4"].forEach(function (k) { T.waar(g.Engine.speelKaart(st, k).ok, k); });
     var vierde = g.Engine.speelKaart(st, "N1", {});
     T.is(vierde.ok, false); T.waar(typeof vierde.fout === "string" && vierde.fout.length > 0, "Nederlandse foutmelding bij de 4e actie");
@@ -820,7 +835,7 @@
   });
   reg("E2-Engine: V6 op trimethoprim vereist dat trimethoprim gestart is; na C staan resistent/gevoelig in state.sets", function (e) {
     vereisEngine();
-    var st = g.Engine.nieuwSpel(casus(), "E2", { rng: function () { return 0; } });
+    var st = g.Engine.nieuwSpel(g.Test.oudeRegels(), "E2", { rng: function () { return 0; } });
     var nee = g.Engine.speelKaart(st, "V6", { doel: "V5", optie: "halveren" });
     T.is(nee.ok, false, "V6 op V5 vóór de start van V5"); T.is(st.tijdlijn.length, 0);
     var anders = g.Engine.speelKaart(st, "V6", { doel: "V4", optie: "halveren" });
@@ -829,7 +844,7 @@
     var s2 = route([dag1(["V4"]), [["N1"], ["N2", "V4"]], [["Ev1"]]]);
     T.gelijk(s2.sets.resistent.slice().sort(), ["V10", "V5"]);
     T.gelijk(s2.sets.gevoelig.slice().sort(), ["V3", "V4", "V7", "V8"]);
-    var s0 = g.Engine.nieuwSpel(casus(), "E2", { rng: function () { return 0; } });
+    var s0 = g.Engine.nieuwSpel(g.Test.oudeRegels(), "E2", { rng: function () { return 0; } });
     T.gelijk(s0.sets.resistent, []); T.gelijk(s0.sets.gevoelig, []);
   });
   reg("E2-route (I8, predicaat los): zonder kweekuitslag C is het I8-predicaat zelf onwaar, ook als trimethoprim blijft doorlopen (de geldtIn-poort is niet de enige bewaker)", function (e) {
@@ -875,7 +890,7 @@
   });
   reg("E2-compat: Engine start E2 en G2 onthult eGFR 29 (A5: pas na de kaart); de ware waarde blijft 29", function (e) {
     vereisEngine();
-    var st = g.Engine.nieuwSpel(casus(), "E2", { rng: function () { return 0; } });
+    var st = g.Engine.nieuwSpel(g.Test.oudeRegels(), "E2", { rng: function () { return 0; } });
     T.gelijk(st.toestanden, ["cystitis"]);
     T.is(st.actiesOver, 3);
     T.is(st.aantalDagen, 7);
@@ -893,7 +908,7 @@
   reg("E2-compat: kweekuitslag C komt na de 4e kaart alleen als O1 gespeeld is (zelfde trigger als de data)", function (e) {
     vereisEngine();
     function speel(kaarten) {
-      var st = g.Engine.nieuwSpel(casus(), "E2", { rng: function () { return 0; } });
+      var st = g.Engine.nieuwSpel(g.Test.oudeRegels(), "E2", { rng: function () { return 0; } });
       kaarten.forEach(function (k) {
         if (st.actiesOver < 1) g.Engine.volgendeDag(st);
         var r = g.Engine.speelKaart(st, k.kaart, k);
