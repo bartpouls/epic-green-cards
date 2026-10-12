@@ -21,7 +21,29 @@
     } catch (e) { UI = null; }
   }
 
-  function test(naam, fn) { T.registreer(GROEP, naam, fn); }
+  // LEAD-aanpassing: in een echte browser is `window.document` alleen-lezen, dus de nep-DOM-tests (die document vervangen)
+  // draaien alleen in Node; in de browser draait in plaats daarvan 'UI in echte DOM' (rooktest) hieronder.
+  var IN_BROWSER = typeof document !== "undefined" && document && document.nodeType === 9 && typeof process === "undefined";
+  function test(naam, fn) {
+    if (IN_BROWSER && /metNepDom\(/.test(String(fn))) return; // nep-DOM-test: alleen in Node (zie boven)
+    T.registreer(GROEP, naam, fn);
+  }
+  // Rooktest in een ECHTE browser-DOM (alleen in de browser): start het echte scherm, vul een pseudoniem in en kies episode 1.
+  // De volledige speelcontrole in Chromium staat in gauntlet/tools/speel-ui.js.
+  if (IN_BROWSER) T.registreer(GROEP, "UI in echte DOM (rooktest): pseudoniem verplicht, daarna episodekeuze en patiëntkaart", function () {
+    var root = document.createElement("div"); document.body.appendChild(root);
+    try {
+      try { if (g.Logging && g.Logging.wis) g.Logging.wis(); } catch (e) {}
+      g.UI.start(root);
+      var invoer = root.querySelector("#pseudoniem"), knop = root.querySelector("#btn-start");
+      T.waar(invoer && knop, "startscherm mist het pseudoniemveld of de startknop");
+      knop.click();
+      T.waar(/pseudoniem|code/i.test(root.textContent), "zonder pseudoniem hoort er een melding of uitleg te blijven staan");
+      invoer.value = "rooktest"; knop.click();
+      var tekst = root.textContent;
+      T.waar(tekst.indexOf(g.CASUSSEN[0].episodes[0].patient.zichtbaar.kop) !== -1 || /episode|Episode/.test(tekst), "na het invullen van een pseudoniem hoort de episodekeuze of de patiëntkaart zichtbaar te zijn");
+    } finally { if (root.parentNode) root.parentNode.removeChild(root); try { if (g.Logging && g.Logging.wis) g.Logging.wis(); } catch (e) {} }
+  });
   function casus() { return g.CASUSSEN[0]; }
   function ep(id) { return casus().episodes.filter(function (e) { return e.id === id; })[0]; }
   function nieuw(id, rng) { return g.Engine.nieuwSpel(casus(), id, { rng: rng || function () { return 0; } }); }

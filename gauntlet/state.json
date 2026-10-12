@@ -6,7 +6,7 @@
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-12 00:53",
+ "updated": "2026-10-12 00:56",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -46,8 +46,8 @@
   {
    "name": "S6 evaluatie+routes",
    "round": 1,
-   "verdict": "PENDING",
-   "evidence": "r1 gebouwd (118 eigen tests; 63 routes in beide A/B-volgordes; suite 697 groen Node+Chromium); criticus r1 bezig",
+   "verdict": "PASS",
+   "evidence": "r1 PASS, BLIND=ONS, 0 afwijkingen (minimum 3 rondes vervallen op verzoek gebruiker); opmerkingen: UI toont zichtbaar/extraVragen niet bij schending; weglaatDownside ongebruikt",
    "artifact": ""
   },
   {
@@ -278,6 +278,12 @@
    "unit": "S7 engine",
    "verdict": "FAIL",
    "note": "engine gedraagt zich goed (15.900 proeven 0 afwijkingen, 900 spellen met Evaluatie schoon, BLIND=ONS); bewijs voor M6/M8 niet waterdicht: scan omzeilbaar met opgebouwde id in rondAf/herkansing/ontgrendeld (F1), verstopte drempel 1 - -1 (F2), kaliumx/egfrmeting (F3), 5 ongeteste gedragingen (F4). Maximum 5 rondes bereikt, gestopt"
+  },
+  {
+   "round": 1,
+   "unit": "S6 evaluatie+routes",
+   "verdict": "PASS",
+   "note": "geen afwijking in poort/score/profiel/routetests; 118 eigen routes 177 runs 0 afwijkingen; 18.000 oracle-routes 0; 834 data-mutanten 0 overleefd door hele suite; BLIND=ONS (15/15 paren identiek). Minimum 3 rondes vervallen op verzoek van de gebruiker"
   }
  ],
  "open": [
@@ -297,7 +303,10 @@
   "LEAD-ingreep: in tests/data-kaarten.tests.js (S1, PASS) staat nu \"referentie\" in de toegestane casuskop-sleutels (mechanisch gevolg van S11); S1 wordt bij de eindcontrole nogmaals gedraaid",
   "LEAD-ingreep 2: tests/engine.tests.js (S7) negeert nu casus.referentie bij het verzamelen van 'casuswoorden' (beschrijvende tekst, geen speldata); S7-criticus r5 ingelicht",
   "LEAD-ingreep 2 (aangepast): tests/engine.tests.js (S7) negeert bij 'casuswoorden' nu casus.referentie, casus.todoBart en TODO_BART-sleutels (beschrijvende tekst, geen speldata) en de minimale woordenlijst is 400 (was 500); S7-criticus r5 wordt opnieuw gestart",
-  "Besluit gebruiker: S11, S8 en S9-criticus gestopt; S6/S9 max 2 rondes; S5 alleen 4 tests (gedaan)"
+  "Besluit gebruiker: S11, S8 en S9-criticus gestopt; S6/S9 max 2 rondes; S5 alleen 4 tests (gedaan)",
+  "Vraag aan Bart: moeten de zinnen uit \"Wat er zichtbaar wordt als een kaart ontbreekt\" (bv. \"Mevrouw weet niet wanneer ze moet bellen.\") ook bij een geschonden poort getoond worden, naast de ene Socratische vraag? Nu: nee (alleen vraag + downsides; zichtbaar-zinnen en extra vragen alleen bij gehaalde poort), waardoor die 7 zinnen de speler niet bereiken",
+  "Mogelijk ontbrekende TODO bij I16: Ev3 (verwijzen) mag ook vóór het 48-uursmoment; een route met Ev3 als eerste kaart haalt de poort terwijl de klachtenstatus 'geen verbetering' geldt (volgt bouwopdracht 6.1 letterlijk)",
+  "LEAD-ingreep 3: tests/ui.tests.js (S9): de nep-DOM-tests draaien alleen in Node (in een browser is window.document alleen-lezen); in de browser draait één rooktest op de echte DOM. Reden: 11 tests waren rood in tests.html (A3). Volledige speelcontrole: gauntlet/tools/speel-ui.js"
  ],
  "belowBar": [
   "S3 data-e2:: kleine restpunten (geen FAIL): enkele TODO-teksten bevatten nog jargon (A4, offset, in de data); TODO noemt het geval C-trigger op de laatste dag niet; medicatieTekst E2 zonder slotpunt (casus plaatst het na de verborgen ontwerpnotitie)",
