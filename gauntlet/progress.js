@@ -61,14 +61,14 @@ window.GAUNTLET = {
    "name": "S8 overzicht",
    "round": 2,
    "verdict": "FAIL",
-   "evidence": "r2 FAIL, 6 punten (wacht op stabiele S11-referentie), BLIND=BRON; ronde 3 volgt na S11 ronde 2",
+   "evidence": "gestopt op verzoek van de gebruiker na ronde 2 (FAIL, 6 punten; wacht op stabiele S11-referentie)",
    "artifact": ""
   },
   {
    "name": "S9 ui",
    "round": 1,
    "verdict": "PENDING",
-   "evidence": "r1 gebouwd (30 eigen tests; Playwright-speelscript 69/69 incl. 121 routes via klikken); criticus r1 bezig",
+   "evidence": "ronde 1 gebouwd (30 eigen tests; Playwright-speelscript 69/69); criticus op verzoek gestopt: GEEN onafhankelijk oordeel",
    "artifact": ""
   },
   {
@@ -82,7 +82,7 @@ window.GAUNTLET = {
    "name": "S11 referentie",
    "round": 1,
    "verdict": "FAIL",
-   "evidence": "r1 FAIL, 5 punten, BLIND=BRON; ronde 2 bouwer bezig",
+   "evidence": "gestopt op verzoek van de gebruiker na ronde 1 (FAIL, 5 punten); bouwer r2 afgebroken, tussenstand van casussen/uwi-referentie.js staat in de repo (niet gereviewd)",
    "artifact": ""
   }
  ],
@@ -290,10 +290,14 @@ window.GAUNTLET = {
   "TODO_BART-9: gebeurtenis die op de laatste dag triggert verschijnt nooit (blijft in state.wachtend); bijbehorende invarianten (I10/I11/I16/I15) gelden dan niet — LEAD-keuze, door Bart te bevestigen",
   "LEAD-ingreep: in tests/data-kaarten.tests.js (S1, PASS) staat nu \"referentie\" in de toegestane casuskop-sleutels (mechanisch gevolg van S11); S1 wordt bij de eindcontrole nogmaals gedraaid",
   "LEAD-ingreep 2: tests/engine.tests.js (S7) negeert nu casus.referentie bij het verzamelen van 'casuswoorden' (beschrijvende tekst, geen speldata); S7-criticus r5 ingelicht",
-  "LEAD-ingreep 2 (aangepast): tests/engine.tests.js (S7) negeert bij 'casuswoorden' nu casus.referentie, casus.todoBart en TODO_BART-sleutels (beschrijvende tekst, geen speldata) en de minimale woordenlijst is 400 (was 500); S7-criticus r5 wordt opnieuw gestart"
+  "LEAD-ingreep 2 (aangepast): tests/engine.tests.js (S7) negeert bij 'casuswoorden' nu casus.referentie, casus.todoBart en TODO_BART-sleutels (beschrijvende tekst, geen speldata) en de minimale woordenlijst is 400 (was 500); S7-criticus r5 wordt opnieuw gestart",
+  "Besluit gebruiker: S11, S8 en S9-criticus gestopt; S6/S9 max 2 rondes; S5 alleen 4 tests (gedaan)"
  ],
  "belowBar": [
   "S3 data-e2:: kleine restpunten (geen FAIL): enkele TODO-teksten bevatten nog jargon (A4, offset, in de data); TODO noemt het geval C-trigger op de laatste dag niet; medicatieTekst E2 zonder slotpunt (casus plaatst het na de verborgen ontwerpnotitie)",
-  "S5 predicaten:: de 4 testgaten zijn gedicht (door LEAD, niet blind beoordeeld, elk bewezen met de mutant van de criticus); 6 kleine punten zonder casusgevolg blijven (rapport S5_r5.md)"
+  "S5 predicaten:: de 4 testgaten zijn gedicht (door LEAD, niet blind beoordeeld, elk bewezen met de mutant van de criticus); 6 kleine punten zonder casusgevolg blijven (rapport S5_r5.md)",
+  "S11 referentie:: gestopt na ronde 1 FAIL (ontbrekende casustekst: E2-kopbullet, E3-gebeurtenissentabel, repertoire-alinea's; samengevoegde string); tussenstand niet gereviewd",
+  "S8 overzicht:: gestopt na ronde 2 FAIL: casusreferentie (feedbacktriggers, zichtbaar-als-ontbreekt-labels, patiëntkaartregels, repertoire, E3-gebeurtenissentabel) nog niet letterlijk getoond; dubbele weergaven; taalresten",
+  "S9 ui:: ronde 1 gebouwd maar NIET door een criticus beoordeeld (op verzoek gestopt)"
  ]
 };
