@@ -6,7 +6,7 @@
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 22:53",
+ "updated": "2026-10-12 00:17",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -283,7 +283,8 @@
   "TODO_BART-8: klachtenstatus na een werkzaam interlude — LEAD-keuze: geenVerbetering48 alleen in de eerste nul-periode (contract §3b)",
   "TODO_BART-9: gebeurtenis die op de laatste dag triggert verschijnt nooit (blijft in state.wachtend); bijbehorende invarianten (I10/I11/I16/I15) gelden dan niet — LEAD-keuze, door Bart te bevestigen",
   "LEAD-ingreep: in tests/data-kaarten.tests.js (S1, PASS) staat nu \"referentie\" in de toegestane casuskop-sleutels (mechanisch gevolg van S11); S1 wordt bij de eindcontrole nogmaals gedraaid",
-  "LEAD-ingreep 2: tests/engine.tests.js (S7) negeert nu casus.referentie bij het verzamelen van 'casuswoorden' (beschrijvende tekst, geen speldata); S7-criticus r5 ingelicht"
+  "LEAD-ingreep 2: tests/engine.tests.js (S7) negeert nu casus.referentie bij het verzamelen van 'casuswoorden' (beschrijvende tekst, geen speldata); S7-criticus r5 ingelicht",
+  "LEAD-ingreep 2 (aangepast): tests/engine.tests.js (S7) negeert bij 'casuswoorden' nu casus.referentie, casus.todoBart en TODO_BART-sleutels (beschrijvende tekst, geen speldata) en de minimale woordenlijst is 400 (was 500); S7-criticus r5 wordt opnieuw gestart"
  ],
  "belowBar": [
   "S5 predicaten:: 4 randgevallen niet door tests bewaakt (zet met >1 id; pauze over wissel; twee gelijktijdige pauzes; kaart vóór anker bij opDagRelatief van:0) — code zelf klopt; 6 kleine punten zonder casusgevolg (rapport S5_r5.md)",

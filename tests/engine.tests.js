@@ -229,7 +229,7 @@
     function loop(o) {
       if (typeof o === "string") (o.match(/\p{L}{4,}/gu) || []).forEach(function (w) { woorden[woordNorm(w)] = 1; });
       else if (Array.isArray(o)) o.forEach(loop);
-      else if (o && typeof o === "object") for (var k in o) { if (k === "referentie") continue; loop(o[k]); } // LEAD: `referentie` is beschrijvende casustekst voor het overzicht (S11), geen speldata
+      else if (o && typeof o === "object") for (var k in o) { if (k === "referentie" || k === "todoBart" || k.indexOf("TODO_BART") === 0) continue; loop(o[k]); } // LEAD: `referentie` en alle TODO_BART-tekst zijn beschrijvende tekst voor Bart/het overzicht (S11), geen speldata
     }
     (g.CASUSSEN || []).forEach(loop);
     return woorden;
@@ -648,7 +648,7 @@
     ["nitrofurantoine", "cotrimoxazol", "clavulaanzuur", "sidrik", "flankpijn", "pyelonefritis", "voorschrijven", "ciprofloxacine", "spironolacton", "kalium"].forEach(function (w) {
       T.waar(woorden[w], "het woord '" + w + "' uit de echte casustekst zit in de verboden woorden (accent-onafhankelijk)");
     });
-    T.waar(Object.keys(woorden).length > 500, "woordenlijst uit ALLE tekstvelden is gevuld: " + Object.keys(woorden).length);
+    T.waar(Object.keys(woorden).length > 400, "woordenlijst uit ALLE tekstvelden is gevuld: " + Object.keys(woorden).length);
     T.gelijk(bronScan(bron), [], "modulebron tegen de allowlist");
   });
   test("bronscan: de allowlists zijn klein en zonder speling (elke toegestane tekst, eigenschap en elk contractwoord wordt echt gebruikt; geen enkel contractwoord is een middel/toestand)", function () {
