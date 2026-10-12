@@ -1,0 +1,50 @@
+basis rood: 
+{"id":130,"desc":"gedrag ep.patient.verborgen.0.sleutel set \"eerdereKweekX\"","rood":0,"groepen":{}}
+{"id":651,"desc":"gedrag ep.invarianten.3.vraagVarianten.0.als.args.1.arg.args.0.K.kaart set \"V4\"","rood":0,"groepen":{}}
+{"id":890,"desc":"gedrag ep.invarianten.5.predicaat.args.2.args.1.op.offset set -1","rood":0,"groepen":{}}
+{"id":1075,"desc":"gedrag ep.invarianten.8.predicaat.args.0.K.kaart.4 set \"V8\"","rood":0,"groepen":{}}
+{"id":1124,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.1 set \"V4\"","rood":0,"groepen":{}}
+{"id":1128,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.3 set \"V7\"","rood":0,"groepen":{}}
+{"id":1134,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.6 set \"V10\"","rood":0,"groepen":{}}
+{"id":1139,"desc":"struct ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.2 del","rood":0,"groepen":{}}
+{"id":1605,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.als.K.kaart.5 set \"B1\"","rood":0,"groepen":{}}
+{"id":1617,"desc":"struct ep.score.doelmatigheid.regels.0.als.args.1.als.K.kaart.3 del","rood":0,"groepen":{}}
+{"id":1657,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.dan.b.kaart.7 set \"V9\"","rood":0,"groepen":{}}
+{"id":1765,"desc":"gedrag ep.feedbackExtra.1.wanneer set \"altijd\"","rood":2,"groepen":{"evaluatie-routes":2},"eerste":"[E3] E3-fout-I14: Ciprofloxacine zonder B4 en zonder B3 op calcium (Ev3 sluit I16 uit)"}
+basis rood: 
+{"id":131,"desc":"struct ep.patient.verborgen.0.sleutel delkey","rood":0,"groepen":{}}
+{"id":806,"desc":"gedrag ep.invarianten.4.vraagVarianten.0.als.arg.tot set 2","rood":1,"groepen":{"evaluatie-routes":1},"eerste":"[E3] E3-fout-I7: Trimethoprim zonder V6 halveren (A,B: ook O2 te laat op dag 5; B,A: O2 valt op dag 4 = verschil 3, op tijd)"}
+{"id":1068,"desc":"gedrag ep.invarianten.8.predicaat.args.0.K.kaart.1 set \"V4\"","rood":0,"groepen":{}}
+{"id":1103,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.p set \"of\"","rood":0,"groepen":{}}
+{"id":1125,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.2 set \"V5\"","rood":0,"groepen":{}}
+{"id":1129,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.4 set \"V8\"","rood":0,"groepen":{}}
+{"id":1135,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.7 set \"B1\"","rood":0,"groepen":{}}
+{"id":1600,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.als.K.kaart.3 set \"V5\"","rood":0,"groepen":{}}
+{"id":1606,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.als.K.kaart.6 set \"V8\"","rood":0,"groepen":{}}
+{"id":1654,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.dan.b.kaart.6 set \"V8\"","rood":0,"groepen":{}}
+{"id":1660,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.dan.b.kaart.9 set \"B1\"","rood":0,"groepen":{}}
+{"id":1792,"desc":"struct ep.zichtbaarAlsOntbreekt.0.trigger.args.2.K.optie delkey","rood":0,"groepen":{}}
+basis rood: 
+{"id":412,"desc":"struct ep.werkzaamheid.weefselinvasie.nietWerkzaam.3.als.arg.p delkey","rood":43,"groepen":{"evaluatie-routes":40,"evaluatie":3},"eerste":"[E3] E3-fosfomycine-start: Start bij cystitis: G3 -> O1 -> V4 + N1, met O2 + Ev2 voor I9; afgerond voordat een gebeurtenis zichtbaar is (geen score-/profielregel)"}
+{"id":887,"desc":"gedrag ep.invarianten.5.predicaat.args.2.args.1.op.eindeBeurtNaGebeurtenis set \"A\"","rood":0,"groepen":{}}
+{"id":1069,"desc":"gedrag ep.invarianten.8.predicaat.args.0.K.kaart.1 set \"V4\"","rood":0,"groepen":{}}
+{"id":1119,"desc":"struct ep.invarianten.8.predicaat.args.1.arg.args.1.a.naGebeurtenis delkey","rood":0,"groepen":{}}
+{"id":1126,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.2 set \"V5\"","rood":0,"groepen":{}}
+{"id":1130,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.4 set \"V8\"","rood":0,"groepen":{}}
+{"id":1136,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.7 set \"V3\"","rood":0,"groepen":{}}
+{"id":1601,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.als.K.kaart.3 set \"V5\"","rood":0,"groepen":{}}
+{"id":1607,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.als.K.kaart.6 set \"V8\"","rood":0,"groepen":{}}
+{"id":1655,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.dan.b.kaart.6 set \"V8\"","rood":0,"groepen":{}}
+{"id":1661,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.dan.b.kaart.9 set \"V3\"","rood":0,"groepen":{}}
+basis rood: 
+{"id":426,"desc":"struct ep.werkzaamheid.weefselinvasie.nietWerkzaam.3.als.arg.args.1.K delkey","rood":43,"groepen":{"evaluatie-routes":40,"evaluatie":3},"eerste":"[E3] E3-fosfomycine-start: Start bij cystitis: G3 -> O1 -> V4 + N1, met O2 + Ev2 voor I9; afgerond voordat een gebeurtenis zichtbaar is (geen score-/profielregel)"}
+{"id":889,"desc":"gedrag ep.invarianten.5.predicaat.args.2.args.1.op.offset set 1","rood":0,"groepen":{}}
+{"id":1074,"desc":"gedrag ep.invarianten.8.predicaat.args.0.K.kaart.4 set \"V8\"","rood":0,"groepen":{}}
+{"id":1123,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.1 set \"V4\"","rood":0,"groepen":{}}
+{"id":1127,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.3 set \"V6\"","rood":0,"groepen":{}}
+{"id":1133,"desc":"gedrag ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.6 set \"V10\"","rood":0,"groepen":{}}
+{"id":1138,"desc":"struct ep.invarianten.8.predicaat.args.1.arg.args.1.b.kaart.1 del","rood":0,"groepen":{}}
+{"id":1604,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.als.K.kaart.5 set \"V7\"","rood":0,"groepen":{}}
+{"id":1612,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.als.K.kaart.9 set \"B1\"","rood":0,"groepen":{}}
+{"id":1656,"desc":"gedrag ep.score.doelmatigheid.regels.0.als.args.1.dan.b.kaart.7 set \"V9\"","rood":0,"groepen":{}}
+{"id":1749,"desc":"gedrag ep.feedbackExtra.0.wanneer set \"altijd\"","rood":1,"groepen":{"evaluatie-routes":1},"eerste":"[E3] E3-fout-I9-B5-zonder-Ev2: Spironolacton hervatten (B5) zonder eerst Ev2"}

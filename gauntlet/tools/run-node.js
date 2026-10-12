@@ -5,7 +5,7 @@ const root = path.resolve(__dirname, "../..");
 // Draait in de hoofdcontext (vm.runInThisContext): globals als Object/Array zijn in een aparte vm-context ~8x trager.
 const sandbox = globalThis; sandbox.window = globalThis;
 const bestanden = [
-  "casussen/uwi.js", "casussen/uwi-e1.js", "casussen/uwi-e2.js", "casussen/uwi-e3.js",
+  "casussen/uwi.js", 
   "regels/predicaten.js", "regels/evaluatie.js", "engine/engine.js", "engine/logging.js", "ui/ui.js", "casussen/uwi-referentie.js",
   "tests/testlib.js",
   "tests/data-kaarten.tests.js", "tests/data-e1.tests.js", "tests/data-e2.tests.js", "tests/data-e3.tests.js", "tests/data-referentie.tests.js",

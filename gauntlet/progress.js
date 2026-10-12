@@ -3,10 +3,10 @@ window.GAUNTLET = {
  "bar": "Lat 1: casus-uwi.md (v1.1) als enige klinische bron + acceptatiecriteria A1–A8 (bouwopdracht §8): elke kaart, regel, gebeurtenis en feedbacktekst LETTERLIJK gelijk aan de casus; elke geldige route en foutroute geeft het verwachte resultaat; elke afwijking = FAIL. Lat 2: geen quiz, feedback zegt niet voor, labels verraden geen timing of oplossing; speel elke episode als student zonder voorkennis. Zie gauntlet/lat.md.",
  "budget": "per stuk min 3 / max 5 rondes; stop ook bij 2 rondes zonder verbetering",
  "level": "blind (verse criticus per ronde; A/B-labels procedureel verborgen, niet door aparte context)",
- "status": "running",
+ "status": "stopped",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-12 00:56",
+ "updated": "2026-10-12 01:19",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -32,8 +32,8 @@ window.GAUNTLET = {
   {
    "name": "S4 data-e3",
    "round": 4,
-   "verdict": "PENDING",
-   "evidence": "r4 gebouwd (101 eigen tests groen; 37 routes + oracle-kruiscontrole; TODO_BART-E3-1…26; mutatieset zonder pin niet afgerond); criticus r4 bezig",
+   "verdict": "FAIL",
+   "evidence": "r4 FAIL, 8 punten, BLIND=ONS; data en routes kloppen, 41 gedragsmutanten overleven zonder GOLD-pin; gestopt (geen ronde 5 gevraagd)",
    "artifact": ""
   },
   {
@@ -284,6 +284,18 @@ window.GAUNTLET = {
    "unit": "S6 evaluatie+routes",
    "verdict": "PASS",
    "note": "geen afwijking in poort/score/profiel/routetests; 118 eigen routes 177 runs 0 afwijkingen; 18.000 oracle-routes 0; 834 data-mutanten 0 overleefd door hele suite; BLIND=ONS (15/15 paren identiek). Minimum 3 rondes vervallen op verzoek van de gebruiker"
+  },
+  {
+   "round": 4,
+   "unit": "S4 data-e3",
+   "verdict": "FAIL",
+   "note": "teksten/TODO/routes foutloos (77 vergelijkingen 0 afwijkingen; 90 routes; oracle 7.611 plannen 0 verschillen; BLIND=ONS, 27/28 paren identiek); zonder GOLD-pin overleven 41 gedragsmutanten de hele suite (I11-keten 20, V-lijsten doelmatigheid 14, I8 3, onthul-sleutel 2, I6-vraagvariant 1, zichtbaar sick day 1). Geen ronde 5 gevraagd door gebruiker"
+  },
+  {
+   "round": 0,
+   "unit": "(eindcontrole)",
+   "verdict": "PASS",
+   "note": "data samengevoegd tot één casussen/uwi.js (82.114 tekens JSON identiek voor/na); suite 801 groen Node / 791 groen Chromium (tests.html, 0 paginafouten); UI-speelscript 69/69 incl. 121 routes via klikken; grep op klinische woorden in engine/regels/ui/index.html: 0 treffers; overzicht: 36 groen 7 rood (S8/S11 nog niet af)"
   }
  ],
  "open": [
@@ -306,7 +318,8 @@ window.GAUNTLET = {
   "Besluit gebruiker: S11, S8 en S9-criticus gestopt; S6/S9 max 2 rondes; S5 alleen 4 tests (gedaan)",
   "Vraag aan Bart: moeten de zinnen uit \"Wat er zichtbaar wordt als een kaart ontbreekt\" (bv. \"Mevrouw weet niet wanneer ze moet bellen.\") ook bij een geschonden poort getoond worden, naast de ene Socratische vraag? Nu: nee (alleen vraag + downsides; zichtbaar-zinnen en extra vragen alleen bij gehaalde poort), waardoor die 7 zinnen de speler niet bereiken",
   "Mogelijk ontbrekende TODO bij I16: Ev3 (verwijzen) mag ook vóór het 48-uursmoment; een route met Ev3 als eerste kaart haalt de poort terwijl de klachtenstatus 'geen verbetering' geldt (volgt bouwopdracht 6.1 letterlijk)",
-  "LEAD-ingreep 3: tests/ui.tests.js (S9): de nep-DOM-tests draaien alleen in Node (in een browser is window.document alleen-lezen); in de browser draait één rooktest op de echte DOM. Reden: 11 tests waren rood in tests.html (A3). Volledige speelcontrole: gauntlet/tools/speel-ui.js"
+  "LEAD-ingreep 3: tests/ui.tests.js (S9): de nep-DOM-tests draaien alleen in Node (in een browser is window.document alleen-lezen); in de browser draait één rooktest op de echte DOM. Reden: 11 tests waren rood in tests.html (A3). Volledige speelcontrole: gauntlet/tools/speel-ui.js",
+  "Opmerking S4-criticus: de 3 E3-\"zichtbaar\"-zinnen zijn in het echte spel nooit te zien (UI toont ze alleen bij gehaalde poort; elke ontbrekende kaart in E3 schendt ook een invariant) — zelfde vraag aan Bart als hierboven"
  ],
  "belowBar": [
   "S3 data-e2:: kleine restpunten (geen FAIL): enkele TODO-teksten bevatten nog jargon (A4, offset, in de data); TODO noemt het geval C-trigger op de laatste dag niet; medicatieTekst E2 zonder slotpunt (casus plaatst het na de verborgen ontwerpnotitie)",
@@ -314,6 +327,7 @@ window.GAUNTLET = {
   "S11 referentie:: gestopt na ronde 1 FAIL (ontbrekende casustekst: E2-kopbullet, E3-gebeurtenissentabel, repertoire-alinea's; samengevoegde string); tussenstand niet gereviewd",
   "S8 overzicht:: gestopt na ronde 2 FAIL: casusreferentie (feedbacktriggers, zichtbaar-als-ontbreekt-labels, patiëntkaartregels, repertoire, E3-gebeurtenissentabel) nog niet letterlijk getoond; dubbele weergaven; taalresten",
   "S9 ui:: ronde 1 gebouwd maar NIET door een criticus beoordeeld (op verzoek gestopt)",
-  "S7 engine:: M6-bewijs (geen casusnamen/drempels in engine.js) niet waterdicht: de scan en de hernoemde-kopie-test sluiten een opgebouwde hardgecodeerde naam of drempel in rondAf/herkansing/ontgrendeld niet uit; 5 gedragingen ongetest; 11 ui-tests rood in Chromium (nep-DOM, hoort bij S9). De huidige engine bevat aantoonbaar geen casuswoorden (criticus: rename_check schoon)."
+  "S7 engine:: M6-bewijs (geen casusnamen/drempels in engine.js) niet waterdicht: de scan en de hernoemde-kopie-test sluiten een opgebouwde hardgecodeerde naam of drempel in rondAf/herkansing/ontgrendeld niet uit; 5 gedragingen ongetest; 11 ui-tests rood in Chromium (nep-DOM, hoort bij S9). De huidige engine bevat aantoonbaar geen casuswoorden (criticus: rename_check schoon).",
+  "S4 data-e3:: 41 gedragsmutaties overleven de hele suite zonder de snapshotpin (I11-keten, V-lijsten van doelmatigheid, I8-klachtendag, I6-vraagvariant, onthul-sleutel, zichtbaar-zin sick day); data-e3 roept Evaluatie.beoordeel niet zelf aan. Teksten en alle 90 criticusroutes zijn wel foutloos."
  ]
 };

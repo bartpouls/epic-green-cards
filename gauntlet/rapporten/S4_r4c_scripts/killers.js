@@ -1,0 +1,25 @@
+const L=require("./load.js"); if(!globalThis.Engine) L.laad(); const {play,samenvat}=require("./speel.js");
+const {V6a,V6l,B3s,E2s}=require("./routes.js");
+const H="V6>V5>halveren";
+const K=[];
+const tail1=["|","N1","O2",E2s,"|","O1","B1>V8",V6a,"|","Ev1",B3s,V6l,"|","N3"];
+K.push({n:"V4 eerst, G3 erna",steps:["O1","V4","G3"].concat(tail1)});
+K.push({n:"G3 eerst, V4",steps:["G3","O1","V4"].concat(tail1)});
+K.push({n:"V8 eerst, G3 erna",steps:["O1","V8",V6a,"|","N1","O2",E2s,"|","G3","|","Ev1",B3s,V6l,"|","N3"]});
+K.push({n:"G3, V8 eerst",steps:["G3","O1","V8",V6a,"|","N1","O2",E2s,"|","G1","|","Ev1",B3s,V6l,"|","N3"]});
+K.push({n:"V7 eerst, G3 erna",steps:["O1","V7","B4>V7","|","N1","O2",E2s,"|","G3","|","Ev1",B3s,V6l,"|","N3"]});
+K.push({n:"G3, V7 eerst",steps:["G3","O1","V7","B4>V7","|","N1","O2",E2s,"|","G1","|","Ev1",B3s,V6l,"|","N3"]});
+K.push({n:"V5 eerst, G3 erna",steps:["O1","V5","G3","|","N1","O2",E2s,"|","O1","B1>V8",V6a,"|","Ev1",B3s,V6l,"|","N3",H]});
+K.push({n:"G3, V5 eerst",steps:["G3","O1","V5","|","N1","O2",E2s,"|","O1","B1>V8",V6a,"|","Ev1",B3s,V6l,"|","N3",H]});
+K.push({n:"V10 eerst, G3 erna",steps:["O1","V10","G3","|","N1","O2",E2s,"|","O1","B1>V8",V6a,"|","Ev1",B3s,V6l,"|","N3"]});
+K.push({n:"G3, V10 eerst",steps:["G3","O1","V10","|","N1","O2",E2s,"|","O1","B1>V8",V6a,"|","Ev1",B3s,V6l,"|","N3"]});
+K.push({n:"V6 lisinopril eerst, G3 erna",steps:["V6>lisinopril>halveren","G3","O1","|","V4","N1","O2","|","O1","B1>V8",V6a,"|","Ev1",B3s,V6l,"|","N3"]});
+K.push({n:"G3, V6 lisinopril eerst",steps:["G3","V6>lisinopril>halveren","O1","|","V4","N1","O2","|","O1","B1>V8",V6a,"|","Ev1",B3s,V6l,"|","N3"]});
+K.push({n:"V4 alleen, G3 erna",steps:["O1","V4","N1","|","G3","O2",E2s]});
+K.push({n:"G3 eerst, V4 alleen",steps:["G3","O1","V4","|","N1","O2",E2s]});
+K.push({n:"V7 alleen, G3 erna",steps:["O1","V7","B4>V7","|","G3","N1","O2"]});
+K.push({n:"V10 alleen, G3 erna",steps:["O1","V10","N1","|","G3","O2",E2s]});
+K.push({n:"V6 lisinopril alleen, G3 erna",steps:["V6>lisinopril>halveren","N1","O2","|","G3"]});
+K.push({n:"V8, dan G3, dan V6 875/125 (zelfde dag)",steps:["O1","|","V8","G3",V6a,"|","N1","O2",E2s,"|","Ev1",B3s,V6l,"|","N3"]});
+module.exports={K};
+if(require.main===module){ for(const k of K){ try{ const r=play("AB",k.steps); const s=samenvat(r); console.log(k.n,"=>",JSON.stringify({g:s.geschonden,score:s.score,p:s.profiel,geb:s.geb})); }catch(e){console.log(k.n,"CRASH",e.message);} } }

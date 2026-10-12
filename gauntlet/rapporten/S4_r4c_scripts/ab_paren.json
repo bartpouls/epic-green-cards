@@ -1,0 +1,170 @@
+[
+ {
+  "id": "P1",
+  "naam": "patiëntkaart kop+klachten",
+  "X": "Mevrouw V., 79 jaar (1 jaar na episode 2). Cystitis, geen koorts.",
+  "Y": "Mevrouw V., 79 jaar (1 jaar na episode 2). Cystitis, geen koorts."
+ },
+ {
+  "id": "P2",
+  "naam": "patiëntkaart medicatie",
+  "X": "Medicatie: lisinopril, spironolacton (hypertensie), calcium/colecalciferol.",
+  "Y": "Medicatie: lisinopril, spironolacton (hypertensie), calcium/colecalciferol."
+ },
+ {
+  "id": "P3",
+  "naam": "patiëntkaart lab (zonder risicogroepzin)",
+  "X": "Lab: eGFR 28, recent.",
+  "Y": "Lab: eGFR 28, recent."
+ },
+ {
+  "id": "P4",
+  "naam": "onthulling G3",
+  "X": "de kweek uit episode 2, met trimethoprim resistent.",
+  "Y": "de kweek uit episode 2, met trimethoprim resistent."
+ },
+ {
+  "id": "P5",
+  "naam": "banner A",
+  "X": "Weefselinvasie: koorts 38,6 °C en flankpijn",
+  "Y": "Weefselinvasie: koorts 38,6 °C en flankpijn"
+ },
+ {
+  "id": "P6",
+  "naam": "banner B",
+  "X": "Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK]",
+  "Y": "Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK]"
+ },
+ {
+  "id": "P7",
+  "naam": "banner C",
+  "X": "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne.",
+  "Y": "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne."
+ },
+ {
+  "id": "P8",
+  "naam": "klachtenstatus af",
+  "X": "Patiënt: klachten nemen af.",
+  "Y": "klachten nemen af."
+ },
+ {
+  "id": "P9",
+  "naam": "vraag I1",
+  "X": "Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?",
+  "Y": "Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?"
+ },
+ {
+  "id": "P10",
+  "naam": "vraag I4",
+  "X": "Wat lost het tweede middel op dat het eerste niet oplost?",
+  "Y": "Wat lost het tweede middel op dat het eerste niet oplost?"
+ },
+ {
+  "id": "P11",
+  "naam": "vraag I5",
+  "X": "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?",
+  "Y": "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?"
+ },
+ {
+  "id": "P12",
+  "naam": "vraag I6 geen kweek",
+  "X": "Wat vertelt een kweek van urine die al antibioticum heeft gezien?",
+  "Y": "Wat vertelt een kweek van urine die al antibioticum heeft gezien?"
+ },
+ {
+  "id": "P13",
+  "naam": "vraag I6 afwachten",
+  "X": "Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?",
+  "Y": "Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?"
+ },
+ {
+  "id": "P14",
+  "naam": "vraag I7 geen kalium",
+  "X": "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?",
+  "Y": "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?"
+ },
+ {
+  "id": "P15",
+  "naam": "vraag I7 niet gehalveerd",
+  "X": "Dag 4. Hoeveel trimethoprim klaren haar nieren nog?",
+  "Y": "Dag 4. Hoeveel trimethoprim klaren haar nieren nog?"
+ },
+ {
+  "id": "P16",
+  "naam": "vraag I8",
+  "X": "De kweek is binnen en de klachten blijven. Waar wacht je nog op?",
+  "Y": "De kweek is binnen en de klachten blijven. Waar wacht je nog op?"
+ },
+ {
+  "id": "P17",
+  "naam": "vraag I9",
+  "X": "Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?",
+  "Y": "Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?"
+ },
+ {
+  "id": "P18",
+  "naam": "vraag I10",
+  "X": "Fosfomycine werkt in de blaas. Waar zit de infectie nu?",
+  "Y": "Fosfomycine werkt in de blaas. Waar zit de infectie nu?"
+ },
+ {
+  "id": "P19",
+  "naam": "vraag I11",
+  "X": "Je wisselt. Waarop baseer je de wissel daarna?",
+  "Y": "Je wisselt. Waarop baseer je de wissel daarna?"
+ },
+ {
+  "id": "P20",
+  "naam": "vraag I12",
+  "X": "Cotrimoxazol naast spironolacton bij een eGFR van 28. Wat doet dat met haar kalium?",
+  "Y": "Cotrimoxazol naast spironolacton bij een eGFR van 28. Wat doet dat met haar kalium?"
+ },
+ {
+  "id": "P21",
+  "naam": "vraag I13",
+  "X": "Clavulaanzuur bij een eGFR van 28. Waar blijft het?",
+  "Y": "Clavulaanzuur bij een eGFR van 28. Waar blijft het?"
+ },
+ {
+  "id": "P22",
+  "naam": "vraag I14",
+  "X": "Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?",
+  "Y": "Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?"
+ },
+ {
+  "id": "P23",
+  "naam": "vraag I15",
+  "X": "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?",
+  "Y": "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?"
+ },
+ {
+  "id": "P24",
+  "naam": "vraag I16",
+  "X": "Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?",
+  "Y": "Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?"
+ },
+ {
+  "id": "P25",
+  "naam": "extra Automatische herstart",
+  "X": "De koorts is weg. Wat herstart je, en wat juist niet zonder overleg?",
+  "Y": "De koorts is weg. Wat herstart je, en wat juist niet zonder overleg?"
+ },
+ {
+  "id": "P26",
+  "naam": "extra cipro-dosis",
+  "X": "De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?",
+  "Y": "De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?"
+ },
+ {
+  "id": "P27",
+  "naam": "reflectievraag Profiel ciprofloxacine",
+  "X": "Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?",
+  "Y": "Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?"
+ },
+ {
+  "id": "P28",
+  "naam": "profielnaam Kweekgestuurd",
+  "X": "Kweekgestuurd",
+  "Y": "Kweekgestuurd"
+ }
+]
