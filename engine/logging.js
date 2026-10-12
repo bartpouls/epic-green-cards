@@ -101,16 +101,20 @@
     var episodeId = schoon(poging.episodeId);
     if (pseudoniem === "") throw new Error("Vul eerst een pseudoniem in; zonder pseudoniem kan de poging niet worden bewaard.");
     var sleutel = [sleutelVan(pseudoniem), sleutelVan(casusId), sleutelVan(episodeId)];
+    // Testmodus (Bart): pogingen in testmodus tellen niet mee als meting. Ze krijgen een eigen telling en zijn nooit de eerste poging;
+    // echte pogingen tellen alleen echte pogingen.
+    var testmodus = !!poging.testmodus;
     var eerder = lijst.filter(function (p) {
       return sleutelVan(p.pseudoniem) === sleutel[0] && sleutelVan(p.casusId) === sleutel[1] &&
-        sleutelVan(p.episodeId) === sleutel[2];
+        sleutelVan(p.episodeId) === sleutel[2] && !!p.testmodus === testmodus;
     }).length;
     var rec = {
       pseudoniem: pseudoniem,
       casusId: casusId,
       episodeId: episodeId,
       pogingnummer: eerder + 1,
-      eerstePoging: eerder === 0,
+      eerstePoging: !testmodus && eerder === 0,
+      testmodus: testmodus,
       tijdlijn: kopie(poging.tijdlijn) || [],
       onthuld: kopie(poging.onthuld) || [],
       geschonden: (Array.isArray(poging.geschonden) ? poging.geschonden : []).map(function (x) {
@@ -142,8 +146,10 @@
     };
   }
 
-  function bewaarUitSpel(state, uitkomst, pseudoniem) {
-    return bewaar(maakPoging(state, uitkomst, pseudoniem));
+  function bewaarUitSpel(state, uitkomst, pseudoniem, opties) {
+    var poging = maakPoging(state, uitkomst, pseudoniem);
+    poging.testmodus = !!(opties && opties.testmodus);
+    return bewaar(poging);
   }
 
   // Voor de UI: staat alles echt in de opslag? Zo niet, hoeveel pogingen staan alleen in het geheugen.

@@ -108,8 +108,8 @@
   });
 
   Test.registreer(G, "K1 casus.rollen wijst B1/B2/B3/B5 aan als wissel/stop/pauzeer/hervat; ids bestaan en zijn Bijsturen", function () {
-    Test.gelijk(casus().rollen, { wissel: "B1", stop: "B2", pauzeer: "B3", hervat: "B5" });
-    Object.keys(casus().rollen).forEach(function (r) {
+    Test.gelijk(casus().rollen, { wissel: "B1", stop: "B2", pauzeer: "B3", hervat: "B5", uitgesteld: "V2" });
+    Object.keys(casus().rollen).filter(function (r) { return r !== "uitgesteld"; }).forEach(function (r) {
       var k = kaart(casus().rollen[r]);
       Test.waar(k, "rol " + r + ": kaart bestaat niet");
       Test.is(k.categorie, "Bijsturen", "rol " + r + " categorie");
@@ -139,11 +139,11 @@
     Test.gelijk(Object.keys(gebruikt).sort(), CATEGORIEEN.slice().sort());
     refKaarten().forEach(function (r) {
       var k = kaart(r.id);
-      Test.is(k.doelkaart, r.cat.indexOf("⊙") >= 0, r.id + " doelkaart");
+      Test.is(k.doelkaart, r.cat.indexOf("⊙") >= 0 || r.id === "V2", r.id + " doelkaart (V2: casus 1.2, de speler kiest het middel)");
       Test.is(k.categorie, r.cat.replace(" ⊙", ""), r.id + " categorie");
     });
     Test.gelijk(casus().kaarten.filter(function (k) { return k.doelkaart; }).map(function (k) { return k.id; }),
-      ["V6","B1","B2","B3","B5","B4","N2","Ev2"]);
+      ["V2","V6","B1","B2","B3","B5","B4","N2","Ev2"]);
   });
 
   Test.registreer(G, "K6 label, vanafEpisode en bron zijn teken-voor-teken gelijk aan de casustabel", function () {
@@ -269,12 +269,15 @@
     var basis = ["bron","categorie","doelen","doelkaart","downside","effect","id","label","opties","vanafEpisode"];
     casus().kaarten.forEach(function (k) {
       var verwacht = basis.slice();
+      verwacht.push("smaak");
+      if (["V3","V4","V5","V7","V8","V9","V10"].indexOf(k.id) >= 0) verwacht.push("dosering", "uitleg");
+      if (k.id === "N2") verwacht.push("uitlegVanDoel");
       if (REF_TODO_PLEKKEN["kaarten." + k.id]) verwacht.push("TODO_BART");
       if (k.id === "O1" || k.id === "Ev1") verwacht.push("limiet");
       Test.gelijk(sleutels(k), verwacht.sort(), k.id + " sleutels");
       if (k.doelen) Object.keys(k.doelen).forEach(function (e) {
         k.doelen[e].forEach(function (d) {
-          Test.gelijk(sleutels(d), k.id === "Ev2" ? ["id","label"] : ["id","label","vereist"], k.id + " " + e + " " + d.id + " doelsleutels");
+          Test.gelijk(sleutels(d), (k.id === "Ev2" || k.id === "V2") ? ["id","label"] : ["id","label","vereist"], k.id + " " + e + " " + d.id + " doelsleutels");
         });
       });
       if (k.opties) Object.keys(k.opties).forEach(function (d) {
@@ -425,7 +428,7 @@
       });
     });
     ["E1","E2","E3"].forEach(function (e) {
-      kaart("N2").doelen[e].forEach(function (d) { Test.gelijk(d.vereist, { p: "gestart", middel: d.id }, "N2 " + d.id); });
+      kaart("N2").doelen[e].forEach(function (d) { Test.gelijk(d.vereist, { p: "actief", middel: d.id }, "N2 " + d.id); });
     });
   });
 
@@ -451,13 +454,14 @@
     B3: { E3: doelen(COMED, function (id) { return { p: "medicatieActief", id: id }; }) },
     B5: { E3: doelen(COMED, function (id) { return { p: "niet", arg: { p: "medicatieActief", id: id } }; }) },
     B4: { E3: doelen(["V7"], function (id) { return { p: "actief", middel: id }; }) },
-    N2: { E1: doelen(AB.E1, function (id) { return { p: "gestart", middel: id }; }),
-          E2: doelen(AB.E2, function (id) { return { p: "gestart", middel: id }; }),
-          E3: doelen(AB.E3, function (id) { return { p: "gestart", middel: id }; }) },
+    V2: { E1: doelen(AB.E1, null), E2: doelen(AB.E2, null), E3: doelen(AB.E3, null) },
+    N2: { E1: doelen(AB.E1, function (id) { return { p: "actief", middel: id }; }),
+          E2: doelen(AB.E2, function (id) { return { p: "actief", middel: id }; }),
+          E3: doelen(AB.E3, function (id) { return { p: "actief", middel: id }; }) },
     Ev2: { E3: doelen(["lisinopril","spironolacton"], null) }
   };
 
-  Test.registreer(G, "K3 doelen: alle 8 doelkaarten x alle episodes: id-lijst, label en vereist-predicaat exact gelijk aan de uitgeschreven referentie", function () {
+  Test.registreer(G, "K3 doelen: alle 9 doelkaarten x alle episodes: id-lijst, label en vereist-predicaat exact gelijk aan de uitgeschreven referentie", function () {
     var doelkaarten = Object.keys(REF_DOELEN);
     Test.gelijk(casus().kaarten.filter(function (k) { return k.doelkaart; }).map(function (k) { return k.id; }).sort(), doelkaarten.slice().sort(), "set doelkaarten");
     var aantalLijsten = 0, aantalDoelen = 0;
@@ -476,8 +480,8 @@
         aantalLijsten++;
       });
     });
-    Test.is(aantalLijsten, 13, "aantal doelenlijsten (doelkaart x episode)");
-    Test.is(aantalDoelen, 48, "aantal doelen in totaal");
+    Test.is(aantalLijsten, 16, "aantal doelenlijsten (doelkaart x episode)");
+    Test.is(aantalDoelen, 61, "aantal doelen in totaal");
     Test.gelijk(kaart("Ev2").doelen.E3.map(function (d) { return d.hasOwnProperty("vereist"); }), [false, false], "Ev2 mag ook op een gepauzeerd middel (overleg vóór hervatten)");
   });
 

@@ -340,8 +340,19 @@
     var invoer = metId(root, "pseudoniem"); invoer.value = naam || "tester";
     klik(metId(root, "btn-start"));
   }
-  function startEp(root, e) { klik(metAttr(root, "data-start", e)); }
-  function speelKlik(root, kaart) { var b = metAttr(root, "data-kaart", kaart); if (!klik(b)) throw new Error("kaart " + kaart + " is uitgeschakeld"); }
+  // De uitleg bij de start en (episode 1) de rondleiding zijn dialogen: sluiten zoals een speler dat doet.
+  function sluitStart(root) {
+    if (metId(root, "btn-begin")) klik(metId(root, "btn-begin"));
+    if (metId(root, "btn-rondleiding-over")) klik(metId(root, "btn-rondleiding-over"));
+  }
+  function startEp(root, e) { klik(metAttr(root, "data-start", e)); sluitStart(root); }
+  function opnieuw(root) { klik(metId(root, "btn-opnieuw")); sluitStart(root); }
+  // Een kaart spelen = de kaart lezen (klik) en dan op de knop Speel drukken.
+  function speelKlik(root, kaart) {
+    klik(metAttr(root, "data-kaart", kaart));
+    var sp = metId(root, "btn-speel");
+    if (!sp || !klik(sp)) { if (metId(root, "btn-sluit-kaart")) klik(metId(root, "btn-sluit-kaart")); throw new Error("kaart " + kaart + " kan niet gespeeld worden"); }
+  }
   function afronden(root) { klik(metId(root, "btn-afronden")); klik(metId(root, "btn-afronden-ja")); }
 
   test("nep-DOM startscherm: pseudoniem verplicht, uitleg 'geen naam', leeg geeft melding en blijft op het startscherm", function () {
@@ -382,7 +393,7 @@
         var dn = k.downside && typeof k.downside === "object" ? Object.keys(k.downside).map(function (s) { return k.downside[s]; }) : [k.downside];
         var zichtbaarPatient = Object.keys(ep("E1").patient.zichtbaar).map(function (s) { return ep("E1").patient.zichtbaar[s]; });
         eff.concat(dn, [k.bron]).forEach(function (t) {
-          if (typeof t !== "string" || t.length < 6 || zichtbaarPatient.indexOf(t) >= 0) return;
+          if (typeof t !== "string" || t.length < 6 || zichtbaarPatient.indexOf(t) >= 0 || t === k.dosering) return;   // de dosering staat op de kaart
           T.waar(tekst.indexOf(t) < 0, "lek van " + k.id + ": " + t);
         });
       });
@@ -390,8 +401,9 @@
       T.is(knoppen.length, 12);
       knoppen.forEach(function (b) {
         var k = casus().kaarten.filter(function (x) { return x.id === b.getAttribute("data-kaart"); })[0];
-        T.is(b.textContent, k.label);
-        T.gelijk(sleutels(b.attrs), ["class", "data-fokus", "data-kaart", "type"].filter(function (s) { return b.attrs[s] !== undefined; }), "geen extra attributen op " + k.id);
+        T.is(b.textContent.indexOf(k.label), 0, "label eerst op " + k.id);
+        T.is(b.textContent.length > k.label.length, !!k.dosering, "alleen middelen tonen een dosering op de kaart: " + k.id);
+        T.gelijk(sleutels(b.attrs), ["aria-label", "class", "data-fokus", "data-kaart", "type"].filter(function (s) { return b.attrs[s] !== undefined; }), "geen extra attributen op " + k.id);
       });
       T.waar(!/aanbevolen|eerste keus|beste/i.test(tekst), "geen aanbevolen/eerste keus");
       T.is(metId(root, "dagtelling").textContent, "Dag 1 van 14");
@@ -410,7 +422,7 @@
       T.waar(!/van 3/.test(tekstVan(root)), "geen score");
       T.waar(!metId(root, "profiel"), "geen profiel");
       T.waar(alle(root, function (e) { return e.getAttribute("data-downside") !== null; }).length > 0, "downsides getoond");
-      klik(metId(root, "btn-opnieuw"));
+      opnieuw(root);
       T.is(alle(root, function (e) { return e.getAttribute("data-gespeeld") !== null; }).length, 0, "lege tijdlijn");
       ["V1", "N1", "Ev1"].forEach(function (k) { speelKlik(root, k); });
       afronden(root);
@@ -426,7 +438,10 @@
       begin(root, "anna"); startEp(root, "E1");
       ["G1", "G2", "O2"].forEach(function (k) { speelKlik(root, k); });
       T.is(metId(root, "acties").getAttribute("data-over"), "0");
-      T.is(metAttr(root, "data-kaart", "V1").getAttribute("disabled"), "");
+      klik(metAttr(root, "data-kaart", "V1"));   // lezen mag altijd, spelen niet meer
+      T.is(metId(root, "btn-speel").getAttribute("disabled"), "", "Speel is uitgeschakeld bij 0 acties");
+      T.waar(/geen acties meer/.test(tekstVan(root)), "uitleg waarom");
+      klik(metId(root, "btn-sluit-kaart"));
       klik(metId(root, "btn-volgende-dag"));
       T.is(metId(root, "acties").getAttribute("data-over"), "3");
       T.is(metId(root, "dagtelling").textContent, "Dag 2 van 14");
@@ -440,17 +455,18 @@
       speelKlik(root, "V4");
       klik(metId(root, "btn-volgende-dag"));
       UI._rng = function () { return 0; };
+      klik(metAttr(root, "data-kaart", "V6"));
+      T.waar(/lisinopril/.test(metId(root, "kaart-doelen").textContent) && !/Fosfomycine/.test(metId(root, "kaart-doelen").textContent), "het kaartvenster noemt de doelen van nu (V6 kan niet op het gestarte V4; wel op lisinopril)");
+      klik(metId(root, "btn-sluit-kaart"));
       speelKlik(root, "V6");
       var dlg = vind(root, function (e) { return e.getAttribute("role") === "dialog"; });
-      T.waar(dlg, "dialoog open");
-      var doelen = alle(dlg, function (e) { return e.getAttribute("data-doel") !== null; }).map(function (e) { return e.getAttribute("data-doel"); });
-      T.gelijk(doelen, ["lisinopril"], "alleen toegestane doelen (V6 kan niet op het gestarte V4; wel op lisinopril)");
-      klik(metAttr(dlg, "data-doel", "lisinopril"));
+      T.waar(dlg, "dialoog open: één mogelijk doel, dus meteen de keuze van de aanpassing");
+      T.is(alle(root, function (e) { return e.getAttribute("data-doel") !== null; }).length, 0, "geen keuzelijst voor een enkel doel");
       var o1 = alle(root, function (e) { return e.getAttribute("data-optie") !== null; }).map(function (e) { return e.getAttribute("data-optie"); });
       T.is(o1.length, 3);
       klik(metId(root, "btn-annuleer"));
       UI._rng = function () { return 0.99; };
-      speelKlik(root, "V6"); klik(metAttr(root, "data-doel", "lisinopril"));
+      speelKlik(root, "V6");
       var o2 = alle(root, function (e) { return e.getAttribute("data-optie") !== null; }).map(function (e) { return e.getAttribute("data-optie"); });
       T.waar(o1.join("|") !== o2.join("|"), "optievolgorde wisselt");
       UI._rng = null;
@@ -477,7 +493,7 @@
     metNepDom(function (root) {
       begin(root, "Anna"); startEp(root, "E1");
       speelKlik(root, "V3"); afronden(root);
-      klik(metId(root, "btn-opnieuw"));
+      opnieuw(root);
       ["V1", "N1", "Ev1"].forEach(function (k) { speelKlik(root, k); }); afronden(root);
       var l = g.Logging.alle();
       T.is(l.length, 2);
@@ -535,5 +551,131 @@
     }
     var a = eerste(0), b = eerste(0.99);
     T.waar(a && b && a !== b, "twee volgordes: " + a + " / " + b);
+  });
+
+  /* ---------- iteratie 1: kaartvenster en rondleiding ---------- */
+  test("nep-DOM: klik op een kaart opent het kaartvenster (smaakregel, effect, dosering) zonder nadelen; pas Speel speelt de kaart", function () {
+    metNepDom(function (root) {
+      begin(root, "anna");
+      klik(metAttr(root, "data-start", "E1"));
+      T.is(metId(root, "start-uitleg").textContent, ep("E1").startUitleg, "uitleg bij de start");
+      klik(metId(root, "btn-begin"));
+      T.is(metId(root, "rondleiding-tekst").textContent, UI.rondleiding()[0].tekst, "rondleiding stap 1");
+      klik(metId(root, "btn-rondleiding-verder"));
+      T.is(metId(root, "rondleiding-tekst").textContent, UI.rondleiding()[1].tekst, "stap 2");
+      klik(metId(root, "btn-rondleiding-over"));
+      T.waar(!metId(root, "rondleiding-tekst"), "rondleiding overgeslagen");
+      var v4 = casus().kaarten.filter(function (k) { return k.id === "V4"; })[0];
+      klik(metAttr(root, "data-kaart", "V4"));
+      T.is(metId(root, "kaart-smaak").textContent, v4.smaak);
+      T.waar(metId(root, "kaart-dosering").textContent.indexOf(v4.dosering) >= 0, "dosering en duur");
+      var t = tekstVan(root);
+      T.waar(t.indexOf(v4.downside) < 0 && t.indexOf("Ongeschikt bij weefselinvasie") < 0, "nadelen blijven verborgen");
+      T.is(alle(root, function (e) { return e.getAttribute("data-gespeeld") !== null; }).length, 0, "klikken is nog niet spelen");
+      klik(metId(root, "btn-speel"));
+      T.is(alle(root, function (e) { return e.getAttribute("data-gespeeld") === "V4"; }).length, 1, "Speel speelt de kaart");
+      // kaart zonder nadeel en met effect: het kaartvenster toont het effect uit de casus
+      klik(metAttr(root, "data-kaart", "N1"));
+      T.is(metId(root, "kaart-effect").textContent, UI.effectVoor(casus().kaarten.filter(function (k) { return k.id === "N1"; })[0], "E1"));
+      klik(metId(root, "btn-sluit-kaart"));
+      T.waar(!metId(root, "btn-speel"), "venster gesloten");
+    });
+  });
+  test("nep-DOM: Gebruik en verwachting uitleggen koppelt vanzelf aan het actieve middel (geen keuzelijst) en toont de uitleg van dat middel", function () {
+    metNepDom(function (root) {
+      begin(root, "anna"); startEp(root, "E1");
+      klik(metAttr(root, "data-kaart", "N2"));
+      T.waar(/nergens/.test(metId(root, "kaart-doelen").textContent), "zonder actief middel nergens te gebruiken");
+      T.is(metId(root, "btn-speel").getAttribute("disabled"), "");
+      klik(metId(root, "btn-sluit-kaart"));
+      speelKlik(root, "V4"); speelKlik(root, "N2");
+      T.is(alle(root, function (e) { return e.getAttribute("data-doel") !== null; }).length, 0, "geen keuzelijst");
+      T.waar(/Gebruik en verwachting uitleggen → Fosfomycine/.test(tekstVan(root)), "tijdlijn toont de middelnaam, geen code");
+      var v4 = casus().kaarten.filter(function (k) { return k.id === "V4"; })[0];
+      T.waar(tekstVan(root).indexOf(v4.uitleg) >= 0, "uitleg van het middel in de tijdlijn");
+    });
+  });
+
+  /* ---------- iteratie 1: pauzeren, stoppen, doorgaan en testmodus ---------- */
+  function metSpelOpslag(opslag, fn) { var oud = UI._opslag; UI._opslag = opslag; try { fn(); } finally { UI._opslag = oud; } }
+  test("nep-DOM: Pauzeer en sla op bewaart in de browser en meldt dat; Hervat brengt je terug op dezelfde dag met dezelfde kaarten", function () {
+    var opslag = nepOpslag();
+    metSpelOpslag(opslag, function () {
+      metNepDom(function (root) {
+        begin(root, "anna"); startEp(root, "E1");
+        speelKlik(root, "V4"); speelKlik(root, "N1"); klik(metId(root, "btn-volgende-dag")); speelKlik(root, "G1");
+        klik(metId(root, "btn-pauzeer"));
+        T.is(metId(root, "melding").textContent, "Opgeslagen op deze computer, in deze browser.");
+        T.waar(!!metId(root, "btn-hervat"), "hervatknop op het episodescherm");
+        T.waar(/dag 2 van 14/.test(metId(root, "opgeslagen").textContent), "dag staat erbij");
+        klik(metId(root, "btn-hervat"));
+        T.is(metId(root, "dagtelling").textContent, "Dag 2 van 14");
+        T.is(alle(root, function (e) { return e.getAttribute("data-gespeeld") !== null; }).map(function (e) { return e.getAttribute("data-gespeeld"); }).sort().join(), "G1,N1,V4");
+        T.is(metId(root, "acties").getAttribute("data-over"), "2", "actie van vandaag al besteed");
+      });
+    });
+  });
+  test("nep-DOM: een opgeslagen casus is alleen van de eigen pseudoniem; zonder opslag meldt Pauzeer dat opslaan niet lukt en het spel gaat door", function () {
+    var opslag = nepOpslag();
+    metSpelOpslag(opslag, function () {
+      metNepDom(function (root) {
+        begin(root, "anna"); startEp(root, "E1"); speelKlik(root, "N1"); klik(metId(root, "btn-pauzeer"));
+        klik(metId(root, "btn-ander")); begin(root, "bob");
+        T.waar(!metId(root, "btn-hervat"), "bob ziet de casus van anna niet");
+      });
+    });
+    metSpelOpslag(null, function () {
+      metNepDom(function (root) {
+        begin(root, "anna"); startEp(root, "E1"); speelKlik(root, "N1"); klik(metId(root, "btn-pauzeer"));
+        T.waar(/Opslaan lukt niet/.test(metId(root, "melding").textContent), "melding");
+        T.waar(!!metId(root, "dagtelling"), "nog in het spel");
+      });
+    });
+  });
+  test("nep-DOM: Stop deze casus vraagt bevestiging, bewaart niets en wist een opgeslagen versie; Nee gaat verder", function () {
+    var opslag = nepOpslag();
+    metSpelOpslag(opslag, function () {
+      metNepDom(function (root) {
+        begin(root, "anna"); startEp(root, "E1"); speelKlik(root, "N1");
+        klik(metId(root, "btn-pauzeer")); klik(metId(root, "btn-hervat"));
+        klik(metId(root, "btn-stop")); klik(metId(root, "btn-stop-nee"));
+        T.waar(!!metId(root, "dagtelling"), "Nee: verder spelen");
+        klik(metId(root, "btn-stop")); klik(metId(root, "btn-stop-ja"));
+        T.waar(!metId(root, "dagtelling") && !!metAttr(root, "data-start", "E1"), "terug op het episodescherm");
+        T.waar(!metId(root, "btn-hervat"), "opgeslagen versie gewist");
+        T.is(g.Logging.alle().length, 0, "niets bewaard als poging");
+      });
+    });
+  });
+  test("nep-DOM: na de casus: Terug naar start en Opnieuw, en bij een gehaalde poort Volgende episode; geen dode eindschermen", function () {
+    metNepDom(function (root) {
+      begin(root, "anna"); startEp(root, "E1");
+      speelKlik(root, "V3"); afronden(root);       // niet gehaald
+      T.waar(!!metId(root, "btn-opnieuw") && !!metId(root, "btn-terug"), "niet gehaald: Opnieuw en Terug naar start");
+      T.waar(!metId(root, "btn-volgende-episode"), "geen volgende episode zonder gehaalde poort");
+      opnieuw(root);
+      ["V1", "N1", "Ev1"].forEach(function (k) { speelKlik(root, k); }); afronden(root);
+      T.waar(!!metId(root, "btn-volgende-episode") && !!metId(root, "btn-nogmaals") && !!metId(root, "btn-terug"), "gehaald: Volgende episode, Opnieuw, Terug naar start");
+      klik(metId(root, "btn-volgende-episode"));
+      sluitStart(root);
+      T.is(metId(root, "start-uitleg"), null);
+      T.waar(/Dag 1 van 14/.test(metId(root, "dagtelling").textContent) && /Episode 2/.test(tekstVan(root)), "episode 2 is gestart");
+    });
+  });
+  test("nep-DOM: testmodus: alle episodes open en gemarkeerd; de poging krijgt testmodus en telt niet mee (ook niet voor het ontgrendelen)", function () {
+    metNepDom(function (root) {
+      begin(root, "anna");
+      T.is(metAttr(root, "data-start", "E3").getAttribute("disabled"), "", "E3 dicht zonder testmodus");
+      klik(metId(root, "testmodus"));
+      T.waar(!!metId(root, "testmodus-melding"), "duidelijk gemarkeerd");
+      T.is(metAttr(root, "data-start", "E3").getAttribute("disabled"), null, "E3 open in testmodus");
+      startEp(root, "E2");
+      T.waar(!!metId(root, "testmodus-label"), "markering in het spel");
+      speelKlik(root, "N1"); afronden(root);
+      var p = g.Logging.alle()[0];
+      T.is(p.testmodus, true); T.is(p.eerstePoging, false, "telt niet als eerste poging");
+      klik(metId(root, "btn-terug")); klik(metId(root, "testmodus"));
+      T.is(metAttr(root, "data-start", "E3").getAttribute("disabled"), "", "een testpoging ontgrendelt niets");
+    });
   });
 })(typeof window !== "undefined" ? window : globalThis);

@@ -17,6 +17,15 @@
 
   var SCHAAL = 3;                                     // score-schaal 1-3 (contract 5), alleen voor de weergave van puntjes
   var PSEUDONIEM_SLEUTEL = "egc.pseudoniem.sessie";   // alleen de laatst gebruikte code in dit tabblad (gemak)
+  // Bedieningsrondleiding aan het begin van de eerste episode (concepttekst voor Bart, geen klinische inhoud).
+  var RONDLEIDING = [
+    { titel: "De patiëntkaart", tekst: "Links zie je de patiënt. Sommige gegevens zie je pas nadat je een kaart hebt gespeeld." },
+    { titel: "Je kaarten", tekst: "Onder de patiënt liggen je kaarten, per soort. Klik op een kaart om hem eerst te lezen." },
+    { titel: "De knop Speel", tekst: "Pas met de knop Speel in het kaartvenster speel je de kaart. Sommige kaarten vragen daarna om een keuze." },
+    { titel: "Acties en dagen", tekst: "Elke dag heb je een aantal acties. Een kaart spelen kost een actie. Met Volgende dag ga je een dag verder." },
+    { titel: "Een poging", tekst: "Aan het eind van de episode krijg je een beoordeling. Eén keer een episode spelen is een poging; je mag opnieuw proberen." }
+  ];
+  var RONDLEIDING_SLEUTEL = "egc.rondleiding.gezien";
   var DOELVELDEN = [                                  // welke velden van state.zichtbaar de patiëntkaart toont, en onder welk kopje
     ["kop", null],
     ["klachten", null],
@@ -63,17 +72,19 @@
   }
 
   // Per episode: nummer, of hij open is (Engine.ontgrendeld) en of de speler hem al gehaald heeft.
-  function episodeOverzicht(casus, pseudoniem, alleRecords) {
-    var mijn = recordsVan(alleRecords, pseudoniem);
+  function episodeOverzicht(casus, pseudoniem, alleRecords, testmodus) {
+    // Pogingen in testmodus tellen niet mee: ze ontgrendelen niets en tellen niet als gehaald. In testmodus staan alle episodes open.
+    var mijn = recordsVan(alleRecords, pseudoniem).filter(function (r) { return !r.testmodus; });
     return lijst(casus.episodes).map(function (ep, i) {
       var gehaald = mijn.some(function (r) {
         return r.episodeId === ep.id && (r.casusId == null || r.casusId === casus.id) && Array.isArray(r.geschonden) && r.geschonden.length === 0;
       });
       return {
         id: ep.id, nummer: i + 1, titel: "Episode " + (i + 1),
-        open: g.Engine.ontgrendeld(casus, ep.id, mijn),
+        open: !!testmodus || g.Engine.ontgrendeld(casus, ep.id, mijn),
         gehaald: gehaald,
-        vorige: i > 0 ? "Episode " + i : null
+        vorige: i > 0 ? "Episode " + i : null,
+        testmodus: !!testmodus
       };
     });
   }
@@ -151,17 +162,33 @@
     return t;
   }
 
-  // Tekst na het spelen: de onthulling (als de kaart iets onthulde), anders effect[episode] ?? effect.alle, anders niets.
-  function naSpelenTekst(casus, ep, state, kaartId) {
+  // De effecttekst van een kaart voor een episode: effect[episode] ?? effect.alle, anders niets. De ENIGE plek waar dit gelezen wordt.
+  function effectVoor(kaart, episodeId) {
+    var e = kaart && kaart.effect;
+    if (typeof e === "string") return e !== "" ? e : null;
+    if (!isObj(e)) return null;
+    var t = Object.prototype.hasOwnProperty.call(e, episodeId) && e[episodeId] != null ? e[episodeId] : (e.alle != null ? e.alle : null);
+    return typeof t === "string" && t !== "" ? t : null;
+  }
+
+  // Tekst na het spelen: de onthulling (als de kaart iets onthulde), bij een kaart met uitlegVanDoel de uitleg van het gekozen middel,
+  // anders effect[episode] ?? effect.alle, anders niets.
+  function naSpelenTekst(casus, ep, state, kaartId, doel) {
     var onthuld = lijst(state.onthuld).filter(function (o) { return o.kaart === kaartId; }).map(function (o) { return o.tekst; });
     if (onthuld.length) return { soort: "onthuld", tekst: onthuld.join(" ") };
-    var k = kaartVan(casus, kaartId), e = k && k.effect;
-    if (typeof e === "string") return { soort: "effect", tekst: e };
-    if (isObj(e)) {
-      var t = Object.prototype.hasOwnProperty.call(e, ep.id) && e[ep.id] != null ? e[ep.id] : (e.alle != null ? e.alle : null);
-      if (typeof t === "string" && t !== "") return { soort: "effect", tekst: t };
+    var k = kaartVan(casus, kaartId);
+    if (k && k.uitlegVanDoel && doel) {
+      var dk = kaartVan(casus, doel);
+      if (dk && typeof dk.uitleg === "string" && dk.uitleg !== "") return { soort: "effect", tekst: dk.uitleg };
     }
-    return null;
+    var t = effectVoor(k, ep.id);
+    return t ? { soort: "effect", tekst: t } : null;
+  }
+
+  // Heeft de kaart op dit moment precies één mogelijk doel, dan is dat het doel (geen keuzelijst); anders null.
+  function enigDoel(casus, ep, state, kaartId) {
+    var d = toegestaneDoelen(casus, ep, state, kaartId);
+    return d.length === 1 ? d[0].id : null;
   }
 
   function gebeurtenisTekst(ep, id) {
@@ -192,7 +219,7 @@
         status: kl && kl.tekst ? kl.tekst : null,
         waarschuwing: aanhoudendTekst(ep, kl),
         kaarten: lijst(state.tijdlijn).filter(function (r) { return r.dag === d; }).map(function (r) {
-          return { volg: r.volg, kaart: r.kaart, titel: regelTitel(casus, ep, r), na: naSpelenTekst(casus, ep, state, r.kaart) };
+          return { volg: r.volg, kaart: r.kaart, titel: regelTitel(casus, ep, r), na: naSpelenTekst(casus, ep, state, r.kaart, r.doel) };
         }),
         raadplegingen: lijst(state.raadplegingen).filter(function (r) { return r.dag === d; }).length
       });
@@ -321,11 +348,44 @@
     return null;
   }
 
+  /* ---------- pauzeren en hervatten (localStorage in de browser, altijd met try/catch) ---------- */
+  var SPEL_SLEUTEL = "egc.spel.v1";
+  function lokaleOpslag() {
+    if (UI._opslag !== undefined) return UI._opslag;   // alleen voor tests: null = geen opslag, object = nepopslag
+    try { var o = g.localStorage; return o && typeof o.getItem === "function" ? o : null; } catch (e) { return null; }
+  }
+  function bewaarSpel() {
+    try {
+      var o = lokaleOpslag();
+      if (!o) return false;
+      o.setItem(SPEL_SLEUTEL, JSON.stringify({ pseudoniem: app.pseudoniem, episodeId: app.ep.id, testmodus: !!app.testmodus, tijd: new Date().toISOString(), state: app.spel }));
+      return true;
+    } catch (e) { return false; }
+  }
+  // Geeft het opgeslagen spel van deze pseudoniem, of null (niets bewaard, ander pseudoniem, kapotte of verouderde inhoud).
+  function leesSpel(pseudoniem) {
+    try {
+      var o = lokaleOpslag();
+      if (!o) return null;
+      var ruw = o.getItem(SPEL_SLEUTEL);
+      if (!ruw) return null;
+      var r = JSON.parse(ruw), st = r && r.state;
+      if (!r || !st || !zelfdePseudoniem(r.pseudoniem, pseudoniem) || !Array.isArray(st.tijdlijn) || !Array.isArray(st.gebeurtenissen) || typeof st.dag !== "number") return null;
+      var casus = g.CASUSSEN && g.CASUSSEN[0];
+      if (!casus || st.casusId !== casus.id || lijst(casus.episodes).filter(function (e) { return e.id === r.episodeId && e.id === st.episodeId; }).length !== 1) return null;
+      return r;
+    } catch (e) { return null; }
+  }
+  function wisSpel() {
+    try { var o = lokaleOpslag(); if (o && typeof o.removeItem === "function") o.removeItem(SPEL_SLEUTEL); } catch (e) { /* niets te wissen */ }
+  }
+
   function nieuweApp() {
     return {
       scherm: "start", pseudoniem: opslagBeschikbaarSessie("lees", PSEUDONIEM_SLEUTEL) || "", fout: null,
       casus: (g.CASUSSEN && g.CASUSSEN[0]) || null, ep: null, spel: null, uitkomst: null,
-      melding: null, onthuld: null, dialoog: null, bevestigAfronden: false, fokus: null, downloadFout: false, geschiedenis: []
+      melding: null, onthuld: null, dialoog: null, bevestigAfronden: false, fokus: null, downloadFout: false, geschiedenis: [],
+      testmodus: false, rondleidingGezien: false
     };
   }
 
@@ -433,7 +493,8 @@
   function kiesScherm() {
     var records = [];
     try { records = g.Logging.alle(); } catch (e) { records = []; }
-    var overzicht = episodeOverzicht(app.casus, app.pseudoniem, records);
+    var overzicht = episodeOverzicht(app.casus, app.pseudoniem, records, app.testmodus);
+    var bewaard = leesSpel(app.pseudoniem);
     return h("main", { klasse: "smal" },
       h("header", { klasse: "kop" },
         fokusMarkeer(h("h1", { tabindex: "-1" }, "Kies een episode"), "kop"),
@@ -441,8 +502,19 @@
           knop("Ander pseudoniem", { id: "btn-ander", klasse: "link" }, function () { naarScherm("start"); }))
       ),
       opslagBalk(), meldingView(),
+      bewaard ? h("section", { klasse: "kaartvlak opgeslagen", id: "opgeslagen", "aria-labelledby": "opgeslagen-kop" },
+        h("h2", { id: "opgeslagen-kop", klasse: "klein" }, "Opgeslagen casus"),
+        h("p", null, "Episode " + episodeNummer(app.casus, { id: bewaard.episodeId }) + ", dag " + bewaard.state.dag + " van " + bewaard.state.aantalDagen + (bewaard.testmodus ? " (testmodus)" : "") + "."),
+        h("p", { klasse: "dlgknoppen" },
+          knop("Hervat", { id: "btn-hervat", klasse: "knop hoofd" }, function () { hervatSpel(bewaard); }),
+          knop("Verwijder opgeslagen casus", { id: "btn-wis-opgeslagen", klasse: "knop rand" }, function () { wisSpel(); app.melding = "De opgeslagen casus is verwijderd."; app.downloadFout = false; render(); }))) : null,
+      h("p", { klasse: "testmodus-kies" },
+        h("label", null, h("input", { type: "checkbox", id: "testmodus", checked: app.testmodus ? true : null, klik: function () { app.testmodus = !app.testmodus; app.fokus = "testmodus"; render(); } }),
+          " Testmodus (voor Bart): alle episodes staan open; pogingen tellen niet mee als meting.")),
+      app.testmodus ? h("p", { klasse: "waarschuwing", id: "testmodus-melding", role: "status" }, "TESTMODUS: deze pogingen worden in de export gemarkeerd en tellen niet mee als meting.") : null,
       h("ul", { klasse: "episodes" }, overzicht.map(function (o) {
         var status = !o.open ? "Vergrendeld: haal eerst " + o.vorige.toLowerCase() + "." : (o.gehaald ? "Gehaald." : "Nog niet gehaald.");
+        if (o.open && o.testmodus && !o.gehaald) status = "Open in testmodus.";
         return h("li", { klasse: "kaartvlak episode" + (o.open ? "" : " dicht"), "data-episode": o.id },
           h("div", null, h("h2", null, o.titel), h("p", { klasse: "uitleg" }, status)),
           knop(o.gehaald ? "Opnieuw spelen" : "Start", { klasse: "knop hoofd", "data-start": o.id, disabled: !o.open ? true : null, "aria-label": o.titel + (o.gehaald ? " opnieuw spelen" : " starten") },
@@ -450,6 +522,39 @@
       })),
       h("p", null, exportKnop())
     );
+  }
+
+  function hervatSpel(r) {
+    var ep = lijst(app.casus.episodes).filter(function (e) { return e.id === r.episodeId; })[0];
+    if (!ep) { app.melding = "Deze opgeslagen casus past niet meer bij het spel."; app.downloadFout = true; render(); return; }
+    app.spel = r.state; app.spel.rng = Math.random;
+    app.ep = ep; app.uitkomst = null; app.testmodus = !!r.testmodus;
+    naarScherm("spel");
+    app.melding = "Je bent terug op dag " + app.spel.dag + ", met dezelfde kaarten.";
+    app.downloadFout = false;
+    render();
+  }
+
+  // Pauzeer: bewaar het spel in de browser en ga terug naar de episodes.
+  function pauzeer() {
+    if (!bewaarSpel()) {
+      app.melding = "Opslaan lukt niet in deze browser. Speel verder in dit tabblad of rond de episode af.";
+      app.downloadFout = true; app.fokus = "btn-pauzeer"; render(); return;
+    }
+    naarScherm("kies");
+    app.melding = "Opgeslagen op deze computer, in deze browser.";
+    app.downloadFout = false;
+    render();
+  }
+
+  // Stop: deze poging verdwijnt (er is niets beoordeeld of bewaard) en ook een eerder opgeslagen versie van dit spel.
+  function stopCasus() {
+    wisSpel();
+    app.spel = null; app.uitkomst = null;
+    naarScherm("kies");
+    app.melding = "De casus is gestopt. Er is niets bewaard.";
+    app.downloadFout = false;
+    render();
   }
 
   function startEpisode(epId) {
@@ -484,6 +589,14 @@
     render();
   }
 
+  // Klik op een kaart: eerst lezen (kaartvenster). Pas de knop Speel speelt de kaart.
+  function openKaart(kaartId) {
+    app.bevestigAfronden = false;
+    app.dialoog = { type: "kaart", kaartId: kaartId };
+    app.fokus = "dlg-eerste";
+    render();
+  }
+
   function klikKaart(kaartId) {
     app.bevestigAfronden = false;
     if (!isDoelkaart(app.casus, app.ep, kaartId)) { speelDirect(kaartId); return; }
@@ -495,6 +608,7 @@
       app.downloadFout = true; app.onthuld = null; app.fokus = "kaart-" + kaartId; render(); return;
     }
     app.dialoog = { type: "doel", kaartId: kaartId, doelen: doelen, stap: 1, doel: null, opties: [] };
+    if (doelen.length === 1) { kiesDoel(doelen[0]); return; }   // één mogelijk doel: geen keuzelijst, de kaart koppelt er vanzelf aan
     app.fokus = "dlg-eerste";
     render();
   }
@@ -530,8 +644,9 @@
     try { uitkomst = g.Engine.rondAf(app.spel); }
     catch (e) { app.melding = (e && e.message) || "Afronden lukte niet."; app.downloadFout = true; app.bevestigAfronden = false; render(); return; }
     app.uitkomst = uitkomst;
+    wisSpel();   // een afgerond spel hoeft niet meer hervat te worden
     app.opslagFout = null;
-    try { g.Logging.bewaarUitSpel(app.spel, uitkomst, app.pseudoniem); }
+    try { g.Logging.bewaarUitSpel(app.spel, uitkomst, app.pseudoniem, { testmodus: app.testmodus }); }
     catch (e) { app.opslagFout = (e && e.message) || "De poging kon niet worden bewaard."; }
     naarScherm("eind");
   }
@@ -545,6 +660,7 @@
     return h("div", { klasse: "balk" },
       h("div", { klasse: "balkinfo" },
         h("span", { klasse: "episodenaam" }, "Episode " + episodeNummer(app.casus, ep)),
+        app.testmodus ? h("span", { klasse: "testmodus-label", id: "testmodus-label" }, "TESTMODUS") : null,
         h("span", { id: "dagtelling", "data-dag": st.dag }, "Dag " + st.dag + " van " + st.aantalDagen),
         h("span", { klasse: "acties", id: "acties", "data-over": Math.max(0, st.actiesOver), role: "status" },
           h("span", { klasse: "actielabel" }, "Acties vandaag: "),
@@ -567,7 +683,9 @@
               if (laatste) { rondAf(); return; }   // op de laatste dag kan er niets meer: meteen afronden, zonder "verder spelen"
               app.bevestigAfronden = true; app.fokus = "btn-afronden-ja"; render();
             }), "btn-afronden"),
-        exportKnop()
+        exportKnop(),
+        knop("Pauzeer en sla op", { id: "btn-pauzeer", klasse: "knop rand" }, pauzeer),
+        knop("Stop deze casus", { id: "btn-stop", klasse: "knop rand" }, function () { app.dialoog = { type: "stop" }; app.fokus = "dlg-eerste"; render(); })
       )
     );
   }
@@ -585,15 +703,18 @@
   }
 
   function kaartenView() {
-    var st = app.spel, klaar = g.Engine.eindeBereikt(st), geenActies = st.actiesOver < 1;
+    var st = app.spel;
     return h("section", { klasse: "kaarten", "aria-label": "Kaarten" },
       kaartenPerCategorie(app.casus, app.ep).map(function (grp) {
         var kid = "cat-" + slug(grp.categorie);
         return h("div", { klasse: "categorie " + grp.klasse, role: "group", "aria-labelledby": kid },
           h("h3", { id: kid }, grp.categorie),
           h("div", { klasse: "kaartrij" }, grp.kaarten.map(function (k) {
-            return fokusMarkeer(knop(k.label, { klasse: "kaart", "data-kaart": k.id, disabled: (klaar || geenActies) ? true : null },
-              function () { klikKaart(k.id); }), "kaart-" + k.id);
+            var data = kaartVan(app.casus, k.id);
+            return fokusMarkeer(knop([h("span", { klasse: "kaartnaam" }, k.label),
+              data && data.dosering ? h("span", { klasse: "dosering" }, data.dosering) : null],
+              { klasse: "kaart", "data-kaart": k.id, "aria-label": k.label + " lezen" },
+              function () { openKaart(k.id); }), "kaart-" + k.id);
           }))
         );
       })
@@ -673,8 +794,27 @@
 
   /* ---------- dialoog (doel/optie kiezen, richtlijn) ---------- */
 
+  function rondleidingNodig() {
+    return episodeNummer(app.casus, app.ep) === 1 && !app.rondleidingGezien && opslagBeschikbaarSessie("lees", RONDLEIDING_SLEUTEL) !== "1";
+  }
+  // Na de uitleg bij de start: in de eerste episode eerst de bedieningsrondleiding (over te slaan), daarna het spel.
+  function beginEpisode() {
+    app.dialoog = null;
+    if (rondleidingNodig()) app.dialoog = { type: "rondleiding", stap: 0 };
+    app.fokus = app.dialoog ? "dlg-eerste" : "dag-kop";
+    render();
+  }
+  function rondleidingKlaar() {
+    app.rondleidingGezien = true;
+    opslagBeschikbaarSessie("schrijf", RONDLEIDING_SLEUTEL, "1");
+    app.dialoog = null; app.fokus = "dag-kop";
+    render();
+  }
+
   function sluitDialoog() {
     var d = app.dialoog;
+    if (d && d.type === "start") { beginEpisode(); return; }
+    if (d && d.type === "rondleiding") { rondleidingKlaar(); return; }
     app.dialoog = null;
     app.fokus = d && d.kaartId ? "kaart-" + d.kaartId : "btn-raadplegen";
     render();
@@ -687,7 +827,42 @@
       inhoud = [
         h("p", null, "Deze episode duurt " + app.spel.aantalDagen + " dagen. Elke dag kun je een aantal kaarten spelen."),
         h("p", { id: "start-uitleg" }, d.tekst),
-        fokusMarkeer(knop("Begin", { klasse: "knop hoofd", id: "btn-begin" }, sluitDialoog), "dlg-eerste")
+        fokusMarkeer(knop("Begin", { klasse: "knop hoofd", id: "btn-begin" }, beginEpisode), "dlg-eerste")
+      ];
+    } else if (d.type === "stop") {
+      titel = "Deze casus stoppen?";
+      inhoud = [
+        h("p", null, "Deze poging wordt niet beoordeeld en niet bewaard. Wil je later verder, kies dan Pauzeer en sla op."),
+        h("p", { klasse: "dlgknoppen" },
+          fokusMarkeer(knop("Ja, stop", { klasse: "knop hoofd", id: "btn-stop-ja" }, stopCasus), "dlg-eerste"),
+          knop("Nee, verder spelen", { klasse: "knop rand", id: "btn-stop-nee" }, function () { app.dialoog = null; app.fokus = "btn-stop"; render(); }))
+      ];
+    } else if (d.type === "rondleiding") {
+      var stappen = RONDLEIDING, st1 = stappen[d.stap], laatste1 = d.stap >= stappen.length - 1;
+      titel = "Rondleiding " + (d.stap + 1) + " van " + stappen.length + ": " + st1.titel;
+      inhoud = [
+        h("p", { id: "rondleiding-tekst" }, st1.tekst),
+        h("p", { klasse: "dlgknoppen" },
+          fokusMarkeer(knop(laatste1 ? "Klaar" : "Volgende", { klasse: "knop hoofd", id: "btn-rondleiding-verder" },
+            function () { if (laatste1) rondleidingKlaar(); else { d.stap += 1; app.fokus = "dlg-eerste"; render(); } }), "dlg-eerste"),
+          knop("Overslaan", { klasse: "knop rand", id: "btn-rondleiding-over" }, rondleidingKlaar))
+      ];
+    } else if (d.type === "kaart") {
+      var kd = kaartVan(app.casus, d.kaartId), sp = app.spel, eff = effectVoor(kd, app.ep.id), doelenNu = null;
+      titel = kd.label;
+      if (isDoelkaart(app.casus, app.ep, d.kaartId)) {
+        try { doelenNu = toegestaneDoelen(app.casus, app.ep, sp, d.kaartId); } catch (e) { doelenNu = []; }
+      }
+      var reden = g.Engine.eindeBereikt(sp) ? "De laatste dag is voorbij." : (sp.actiesOver < 1 ? "Je hebt vandaag geen acties meer." : (doelenNu && !doelenNu.length ? "Deze kaart kan nu nergens op worden gespeeld." : null));
+      inhoud = [
+        kd.smaak ? h("p", { klasse: "smaak", id: "kaart-smaak" }, kd.smaak) : null,
+        kd.dosering ? h("p", { klasse: "kaartdosering", id: "kaart-dosering" }, h("strong", null, "Dosering en duur: "), kd.dosering) : null,
+        eff && !(kd.dosering && eff.indexOf(kd.dosering) >= 0) ? h("p", { klasse: "kaarteffect", id: "kaart-effect" }, eff) : null,
+        doelenNu ? h("p", { klasse: "uitleg", id: "kaart-doelen" }, doelenNu.length ? "Nu te gebruiken bij: " + doelenNu.map(function (x) { return x.label; }).join(", ") + "." : "Op dit moment is er nergens iets om deze kaart op te gebruiken.") : null,
+        reden ? h("p", { klasse: "uitleg", id: "kaart-reden" }, reden) : null,
+        h("p", { klasse: "dlgknoppen" },
+          fokusMarkeer(knop("Speel", { klasse: "knop hoofd", id: "btn-speel", disabled: reden ? true : null }, function () { var id = d.kaartId; app.dialoog = null; klikKaart(id); }), "dlg-eerste"),
+          knop("Sluiten", { klasse: "knop rand", id: "btn-sluit-kaart" }, sluitDialoog))
       ];
     } else if (d.type === "raadplegen") {
       titel = d.model.titel;
@@ -750,7 +925,7 @@
           return h("li", { "data-downside": d.label }, h("strong", null, d.label), tekst ? h("span", null, tekst) : null);
         })));
     }
-    var kern;
+    var kern, eps = lijst(app.casus.episodes), volgendeEp = eps[episodeNummer(app.casus, app.ep)] || null;
     if (!m.gehaald) {
       kern = h("section", { klasse: "kaartvlak uitslag niet", "aria-labelledby": "uitslag-kop" },
         h("h2", { id: "uitslag-kop" }, "Nog niet veilig genoeg"),
@@ -758,7 +933,9 @@
         m.gevolg ? h("p", { klasse: "gevolg", id: "gevolg" }, m.gevolg) : null,
         m.anderen ? h("p", { klasse: "uitleg", id: "anderen" }, m.anderen) : null,
         h("p", { klasse: "uitleg" }, "Denk hier even over na en probeer de episode opnieuw."),
-        fokusMarkeer(knop("Opnieuw", { id: "btn-opnieuw", klasse: "knop hoofd" }, function () { startEpisode(app.ep.id); }), "btn-opnieuw"));
+        h("p", { klasse: "dlgknoppen" },
+          fokusMarkeer(knop("Opnieuw", { id: "btn-opnieuw", klasse: "knop hoofd" }, function () { startEpisode(app.ep.id); }), "btn-opnieuw"),
+          knop("Terug naar start", { id: "btn-terug", klasse: "knop rand" }, function () { naarScherm("kies"); })));
     } else {
       kern = h("section", { klasse: "kaartvlak uitslag goed", "aria-labelledby": "uitslag-kop" },
         h("h2", { id: "uitslag-kop" }, "Veiligheid gehaald"),
@@ -776,7 +953,10 @@
           h("ul", null, m.extraVragen.map(function (v) { return h("li", { "data-extra": "ja" }, v); }))) : null,
         m.zichtbaar.length ? h("div", { klasse: "zichtbaar" }, h("h3", null, "Wat je niet zag"),
           h("ul", null, m.zichtbaar.map(function (v) { return h("li", { "data-zichtbaar": "ja" }, v); }))) : null,
-        fokusMarkeer(knop("Naar de episodes", { id: "btn-terug", klasse: "knop hoofd" }, function () { naarScherm("kies"); }), "btn-terug"));
+        h("p", { klasse: "dlgknoppen" },
+          volgendeEp ? fokusMarkeer(knop("Volgende episode", { id: "btn-volgende-episode", klasse: "knop hoofd" }, function () { startEpisode(volgendeEp.id); }), "btn-volgende-episode") : null,
+          knop("Opnieuw", { id: "btn-nogmaals", klasse: "knop rand" }, function () { startEpisode(app.ep.id); }),
+          fokusMarkeer(knop("Terug naar start", { id: "btn-terug", klasse: "knop rand" }, function () { naarScherm("kies"); }), "btn-terug")));
     }
     return h("main", { klasse: "smal eind" },
       fokusMarkeer(h("h1", { tabindex: "-1" }, "Beoordeling episode " + epNr), "kop"),
@@ -788,8 +968,8 @@
       kern,
       h("p", { klasse: "uitleg", id: "legedagen" }, "Dagen zonder actie: " + legeDagenTekst()),
       meldingView(),
-      h("p", { klasse: "onderknoppen" }, exportKnop(),
-        m.gehaald ? knop("Deze episode opnieuw spelen", { id: "btn-nogmaals", klasse: "knop rand" }, function () { startEpisode(app.ep.id); }) : null)
+      app.testmodus ? h("p", { klasse: "waarschuwing", id: "testmodus-melding" }, "Testmodus: deze poging telt niet mee als meting.") : null,
+      h("p", { klasse: "onderknoppen" }, exportKnop())
     );
   }
 
@@ -815,7 +995,8 @@
     isDoelkaart: isDoelkaart, optiesVoor: optiesVoor, regelTitel: regelTitel, naSpelenTekst: naSpelenTekst,
     dagenModel: dagenModel, patientVelden: patientVelden, evaluatieModel: evaluatieModel, raadpleegModel: raadpleegModel,
     aanhoudendTekst: aanhoudendTekst, opslagMelding: opslagMelding, actieDots: actieDots, doelLabel: doelLabel,
-    nadeelTekst: nadeelTekst, anderenZin: anderenZin, gespeeldeKaarten: gespeeldeKaarten,
+    nadeelTekst: nadeelTekst, anderenZin: anderenZin, effectVoor: effectVoor, enigDoel: enigDoel, rondleiding: function () { return RONDLEIDING.slice(); }, gespeeldeKaarten: gespeeldeKaarten,
+    _opslag: undefined,                               // alleen voor tests
     _rng: null,                                       // alleen voor tests: vaste toevalsbron voor de volgorde van opties
     _toestand: function () { return app; }            // alleen voor tests
   };

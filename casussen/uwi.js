@@ -17,7 +17,7 @@ window.CASUSSEN = [
   { "episode": "E3", "invariant": "I14", "tekst": "Na 48 uur geen verbetering.", "vrijgegeven": true },
   { "episode": "E3", "invariant": "I15", "tekst": "De nierfunctie daalt verder en het kalium stijgt.", "vrijgegeven": true }
  ],
- "rollen": { "wissel": "B1", "stop": "B2", "pauzeer": "B3", "hervat": "B5" },
+ "rollen": { "wissel": "B1", "stop": "B2", "pauzeer": "B3", "hervat": "B5", "uitgesteld": "V2" },
  "titel": "Casus UWI in de eerste lijn — tutorialcasus Epic green cards",
  "bronnen": {
   "NHG": "NHG-Standaard Urineweginfecties, versie juli 2026",
@@ -41,6 +41,7 @@ window.CASUSSEN = [
    "categorie": "Gegevens",
    "label": "Medicatieoverzicht nalopen",
    "vanafEpisode": 1,
+   "smaak": "Een blik in het dossier.",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -55,6 +56,7 @@ window.CASUSSEN = [
    "categorie": "Gegevens",
    "label": "Recente labwaarden opvragen",
    "vanafEpisode": 1,
+   "smaak": "Cijfers uit het laboratorium.",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -72,6 +74,7 @@ window.CASUSSEN = [
    "categorie": "Gegevens",
    "label": "Eerdere kweekuitslagen opvragen",
    "vanafEpisode": 3,
+   "smaak": "Wat zei het lab eerder?",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -86,6 +89,7 @@ window.CASUSSEN = [
    "categorie": "Onderzoek",
    "label": "Urinekweek inzetten",
    "vanafEpisode": 1,
+   "smaak": "Soms heb je meer dan een blik nodig.",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -104,6 +108,7 @@ window.CASUSSEN = [
    "categorie": "Onderzoek",
    "label": "Kalium bepalen",
    "vanafEpisode": 1,
+   "smaak": "Iets wat je niet aan de patiënt ziet.",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -118,6 +123,7 @@ window.CASUSSEN = [
    "categorie": "Voorschrijven",
    "label": "Afwachtend beleid",
    "vanafEpisode": 1,
+   "smaak": "Soms is niets voorschrijven ook een keuze.",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -132,9 +138,30 @@ window.CASUSSEN = [
    "categorie": "Voorschrijven",
    "label": "Uitgesteld recept",
    "vanafEpisode": 1,
-   "doelkaart": false,
+   "smaak": "Een recept met een voorwaarde.",
+   "doelkaart": true,
    "opties": null,
-   "doelen": null,
+   "doelen": {
+    "E1": [
+     { "id": "V3", "label": "Nitrofurantoïne" },
+     { "id": "V4", "label": "Fosfomycine" },
+     { "id": "V5", "label": "Trimethoprim" }
+    ],
+    "E2": [
+     { "id": "V3", "label": "Nitrofurantoïne" },
+     { "id": "V4", "label": "Fosfomycine" },
+     { "id": "V5", "label": "Trimethoprim" }
+    ],
+    "E3": [
+     { "id": "V3", "label": "Nitrofurantoïne" },
+     { "id": "V4", "label": "Fosfomycine" },
+     { "id": "V5", "label": "Trimethoprim" },
+     { "id": "V7", "label": "Ciprofloxacine" },
+     { "id": "V8", "label": "Amoxicilline/clavulaanzuur" },
+     { "id": "V9", "label": "Cotrimoxazol" },
+     { "id": "V10", "label": "Amoxicilline" }
+    ]
+   },
    "effect": {
     "alle": "De patiënt start zelf als de klachten aanhouden of toenemen"
    },
@@ -146,6 +173,9 @@ window.CASUSSEN = [
    "categorie": "Voorschrijven",
    "label": "Nitrofurantoïne",
    "vanafEpisode": 1,
+   "smaak": "Een bekend middel uit de lade.",
+   "dosering": "5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen.",
+   "uitleg": "5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen.",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -161,6 +191,9 @@ window.CASUSSEN = [
    "categorie": "Voorschrijven",
    "label": "Fosfomycine",
    "vanafEpisode": 1,
+   "smaak": "Eén zakje, een eenmalige keuze.",
+   "dosering": "Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht",
+   "uitleg": "Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht. Klachten niet direct weg.",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -175,6 +208,9 @@ window.CASUSSEN = [
    "categorie": "Voorschrijven",
    "label": "Trimethoprim",
    "vanafEpisode": 1,
+   "smaak": "Een oude bekende uit het protocol.",
+   "dosering": "3 dagen 1 dd 300 mg. Risicogroep: 7 dagen.",
+   "uitleg": "3 dagen 1 dd 300 mg. Risicogroep: 7 dagen.",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -190,6 +226,7 @@ window.CASUSSEN = [
    "categorie": "Voorschrijven",
    "label": "Dosis aanpassen",
    "vanafEpisode": 2,
+   "smaak": "Een middel dat al loopt kan anders worden afgesteld.",
    "doelkaart": true,
    "opties": {
     "V5": [
@@ -308,6 +345,9 @@ window.CASUSSEN = [
    "categorie": "Voorschrijven",
    "label": "Ciprofloxacine",
    "vanafEpisode": 3,
+   "smaak": "Een middel uit een andere familie.",
+   "dosering": "7 dagen 2 dd 500 mg",
+   "uitleg": "7 dagen 2 dd 500 mg",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -322,6 +362,9 @@ window.CASUSSEN = [
    "categorie": "Voorschrijven",
    "label": "Amoxicilline/clavulaanzuur",
    "vanafEpisode": 3,
+   "smaak": "Een middel met twee werkzame stoffen.",
+   "dosering": "10 dagen 3 dd 500/125 mg",
+   "uitleg": "10 dagen 3 dd 500/125 mg",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -336,6 +379,9 @@ window.CASUSSEN = [
    "categorie": "Voorschrijven",
    "label": "Cotrimoxazol",
    "vanafEpisode": 3,
+   "smaak": "Ook deze staat in de bibliotheek.",
+   "dosering": "10 dagen 2 dd 960 mg",
+   "uitleg": "10 dagen 2 dd 960 mg",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -350,6 +396,9 @@ window.CASUSSEN = [
    "categorie": "Voorschrijven",
    "label": "Amoxicilline",
    "vanafEpisode": 3,
+   "smaak": "Een bekend middel, met een voorwaarde.",
+   "dosering": "3 dd 500 mg, alleen bij aangetoonde gevoeligheid",
+   "uitleg": "3 dd 500 mg, alleen bij aangetoonde gevoeligheid",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -364,6 +413,7 @@ window.CASUSSEN = [
    "categorie": "Bijsturen",
    "label": "Antibioticum wisselen",
    "vanafEpisode": 2,
+   "smaak": "Soms moet je van koers veranderen.",
    "doelkaart": true,
    "opties": null,
    "doelen": {
@@ -574,6 +624,7 @@ window.CASUSSEN = [
    "categorie": "Bijsturen",
    "label": "Antibioticum stoppen",
    "vanafEpisode": 2,
+   "smaak": "Stoppen is ook een handeling.",
    "doelkaart": true,
    "opties": null,
    "doelen": {
@@ -674,6 +725,7 @@ window.CASUSSEN = [
    "categorie": "Bijsturen",
    "label": "Medicatie tijdelijk stoppen",
    "vanafEpisode": 3,
+   "smaak": "Even op pauze.",
    "doelkaart": true,
    "opties": null,
    "doelen": {
@@ -716,6 +768,7 @@ window.CASUSSEN = [
    "categorie": "Bijsturen",
    "label": "Medicatie hervatten",
    "vanafEpisode": 3,
+   "smaak": "Terug naar de oude situatie.",
    "doelkaart": true,
    "opties": null,
    "doelen": {
@@ -767,6 +820,7 @@ window.CASUSSEN = [
    "categorie": "Bijsturen",
    "label": "Innametijden aanpassen",
    "vanafEpisode": 3,
+   "smaak": "Het gaat ook om het moment van innemen.",
    "doelkaart": true,
    "opties": null,
    "doelen": {
@@ -793,6 +847,7 @@ window.CASUSSEN = [
    "categorie": "Informeren",
    "label": "Alarmsignalen bespreken",
    "vanafEpisode": 1,
+   "smaak": "Wat neemt de patiënt mee naar huis?",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -808,117 +863,80 @@ window.CASUSSEN = [
    "categorie": "Informeren",
    "label": "Gebruik en verwachting uitleggen",
    "vanafEpisode": 1,
+   "smaak": "Uitleg die blijft hangen.",
    "doelkaart": true,
+   "uitlegVanDoel": true,
    "opties": null,
    "doelen": {
     "E1": [
      {
       "id": "V3",
       "label": "Nitrofurantoïne",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V3"
-      }
+      "vereist": { "p": "actief", "middel": "V3" }
      },
      {
       "id": "V4",
       "label": "Fosfomycine",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V4"
-      }
+      "vereist": { "p": "actief", "middel": "V4" }
      },
      {
       "id": "V5",
       "label": "Trimethoprim",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V5"
-      }
+      "vereist": { "p": "actief", "middel": "V5" }
      }
     ],
     "E2": [
      {
       "id": "V3",
       "label": "Nitrofurantoïne",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V3"
-      }
+      "vereist": { "p": "actief", "middel": "V3" }
      },
      {
       "id": "V4",
       "label": "Fosfomycine",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V4"
-      }
+      "vereist": { "p": "actief", "middel": "V4" }
      },
      {
       "id": "V5",
       "label": "Trimethoprim",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V5"
-      }
+      "vereist": { "p": "actief", "middel": "V5" }
      }
     ],
     "E3": [
      {
       "id": "V3",
       "label": "Nitrofurantoïne",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V3"
-      }
+      "vereist": { "p": "actief", "middel": "V3" }
      },
      {
       "id": "V4",
       "label": "Fosfomycine",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V4"
-      }
+      "vereist": { "p": "actief", "middel": "V4" }
      },
      {
       "id": "V5",
       "label": "Trimethoprim",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V5"
-      }
+      "vereist": { "p": "actief", "middel": "V5" }
      },
      {
       "id": "V7",
       "label": "Ciprofloxacine",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V7"
-      }
+      "vereist": { "p": "actief", "middel": "V7" }
      },
      {
       "id": "V8",
       "label": "Amoxicilline/clavulaanzuur",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V8"
-      }
+      "vereist": { "p": "actief", "middel": "V8" }
      },
      {
       "id": "V9",
       "label": "Cotrimoxazol",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V9"
-      }
+      "vereist": { "p": "actief", "middel": "V9" }
      },
      {
       "id": "V10",
       "label": "Amoxicilline",
-      "vereist": {
-       "p": "gestart",
-       "middel": "V10"
-      }
+      "vereist": { "p": "actief", "middel": "V10" }
      }
     ]
    },
@@ -934,6 +952,7 @@ window.CASUSSEN = [
    "categorie": "Informeren",
    "label": "Drinkadvies geven",
    "vanafEpisode": 3,
+   "smaak": "Een advies voor thuis.",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -950,6 +969,7 @@ window.CASUSSEN = [
    "categorie": "Evalueren",
    "label": "Opvolgmoment afspreken",
    "vanafEpisode": 1,
+   "smaak": "Een afspraak in de agenda.",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -965,6 +985,7 @@ window.CASUSSEN = [
    "categorie": "Evalueren",
    "label": "Overleggen met de voorschrijver",
    "vanafEpisode": 3,
+   "smaak": "Even bellen met een collega.",
    "doelkaart": true,
    "opties": null,
    "doelen": {
@@ -991,6 +1012,7 @@ window.CASUSSEN = [
    "categorie": "Evalueren",
    "label": "Verwijzen",
    "vanafEpisode": 3,
+   "smaak": "De grens van de eerste lijn.",
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -1061,6 +1083,24 @@ window.CASUSSEN = [
    "vraag": "Vroeg afronden: niet toegestaan zolang er nog gebeurtenissen aankomen of de dagen niet om zijn (instelling afrondenPasNaGebeurtenissen, nu aan in alle episodes). Een gebeurtenis op tijd (de kweekuitslag) telt alleen mee als Urinekweek inzetten is gespeeld. Heb je dit zo bedoeld?",
    "gekozenLezing": "Aan in E1, E2 en E3. Wie geen kaart speelt die een gebeurtenis aankondigt, kan pas op de laatste dag afronden.",
    "plek": "E1-E3.afrondenPasNaGebeurtenissen"
+  },
+  {
+   "id": "TODO_BART-N5",
+   "vraag": "Concepttekst: de rondleiding aan het begin van episode 1 (vijf korte stappen) en de smaakregel van elke kaart (één korte, neutrale zin boven het effect). Beide zijn bedacht, niet uit de casus, en bevatten volgens mij geen klinische beweringen. Keur je ze goed of pas je ze aan?",
+   "gekozenLezing": "Teksten zoals in de data (de rondleiding staat in ui/ui.js, de smaakregels in kaarten[].smaak).",
+   "plek": "kaarten[].smaak; de rondleiding staat in ui/ui.js"
+  },
+  {
+   "id": "TODO_BART-N6",
+   "vraag": "Het kaartvenster toont de effecttekst uit de casus. Een paar effectteksten verklappen een oplossing: Urinekweek inzetten ('Moet vóór de eerste dosis worden afgenomen'), Opvolgmoment afspreken (alle momenten), Nitrofurantoïne en Trimethoprim ('In een risicogroep: 7 dagen'), Innametijden aanpassen. Mogen ze zo getoond worden? Verder: bij Gebruik en verwachting uitleggen toont het spel de dosering en duur van het gekozen middel; alleen bij fosfomycine geeft de casus meer ('klachten niet direct weg'). Is dat genoeg?",
+   "gekozenLezing": "Alle effectteksten staan letterlijk in het kaartvenster. De uitleg per middel is de standaarddosering en duur uit de casus (bij fosfomycine plus 'Klachten niet direct weg.').",
+   "plek": "kaarten[].effect; kaarten[].uitleg"
+  },
+  {
+   "id": "TODO_BART-N7",
+   "vraag": "Uitgesteld recept: de speler kiest het middel dat de patiënt thuis start. In het spel telt dat middel meteen als gestart: het telt mee voor 'nooit twee antibiotica tegelijk', voor nitrofurantoïne bij een lage nierfunctie en voor de kweek vóór de eerste dosis. De patiënt start in werkelijkheid pas als de klachten aanhouden. Klopt deze vereenvoudiging?",
+   "gekozenLezing": "Uitgesteld recept met een middel = dat middel is gestart op de dag van het recept. Duurzaamheid en profiel (Gedeelde regie) blijven zoals ze waren.",
+   "plek": "kaarten[V2].doelen; casus.rollen.uitgesteld"
   },
   {
    "id": "TODO_BART-K5",

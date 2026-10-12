@@ -115,3 +115,6 @@ Een onbekende teller of `op` is een fout.
 - "Eerste match" is steeds de regel met de laagste `volg`.
 - `aantalActieveAntibiotica`, `actief` zonder middel en `kaartUit:"antibiotica"` vragen `episode.antibiotica`; ontbreekt die lijst dan volgt een fout.
 - Tests: `tests/predicaten.tests.js` (testgroep `predicaten`), met alleen synthetische tijdlijnen en twee synthetische casussen met verschillende rol-id's (B1/B2/B3/B5 en R1/R2/R3/R4) en lijstnamen (`antibiotica`, `reserve`), zodat hardgecodeerde rollen of lijstnamen rood geven.
+
+## Rol `uitgesteld` (optioneel)
+`casus.rollen.uitgesteld` (nu V2, "Uitgesteld recept") is een kaart met een `doel`: het middel dat de patiënt zelf start. In de simulatie telt zo'n kaart als start van dat middel op de dag van spelen (voor `actief`, `gestart`, `aantalActieveAntibiotica` en een kaartverwijzing met `start`). Ontbreekt de rol, dan gebeurt er niets.

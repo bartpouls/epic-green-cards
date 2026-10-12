@@ -255,6 +255,46 @@
     T.is(g.UI.nadeelTekst("—"), null); T.is(g.UI.nadeelTekst(""), null); T.is(g.UI.nadeelTekst("Kost een actie"), "Kost een actie");
   });
 
+
+  /* ---------- 4. kaarten: uitgesteld recept met middel, uitleg bij het actieve middel ---------- */
+  T.registreer(G, "uitgesteld recept: de speler kiest het middel; zonder middel kan het niet", function () {
+    var s = nieuw("E1");
+    T.is(g.Engine.speelKaart(s, "V2", {}).ok, false, "zonder doel");
+    T.gelijk(g.UI.toegestaneDoelen(casus(), ep("E1"), s, "V2").map(function (d) { return d.label; }), ["Nitrofurantoïne", "Fosfomycine", "Trimethoprim"]);
+    T.gelijk(g.UI.toegestaneDoelen(casus(), ep("E3"), nieuw("E3"), "V2").length, 7);
+  });
+  T.registreer(G, "uitgesteld recept: het gekozen middel telt mee voor profiel, duurzaamheid, 'nooit twee antibiotica' en nitrofurantoïne bij lage eGFR", function () {
+    var s = nieuw("E1"); speel(s, "V2", "V4"); speel(s, "N1"); dagen(s, 1); speel(s, "N2", "V4");
+    var u = afronden(s);
+    T.is(u.poortGehaald, true); T.is(u.profiel.naam, "Gedeelde regie"); T.is(u.score.duurzaamheid, 2);
+    var t = nieuw("E1"); speel(t, "V2", "V4"); speel(t, "V3"); speel(t, "N1");
+    T.waar(ids(afronden(t)).indexOf("I4") >= 0, "uitgesteld recept + een tweede antibioticum = twee tegelijk");
+    var e2 = nieuw("E2"); speel(e2, "G2"); speel(e2, "O1"); speel(e2, "V2", "V3"); dagen(e2, 1); speel(e2, "N1");
+    T.waar(ids(afronden(e2)).indexOf("I5") >= 0, "uitgesteld recept met nitrofurantoïne bij eGFR 29");
+  });
+  T.registreer(G, "uitleg: Gebruik en verwachting uitleggen kan alleen bij een actief middel en koppelt aan dat middel (geen keuzelijst bij één middel)", function () {
+    var s = nieuw("E1");
+    T.gelijk(g.UI.toegestaneDoelen(casus(), ep("E1"), s, "N2"), [], "geen actief middel: nergens op te spelen");
+    speel(s, "V4");
+    T.gelijk(g.UI.toegestaneDoelen(casus(), ep("E1"), s, "N2").map(function (d) { return d.id; }), ["V4"]);
+    T.is(g.UI.enigDoel(casus(), ep("E1"), s, "N2"), "V4", "één middel: automatisch");
+    speel(s, "N2", "V4");
+    var na = g.UI.naSpelenTekst(casus(), ep("E1"), s, "N2", "V4");
+    T.is(na.tekst, casus().kaarten.filter(function (k) { return k.id === "V4"; })[0].uitleg, "tekst uit de data (uitleg van het middel)");
+    T.waar(na.tekst.indexOf("Klachten niet direct weg") >= 0);
+  });
+  T.registreer(G, "kaarten: elke kaart heeft een korte smaakregel; middelen hebben dosering en duur; de smaakregel noemt geen middel of kaartcode", function () {
+    casus().kaarten.forEach(function (k) {
+      T.waar(typeof k.smaak === "string" && k.smaak.length > 5 && k.smaak.length < 70, k.id + " smaak: " + k.smaak);
+      T.waar(!/\b(V\d+|G\d|O\d|B\d|N\d|Ev\d)\b/.test(k.smaak), k.id + " smaakregel noemt een kaartcode");
+    });
+    ["V3", "V4", "V5", "V7", "V8", "V9", "V10"].forEach(function (id) {
+      var k = casus().kaarten.filter(function (x) { return x.id === id; })[0];
+      T.waar(k.dosering && k.dosering.length > 5, id + " dosering");
+      T.waar(k.effect.alle.indexOf(k.dosering) >= 0, id + ": de dosering staat letterlijk in het casuseffect");
+    });
+  });
+
   /* ---------- 9. pseudoniem en opslag ---------- */
   T.registreer(G, "opslag: de melding 'Resultaten staan alleen in dit tabblad: exporteer nu.' staat er ook als de browser niets kan bewaren, nog vóór de eerste poging", function () {
     var M = "Resultaten staan alleen in dit tabblad: exporteer nu.";

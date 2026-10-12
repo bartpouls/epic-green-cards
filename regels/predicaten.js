@@ -121,6 +121,8 @@
       if (typeof r[n] !== "string" || r[n] === "") fout("De casus mist 'rollen." + n + "' (een kaart-id) voor dit predicaat.");
       uit[n] = r[n];
     });
+    // Optionele rol: de kaart waarmee de patiënt zelf een middel start (uitgesteld recept, doel = het middel). Zonder deze rol geen effect.
+    uit.uitgesteld = typeof r.uitgesteld === "string" && r.uitgesteld !== "" ? r.uitgesteld : null;
     return uit;
   }
   function regels(ctx) {
@@ -176,7 +178,7 @@
     }
     if (K.start !== undefined) {
       var mids = lijst(K.start), rl = rollen(ctx);
-      var isStart = mids.indexOf(regel.kaart) >= 0 || (regel.kaart === rl.wissel && mids.indexOf(regel.doel) >= 0);
+      var isStart = mids.indexOf(regel.kaart) >= 0 || ((regel.kaart === rl.wissel || (rl.uitgesteld !== null && regel.kaart === rl.uitgesteld)) && mids.indexOf(regel.doel) >= 0);
       if (!isStart) return false;
     }
     if (K.doel !== undefined && regel.doel !== K.doel) return false;
@@ -227,6 +229,8 @@
         if (r.doel !== null) delete act[r.doel];
       } else if (r.kaart === rl.pauzeer) {
         if (r.doel !== null) pauze[r.doel] = true;
+      } else if (rl.uitgesteld !== null && r.kaart === rl.uitgesteld) {
+        if (r.doel !== null) act[r.doel] = true;
       } else if (r.kaart === rl.hervat) {
         if (r.doel !== null) delete pauze[r.doel];
       } else if (ab().indexOf(r.kaart) >= 0) {

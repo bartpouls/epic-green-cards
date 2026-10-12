@@ -175,3 +175,10 @@ p.fout:empty { display: none; }
 }
 
 .gevolg { font-style: italic; margin: .5rem 0; }
+
+.kaart { text-align: left; }
+.kaart .kaartnaam { display: block; }
+.kaart .dosering { display: block; font-size: .78rem; font-weight: 400; opacity: .8; margin-top: .15rem; }
+.smaak { font-style: italic; margin: 0 0 .6rem; }
+.kaartdosering, .kaarteffect { margin: .4rem 0; }
+.dlgknoppen { display: flex; gap: .5rem; flex-wrap: wrap; }

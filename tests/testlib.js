@@ -5,12 +5,17 @@
   // De echte casus in de instelling van vóór iteratie 1 ("oude regels"): geen grens op herhalen, afronden vrij, geen escalatie, kweekuitslag
   // op kaartaantal, 5/7/7 dagen. De oudere regel- en routetests (invarianten, score, profiel) gebruiken herhaalde vulkaarten en dagplannen
   // die daarop zijn gebouwd; ze toetsen de REGELS (predicaten) op de echte data. Het nieuwe gedrag (limiet, kweek na 3 dagen, escalatie,
-  // 14 dagen, afronden pas na gebeurtenissen) wordt apart getoetst met de echte instellingen in tests/iteratie1.tests.js.
+  // 14 dagen, afronden pas na gebeurtenissen, uitgesteld recept met middel) wordt apart getoetst met de echte instellingen in tests/iteratie1.tests.js.
   var oudeRegels = null;
   function maakOudeRegels() {
     var c = JSON.parse(JSON.stringify(g.CASUSSEN[0]));
     delete c.limiet;
-    c.kaarten.forEach(function (k) { delete k.limiet; });
+    delete c.rollen.uitgesteld;                      // uitgesteld recept zonder middel (V2 is dan geen doelkaart)
+    c.kaarten.forEach(function (k) {
+      delete k.limiet;
+      if (k.id === "V2") { k.doelkaart = false; k.doelen = null; }
+      if (k.id === "N2") Object.keys(k.doelen).forEach(function (e) { k.doelen[e].forEach(function (d) { d.vereist = { p: "gestart", middel: d.id }; }); });
+    });
     var dagen = { E1: 5, E2: 7, E3: 7 };
     c.episodes.forEach(function (ep) {
       ep.afrondenPasNaGebeurtenissen = false;
