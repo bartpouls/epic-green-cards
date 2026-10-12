@@ -208,26 +208,50 @@
     return s;
   }
 
+  // Waarschuwing zodra de browser niets kan bewaren (ook vóór de eerste poging), of een poging alleen in het geheugen staat.
   function opslagMelding(status) {
-    if (status && status.bewaard === false) return "Resultaten staan alleen in dit tabblad: exporteer nu.";
+    if (status && (status.bewaard === false || status.opslagBeschikbaar === false)) return "Resultaten staan alleen in dit tabblad: exporteer nu.";
     return null;
   }
 
   function hoofdletter(t) { t = String(t); return t.charAt(0).toUpperCase() + t.slice(1); }
+
+  // Een nadeeltekst "—" in de data betekent: geen nadeel. Zo'n kaart krijgt geen leeg nadeelveld.
+  function nadeelTekst(t) { return typeof t === "string" && t.trim() !== "" && t.trim() !== "—" ? t : null; }
+
+  // "Nog [n] andere veiligheidsregel(s) niet gehaald." zonder te zeggen welke; null als er maar één (of geen) is geschonden.
+  function anderenZin(uitkomst) {
+    var n = lijst(uitkomst && uitkomst.geschonden).length - 1;
+    if (n < 1) return null;
+    return "Nog " + n + " andere veiligheidsregel" + (n === 1 ? "" : "s") + " niet gehaald.";
+  }
+
+  // Alle gespeelde kaarten in speelvolgorde (elke kaart één keer), ook die zonder nadeel; het nadeel komt uit de uitkomst van de evaluatie.
+  function gespeeldeKaarten(casus, uitkomst, tijdlijn) {
+    var gezien = {}, uit = [], nadelen = {};
+    lijst(uitkomst && uitkomst.downsides).forEach(function (d) { if (d.soort !== "weggelaten") nadelen[d.kaart] = d.tekst; });
+    lijst(tijdlijn).slice().sort(function (a, b) { return a.volg - b.volg; }).forEach(function (r) {
+      if (gezien[r.kaart]) return;
+      gezien[r.kaart] = true;
+      var k = kaartVan(casus, r.kaart);
+      uit.push({ kaart: r.kaart, label: k ? k.label : r.kaart, nadeel: nadeelTekst(nadelen[r.kaart]) });
+    });
+    return uit;
+  }
 
   // Weergavemodel van het evaluatiescherm. Bij een schending: ÉÉN vraag, geen score, geen profiel, geen extra vragen.
   function evaluatieModel(uitkomst) {
     var u = uitkomst || {};
     var downsides = lijst(u.downsides).map(function (d) { return { label: d.label, tekst: d.tekst, soort: d.soort }; });
     if (!u.poortGehaald) {
-      return { gehaald: false, downsides: downsides, vraag: u.vraag || null, scores: [], profiel: null, extraVragen: [], zichtbaar: [] };
+      return { gehaald: false, downsides: downsides, vraag: u.vraag || null, gevolg: u.gevolg || null, anderen: anderenZin(u), scores: [], profiel: null, extraVragen: [], zichtbaar: [] };
     }
     var scores = [];
     if (isObj(u.score)) Object.keys(u.score).forEach(function (as) {
       if (typeof u.score[as] === "number") scores.push({ as: as, naam: hoofdletter(as), waarde: u.score[as] });
     });
     return {
-      gehaald: true, downsides: downsides, vraag: null, scores: scores,
+      gehaald: true, downsides: downsides, vraag: null, gevolg: null, anderen: null, scores: scores,
       profiel: isObj(u.profiel) ? { naam: u.profiel.naam, reflectievraag: u.profiel.reflectievraag || null } : null,
       extraVragen: lijst(u.extraVragen).map(function (x) { return typeof x === "string" ? x : x.vraag; }),
       zichtbaar: lijst(u.zichtbaar).map(function (x) { return typeof x === "string" ? x : x.tekst; })
@@ -419,6 +443,7 @@
   }
 
   function startEpisode(epId) {
+    if (!pseudoniemControle(app.pseudoniem).ok) { naarScherm("start"); app.fout = pseudoniemControle(app.pseudoniem).fout; render(); return; }
     var ep = lijst(app.casus.episodes).filter(function (e) { return e.id === epId; })[0];
     try {
       app.spel = g.Engine.nieuwSpel(app.casus, epId);
@@ -522,12 +547,15 @@
           { id: "btn-raadplegen", klasse: "knop rand", disabled: klaar ? true : null }, raadpleeg), "btn-raadplegen"),
         laatste ? h("span", { klasse: "uitleg laatstedag", id: "laatste-dag" }, "Dit is de laatste dag.")
           : knop("Volgende dag", { id: "btn-volgende-dag", klasse: "knop rand" }, volgendeDag),
-        app.bevestigAfronden
+        app.bevestigAfronden && !laatste
           ? h("span", { klasse: "bevestig", role: "group", "aria-label": "Afronden bevestigen" },
               h("span", null, "Afronden?"),
               fokusMarkeer(knop("Ja, afronden", { id: "btn-afronden-ja", klasse: "knop hoofd" }, rondAf), "btn-afronden-ja"),
               knop("Nee, verder spelen", { id: "btn-afronden-nee", klasse: "knop rand" }, function () { app.bevestigAfronden = false; app.fokus = "btn-afronden"; render(); }))
-          : fokusMarkeer(knop("Episode afronden", { id: "btn-afronden", klasse: "knop hoofd" }, function () { app.bevestigAfronden = true; app.fokus = "btn-afronden-ja"; render(); }), "btn-afronden"),
+          : fokusMarkeer(knop("Episode afronden", { id: "btn-afronden", klasse: "knop hoofd" }, function () {
+              if (laatste) { rondAf(); return; }   // op de laatste dag kan er niets meer: meteen afronden, zonder "verder spelen"
+              app.bevestigAfronden = true; app.fokus = "btn-afronden-ja"; render();
+            }), "btn-afronden"),
         exportKnop()
       )
     );
@@ -675,13 +703,14 @@
 
   function eindScherm() {
     var m = evaluatieModel(app.uitkomst), epNr = episodeNummer(app.casus, app.ep);
-    var gespeeld = m.downsides.filter(function (d) { return d.soort !== "weggelaten"; });
+    var gespeeld = gespeeldeKaarten(app.casus, app.uitkomst, app.spel && app.spel.tijdlijn);
     var weg = m.downsides.filter(function (d) { return d.soort === "weggelaten"; });
     function downsideLijst(kop, items) {
       if (!items.length) return null;
       return h("div", { klasse: "dsgroep" }, h("h3", null, kop),
         h("ul", { klasse: "omgeklapt" }, items.map(function (d) {
-          return h("li", { "data-downside": d.label }, h("strong", null, d.label), h("span", null, d.tekst));
+          var tekst = nadeelTekst(d.tekst !== undefined ? d.tekst : d.nadeel);
+          return h("li", { "data-downside": d.label }, h("strong", null, d.label), tekst ? h("span", null, tekst) : null);
         })));
     }
     var kern;
@@ -689,6 +718,8 @@
       kern = h("section", { klasse: "kaartvlak uitslag niet", "aria-labelledby": "uitslag-kop" },
         h("h2", { id: "uitslag-kop" }, "Nog niet veilig genoeg"),
         h("p", { klasse: "vraag", id: "socratisch" }, m.vraag),
+        m.gevolg ? h("p", { klasse: "gevolg", id: "gevolg" }, m.gevolg) : null,
+        m.anderen ? h("p", { klasse: "uitleg", id: "anderen" }, m.anderen) : null,
         h("p", { klasse: "uitleg" }, "Denk hier even over na en probeer de episode opnieuw."),
         fokusMarkeer(knop("Opnieuw", { id: "btn-opnieuw", klasse: "knop hoofd" }, function () { startEpisode(app.ep.id); }), "btn-opnieuw"));
     } else {
@@ -714,7 +745,7 @@
       fokusMarkeer(h("h1", { tabindex: "-1" }, "Beoordeling episode " + epNr), "kop"),
       opslagBalk(),
       app.opslagFout ? h("p", { klasse: "waarschuwing", role: "alert" }, app.opslagFout) : null,
-      m.downsides.length ? h("section", { klasse: "kaartvlak downsides", "aria-labelledby": "ds-kop" },
+      gespeeld.length || weg.length ? h("section", { klasse: "kaartvlak downsides", "aria-labelledby": "ds-kop" },
         h("h2", { id: "ds-kop" }, "Wat je keuzes kosten"),
         downsideLijst("Gespeelde kaarten", gespeeld), downsideLijst("Niet gespeelde kaarten", weg)) : null,
       kern,
@@ -746,6 +777,7 @@
     isDoelkaart: isDoelkaart, optiesVoor: optiesVoor, regelTitel: regelTitel, naSpelenTekst: naSpelenTekst,
     dagenModel: dagenModel, patientVelden: patientVelden, evaluatieModel: evaluatieModel, raadpleegModel: raadpleegModel,
     opslagMelding: opslagMelding, actieDots: actieDots, doelLabel: doelLabel,
+    nadeelTekst: nadeelTekst, anderenZin: anderenZin, gespeeldeKaarten: gespeeldeKaarten,
     _rng: null,                                       // alleen voor tests: vaste toevalsbron voor de volgorde van opties
     _toestand: function () { return app; }            // alleen voor tests
   };

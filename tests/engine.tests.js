@@ -128,6 +128,7 @@
     "Dit doel is nu niet beschikbaar voor de kaart “", "Voor dit doel zijn bij de kaart “", "” geen opties beschikbaar.",
     "Kies eerst een optie voor de kaart “", "Deze optie hoort niet bij dit doel.", "” heeft geen opties.",
     "Je hebt niet genoeg acties over om de richtlijn te raadplegen.",
+    "Je hebt de kaart “", "” hiervoor al gespeeld. Dat heeft geen effect; er is geen actie verbruikt.",
     "Je kunt deze episode pas afronden nadat de gebeurtenissen zich hebben voorgedaan."
   ];
   var TOEGESTANE_EIGENSCHAPPEN = [
@@ -135,7 +136,7 @@
     "AB", "CASUSSEN", "Engine", "Evaluatie", "Predicaten", "_casus", "_opties", "aantalDagen", "actief", "actiesOver", "actiesPerBeurt", "afgerond",
     "afrondenPasNaGebeurtenissen", "alleenAlsGespeeld", "als", "antibiotica", "beoordeel", "bronnen", "casusId", "dag", "dagenVoorbij", "doel", "doelen",
     "doelkaart", "episodeId", "episodes", "evalueer", "gebeurtenissen", "geschonden", "gevoelig", "groep", "groepen", "id", "kaart", "kaarten",
-    "klachten", "knoppen", "label", "maakContext", "naVolg", "onthuld", "onthult", "optie", "opties", "patient", "poortGehaald", "raadplegen",
+    "klachten", "knoppen", "label", "limiet", "maakContext", "naVolg", "onthuld", "onthult", "optie", "opties", "patient", "poortGehaald", "raadplegen",
     "raadplegenKost", "raadplegingen", "repertoire", "resistent", "rng", "sets", "sleutel", "startToestanden", "status", "statusNaBeurten",
     "statusTeksten", "tekst", "tijdlijn", "titel", "toestand", "toestanden", "trigger", "type", "uitkomst", "verborgen", "vereist", "volg",
     "waar", "waarde", "wachtend", "werkzaam", "werkzaamheid", "zet", "zichtbaar",
@@ -1049,7 +1050,7 @@
       // Nooit stil terugkeren: ontbreekt de echte regeltaal of de echte data, dan is deze test ROOD (niet groen zonder bewijs).
       T.waar(!!g.Predicaten && typeof g.Predicaten.evalueer === "function", "echte regeltaal (regels/predicaten.js, window.Predicaten) ontbreekt: deze test bewijst niets en is daarom rood");
       T.waar(!!g.CASUSSEN && !!g.CASUSSEN[0] && Array.isArray(g.CASUSSEN[0].episodes) && g.CASUSSEN[0].episodes.length > 0, "echte casusdata (window.CASUSSEN[0].episodes uit casussen/uwi*.js) ontbreekt: deze test bewijst niets en is daarom rood");
-      fn(g.CASUSSEN[0]);
+      fn(g.Test.zonderLimiet());
     });
   }
   function ep(c, id) { return c.episodes.filter(function (e) { return e.id === id; })[0]; }

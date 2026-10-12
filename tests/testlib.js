@@ -2,7 +2,14 @@
 (function (g) {
   var lijst = [];
   function tekst(x) { try { return JSON.stringify(x); } catch (e) { return String(x); } }
+  // De echte casus zonder de 'één keer per doel'-regel (casus.limiet): de oudere regel- en routetests gebruiken herhaalde vulkaarten.
+  // De limiet zelf wordt getest in tests/engine.tests.js en tests/limiet.tests.js met de echte casus.
+  var zonderLimiet = null;
   g.Test = {
+    zonderLimiet: function () {
+      if (!zonderLimiet) { zonderLimiet = JSON.parse(JSON.stringify(g.CASUSSEN[0])); delete zonderLimiet.limiet; }
+      return zonderLimiet;
+    },
     registreer: function (groep, naam, fn) { lijst.push({ groep: groep, naam: naam, fn: fn }); },
     is: function (a, b, msg) { if (a !== b) throw new Error((msg || "is") + ": verwacht " + tekst(b) + ", kreeg " + tekst(a)); },
     gelijk: function (a, b, msg) { if (tekst(a) !== tekst(b)) throw new Error((msg || "gelijk") + ": verwacht " + tekst(b) + ", kreeg " + tekst(a)); },

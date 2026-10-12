@@ -146,7 +146,7 @@
     "bronconflict": "voor ciprofloxacine bij eGFR 10–30 geeft de NHG de normale keerdosis eenmaal per 24 uur [NHG]. Het Kompas past de dosis pas aan bij een klaring ≤ 15 [Kompas]. Beide zijn verdedigbaar; het wordt een feedbackmoment."
   };
 
-  function casus() { return g.CASUSSEN && g.CASUSSEN[0]; }
+  function casus() { return g.CASUSSEN && g.CASUSSEN[0] && g.Test.zonderLimiet(); }
   function e3() {
     var c = casus();
     if (!c) throw new Error("casussen/uwi.js ontbreekt of heeft geen casus: window.CASUSSEN[0] bestaat niet. Laad uwi.js vóór uwi-e3.js.");

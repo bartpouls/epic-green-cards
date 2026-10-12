@@ -317,7 +317,7 @@
   }
   function planVan(route, sleutel) { return (route.plannen && route.plannen[sleutel]) || route.plan; }
   function speel(route, volgorde) {
-    var casus = g.CASUSSEN[0], rngWaarde = volgorde.rng;
+    var casus = g.Test.zonderLimiet(), rngWaarde = volgorde.rng;
     var state = g.Engine.nieuwSpel(casus, route.ep, { rng: function () { return rngWaarde; } });
     planVan(route, volgorde.sleutel).forEach(function (tok, i) {
       var s = stap(tok), wat = "route " + route.id + " (" + volgorde.sleutel + "), stap " + (i + 1) + " '" + tok + "'";

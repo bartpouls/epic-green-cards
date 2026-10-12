@@ -173,3 +173,5 @@ p.fout:empty { display: none; }
   .links { position: static; max-height: none; }
   .episode { flex-direction: column; align-items: stretch; }
 }
+
+.gevolg { font-style: italic; margin: .5rem 0; }

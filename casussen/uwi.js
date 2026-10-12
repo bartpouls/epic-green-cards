@@ -7,6 +7,16 @@ window.CASUSSEN = [
 {
  "id": "uwi-eerstelijn",
  "versie": "1.1",
+ "limiet": 1,
+ "gevolgzinnen": [
+  { "episode": "E1", "invariant": "I1", "tekst": "Mevrouw weet niet wanneer ze moet bellen.", "vrijgegeven": false },
+  { "episode": "E1", "invariant": "I3", "tekst": "Er is geen moment om alsnog te starten als de klachten aanhouden.", "vrijgegeven": false },
+  { "episode": "E2", "invariant": "I5", "tekst": "De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.", "vrijgegeven": false },
+  { "episode": "E2", "invariant": "I7", "tekst": "De kaliumspiegel is onbekend.", "vrijgegeven": false },
+  { "episode": "E3", "invariant": "I9", "tekst": "Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.", "vrijgegeven": false },
+  { "episode": "E3", "invariant": "I14", "tekst": "Na 48 uur geen verbetering.", "vrijgegeven": true },
+  { "episode": "E3", "invariant": "I15", "tekst": "De nierfunctie daalt verder en het kalium stijgt.", "vrijgegeven": true }
+ ],
  "rollen": { "wissel": "B1", "stop": "B2", "pauzeer": "B3", "hervat": "B5" },
  "titel": "Casus UWI in de eerste lijn — tutorialcasus Epic green cards",
  "bronnen": {
@@ -82,6 +92,7 @@ window.CASUSSEN = [
    "effect": {
     "alle": "Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag in E2 na de 4e gespeelde kaart, in E3 drie kaarten na O1."
    },
+   "limiet": { "E3": 2 },
    "downside": {
     "E1": "niet geïndiceerd, kost doelmatigheid"
    },
@@ -935,6 +946,7 @@ window.CASUSSEN = [
   },
   {
    "id": "Ev1",
+   "limiet": { "E3": 2 },
    "categorie": "Evalueren",
    "label": "Opvolgmoment afspreken",
    "vanafEpisode": 1,
@@ -1013,6 +1025,18 @@ window.CASUSSEN = [
    "vraag": "De casus noemt niet expliciet welke doelen een doelkaart per episode mag krijgen. Zijn de gekozen lijsten (V6: V5/V7/V8/lisinopril; B1 en B2: alle antibiotica van de episode, B1-doel = het nieuwe middel; B3 en B5: lisinopril, spironolacton, calcium; B4: V7; N2: de voorgeschreven middelen; Ev2: lisinopril en spironolacton) juist?",
    "gekozenLezing": "Doelen afgeleid uit de routes, invarianten en kaarteffecten van de casus en uit bouwopdracht 6.1/6.2; geen enkel doel zonder aanleiding in de casus. De V6-opties zijn letterlijk bouwopdracht 6.2 (door Bart gevalideerd).",
    "plek": "kaarten[V6,B1,B2,B3,B5,B4,N2,Ev2].doelen"
+  },
+  {
+   "id": "TODO_BART-L1",
+   "vraag": "Elke kaart mag één keer per doel gespeeld worden. Voor Urinekweek inzetten en Opvolgmoment afspreken staat in episode 3 een uitzondering: twee keer (een nieuwe kweek na weefselinvasie; contact na weefselinvasie én monitoring na de sick day). Klopt dat, of moet een andere kaart ook twee keer kunnen?",
+   "gekozenLezing": "Casus-brede grens 1 (casus.limiet); alleen O1 en Ev1 in E3 mogen twee keer (kaart.limiet).",
+   "plek": "casus.limiet; kaarten[O1,Ev1].limiet"
+  },
+  {
+   "id": "TODO_BART-G1",
+   "vraag": "Bij een geschonden veiligheidsregel tonen we naast de vraag de zin uit 'Wat er zichtbaar wordt als een kaart ontbreekt'. Sommige zinnen verklappen wat de speler miste. Mogen deze zinnen toch getoond worden? - E1 I1: \"Mevrouw weet niet wanneer ze moet bellen.\" (noemt direct de ontbrekende informatie (alarmsignalen))\n- E1 I3: \"Er is geen moment om alsnog te starten als de klachten aanhouden.\" (noemt direct de ontbrekende kaart (opvolgmoment))\n- E2 I5: \"De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.\" (noemt het getal dat de speler had kunnen opvragen (nierfunctie 29) en de reden waarom het middel afvalt)\n- E2 I7: \"De kaliumspiegel is onbekend.\" (noemt direct de ontbrekende kaart (kalium bepalen))\n- E3 I9: \"Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.\" (noemt direct wat de speler miste (kalium en overleg over spironolacton))",
+   "gekozenLezing": "Deze zinnen worden voorlopig NIET getoond (vrijgegeven: false in casus.gevolgzinnen). Wel getoond worden de zinnen die alleen een gevolg bij de patiënt noemen: E3 I14 (Na 48 uur geen verbetering.) en E3 I15 (De nierfunctie daalt verder en het kalium stijgt.).",
+   "plek": "casus.gevolgzinnen"
   },
   {
    "id": "TODO_BART-K5",
@@ -1364,19 +1388,18 @@ window.CASUSSEN[0].episodes.push({
             p: "of",
             args: [
               {
-                p: "niet",
-                arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 1, tot: 3 }
+                p: "en",
+                args: [
+                  { p: "actiefNaDagen", middel: "V5", anker: { start: "V5" }, na: 2 },
+                  { p: "niet", arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 1, tot: 3 } }
+                ]
               },
               {
-                p: "niet",
-                arg: {
-                  p: "opDagRelatief",
-                  kaart: "V6",
-                  doel: "V5",
-                  optie: "halveren",
-                  anker: { start: "V5" },
-                  van: 3
-                }
+                p: "en",
+                args: [
+                  { p: "actiefNaDagen", middel: "V5", anker: { start: "V5" }, na: 3 },
+                  { p: "niet", arg: { p: "opDagRelatief", kaart: "V6", doel: "V5", optie: "halveren", anker: { start: "V5" }, van: 3 } }
+                ]
               }
             ]
           }
@@ -1386,23 +1409,22 @@ window.CASUSSEN[0].episodes.push({
       vraagVarianten: [
         {
           als: {
-            p: "niet",
-            arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 1, tot: 3 }
+            p: "en",
+            args: [
+              { p: "actiefNaDagen", middel: "V5", anker: { start: "V5" }, na: 2 },
+              { p: "niet", arg: { p: "opDagRelatief", kaart: "O2", anker: { start: "V5" }, van: 1, tot: 3 } }
+            ]
           },
           vraag: "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?",
           TODO_BART: "Casus geeft bij I7 twee verschillende vragen (geen kalium / niet gehalveerd). Welke vraag verschijnt als beide eisen ontbreken?"
         },
         {
           als: {
-            p: "niet",
-            arg: {
-              p: "opDagRelatief",
-              kaart: "V6",
-              doel: "V5",
-              optie: "halveren",
-              anker: { start: "V5" },
-              van: 3
-            }
+            p: "en",
+            args: [
+              { p: "actiefNaDagen", middel: "V5", anker: { start: "V5" }, na: 3 },
+              { p: "niet", arg: { p: "opDagRelatief", kaart: "V6", doel: "V5", optie: "halveren", anker: { start: "V5" }, van: 3 } }
+            ]
           },
           vraag: "Dag 4. Hoeveel trimethoprim klaren haar nieren nog?"
         }
@@ -1963,20 +1985,24 @@ window.CASUSSEN[0].episodes.push({
       predicaat: {
         p: "en",
         args: [
-          { p: "gestart", middel: "V5" },
           { p: "waar", veld: "risicogroep", op: "==", waarde: true },
+          { p: "gestart", middel: "V5" },
           {
             p: "of",
             args: [
-              { p: "niet", arg: { p: "opDagRelatief", K: { kaart: "O2" }, anker: { start: "V5" }, van: 1, tot: 3 } },
               {
-                p: "niet",
-                arg: {
-                  p: "opDagRelatief",
-                  K: { kaart: "V6", doel: "V5", optie: "halveren" },
-                  anker: { start: "V5" },
-                  van: 3
-                }
+                p: "en",
+                args: [
+                  { p: "actiefNaDagen", middel: "V5", anker: { start: "V5" }, na: 2 },
+                  { p: "niet", arg: { p: "opDagRelatief", K: { kaart: "O2" }, anker: { start: "V5" }, van: 1, tot: 3 } }
+                ]
+              },
+              {
+                p: "en",
+                args: [
+                  { p: "actiefNaDagen", middel: "V5", anker: { start: "V5" }, na: 3 },
+                  { p: "niet", arg: { p: "opDagRelatief", K: { kaart: "V6", doel: "V5", optie: "halveren" }, anker: { start: "V5" }, van: 3 } }
+                ]
               }
             ]
           }
@@ -1986,13 +2012,22 @@ window.CASUSSEN[0].episodes.push({
       bron: "NHG, KNMP",
       vraagVarianten: [
         {
-          als: { p: "niet", arg: { p: "opDagRelatief", K: { kaart: "O2" }, anker: { start: "V5" }, van: 1, tot: 3 } },
+          als: {
+            p: "en",
+            args: [
+              { p: "actiefNaDagen", middel: "V5", anker: { start: "V5" }, na: 2 },
+              { p: "niet", arg: { p: "opDagRelatief", K: { kaart: "O2" }, anker: { start: "V5" }, van: 1, tot: 3 } }
+            ]
+          },
           vraag: "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?"
         },
         {
           als: {
-            p: "niet",
-            arg: { p: "opDagRelatief", K: { kaart: "V6", doel: "V5", optie: "halveren" }, anker: { start: "V5" }, van: 3 }
+            p: "en",
+            args: [
+              { p: "actiefNaDagen", middel: "V5", anker: { start: "V5" }, na: 3 },
+              { p: "niet", arg: { p: "opDagRelatief", K: { kaart: "V6", doel: "V5", optie: "halveren" }, anker: { start: "V5" }, van: 3 } }
+            ]
           },
           vraag: "Dag 4. Hoeveel trimethoprim klaren haar nieren nog?"
         }

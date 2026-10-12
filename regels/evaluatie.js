@@ -208,6 +208,16 @@
     }
     return fout("Kaart " + kaart.id + ": 'downside' moet tekst of een object per episode zijn.");
   }
+  // Gevolgzin bij een invariant: casus.gevolgzinnen = [ { episode, invariant, tekst, vrijgegeven } ]. Alleen een vrijgegeven zin
+  // (vrijgegeven: true) wordt getoond; een zin die verklapt wat de speler miste blijft op vrijgegeven: false staan (TODO_BART).
+  function gevolgVan(casus, ep, inv) {
+    var l = lijst(casus.gevolgzinnen);
+    for (var i = 0; i < l.length; i++) {
+      var z = l[i];
+      if (isObj(z) && z.episode === ep.id && z.invariant === inv.id) return z.vrijgegeven === true && isTekst(z.tekst) ? z.tekst : null;
+    }
+    return null;
+  }
   function berekenAs(as, naam, ctx, plek) {
     if (!isObj(as)) return null;
     var min = isGetal(as.min) ? as.min : SCHAAL_MIN, max = isGetal(as.max) ? as.max : SCHAAL_MAX;
@@ -297,6 +307,7 @@
       poortGehaald: poortGehaald,
       downsides: downsides,
       vraag: geschonden.length ? geschonden[0].vraag : null,
+      gevolg: geschonden.length ? gevolgVan(casus, ep, geschonden[0].inv) : null,
       score: score,
       profiel: profiel,
       extraVragen: extraVragen,

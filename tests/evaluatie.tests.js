@@ -157,7 +157,7 @@
       if (h("V1") && !h("Ev1")) inv.push("I3");
       if (nAb > 1) inv.push("I4");
       // Spelen: kaarten in een wisselende volgorde (even/oneven gekozen set omgedraaid), 3 per dag.
-      var volgorde = (m % 2) ? gekozen.slice().reverse() : gekozen, state = g.Engine.nieuwSpel(casus, "E1", { rng: function () { return 0; } });
+      var volgorde = (m % 2) ? gekozen.slice().reverse() : gekozen, state = g.Engine.nieuwSpel(g.Test.zonderLimiet(), "E1", { rng: function () { return 0; } });
       volgorde.forEach(function (k, i) {
         if (i > 0 && i % 3 === 0) g.Engine.volgendeDag(state);
         var r = g.Engine.speelKaart(state, k);

@@ -25,6 +25,7 @@
     opDagRelatief: ["p", "K", "anker", "van", "tot"].concat(K_VELDEN),
     gestart: ["p", "middel"],
     actief: ["p", "middel", "op", "uitSet"],
+    actiefNaDagen: ["p", "middel", "anker", "na"],
     aantalActieveAntibiotica: ["p", "op", "n"],
     medicatieActief: ["p", "id", "op"],
     waar: ["p", "veld", "op", "waarde"],
@@ -395,6 +396,12 @@
       }
       if (p.uitSet !== undefined) setNaam(ctx, p.uitSet);
     },
+    actiefNaDagen: function (p, ctx) {
+      vereis(p, ["middel", "anker", "na"]); valNietLeeg(p.middel, "middel"); valK(p, "anker", ctx); valAantal(p.na, "na"); valAntibiotica(ctx);
+      lijst(p.middel).forEach(function (x) {
+        if (antibiotica(ctx).indexOf(x) < 0) fout("'" + x + "' is geen antibioticum (niet in episode.antibiotica); 'actiefNaDagen' geldt alleen voor antibiotica.");
+      });
+    },
     aantalActieveAntibiotica: function (p, ctx) {
       vereis(p, ["op", "n"]); valOperator(p.op); valHeel(p.n, "n"); valAntibiotica(ctx);
     },
@@ -533,6 +540,12 @@
         kand = kand.filter(function (x) { return set[x]; });
       }
       return kand.length > 0;
+    },
+    actiefNaDagen: function (p, ctx) {
+      var a = eerste(ctx, leesK(p, "anker"));
+      if (a === null) return false;
+      var s = simuleer(ctx, { maxDag: a.dag + p.na });
+      return lijst(p.middel).some(function (x) { return s.act[x]; });
     },
     aantalActieveAntibiotica: function (p, ctx) { return vergelijk(p.op, simuleer(ctx, {}).maxAb, p.n); },
     medicatieActief: function (p, ctx) {

@@ -7,7 +7,7 @@
   var T = g.Test;
   var VOORSCHRIJF = ["V1", "V2", "V3", "V4", "V5"];
 
-  function casus() { return g.CASUSSEN && g.CASUSSEN[0]; }
+  function casus() { return g.CASUSSEN && g.CASUSSEN[0] && g.Test.zonderLimiet(); }
   function e2() {
     var c = casus();
     if (!c) throw new Error("casussen/uwi.js ontbreekt of heeft geen casus: window.CASUSSEN[0] bestaat niet. Laad uwi.js vóór uwi-e2.js.");

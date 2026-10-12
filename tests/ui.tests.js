@@ -523,7 +523,7 @@
           begin(root, "anna"); startEp(root, "E3");
           ["G1", "G3", "O2"].forEach(function (k) { speelKlik(root, k); });
           klik(metId(root, "btn-volgende-dag"));
-          speelKlik(root, "G1");
+          speelKlik(root, "G2");
           T.is(alle(root, function (e) { return e.getAttribute("data-gebeurtenis") !== null; }).length, 0, "banner pas op de volgende dag");
           klik(metId(root, "btn-volgende-dag"));
           var b = alle(root, function (e) { return e.getAttribute("data-gebeurtenis") !== null && /banner/.test(e.className); })[0];

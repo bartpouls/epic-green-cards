@@ -262,6 +262,13 @@
       } else if (optie != null) return fout("De kaart “" + label + "” heeft geen opties.");
     }
 
+    // Optionele plafond (casus.limiet, per kaart te overschrijven met kaart.limiet[episode]): zoveel keer mag een kaart per doel.
+    // Een herhaling boven de plafond doet niets en kost geen actie. Zonder plafond in de data is herhalen toegestaan.
+    var plafond = kaart.limiet && kaart.limiet[state.episodeId];
+    if (typeof plafond !== "number") plafond = casus.limiet;
+    var aantalGespeeld = state.tijdlijn.filter(function (r) { return r.kaart === kaartId && r.doel === doel; }).length;
+    if (typeof plafond === "number" && aantalGespeeld >= plafond) return fout("Je hebt de kaart “" + label + "” hiervoor al gespeeld. Dat heeft geen effect; er is geen actie verbruikt.");
+
     var regel = { volg: state.tijdlijn.length + 1, kaart: kaartId, dag: state.dag, doel: doel, optie: optie };
     state.tijdlijn.push(regel);
     state.actiesOver -= 1;
