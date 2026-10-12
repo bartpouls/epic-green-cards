@@ -1,1 +1,100 @@
 datamutanten totaal 834, geselecteerd 320
+{"totaal":320,"geDoodDoorEvaluatieOfRoutes":222,"alleenElders":98,"overleefd":0}
+alleen-gedood-elders | E2 feedbackExtra0: args[1] verwijderd | {"data-e2":1}
+alleen-gedood-elders | E3 inv I4 geldtIn gewijzigd | {"data-e3":3}
+alleen-gedood-elders | E3 inv I7 geldtIn gewijzigd | {"data-e3":3}
+alleen-gedood-elders | E3 inv I8 predicaat: eindeBeurtNaGebeurtenis C -> A | {"data-e3":2}
+alleen-gedood-elders | E3 inv I7 vraagVariant1: van 3 -> 4 | {"data-e3":1}
+alleen-gedood-elders | E3 inv I7 ernst -1 | {"data-e3":2}
+alleen-gedood-elders | E3 inv I7 ernst +1 | {"data-e3":2}
+alleen-gedood-elders | E3 inv I15 predicaat: n 2 -> 3 | {"data-e3":2}
+alleen-gedood-elders | E2 inv I6 vraagVariant0: niet() verwijderd | {"data-e2":1}
+alleen-gedood-elders | E2 inv I6 vraagVariant1: p gespeeld -> nietGespeeld | {"data-e2":1}
+alleen-gedood-elders | E2 feedbackExtra0: args[4] verwijderd | {"data-e2":2}
+alleen-gedood-elders | E3 inv I8 predicaat: offset 0 -> 1 | {"data-e3":1}
+alleen-gedood-elders | E2 inv I6 vraagVariant0: args[1] verwijderd | {"data-e2":1}
+alleen-gedood-elders | E2 inv I6 predicaat: args[0] verwijderd | {"data-e2":1}
+alleen-gedood-elders | E3 inv I4 ernst +1 | {"data-e3":2}
+alleen-gedood-elders | E3 zichtbaar0: args[2] verwijderd | {"data-e3":3}
+alleen-gedood-elders | E3 inv I10 geldtIn gewijzigd | {"data-e3":2}
+alleen-gedood-elders | E2 inv I6 vraagVariant1: niet() verwijderd | {"data-e2":2}
+alleen-gedood-elders | E3 inv I6 vraagVarianten omgedraaid | {"data-e3":6}
+alleen-gedood-elders | E2 inv I6 vraagVariant0: kaart V3 -> V4 | {"data-e2":1}
+alleen-gedood-elders | E3 inv I11 predicaat: args[1] verwijderd | {"data-e3":2}
+alleen-gedood-elders | E2 inv I7 geldtIn gewijzigd | {"data-e2":2}
+alleen-gedood-elders | E2 inv I4 ernst -1 | {"data-e2":1}
+alleen-gedood-elders | E2 doelmatigheid regel0: kaart V2 -> V1 | {"data-e2":1}
+alleen-gedood-elders | E3 inv I11 predicaat: args[0] verwijderd | {"data-e3":1}
+alleen-gedood-elders | E3 inv I6 vraagVariant0: p en -> of | {"data-e3":4}
+alleen-gedood-elders | E3 inv I14 ernst +1 | {"data-e3":2}
+alleen-gedood-elders | E2 doelmatigheid regel0: args[1] verwijderd | {"data-e2":1}
+alleen-gedood-elders | E3 zichtbaar1: tot 1 -> 2 | {"data-e3":3}
+alleen-gedood-elders | E2 inv I6 vraagVariant0: niet() verwijderd | {"data-e2":1}
+alleen-gedood-elders | E3 inv I8 predicaat: args[1] verwijderd | {"data-e3":2}
+alleen-gedood-elders | E2 inv I7 vraagVariant0: van 1 -> 0 | {"data-e2":2}
+alleen-gedood-elders | E1 inv I3 geldtIn gewijzigd | {"data-e1":2}
+alleen-gedood-elders | E2 inv I6 vraagVariant1: args[0] verwijderd | {"data-e2":1}
+alleen-gedood-elders | E3 inv I1 geldtIn gewijzigd | {"data-e3":3}
+alleen-gedood-elders | E2 inv I6 predicaat: kaart V1 -> V2 | {"data-e2":1}
+alleen-gedood-elders | E2 inv I6 vraagVariant0: kaart O1 -> O2 | {"data-e2":1}
+alleen-gedood-elders | E3 inv I7 predicaat: args[2] verwijderd | {"data-e3":8}
+alleen-gedood-elders | E2 inv I6 vraagVariant0: args[1] verwijderd | {"data-e2":1}
+alleen-gedood-elders | E3 zichtbaar0: doel lisinopril -> spironolacton | {"data-e3":3}
+alleen-gedood-elders | E3 duurzaamheid regel0: args[1] verwijderd | {"data-e3":3}
+alleen-gedood-elders | E3 inv I8 predicaat: args[0] verwijderd | {"data-e3":2}
+alleen-gedood-elders | E2 feedbackExtra0: niet() verwijderd | {"data-e2":2}
+alleen-gedood-elders | E3 inv I6 ernst -1 | {"data-e3":2}
+alleen-gedood-elders | E3 zichtbaar0: args[1] verwijderd | {"data-e3":3}
+alleen-gedood-elders | E2 feedbackExtra0: kaart V3 -> V4 | {"data-e2":1}
+alleen-gedood-elders | E1 profiel Terughoudend: args[0] verwijderd | {"data-e1":1}
+alleen-gedood-elders | E2 profiel Kweekgestuurd, smal: args[1] verwijderd | {"data-e2":2}
+alleen-gedood-elders | E3 inv I11 geldtIn gewijzigd | {"data-e3":2}
+alleen-gedood-elders | E3 inv I5 geldtIn gewijzigd | {"data-e3":3}
+alleen-gedood-elders | E2 feedbackExtra0: kaart G2 -> G3 | {"data-e2":2}
+alleen-gedood-elders | E3 inv I6 vraagVariant0: args[0] verwijderd | {"data-e3":2}
+alleen-gedood-elders | E3 inv I7 predicaat: tot 3 -> 2 | {"data-e3":4}
+alleen-gedood-elders | E2 doelmatigheid regel0: p voor -> na | {"data-e2":2}
+alleen-gedood-elders | E3 inv I5 predicaat: waarde 30 -> 31 | {"data-e3":2}
+alleen-gedood-elders | E3 zichtbaar0: doel spironolacton -> lisinopril | {"data-e3":3}
+alleen-gedood-elders | E2 doelmatigheid regel0: niet() verwijderd | {"data-e2":2}
+alleen-gedood-elders | E2 doelmatigheid regel0: args[4] verwijderd | {"data-e2":1}
+alleen-gedood-elders | E3 inv I7 vraagVariant1: optie halveren -> verdubbelen | {"data-e3":2}
+alleen-gedood-elders | E3 inv I13 predicaat: waarde 30 -> 29 | {"data-e3":2}
+alleen-gedood-elders | E2 inv I6 vraagVariant1: middel V3 -> V4 | {"data-e2":1}
+alleen-gedood-elders | E3 inv I6 predicaat: args[0] verwijderd | {"data-e3":2}
+alleen-gedood-elders | E2 profiel Kweekgestuurd, smal: p en -> of | {"data-e2":2}
+alleen-gedood-elders | E2 profielen omgedraaid | {"data-e2":1}
+alleen-gedood-elders | E3 zichtbaar0: args[3] verwijderd | {"data-e3":4}
+alleen-gedood-elders | E3 inv I6 vraagVariant0: args[1] verwijderd | {"data-e3":4}
+alleen-gedood-elders | E3 inv I6 predicaat: kaart V2 -> V1 | {"data-e3":2}
+alleen-gedood-elders | E2 feedbackExtra0: args[1] verwijderd | {"data-e2":1}
+alleen-gedood-elders | E3 inv I10 ernst +1 | {"data-e3":2}
+alleen-gedood-elders | E2 doelmatigheid regel0: kaart V1 -> V2 | {"data-e2":1}
+alleen-gedood-elders | E3 zichtbaar0: args[4] verwijderd | {"data-e3":4}
+alleen-gedood-elders | E3 inv I7 vraagVariant1: van 3 -> 2 | {"data-e3":2}
+alleen-gedood-elders | E2 doelmatigheid regel0: args[1] verwijderd | {"data-e2":1}
+alleen-gedood-elders | E3 zichtbaar2: waarde 30 -> 31 | {"data-e3":2}
+alleen-gedood-elders | E2 feedbackExtra0: niet() verwijderd | {"data-e2":2}
+alleen-gedood-elders | E2 inv I1 ernst +1 | {"data-e2":1}
+alleen-gedood-elders | E3 inv I14 ernst -1 | {"data-e3":2}
+alleen-gedood-elders | E2 inv I6 vraagVariant1: kaart V1 -> V2 | {"data-e2":1}
+alleen-gedood-elders | E3 inv I16 ernst -1 | {"data-e3":2}
+alleen-gedood-elders | E2 inv I4 geldtIn gewijzigd | {"data-e2":2}
+alleen-gedood-elders | E3 inv I13 predicaat: waarde 30 -> 31 | {"data-e3":2}
+alleen-gedood-elders | E3 inv I7 predicaat: van 3 -> 4 | {"data-e3":5}
+alleen-gedood-elders | E2 inv I6 vraagVariant1: middel V5 -> V4 | {"data-e2":1}
+alleen-gedood-elders | E2 inv I6 vraagVariant0: kaart V5 -> V4 | {"data-e2":1}
+alleen-gedood-elders | E3 zichtbaar2: args[1] verwijderd | {"data-e3":3}
+alleen-gedood-elders | E2 profiel Bijgestuurd: args[2] verwijderd | {"data-e2":1}
+alleen-gedood-elders | E3 inv I9 predicaat: args[1] verwijderd | {"data-e3":5}
+alleen-gedood-elders | E3 zichtbaar1: args[0] verwijderd | {"data-e3":2}
+alleen-gedood-elders | E2 inv I6 vraagVariant1: middel V4 -> V3 | {"data-e2":1}
+alleen-gedood-elders | E3 zichtbaar2: args[0] verwijderd | {"data-e3":2}
+alleen-gedood-elders | E1 inv I4 ernst +1 | {"data-e1":2}
+alleen-gedood-elders | E3 inv I7 predicaat: doel V5 -> V4 | {"data-e3":8}
+alleen-gedood-elders | E2 doelmatigheid regel0: niet() verwijderd | {"data-e2":1}
+alleen-gedood-elders | E2 feedbackExtra0: p voor -> na | {"data-e2":1}
+alleen-gedood-elders | E3 inv I14 predicaat: tot 1 -> 0 | {"data-e3":4}
+alleen-gedood-elders | E3 inv I11 ernst +1 | {"data-e3":2}
+alleen-gedood-elders | E3 inv I7 predicaat: optie halveren -> verdubbelen | {"data-e3":8}
+alleen-gedood-elders | E3 inv I8 predicaat: args[2] verwijderd | {"data-e3":3}

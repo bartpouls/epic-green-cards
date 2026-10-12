@@ -229,7 +229,7 @@
     function loop(o) {
       if (typeof o === "string") (o.match(/\p{L}{4,}/gu) || []).forEach(function (w) { woorden[woordNorm(w)] = 1; });
       else if (Array.isArray(o)) o.forEach(loop);
-      else if (o && typeof o === "object") for (var k in o) loop(o[k]);
+      else if (o && typeof o === "object") for (var k in o) { if (k === "referentie") continue; loop(o[k]); } // LEAD: `referentie` is beschrijvende casustekst voor het overzicht (S11), geen speldata
     }
     (g.CASUSSEN || []).forEach(loop);
     return woorden;

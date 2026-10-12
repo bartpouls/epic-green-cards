@@ -1,0 +1,114 @@
+[
+ {
+  "paar": 1,
+  "route": "E1-01 afwachten",
+  "volgorde": "A,B",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 2,
+  "route": "E1-F13 I1+I3 (gelijke ernst: I1 eerst)",
+  "volgorde": "A,B",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 3,
+  "route": "E1-10 nitro + O1 + O2 (dm 1)",
+  "volgorde": "A,B",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 4,
+  "route": "E2-02 trimethoprim 7d + O2 + V6 + B1 (B1 op d3)",
+  "volgorde": "A,B",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 5,
+  "route": "E2-F6b afwachten",
+  "volgorde": "A,B",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 6,
+  "route": "E2-F7_6 I7 gaat voor I6",
+  "volgorde": "A,B",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 7,
+  "route": "E2-04 fosfomycine, G2 te laat",
+  "volgorde": "A,B",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 8,
+  "route": "E3-02 amox/clav 875/125 + sick-day-set",
+  "volgorde": "A,B",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 9,
+  "route": "E3-02 amox/clav 875/125 + sick-day-set",
+  "volgorde": "B,A",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 10,
+  "route": "E3-03 ciprofloxacine + B4",
+  "volgorde": "B,A",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 11,
+  "route": "E3-F-I9b B5 zonder Ev2",
+  "volgorde": "A,B",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 12,
+  "route": "E3-C4 I15+I9",
+  "volgorde": "B,A",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 13,
+  "route": "E3-F-I14a cipro zonder B4/B3",
+  "volgorde": "A,B",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 14,
+  "route": "E3-09 verwijzen na 48 uur zonder verbetering",
+  "volgorde": "A,B",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 15,
+  "route": "E3-C6 I13+I11 (ernst 3 gaat voor 4)",
+  "volgorde": "B,A",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 16,
+  "route": "E3-08 hervatten na overleg (B5 na Ev2)",
+  "volgorde": "B,A",
+  "X": "bron",
+  "Y": "spel"
+ }
+]

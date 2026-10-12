@@ -1,25 +1,351 @@
 [
  {
   "idx": 0,
-  "desc": "E3 inv I14 predicaat: args[2] verwijderd",
+  "desc": "E2 inv I6 vraagVariant0: p en -> of",
   "status": "gedood-evaluatie/routes",
   "groepen": {
-   "evaluatie-routes": 4,
-   "evaluatie": 3
+   "evaluatie-routes": 1
   }
  },
  {
   "idx": 1,
-  "desc": "E3 zichtbaar0: p nietGespeeld -> gespeeld",
-  "status": "gedood-evaluatie/routes",
+  "desc": "E2 feedbackExtra0: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
   "groepen": {
-   "evaluatie-routes": 83,
-   "evaluatie": 13
+   "data-e2": 1
   }
  },
  {
   "idx": 2,
-  "desc": "E1 duurzaamheid regel2: p gespeeld -> nietGespeeld",
+  "desc": "E3 inv I7 vraagVariant0: tot 3 -> 2",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 3,
+  "desc": "E3 inv I13 predicaat: van 0 -> 1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 40,
+   "evaluatie": 3
+  }
+ },
+ {
+  "idx": 4,
+  "desc": "E3 inv I4 geldtIn gewijzigd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 3
+  }
+ },
+ {
+  "idx": 5,
+  "desc": "E3 inv I7 geldtIn gewijzigd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 3
+  }
+ },
+ {
+  "idx": 6,
+  "desc": "E3 zichtbaar2: doel spironolacton -> lisinopril",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 7,
+  "desc": "E3 inv I8 predicaat: eindeBeurtNaGebeurtenis C -> A",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 8,
+  "desc": "E1 profiel Direct behandelen: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 9,
+  "desc": "E3 inv I7 vraagVariant1: van 3 -> 4",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 1
+  }
+ },
+ {
+  "idx": 10,
+  "desc": "E3 inv I13 predicaat: middel V8 -> V7",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 10
+  }
+ },
+ {
+  "idx": 11,
+  "desc": "E3 inv I7 ernst -1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 12,
+  "desc": "E1 profiel Terughoudend: kaart V3 -> V4",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 13,
+  "desc": "E3 zichtbaar1: id calcium -> spironolacton",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 14,
+  "desc": "E3 inv I5 ernst +1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 15,
+  "desc": "E3 inv I7 ernst +1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 16,
+  "desc": "E3 inv I15 predicaat: n 2 -> 3",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 17,
+  "desc": "E3 inv I9 ernst -1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 18,
+  "desc": "E2 inv I6 vraagVariant0: kaart V4 -> V3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 19,
+  "desc": "E2 inv I6 predicaat: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 19
+  }
+ },
+ {
+  "idx": 20,
+  "desc": "E3 inv I5 predicaat: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 37,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 21,
+  "desc": "E3 inv I15 ernst +1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 22,
+  "desc": "E2 feedbackExtra1: kaart B1 -> B2",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 23,
+  "desc": "E2 inv I7 predicaat: optie halveren -> verdubbelen",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 8
+  }
+ },
+ {
+  "idx": 24,
+  "desc": "E3 inv I9 predicaat: kaart B5 -> B3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 32,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 25,
+  "desc": "E3 inv I11 predicaat: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 28
+  }
+ },
+ {
+  "idx": 26,
+  "desc": "E3 zichtbaar1: kaart B3 -> B4",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 27,
+  "desc": "E1 duurzaamheid regel0: p of -> en",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 28,
+  "desc": "E1 feedbackExtra0: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 13,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 29,
+  "desc": "E3 inv I10 predicaat: eindeBeurtNaGebeurtenis A -> B",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 31,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 30,
+  "desc": "E1 profiel Terughoudend: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 31,
+  "desc": "E3 zichtbaar1: p of -> en",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 32,
+  "desc": "E2 inv I6 predicaat: niet() verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 33,
+  "desc": "E2 inv I7 vraagVariant0: van 1 -> 2",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 34,
+  "desc": "E2 inv I6 vraagVariant0: niet() verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 35,
+  "desc": "E2 inv I6 vraagVariant1: p gespeeld -> nietGespeeld",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 36,
+  "desc": "E3 inv I14 predicaat: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 38,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 37,
+  "desc": "E2 doelmatigheid regel0: kaart V5 -> V4",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 38,
+  "desc": "E1 duurzaamheid regel2: args[2] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 39,
+  "desc": "E2 feedbackExtra0: args[4] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 2
+  }
+ },
+ {
+  "idx": 40,
+  "desc": "E3 inv I8 predicaat: offset 0 -> 1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 1
+  }
+ },
+ {
+  "idx": 41,
+  "desc": "E2 inv I4 predicaat: n 1 -> 0",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 22
+  }
+ },
+ {
+  "idx": 42,
+  "desc": "E1 zichtbaar1: kaart Ev1 -> Ev3",
   "status": "gedood-evaluatie/routes",
   "groepen": {
    "evaluatie-routes": 3,
@@ -27,47 +353,2276 @@
   }
  },
  {
-  "idx": 3,
-  "desc": "E3 zichtbaar1: p en -> of",
-  "status": "gedood-evaluatie/routes",
+  "idx": 43,
+  "desc": "E2 inv I6 vraagVariant0: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
   "groepen": {
-   "evaluatie-routes": 37,
-   "evaluatie": 21
+   "data-e2": 1
   }
  },
  {
-  "idx": 4,
-  "desc": "E3 feedbackExtra0 wanneer gewisseld",
+  "idx": 44,
+  "desc": "E2 feedbackExtra0: p gespeeld -> nietGespeeld",
   "status": "gedood-evaluatie/routes",
   "groepen": {
-   "evaluatie-routes": 83,
-   "evaluatie": 13
+   "evaluatie-routes": 5
   }
  },
  {
-  "idx": 5,
-  "desc": "E2 feedbackExtra0: niet() verwijderd",
+  "idx": 45,
+  "desc": "E2 feedbackExtra0: kaart V5 -> V4",
   "status": "gedood-evaluatie/routes",
   "groepen": {
-   "evaluatie-routes": 83,
-   "evaluatie": 13
+   "evaluatie-routes": 3
   }
  },
  {
-  "idx": 6,
-  "desc": "E2 inv I7 predicaat: middel V5 -> V4",
+  "idx": 46,
+  "desc": "E3 inv I6 predicaat: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 47,
+  "desc": "E2 feedbackExtra0: kaart G2 -> G3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 48,
+  "desc": "E3 inv I12 predicaat: middel V9 -> V4",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 35,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 49,
+  "desc": "E2 inv I6 predicaat: args[0] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 50,
+  "desc": "E2 feedbackExtra0: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 5
+  }
+ },
+ {
+  "idx": 51,
+  "desc": "E3 inv I10 ernst -1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 52,
+  "desc": "E3 inv I4 ernst +1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 53,
+  "desc": "E1 inv I1 predicaat: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 54,
+  "desc": "E1 duurzaamheid regel0: kaart V2 -> V1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 55,
+  "desc": "E3 zichtbaar0: args[2] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 3
+  }
+ },
+ {
+  "idx": 56,
+  "desc": "E2 zichtbaar0: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 57,
+  "desc": "E3 inv I10 geldtIn gewijzigd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 58,
+  "desc": "E2 inv I6 vraagVariant1: niet() verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 2
+  }
+ },
+ {
+  "idx": 59,
+  "desc": "E3 inv I9 predicaat: p voor -> na",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 60,
+  "desc": "E3 zichtbaar2: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 61,
+  "desc": "E3 inv I6 vraagVarianten omgedraaid",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 6
+  }
+ },
+ {
+  "idx": 62,
+  "desc": "E2 inv I6 predicaat: kaart V3 -> V4",
   "status": "gedood-evaluatie/routes",
   "groepen": {
    "evaluatie-routes": 7
   }
  },
  {
-  "idx": 7,
-  "desc": "E3 inv I10 predicaat: offset 0 -> 1",
+  "idx": 63,
+  "desc": "E3 inv I8 predicaat: args[0] verwijderd",
   "status": "gedood-evaluatie/routes",
   "groepen": {
-   "evaluatie-routes": 83,
-   "evaluatie": 13
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 64,
+  "desc": "E2 doelmatigheid regel0: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 5
+  }
+ },
+ {
+  "idx": 65,
+  "desc": "E2 inv I6 vraagVariant0: kaart V3 -> V4",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 66,
+  "desc": "E1 zichtbaar1: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 14,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 67,
+  "desc": "E1 profiel Terughoudend: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 68,
+  "desc": "E1 profiel Terughoudend: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 9,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 69,
+  "desc": "E3 inv I11 predicaat: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 70,
+  "desc": "E2 doelmatigheid regel0: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 5
+  }
+ },
+ {
+  "idx": 71,
+  "desc": "E3 inv I14 predicaat: id calcium -> spironolacton",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 72,
+  "desc": "E2 feedbackExtra0: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 5
+  }
+ },
+ {
+  "idx": 73,
+  "desc": "E2 inv I7 geldtIn gewijzigd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 2
+  }
+ },
+ {
+  "idx": 74,
+  "desc": "E2 inv I4 ernst -1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 75,
+  "desc": "E3 inv I15 predicaat: kaart N3 -> N1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 34,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 76,
+  "desc": "E2 inv I4 predicaat: op > -> <",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 77,
+  "desc": "E2 doelmatigheid regel0: kaart V2 -> V1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 78,
+  "desc": "E3 inv I9 predicaat: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 36,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 79,
+  "desc": "E2 doelmatigheid regel0: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 80,
+  "desc": "E3 inv I11 predicaat: args[0] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 1
+  }
+ },
+ {
+  "idx": 81,
+  "desc": "E3 profiel Kweekgestuurd: middel V8 -> V7",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 7
+  }
+ },
+ {
+  "idx": 82,
+  "desc": "E3 inv I6 vraagVariant0: p en -> of",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 4
+  }
+ },
+ {
+  "idx": 83,
+  "desc": "E3 inv I14 ernst +1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 84,
+  "desc": "E3 inv I16 predicaat: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 9,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 85,
+  "desc": "E2 doelmatigheid regel0: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 86,
+  "desc": "E3 zichtbaar2: kaart B5 -> B3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 31
+  }
+ },
+ {
+  "idx": 87,
+  "desc": "E1 zichtbaar1: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 88,
+  "desc": "E1 duurzaamheid regel0: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 89,
+  "desc": "E3 profiel Richtlijn eerste keus reflectievraag weg",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 90,
+  "desc": "E3 inv I15 predicaat: naGebeurtenis B -> A",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 34,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 91,
+  "desc": "E2 inv I6 predicaat: p of -> en",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 6
+  }
+ },
+ {
+  "idx": 92,
+  "desc": "E3 zichtbaar1: tot 1 -> 2",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 3
+  }
+ },
+ {
+  "idx": 93,
+  "desc": "E2 inv I6 vraagVariant0: niet() verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 94,
+  "desc": "E3 inv I8 predicaat: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 95,
+  "desc": "E1 duurzaamheid regel0: kaart V5 -> V4",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 96,
+  "desc": "E2 inv I7 vraagVariant0: van 1 -> 0",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 2
+  }
+ },
+ {
+  "idx": 97,
+  "desc": "E1 inv I3 geldtIn gewijzigd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e1": 2
+  }
+ },
+ {
+  "idx": 98,
+  "desc": "E2 inv I6 vraagVariant1: args[0] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 99,
+  "desc": "E2 zichtbaar1: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 21
+  }
+ },
+ {
+  "idx": 100,
+  "desc": "E3 zichtbaar2: p voor -> na",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 101,
+  "desc": "E3 inv I1 geldtIn gewijzigd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 3
+  }
+ },
+ {
+  "idx": 102,
+  "desc": "E2 inv I6 predicaat: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 19
+  }
+ },
+ {
+  "idx": 103,
+  "desc": "E2 inv I6 predicaat: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 19
+  }
+ },
+ {
+  "idx": 104,
+  "desc": "E2 inv I6 predicaat: kaart V1 -> V2",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 105,
+  "desc": "E3 inv I14 predicaat: tot 1 -> 0",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 106,
+  "desc": "E1 inv I1 predicaat: args[2] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 107,
+  "desc": "E2 inv I6 predicaat: op == -> !=",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 6
+  }
+ },
+ {
+  "idx": 108,
+  "desc": "E2 inv I7 predicaat: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 19
+  }
+ },
+ {
+  "idx": 109,
+  "desc": "E1 profiel Terughoudend: p nietGespeeld -> gespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 110,
+  "desc": "E3 inv I6 vraagVariant1: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 111,
+  "desc": "E3 inv I13 ernst +1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 112,
+  "desc": "E3 feedbackExtra0: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 10
+  }
+ },
+ {
+  "idx": 113,
+  "desc": "E2 inv I6 vraagVariant0: kaart O1 -> O2",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 114,
+  "desc": "E2 inv I7 predicaat: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 115,
+  "desc": "E2 duurzaamheid perKeer0: kaart B1 -> B2",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 116,
+  "desc": "E3 inv I7 predicaat: p of -> en",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 117,
+  "desc": "E3 zichtbaar2: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 35
+  }
+ },
+ {
+  "idx": 118,
+  "desc": "E1 inv I4 predicaat: n 1 -> 0",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 11,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 119,
+  "desc": "E3 inv I7 predicaat: args[2] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 8
+  }
+ },
+ {
+  "idx": 120,
+  "desc": "E2 inv I6 vraagVariant0: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 121,
+  "desc": "E3 zichtbaar0: doel lisinopril -> spironolacton",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 3
+  }
+ },
+ {
+  "idx": 122,
+  "desc": "E3 inv I7 predicaat: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 123,
+  "desc": "E3 duurzaamheid regel0: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 3
+  }
+ },
+ {
+  "idx": 124,
+  "desc": "E3 doelmatigheid regel1: waarde true -> false",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 125,
+  "desc": "E1 duurzaamheid regel0: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 126,
+  "desc": "E2 zichtbaar0: p nietGespeeld -> gespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 127,
+  "desc": "E3 inv I8 predicaat: args[0] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 128,
+  "desc": "E2 feedbackExtra0: niet() verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 2
+  }
+ },
+ {
+  "idx": 129,
+  "desc": "E3 inv I6 ernst -1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 130,
+  "desc": "E2 inv I6 predicaat: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 131,
+  "desc": "E3 inv I8 predicaat: p of -> en",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 132,
+  "desc": "E2 feedbackExtra0: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 133,
+  "desc": "E2 inv I6 vraagVarianten omgedraaid",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 134,
+  "desc": "E3 zichtbaar0: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 3
+  }
+ },
+ {
+  "idx": 135,
+  "desc": "E1 doelmatigheid regel0: kaart O1 -> O2",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 136,
+  "desc": "E2 feedbackExtra0: kaart V3 -> V4",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 137,
+  "desc": "E3 inv I6 predicaat: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 138,
+  "desc": "E3 inv I1 predicaat: kaart N1 -> N3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 9,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 139,
+  "desc": "E1 profiel Terughoudend: args[0] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e1": 1
+  }
+ },
+ {
+  "idx": 140,
+  "desc": "E2 doelmatigheid regel0: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 5
+  }
+ },
+ {
+  "idx": 141,
+  "desc": "E2 inv I6 predicaat: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 7
+  }
+ },
+ {
+  "idx": 142,
+  "desc": "E2 profiel Kweekgestuurd, smal: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 2
+  }
+ },
+ {
+  "idx": 143,
+  "desc": "E1 profiel Direct behandelen: kaart V4 -> V3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 144,
+  "desc": "E3 doelmatigheid regel0: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 9,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 145,
+  "desc": "E3 inv I11 geldtIn gewijzigd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 146,
+  "desc": "E3 inv I9 ernst +1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 147,
+  "desc": "E3 inv I6 predicaat: p of -> en",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 148,
+  "desc": "E3 inv I13 predicaat: kaart V6 -> V3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 21
+  }
+ },
+ {
+  "idx": 149,
+  "desc": "E3 inv I9 predicaat: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 35,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 150,
+  "desc": "E3 inv I5 geldtIn gewijzigd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 3
+  }
+ },
+ {
+  "idx": 151,
+  "desc": "E1 inv I1 predicaat: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 152,
+  "desc": "E1 duurzaamheid regel2: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 153,
+  "desc": "E3 inv I9 predicaat: doel spironolacton -> lisinopril",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 154,
+  "desc": "E1 inv I3 predicaat: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 11,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 155,
+  "desc": "E1 zichtbaar1: kaart V1 -> V2",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 156,
+  "desc": "E3 zichtbaar2: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 34
+  }
+ },
+ {
+  "idx": 157,
+  "desc": "E1 zichtbaar1: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 11,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 158,
+  "desc": "E3 duurzaamheid regel1: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 159,
+  "desc": "E3 duurzaamheid regels omgedraaid",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 160,
+  "desc": "E3 inv I7 vraagVariant1: niet() verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 161,
+  "desc": "E2 feedbackExtra0: kaart G2 -> G3",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 2
+  }
+ },
+ {
+  "idx": 162,
+  "desc": "E3 inv I6 vraagVariant0: args[0] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 163,
+  "desc": "E3 inv I14 predicaat: middel V7 -> V8",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 164,
+  "desc": "E3 inv I7 predicaat: tot 3 -> 2",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 4
+  }
+ },
+ {
+  "idx": 165,
+  "desc": "E3 inv I15 predicaat: kaart V6 -> V3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 34,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 166,
+  "desc": "E1 zichtbaar1: p nietGespeeld -> gespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 6,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 167,
+  "desc": "E2 doelmatigheid regel0: p voor -> na",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 2
+  }
+ },
+ {
+  "idx": 168,
+  "desc": "E3 inv I15 predicaat: naGebeurtenis B -> A",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 169,
+  "desc": "E3 inv I5 predicaat: waarde 30 -> 31",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 170,
+  "desc": "E3 inv I1 predicaat: p nietGespeeld -> gespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 40,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 171,
+  "desc": "E3 inv I14 predicaat: p of -> en",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 172,
+  "desc": "E3 duurzaamheid regel0: middel V7 -> V8",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 173,
+  "desc": "E3 inv I4 predicaat: n 1 -> 0",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 39,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 174,
+  "desc": "E3 zichtbaar0: doel spironolacton -> lisinopril",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 3
+  }
+ },
+ {
+  "idx": 175,
+  "desc": "E3 inv I11 predicaat: naGebeurtenis A -> B",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 28
+  }
+ },
+ {
+  "idx": 176,
+  "desc": "E3 inv I6 predicaat: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 38,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 177,
+  "desc": "E1 duurzaamheid regel0 punten",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 178,
+  "desc": "E2 doelmatigheid regel0: niet() verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 2
+  }
+ },
+ {
+  "idx": 179,
+  "desc": "E2 doelmatigheid regel0: args[4] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 180,
+  "desc": "E1 inv I1 predicaat: kaart N1 -> N3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 18,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 181,
+  "desc": "E3 inv I7 vraagVarianten omgedraaid",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 182,
+  "desc": "E3 inv I7 vraagVariant1: optie halveren -> verdubbelen",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 183,
+  "desc": "E3 duurzaamheid regel1: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 184,
+  "desc": "E3 inv I15 predicaat: args[2] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 185,
+  "desc": "E3 inv I13 predicaat: waarde 30 -> 29",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 186,
+  "desc": "E2 inv I6 vraagVariant1: middel V3 -> V4",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 187,
+  "desc": "E3 inv I7 vraagVariant0: kaart O2 -> O1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 188,
+  "desc": "E3 inv I6 predicaat: args[0] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 189,
+  "desc": "E2 profiel Kweekgestuurd, smal: p en -> of",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 2
+  }
+ },
+ {
+  "idx": 190,
+  "desc": "E2 profielen omgedraaid",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 191,
+  "desc": "E3 zichtbaar0: args[3] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 4
+  }
+ },
+ {
+  "idx": 192,
+  "desc": "E3 inv I6 predicaat: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 38,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 193,
+  "desc": "E3 inv I6 vraagVariant0: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 4
+  }
+ },
+ {
+  "idx": 194,
+  "desc": "E3 inv I6 predicaat: kaart V2 -> V1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 195,
+  "desc": "E2 doelmatigheid regel0: niet() verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 196,
+  "desc": "E1 doelmatigheid start -1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 12,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 197,
+  "desc": "E2 zichtbaar1: p nietGespeeld -> gespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 12
+  }
+ },
+ {
+  "idx": 198,
+  "desc": "E2 inv I7 predicaat: niet() verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 10
+  }
+ },
+ {
+  "idx": 199,
+  "desc": "E3 inv I11 predicaat: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 37,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 200,
+  "desc": "E3 zichtbaar1: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 201,
+  "desc": "E2 zichtbaar0: middel V3 -> V4",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 202,
+  "desc": "E2 feedbackExtra0: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 203,
+  "desc": "E3 inv I11 predicaat: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 28
+  }
+ },
+ {
+  "idx": 204,
+  "desc": "E3 inv I10 ernst +1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 205,
+  "desc": "E1 profiel Terughoudend: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 206,
+  "desc": "E2 doelmatigheid regel0: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 207,
+  "desc": "E2 profiel Bijgestuurd: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 208,
+  "desc": "E2 doelmatigheid regel0: kaart V1 -> V2",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 209,
+  "desc": "E3 zichtbaar0: args[4] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 4
+  }
+ },
+ {
+  "idx": 210,
+  "desc": "E3 inv I6 predicaat: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 211,
+  "desc": "E1 inv I1 predicaat: p nietGespeeld -> gespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 21,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 212,
+  "desc": "E3 duurzaamheid regel1 punten",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 213,
+  "desc": "E3 inv I7 vraagVariant1: van 3 -> 2",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 214,
+  "desc": "E2 doelmatigheid regel0: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 215,
+  "desc": "E2 feedbackExtra0: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 5
+  }
+ },
+ {
+  "idx": 216,
+  "desc": "E3 inv I16 predicaat: n 2 -> 1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 34,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 217,
+  "desc": "E1 inv I1 predicaat: kaart V3 -> V4",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 218,
+  "desc": "E1 inv I1 predicaat: kaart V2 -> V1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 219,
+  "desc": "E3 zichtbaar2: waarde 30 -> 31",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 220,
+  "desc": "E1 inv I4 ernst -1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 221,
+  "desc": "E3 inv I15 predicaat: n 2 -> 1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 222,
+  "desc": "E3 inv I4 predicaat: op > -> <",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 223,
+  "desc": "E2 inv I6 vraagVariant0: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 224,
+  "desc": "E2 feedbackExtra0: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 5
+  }
+ },
+ {
+  "idx": 225,
+  "desc": "E2 feedbackExtra0: niet() verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 2
+  }
+ },
+ {
+  "idx": 226,
+  "desc": "E2 inv I1 ernst +1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 227,
+  "desc": "E2 inv I8 predicaat: offset 1 -> 0",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 228,
+  "desc": "E3 inv I14 ernst -1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 229,
+  "desc": "E1 inv I3 predicaat: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 14,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 230,
+  "desc": "E2 inv I6 vraagVariant1: kaart V1 -> V2",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 231,
+  "desc": "E1 inv I4 predicaat: op > -> <",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 10,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 232,
+  "desc": "E2 profiel Bijgestuurd: kaart B1 -> B2",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 233,
+  "desc": "E3 zichtbaar1: niet() verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 6
+  }
+ },
+ {
+  "idx": 234,
+  "desc": "E1 profiel Gedeelde regie: kaart V2 -> V1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 235,
+  "desc": "E3 inv I7 predicaat: waarde true -> false",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 236,
+  "desc": "E3 inv I16 ernst -1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 237,
+  "desc": "E3 feedbackExtra0: kaart B5 -> B3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 8
+  }
+ },
+ {
+  "idx": 238,
+  "desc": "E2 inv I6 predicaat: niet() verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 19
+  }
+ },
+ {
+  "idx": 239,
+  "desc": "E3 inv I9 predicaat: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 240,
+  "desc": "E2 inv I4 geldtIn gewijzigd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 2
+  }
+ },
+ {
+  "idx": 241,
+  "desc": "E3 inv I13 predicaat: waarde 30 -> 31",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 242,
+  "desc": "E3 inv I7 predicaat: van 3 -> 4",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 5
+  }
+ },
+ {
+  "idx": 243,
+  "desc": "E2 inv I6 vraagVariant1: middel V5 -> V4",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 244,
+  "desc": "E2 inv I6 vraagVariant0: kaart V5 -> V4",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 245,
+  "desc": "E3 duurzaamheid regel0: niet() verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 246,
+  "desc": "E2 feedbackExtra0: p voor -> na",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 247,
+  "desc": "E3 zichtbaar2: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 3
+  }
+ },
+ {
+  "idx": 248,
+  "desc": "E3 inv I11 predicaat: naGebeurtenis A -> B",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 28
+  }
+ },
+ {
+  "idx": 249,
+  "desc": "E3 inv I7 vraagVariant0: tot 3 -> 4",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 250,
+  "desc": "E2 profiel Kweekgestuurd, smal: kaart V4 -> V3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 251,
+  "desc": "E2 profiel Bijgestuurd: args[2] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 252,
+  "desc": "E2 inv I6 predicaat: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 12
+  }
+ },
+ {
+  "idx": 253,
+  "desc": "E3 inv I14 predicaat: tot 1 -> 2",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 254,
+  "desc": "E3 inv I6 vraagVariant0: p voor -> na",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 255,
+  "desc": "E2 feedbackExtra0: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 5
+  }
+ },
+ {
+  "idx": 256,
+  "desc": "E1 inv I3 predicaat: kaart Ev1 -> Ev3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 257,
+  "desc": "E1 inv I1 predicaat: p of -> en",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 258,
+  "desc": "E2 inv I6 predicaat: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 19
+  }
+ },
+ {
+  "idx": 259,
+  "desc": "E3 inv I8 predicaat: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 11
+  }
+ },
+ {
+  "idx": 260,
+  "desc": "E1 inv I1 predicaat: args[3] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 261,
+  "desc": "E2 profiel Bijgestuurd: p na -> voor",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 262,
+  "desc": "E3 zichtbaar0: p nietGespeeld -> gespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 263,
+  "desc": "E3 inv I16 predicaat: n 2 -> 3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 264,
+  "desc": "E1 inv I1 predicaat: kaart V1 -> V2",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 265,
+  "desc": "E3 inv I9 predicaat: args[1] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 5
+  }
+ },
+ {
+  "idx": 266,
+  "desc": "E2 doelmatigheid regel0: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 267,
+  "desc": "E3 zichtbaar1: args[0] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 268,
+  "desc": "E3 inv I6 predicaat: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 269,
+  "desc": "E3 inv I4 predicaat: n 1 -> 2",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 270,
+  "desc": "E2 inv I6 vraagVariant1: middel V4 -> V3",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 271,
+  "desc": "E2 doelmatigheid regel0: p voor -> na",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 272,
+  "desc": "E3 inv I14 predicaat: args[2] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 273,
+  "desc": "E3 zichtbaar2: args[0] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 274,
+  "desc": "E3 inv I9 predicaat: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 275,
+  "desc": "E2 inv I6 predicaat: kaart V4 -> V3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 7
+  }
+ },
+ {
+  "idx": 276,
+  "desc": "E2 doelmatigheid regel0: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 277,
+  "desc": "E1 inv I4 ernst +1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e1": 2
+  }
+ },
+ {
+  "idx": 278,
+  "desc": "E1 profiel Gedeelde regie: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 10,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 279,
+  "desc": "E3 inv I7 predicaat: doel V5 -> V4",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 8
+  }
+ },
+ {
+  "idx": 280,
+  "desc": "E1 inv I1 ernst +1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 281,
+  "desc": "E2 inv I5 geldtIn gewijzigd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 282,
+  "desc": "E1 duurzaamheid regel2: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 283,
+  "desc": "E2 doelmatigheid regel0: args[1] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 284,
+  "desc": "E2 doelmatigheid regel0: niet() verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 285,
+  "desc": "E2 inv I6 vraagVariant0: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 286,
+  "desc": "E3 inv I6 predicaat: niet() verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 39,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 287,
+  "desc": "E2 profiel Kweekgestuurd, smal: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 288,
+  "desc": "E3 zichtbaar2: p of -> en",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4
+  }
+ },
+ {
+  "idx": 289,
+  "desc": "E3 zichtbaar2: kaart B5 -> B3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 290,
+  "desc": "E2 doelmatigheid regels omgedraaid",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 5
+  }
+ },
+ {
+  "idx": 291,
+  "desc": "E2 doelmatigheid regel0: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 5
+  }
+ },
+ {
+  "idx": 292,
+  "desc": "E2 doelmatigheid regel0: kaart V4 -> V3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 293,
+  "desc": "E2 inv I6 predicaat: args[4] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 294,
+  "desc": "E3 inv I14 predicaat: kaart B3 -> B4",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 295,
+  "desc": "E1 inv I1 predicaat: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 296,
+  "desc": "E2 feedbackExtra0: p voor -> na",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e2": 1
+  }
+ },
+ {
+  "idx": 297,
+  "desc": "E2 inv I7 ernst +1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 298,
+  "desc": "E3 inv I14 predicaat: tot 1 -> 0",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 4
+  }
+ },
+ {
+  "idx": 299,
+  "desc": "E3 inv I11 ernst -1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 300,
+  "desc": "E3 zichtbaar2: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 35
+  }
+ },
+ {
+  "idx": 301,
+  "desc": "E3 inv I11 predicaat: p gespeeld -> nietGespeeld",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 12,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 302,
+  "desc": "E3 inv I16 predicaat: kaart Ev3 -> Ev1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 303,
+  "desc": "E3 inv I11 ernst +1",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 2
+  }
+ },
+ {
+  "idx": 304,
+  "desc": "E3 inv I9 predicaat: kaart Ev2 -> Ev1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 305,
+  "desc": "E3 inv I15 predicaat: n 2 -> 1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2
+  }
+ },
+ {
+  "idx": 306,
+  "desc": "E3 inv I6 vraagVariant1: kaart V1 -> V2",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 307,
+  "desc": "E3 inv I7 vraagVariant0: niet() verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 308,
+  "desc": "E3 inv I7 predicaat: op == -> !=",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 309,
+  "desc": "E2 inv I6 vraagVariant0: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 310,
+  "desc": "E3 inv I7 predicaat: optie halveren -> verdubbelen",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 8
+  }
+ },
+ {
+  "idx": 311,
+  "desc": "E2 doelmatigheid regel0: p en -> of",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 5
+  }
+ },
+ {
+  "idx": 312,
+  "desc": "E3 inv I15 predicaat: kaart Ev1 -> Ev3",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 34,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 313,
+  "desc": "E2 doelmatigheid regel0: kaart V3 -> V4",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 3
+  }
+ },
+ {
+  "idx": 314,
+  "desc": "E1 inv I3 ernst -1",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 2,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 315,
+  "desc": "E2 inv I6 vraagVariant0: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
+  }
+ },
+ {
+  "idx": 316,
+  "desc": "E3 inv I8 predicaat: args[2] verwijderd",
+  "status": "alleen-gedood-elders",
+  "groepen": {
+   "data-e3": 3
+  }
+ },
+ {
+  "idx": 317,
+  "desc": "E3 inv I11 predicaat: p voor -> na",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 28
+  }
+ },
+ {
+  "idx": 318,
+  "desc": "E1 inv I1 predicaat: args[0] verwijderd",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 4,
+   "evaluatie": 1
+  }
+ },
+ {
+  "idx": 319,
+  "desc": "E3 zichtbaar1: tot 1 -> 0",
+  "status": "gedood-evaluatie/routes",
+  "groepen": {
+   "evaluatie-routes": 1
   }
  }
 ]

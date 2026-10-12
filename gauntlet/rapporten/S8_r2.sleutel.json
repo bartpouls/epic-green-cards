@@ -1,0 +1,86 @@
+[
+ {
+  "paar": 1,
+  "naam": "E1 Knoppen",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 2,
+  "naam": "E1 Patiëntkaart bullet 4",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 3,
+  "naam": "E1 Geldige routes rij 2",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 4,
+  "naam": "E1 Feedback rij 4",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 5,
+  "naam": "E1 Feedback profiel",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 6,
+  "naam": "E2 Invarianten I1",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 7,
+  "naam": "E2 Invariant I8 Bron",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 8,
+  "naam": "E2 Gebeurtenis",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 9,
+  "naam": "E2 Zichtbaar-als-ontbreekt",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 10,
+  "naam": "E2 Feedback rij 5",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 11,
+  "naam": "E3 Gebeurtenissen A",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 12,
+  "naam": "E3 Route bij weefselinvasie rij 1",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 13,
+  "naam": "E3 Bronconflict",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 14,
+  "naam": "E3 Feedback profiel cipro",
+  "X": "bron",
+  "Y": "spel"
+ }
+]

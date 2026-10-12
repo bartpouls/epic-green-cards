@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-11 22:42",
+ "updated": "2026-10-11 22:53",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -60,8 +60,8 @@ window.GAUNTLET = {
   {
    "name": "S8 overzicht",
    "round": 2,
-   "verdict": "PENDING",
-   "evidence": "r2 gebouwd (check-overzicht 44 groen op 2 viewports; referentie-onderdelen, sectievolgorde uit casus, zoekveld+index, 61 open vragen); criticus r2 bezig",
+   "verdict": "FAIL",
+   "evidence": "r2 FAIL, 6 punten (wacht op stabiele S11-referentie), BLIND=BRON; ronde 3 volgt na S11 ronde 2",
    "artifact": ""
   },
   {
@@ -260,6 +260,12 @@ window.GAUNTLET = {
    "unit": "S11 referentie",
    "verdict": "FAIL",
    "note": "wat erin staat klopt (0 afwijkingen, 121 regels byte-identiek); ontbreekt: E2 kopbullet Kweekuitslag, E3 Trigger-kolom, Repertoire-alinea E2/E3 (F1,F2,F4); samengevoegde R3-string niet in casus (F3); sleutelvolgorde altijdFout ongetest (F5). BLIND=BRON → ronde 2"
+  },
+  {
+   "round": 2,
+   "unit": "S8 overzicht",
+   "verdict": "FAIL",
+   "note": "punten uit r1 grotendeels opgelost (geen hardcoded tekst, sectievolgorde, scorezinnen, zoekveld); referentie.js veranderde tijdens review (S11 r2): feedback-triggernamen, zichtbaar-als-ontbreekt-labels, patiëntkaartregels, repertoire, E3-gebeurtenissentabel, dubbele weergaven, verzonnen kolomkoppen, taalresten. BLIND=BRON → ronde 3 na S11"
   }
  ],
  "open": [
@@ -276,7 +282,8 @@ window.GAUNTLET = {
   "Opruimen bij integratie: mini-evaluators in tests/data-e1/e2/e3.tests.js vervangen door Evaluatie (S6); tests/data-e2: C komt niet als O1 de 5e kaart is (TODO_BART-E2-6, literale lezing)",
   "TODO_BART-8: klachtenstatus na een werkzaam interlude — LEAD-keuze: geenVerbetering48 alleen in de eerste nul-periode (contract §3b)",
   "TODO_BART-9: gebeurtenis die op de laatste dag triggert verschijnt nooit (blijft in state.wachtend); bijbehorende invarianten (I10/I11/I16/I15) gelden dan niet — LEAD-keuze, door Bart te bevestigen",
-  "LEAD-ingreep: in tests/data-kaarten.tests.js (S1, PASS) staat nu \"referentie\" in de toegestane casuskop-sleutels (mechanisch gevolg van S11); S1 wordt bij de eindcontrole nogmaals gedraaid"
+  "LEAD-ingreep: in tests/data-kaarten.tests.js (S1, PASS) staat nu \"referentie\" in de toegestane casuskop-sleutels (mechanisch gevolg van S11); S1 wordt bij de eindcontrole nogmaals gedraaid",
+  "LEAD-ingreep 2: tests/engine.tests.js (S7) negeert nu casus.referentie bij het verzamelen van 'casuswoorden' (beschrijvende tekst, geen speldata); S7-criticus r5 ingelicht"
  ],
  "belowBar": [
   "S5 predicaten:: 4 randgevallen niet door tests bewaakt (zet met >1 id; pauze over wissel; twee gelijktijdige pauzes; kaart vóór anker bij opDagRelatief van:0) — code zelf klopt; 6 kleine punten zonder casusgevolg (rapport S5_r5.md)",
