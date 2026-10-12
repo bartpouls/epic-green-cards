@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-12 00:17",
+ "updated": "2026-10-12 00:18",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -266,6 +266,12 @@ window.GAUNTLET = {
    "unit": "S8 overzicht",
    "verdict": "FAIL",
    "note": "punten uit r1 grotendeels opgelost (geen hardcoded tekst, sectievolgorde, scorezinnen, zoekveld); referentie.js veranderde tijdens review (S11 r2): feedback-triggernamen, zichtbaar-als-ontbreekt-labels, patiëntkaartregels, repertoire, E3-gebeurtenissentabel, dubbele weergaven, verzonnen kolomkoppen, taalresten. BLIND=BRON → ronde 3 na S11"
+  },
+  {
+   "round": 0,
+   "unit": "(infra)",
+   "verdict": "PENDING",
+   "note": "API-spendlimiet bereikt: 4 agents afgebroken (S4 criticus r4, S6 criticus r1, S7 criticus r5, S11 bouwer r2); na reset herstart door LEAD"
   }
  ],
  "open": [
