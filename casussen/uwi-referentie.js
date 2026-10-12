@@ -169,10 +169,10 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
       "repertoireTekst": "Alles uit episode 1, plus V6, B1 en B2.",
       "gebeurtenissenTabel": null,
       "gebeurtenisUitleg": [
-        "Kweekuitslag, na de 4e gespeelde kaart (ongeveer dag 3). Alleen als O1 gespeeld is.",
+        "Kweekuitslag, 3 dagen nadat O1 is gespeeld, aan het begin van die dag.",
         "E. coli, resistent voor trimethoprim en amoxicilline.",
         "Gevoelig voor nitrofurantoïne, fosfomycine, amoxicilline/clavulaanzuur en ciprofloxacine.",
-        "De doorlooptijd van 2–4 dagen kwam via Mistral en is niet zelf gecheckt.",
+        "De 3 dagen zijn Barts keuze; de oorspronkelijke 2–4 dagen kwamen via Mistral en zijn niet gecheckt.",
         "Wat de patiënt laat zien, hangt af van de keuze:",
         "Trimethoprim: klachten houden aan.",
         "Fosfomycine: klachten nemen af."
@@ -308,7 +308,7 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
         "Brug"
       ],
       "TODO_BART_volgordeVanSecties": "De koppen van de casus zijn overgenomen zoals ze in casus-uwi.md staan, inclusief de toevoegingen tussen haakjes (bijvoorbeeld 'Invarianten (poort; I1 en I4 blijven gelden)') en inclusief de vetgedrukte labels die geen kop zijn ('Knoppen', 'Volgorde vrij', 'Brug', 'Bronconflict, geen poort') en de tabelkop 'Route bij weefselinvasie'. Moet het overzicht deze namen precies zo tonen, of liever kortere namen zonder de toevoeging (bijvoorbeeld 'Invarianten (poort)' en 'Volgorde')?",
-      "TODO_BART_gebeurtenisUitleg": "Onder 'Gebeurtenis' van episode 2 staan in de casus twee bullets met onderliggende bullets: 'Kweekuitslag, na de 4e gespeelde kaart (ongeveer dag 3). Alleen als O1 gespeeld is.' (met drie onderliggende regels, onder andere 'De doorlooptijd van 2–4 dagen kwam via Mistral en is niet zelf gecheckt.') en 'Wat de patiënt laat zien, hangt af van de keuze:' (met 'Trimethoprim: klachten houden aan.' en 'Fosfomycine: klachten nemen af.'). Moet het overzicht deze zeven regels in de volgorde van de casus tonen, met de onderliggende regels ingesprongen onder hun hoofdbullet?",
+      "TODO_BART_gebeurtenisUitleg": "Onder 'Gebeurtenis' van episode 2 staan in de casus twee bullets met onderliggende bullets: 'Kweekuitslag, 3 dagen nadat O1 is gespeeld, aan het begin van die dag.' (met drie onderliggende regels, onder andere 'De 3 dagen zijn Barts keuze; de oorspronkelijke 2–4 dagen kwamen via Mistral en zijn niet gecheckt.') en 'Wat de patiënt laat zien, hangt af van de keuze:' (met 'Trimethoprim: klachten houden aan.' en 'Fosfomycine: klachten nemen af.'). Moet het overzicht deze zeven regels in de volgorde van de casus tonen, met de onderliggende regels ingesprongen onder hun hoofdbullet?",
       "TODO_BART_overigeCasusregels": "Het overzicht heeft de gewone speldata voor de patiëntkaart, het repertoire, de kaarten die ontbreken en de feedbackvragen, maar de casus zet er ook kopjes, labels en een kolom 'Trigger' bij (bijvoorbeeld 'Zonder N1:', 'I6, geen kweek', 'Verborgen: niets.'). Moeten die casusregels in het overzicht naast de speldata getoond worden?"
     },
     "E3": {
@@ -343,7 +343,7 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
         },
         {
           "id": "C",
-          "trigger": "3 kaarten na O1",
+          "trigger": "3 dagen na O1",
           "inhoud": "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne."
         }
       ],
@@ -578,7 +578,7 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
     },
     {
       "id": "TODO_BART-R3",
-      "vraag": "Onder 'Gebeurtenis' van episode 2 staan in de casus twee bullets met onderliggende bullets: 'Kweekuitslag, na de 4e gespeelde kaart (ongeveer dag 3). Alleen als O1 gespeeld is.' (met drie onderliggende regels, onder andere 'De doorlooptijd van 2–4 dagen kwam via Mistral en is niet zelf gecheckt.') en 'Wat de patiënt laat zien, hangt af van de keuze:' (met 'Trimethoprim: klachten houden aan.' en 'Fosfomycine: klachten nemen af.'). Moet het overzicht deze zeven regels in de volgorde van de casus tonen, met de onderliggende regels ingesprongen onder hun hoofdbullet?",
+      "vraag": "Onder 'Gebeurtenis' van episode 2 staan in de casus twee bullets met onderliggende bullets: 'Kweekuitslag, 3 dagen nadat O1 is gespeeld, aan het begin van die dag.' (met drie onderliggende regels, onder andere 'De 3 dagen zijn Barts keuze; de oorspronkelijke 2–4 dagen kwamen via Mistral en zijn niet gecheckt.') en 'Wat de patiënt laat zien, hangt af van de keuze:' (met 'Trimethoprim: klachten houden aan.' en 'Fosfomycine: klachten nemen af.'). Moet het overzicht deze zeven regels in de volgorde van de casus tonen, met de onderliggende regels ingesprongen onder hun hoofdbullet?",
       "gekozenLezing": "Elke bullet staat als aparte regel in gebeurtenisUitleg, in de volgorde van de casus, zonder samenvoeging. Welke regels onderliggend zijn, staat apart in inspringing.gebeurtenisUitleg (0 = hoofdbullet, 1 = onderliggende bullet). De regels over de kweekuitslag staan ook in de gebeurtenis zelf; hier staan ze nogmaals zodat de hele sectie naast de casus past. Alternatief: alleen de regels tonen die niet al in de gebeurtenis staan.",
       "plek": "referentie.E2.gebeurtenisUitleg"
     },

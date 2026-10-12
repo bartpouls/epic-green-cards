@@ -1,12 +1,12 @@
 /* casussen/uwi.js — samengevoegd uit uwi.js (kop + kaarten), uwi-e1.js, uwi-e2.js en uwi-e3.js. Alleen data, geen logica.
-   Bron: casus-uwi.md (v1.1). Gemaakt met gauntlet/tools/voeg-samen.js; de losse bestanden zijn daarna vervallen. */
+   Bron: casus-uwi.md (v1.2). Gemaakt met gauntlet/tools/voeg-samen.js; de losse bestanden zijn daarna vervallen. */
 /* ===== uwi.js ===== */
 // Casus UWI in de eerste lijn: kaartenbibliotheek (stuk S1). Alleen data, geen logica.
-// Bron: casus-uwi.md v1.1, sectie 3. Episodes worden aangevuld door uwi-e1.js, uwi-e2.js en uwi-e3.js.
+// Bron: casus-uwi.md v1.2, sectie 3. Episodes worden aangevuld door uwi-e1.js, uwi-e2.js en uwi-e3.js.
 window.CASUSSEN = [
 {
  "id": "uwi-eerstelijn",
- "versie": "1.1",
+ "versie": "1.2",
  "limiet": 1,
  "regelnamen": [
   {
@@ -856,7 +856,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "alle": "Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag in E2 na de 4e gespeelde kaart, in E3 drie kaarten na O1."
+    "alle": "Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag 3 dagen na inzetten."
    },
    "limiet": { "E3": 2 },
    "downside": {
@@ -925,7 +925,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "alle": "De patiënt start zelf als de klachten aanhouden of toenemen"
+    "alle": "De patiënt start zelf als de klachten aanhouden of toenemen; de speler kiest het middel dat zij thuis start"
    },
    "downside": "Ze moet weten wanneer ze moet starten",
    "bron": "NHG"
@@ -1703,7 +1703,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "alle": "Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg"
+    "alle": "Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg. Koppelt aan het actieve middel."
    },
    "downside": "—",
    "bron": "NHG",

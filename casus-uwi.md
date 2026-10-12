@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Casus-id | `uwi-eerstelijn` |
-| Versie | 1.1 — 11 oktober 2026 — "casus staat"; in 1.1 is kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
+| Versie | 1.2 — 12 oktober 2026 — bron: Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
 | Functie | Tutorialcasus: leert het spel én de signatuurvaardigheid |
 | Signatuurvaardigheid | Veranderende context: empirisch starten → bijsturen op de kweek → nierfunctie en comedicatie |
 | Klinische validatie | Voorschrijven en wat daarna komt: Bart Pouls (gevalideerd). Diagnostiek en klinische context: nog voorleggen aan een huisarts |
@@ -79,10 +79,10 @@ Episode 1 (72 jr, context A)  →  Episode 2 (78 jr, context B)  →  Episode 3 
 | G1 | Gegevens | Medicatieoverzicht nalopen | E1 | Toont de actuele medicatielijst | Kost een actie | — |
 | G2 | Gegevens | Recente labwaarden opvragen | E1 | E1: eGFR 42, recent. E2: **eGFR 29** (verborgen). E3: eGFR 28, bevestigd. | Kost een actie | — |
 | G3 | Gegevens | Eerdere kweekuitslagen opvragen | E3 | Toont de kweek uit episode 2 | Kost een actie | NHG: kweken tot ongeveer 1 jaar terug meewegen |
-| O1 | Onderzoek | Urinekweek inzetten | E1 | Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag in E2 na de 4e gespeelde kaart, in E3 drie kaarten na O1. | E1: niet geïndiceerd, kost doelmatigheid | NHG |
+| O1 | Onderzoek | Urinekweek inzetten | E1 | Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag 3 dagen na inzetten. | E1: niet geïndiceerd, kost doelmatigheid | NHG |
 | O2 | Onderzoek | Kalium bepalen | E1 | Bepaalt de kaliumspiegel | Alleen zinvol bij een indicatie; anders kost het doelmatigheid | NHG, KNMP |
 | V1 | Voorschrijven | Afwachtend beleid | E1 | Geen antibioticum; ruim drinken, zo nodig pijnstilling | Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger | NHG |
-| V2 | Voorschrijven | Uitgesteld recept | E1 | De patiënt start zelf als de klachten aanhouden of toenemen | Ze moet weten wanneer ze moet starten | NHG |
+| V2 | Voorschrijven ⊙ | Uitgesteld recept | E1 | De patiënt start zelf als de klachten aanhouden of toenemen; de speler kiest het middel dat zij thuis start | Ze moet weten wanneer ze moet starten | NHG |
 | V3 | Voorschrijven | Nitrofurantoïne | E1 | E1: 5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen. | Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G]. | NHG |
 | V4 | Voorschrijven | Fosfomycine | E1 | Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht | Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie. | NHG |
 | V5 | Voorschrijven | Trimethoprim | E1 | E1: 3 dagen 1 dd 300 mg. Risicogroep: 7 dagen. | Naast een RAS-remmer of kaliumsparend diureticum stijgt het kalium (controle nodig bij een 7-daagse kuur). Bij eGFR 10–30: na dag 3 halveren en kans op therapiefalen. Hoge resistentie bij E. coli. | NHG, KNMP |
@@ -97,7 +97,7 @@ Episode 1 (72 jr, context A)  →  Episode 2 (78 jr, context B)  →  Episode 3 
 | B5 | Bijsturen ⊙ | Medicatie hervatten | E3 | Hervat een eerder gestopt middel. Volgens SIDRIK: herstarten zodra de klachten weg zijn. | Hervatten zonder herbeoordeling kan dezelfde schade herhalen | SIDRIK |
 | B4 | Bijsturen ⊙ | Innametijden aanpassen | E3 | Ciprofloxacine 1–2 uur vóór of ten minste 4 uur ná calcium | Vraagt uitleg aan de patiënt | Kompas |
 | N1 | Informeren | Alarmsignalen bespreken | E1 | Bij koorts of ziek worden direct contact opnemen | — | NHG |
-| N2 | Informeren ⊙ | Gebruik en verwachting uitleggen | E1 | Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg | — | NHG |
+| N2 | Informeren ⊙ | Gebruik en verwachting uitleggen | E1 | Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg. Koppelt aan het actieve middel. | — | NHG |
 | N3 | Informeren | Drinkadvies geven | E3 | 2–2,5 liter per dag | — | SIDRIK |
 | Ev1 | Evalueren | Opvolgmoment afspreken | E1 | Afwachten: na 1 week alsnog starten. Na een kuur: als de klachten 24–48 uur na afloop niet duidelijk minder zijn, opnieuw urineonderzoek. Weefselinvasie: contact binnen 48 uur. Sick day: monitoring na 1–3 dagen. | — | NHG, SIDRIK |
 | Ev2 | Evalueren ⊙ | Overleggen met de voorschrijver | E3 | Legt een bestaand middel voor aan de voorschrijver | Kost een actie | Bart; CVRM-richtlijn via Mistral, niet zelf gecheckt |
@@ -181,10 +181,10 @@ Bij trimethoprim 3 dagen is geen kaliumcontrole nodig. De NHG vraagt die alleen 
 Alles uit episode 1, plus V6, B1 en B2.
 
 ### Gebeurtenis
-- **Kweekuitslag**, na de 4e gespeelde kaart (ongeveer dag 3). Alleen als O1 gespeeld is.
+- **Kweekuitslag**, 3 dagen nadat O1 is gespeeld, aan het begin van die dag.
   - E. coli, **resistent** voor trimethoprim en amoxicilline.
   - **Gevoelig** voor nitrofurantoïne, fosfomycine, amoxicilline/clavulaanzuur en ciprofloxacine.
-  - De doorlooptijd van 2–4 dagen kwam via Mistral en is niet zelf gecheckt.
+  - De 3 dagen zijn Barts keuze; de oorspronkelijke 2–4 dagen kwamen via Mistral en zijn niet gecheckt.
 - **Wat de patiënt laat zien, hangt af van de keuze:**
   - Trimethoprim: klachten houden aan.
   - Fosfomycine: klachten nemen af.
@@ -254,7 +254,7 @@ Alle kaarten uit de bibliotheek (G1–Ev3).
 |---|---|---|
 | A | Na kaart *n* (engine-parameter); volgorde met B willekeurig | Weefselinvasie: koorts 38,6 °C en flankpijn |
 | B | Na kaart *m* (engine-parameter); volgorde met A willekeurig | Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK] |
-| C | 3 kaarten na O1 | Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne. |
+| C | 3 dagen na O1 | Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne. |
 
 De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.
 
@@ -347,3 +347,16 @@ De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.
   - de geloofwaardigheid van de eGFR-daling van 42 naar 29 in 6 jaar
 - **Rol van de speler** (apotheker of huisarts) per variant. Zelf spironolacton stoppen kan later een geldige route worden.
 - **Later, als derde laag:** patiëntvarianten (man, morbide obees, kwetsbaar, zwanger) op dezelfde toestandsgraaf.
+
+---
+
+## 9. Wijzigingen in versie 1.2
+
+Bron: Bart, speltest 12 oktober 2026.
+
+- **Kweekuitslag:** 3 dagen na inzetten, aan het begin van die dag (was: na de 4e gespeelde kaart; in episode 3: 3 kaarten na de kweek). De 3 dagen zijn Barts keuze; de oorspronkelijke 2–4 dagen kwamen via Mistral en zijn niet gecheckt. Een nieuwe kweek in episode 3 (na weefselinvasie) geeft voorlopig een tweede uitslag, 3 dagen later, met dezelfde gegevens.
+- **Kaliumregel trimethoprim (I7):** alleen bij de 7-daagse kuur. Wie trimethoprim op dag 3 vervangt of stopt, krijgt geen schending. Kaliumcontrole telt op kuurdag 2 t/m 4; halveren vanaf kuurdag 4, en alleen als het middel dan nog actief is.
+- **Episodeduur en escalatie:** elke episode duurt 14 dagen. Houden de klachten vier volle dagen aan, dan volgt weefselinvasie (dag 5). Zijn er al weefselinvasie en opnieuw vier volle dagen aanhoudende klachten, dan volgt sepsis. Een werkzaam antibioticum stopt de teller. Instelling per episode; in episode 3 aan, in episode 1 en 2 uit. Sepsis is nog een concept.
+- **Uitgesteld recept (V2):** doelkaart; de speler kiest het middel dat de patiënt thuis start.
+- **Uitleg (N2):** koppelt aan het actieve middel.
+- **Afronden:** niet toegestaan zolang er nog gebeurtenissen aankomen of de dagen niet om zijn.

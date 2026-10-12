@@ -8,10 +8,10 @@
     "| G1 | Gegevens | Medicatieoverzicht nalopen | E1 | Toont de actuele medicatielijst | Kost een actie | — |",
     "| G2 | Gegevens | Recente labwaarden opvragen | E1 | E1: eGFR 42, recent. E2: **eGFR 29** (verborgen). E3: eGFR 28, bevestigd. | Kost een actie | — |",
     "| G3 | Gegevens | Eerdere kweekuitslagen opvragen | E3 | Toont de kweek uit episode 2 | Kost een actie | NHG: kweken tot ongeveer 1 jaar terug meewegen |",
-    "| O1 | Onderzoek | Urinekweek inzetten | E1 | Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag in E2 na de 4e gespeelde kaart, in E3 drie kaarten na O1. | E1: niet geïndiceerd, kost doelmatigheid | NHG |",
+    "| O1 | Onderzoek | Urinekweek inzetten | E1 | Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag 3 dagen na inzetten. | E1: niet geïndiceerd, kost doelmatigheid | NHG |",
     "| O2 | Onderzoek | Kalium bepalen | E1 | Bepaalt de kaliumspiegel | Alleen zinvol bij een indicatie; anders kost het doelmatigheid | NHG, KNMP |",
     "| V1 | Voorschrijven | Afwachtend beleid | E1 | Geen antibioticum; ruim drinken, zo nodig pijnstilling | Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger | NHG |",
-    "| V2 | Voorschrijven | Uitgesteld recept | E1 | De patiënt start zelf als de klachten aanhouden of toenemen | Ze moet weten wanneer ze moet starten | NHG |",
+    "| V2 | Voorschrijven ⊙ | Uitgesteld recept | E1 | De patiënt start zelf als de klachten aanhouden of toenemen; de speler kiest het middel dat zij thuis start | Ze moet weten wanneer ze moet starten | NHG |",
     "| V3 | Voorschrijven | Nitrofurantoïne | E1 | E1: 5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen. | Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G]. | NHG |",
     "| V4 | Voorschrijven | Fosfomycine | E1 | Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht | Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie. | NHG |",
     "| V5 | Voorschrijven | Trimethoprim | E1 | E1: 3 dagen 1 dd 300 mg. Risicogroep: 7 dagen. | Naast een RAS-remmer of kaliumsparend diureticum stijgt het kalium (controle nodig bij een 7-daagse kuur). Bij eGFR 10–30: na dag 3 halveren en kans op therapiefalen. Hoge resistentie bij E. coli. | NHG, KNMP |",
@@ -26,7 +26,7 @@
     "| B5 | Bijsturen ⊙ | Medicatie hervatten | E3 | Hervat een eerder gestopt middel. Volgens SIDRIK: herstarten zodra de klachten weg zijn. | Hervatten zonder herbeoordeling kan dezelfde schade herhalen | SIDRIK |",
     "| B4 | Bijsturen ⊙ | Innametijden aanpassen | E3 | Ciprofloxacine 1–2 uur vóór of ten minste 4 uur ná calcium | Vraagt uitleg aan de patiënt | Kompas |",
     "| N1 | Informeren | Alarmsignalen bespreken | E1 | Bij koorts of ziek worden direct contact opnemen | — | NHG |",
-    "| N2 | Informeren ⊙ | Gebruik en verwachting uitleggen | E1 | Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg | — | NHG |",
+    "| N2 | Informeren ⊙ | Gebruik en verwachting uitleggen | E1 | Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg. Koppelt aan het actieve middel. | — | NHG |",
     "| N3 | Informeren | Drinkadvies geven | E3 | 2–2,5 liter per dag | — | SIDRIK |",
     "| Ev1 | Evalueren | Opvolgmoment afspreken | E1 | Afwachten: na 1 week alsnog starten. Na een kuur: als de klachten 24–48 uur na afloop niet duidelijk minder zijn, opnieuw urineonderzoek. Weefselinvasie: contact binnen 48 uur. Sick day: monitoring na 1–3 dagen. | — | NHG, SIDRIK |",
     "| Ev2 | Evalueren ⊙ | Overleggen met de voorschrijver | E3 | Legt een bestaand middel voor aan de voorschrijver | Kost een actie | Bart; CVRM-richtlijn via Mistral, niet zelf gecheckt |",
@@ -87,7 +87,7 @@
   Test.registreer(G, "K0 CASUSSEN is een array met één casus; id en versie uit de casuskop", function () {
     Test.waar(Array.isArray(window.CASUSSEN) && window.CASUSSEN.length === 1, "één casus verwacht");
     Test.is(casus().id, "uwi-eerstelijn");
-    Test.is(casus().versie, "1.1");
+    Test.is(casus().versie, "1.2");
     Test.is(casus().titel, REF_TITEL, "titel");
     Test.waar(Array.isArray(casus().episodes), "episodes is een array (door de episodebestanden aangevuld)");
     Test.waar(Array.isArray(casus().todoBart), "todoBart is een array");
@@ -139,7 +139,7 @@
     Test.gelijk(Object.keys(gebruikt).sort(), CATEGORIEEN.slice().sort());
     refKaarten().forEach(function (r) {
       var k = kaart(r.id);
-      Test.is(k.doelkaart, r.cat.indexOf("⊙") >= 0 || r.id === "V2", r.id + " doelkaart (V2: casus 1.2, de speler kiest het middel)");
+      Test.is(k.doelkaart, r.cat.indexOf("⊙") >= 0, r.id + " doelkaart");
       Test.is(k.categorie, r.cat.replace(" ⊙", ""), r.id + " categorie");
     });
     Test.gelijk(casus().kaarten.filter(function (k) { return k.doelkaart; }).map(function (k) { return k.id; }),
@@ -171,7 +171,7 @@
     Test.gelijk(kaart("G2").effect, { E1: "eGFR 42, recent.", E2: "eGFR 29 (verborgen).", E3: "eGFR 28, bevestigd." });
     Test.gelijk(kaart("V3").effect, { alle: "E1: 5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen." });
     Test.gelijk(kaart("V5").effect, { alle: "E1: 3 dagen 1 dd 300 mg. Risicogroep: 7 dagen." });
-    Test.gelijk(kaart("O1").effect, { alle: "Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag in E2 na de 4e gespeelde kaart, in E3 drie kaarten na O1." });
+    Test.gelijk(kaart("O1").effect, { alle: "Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag 3 dagen na inzetten." });
     Test.gelijk(kaart("O1").downside, { E1: "niet geïndiceerd, kost doelmatigheid" });
     Test.is(kaart("V6").vanafEpisode, 2);
     Test.is(kaart("G3").vanafEpisode, 3);
