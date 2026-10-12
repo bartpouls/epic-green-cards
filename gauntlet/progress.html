@@ -46,6 +46,8 @@
 </head>
 <body>
 <main>
+  <div class="card warn" id="todocard"><h2>TODO_BART — wacht op Bart</h2><div class="sub">Eerst wat jouw beslissing vraagt. Vragen komen uit <code>casussen/uwi.js</code>.</div><div id="todo"></div></div>
+
   <h1 id="goal">Gauntlet voortgang</h1>
   <div class="sub" id="meta">Wacht op gegevens uit progress.js …</div>
 
@@ -113,6 +115,29 @@
     if (old) old.remove();
     document.head.appendChild(s);
   }
+  function todoLijst() {
+    var c = window.CASUSSEN && window.CASUSSEN[0], gr = window.TODO_BART_GROEPEN || [], todo = (c && c.todoBart) || [], html = '';
+    if (!c) { $('todo').innerHTML = '<div class="empty">casussen/uwi.js niet gevonden.</div>'; return; }
+    gr.forEach(function (g) {
+      var items = g.vast ? g.vast : (g.ids || []).map(function (id) {
+        var t = todo.filter(function (x) { return x.id === id; })[0];
+        return t ? { id: t.id, vraag: t.vraag } : { id: id, vraag: '(niet meer in de data)' };
+      });
+      html += '<h3 style="font-size:.9rem;margin:12px 0 4px">' + esc(g.titel) + ' (' + items.length + ')</h3><ul>' +
+        items.map(function (x) { return '<li><b>' + esc(x.id) + '</b>: ' + esc(x.vraag) + '</li>'; }).join('') + '</ul>';
+    });
+    var gelijst = {}; gr.forEach(function (g) { (g.ids || []).forEach(function (i) { gelijst[i] = true; }); });
+    var rest = todo.filter(function (t) { return !gelijst[t.id]; });
+    html += '<p class="sub">Daarnaast staan er nog ' + rest.length + ' kleinere vragen in de data (<code>casus.todoBart</code>); ze zijn zichtbaar in <code>tools/overzicht.html</code>.</p>';
+    $('todo').innerHTML = html;
+  }
+  function laadTodo() {
+    var a = document.createElement('script'); a.src = '../casussen/uwi.js';
+    a.onload = function () { var b = document.createElement('script'); b.src = 'todo-bart.js'; b.onload = todoLijst; document.head.appendChild(b); };
+    a.onerror = function () { $('todo').innerHTML = '<div class="empty">casussen/uwi.js niet gevonden.</div>'; };
+    document.head.appendChild(a);
+  }
+  laadTodo();
   load();
   setInterval(load, 10000);
 })();

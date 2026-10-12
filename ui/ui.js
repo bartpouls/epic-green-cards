@@ -295,6 +295,33 @@
     };
   }
 
+  // Leesbaar overzicht van de pogingen van één pseudoniem (nieuwste eerst): per poging een tabel per dag in woorden, de vraag en de uitkomst.
+  function overzichtModel(casus, records, pseudoniem) {
+    return recordsVan(records, pseudoniem).slice().reverse().map(function (r) {
+      var eps = lijst(casus && casus.episodes), ep = eps.filter(function (e) { return e.id === r.episodeId; })[0] || {};
+      var tl = lijst(r.tijdlijn), maxDag = typeof r.dagen === "number" ? r.dagen : 0;
+      tl.forEach(function (x) { if (x && x.dag > maxDag) maxDag = x.dag; });
+      lijst(r.gebeurtenissen).forEach(function (x) { if (x && x.dag > maxDag) maxDag = x.dag; });
+      var rijen = [];
+      for (var d = 1; d <= maxDag; d++) {
+        rijen.push({
+          dag: d,
+          kaarten: tl.filter(function (x) { return x && x.dag === d; }).sort(function (a, b) { return (a.volg || 0) - (b.volg || 0); }).map(function (x) { return regelTitel(casus, ep, x); }),
+          gebeurtenissen: lijst(r.gebeurtenissen).filter(function (x) { return x && x.dag === d; }).map(function (x) { return x.titel || x.id; })
+        });
+      }
+      var gehaald = typeof r.poortGehaald === "boolean" ? r.poortGehaald : lijst(r.geschonden).length === 0;
+      var uitkomst = gehaald
+        ? "Veiligheid gehaald" + (r.profiel && r.profiel.naam ? ". Profiel: " + r.profiel.naam : "") +
+          (r.score ? ". Duurzaamheid " + r.score.duurzaamheid + " van " + SCHAAL + ", doelmatigheid " + r.score.doelmatigheid + " van " + SCHAAL : "") + "."
+        : "Nog niet veilig genoeg.";
+      return {
+        titel: "Episode " + (episodeNummer(casus, { id: r.episodeId }) || r.episodeId) + ", poging " + (r.pogingnummer || "?") + (r.testmodus ? " (testmodus)" : ""),
+        tijdstempel: r.tijdstempel || null, gehaald: gehaald, rijen: rijen, vraag: r.vraag || null, uitkomst: uitkomst
+      };
+    });
+  }
+
   function raadpleegModel(casus, antwoord) {
     var bronnen = lijst(antwoord && antwoord.bronnen).map(function (sleutel) {
       var vol = isObj(casus.bronnen) && casus.bronnen[sleutel] ? casus.bronnen[sleutel] : "";
@@ -410,6 +437,7 @@
       else if (app.scherm === "kies") inhoud = kiesScherm();
       else if (app.scherm === "spel") inhoud = spelScherm();
       else if (app.scherm === "eind") inhoud = eindScherm();
+      else if (app.scherm === "overzicht") inhoud = overzichtScherm();
       else inhoud = foutScherm("Onbekend scherm.");
     } catch (e) {
       inhoud = foutScherm("Er ging iets mis: " + ((e && e.message) || e));
@@ -447,6 +475,32 @@
       app.fokus = "btn-export";
       render();
     });
+  }
+
+  function overzichtKnop(terugNaar) {
+    return knop("Leesbaar overzicht", { id: "btn-overzicht", klasse: "knop rand" }, function () { app.overzichtTerug = terugNaar; naarScherm("overzicht"); });
+  }
+
+  function overzichtScherm() {
+    var records = [];
+    try { records = g.Logging.alle(); } catch (e) { records = []; }
+    var m = overzichtModel(app.casus, records, app.pseudoniem);
+    return h("main", { klasse: "smal overzicht" },
+      fokusMarkeer(h("h1", { tabindex: "-1" }, "Leesbaar overzicht"), "kop"),
+      h("p", { klasse: "uitleg" }, "Je pogingen, per dag, in gewone woorden (nieuwste bovenaan)."),
+      m.length ? m.map(function (p) {
+        return h("section", { klasse: "kaartvlak poging", "data-poging": p.titel },
+          h("h2", null, p.titel), h("p", { klasse: "uitleg" }, (p.tijdstempel || "") + (p.tijdstempel ? " · " : "") + (p.gehaald ? "gehaald" : "niet gehaald")),
+          h("div", { klasse: "tabelwrap" }, h("table", null,
+            h("thead", null, h("tr", null, h("th", null, "Dag"), h("th", null, "Wat je deed"), h("th", null, "Wat er gebeurde"))),
+            h("tbody", null, p.rijen.map(function (r) {
+              return h("tr", { "data-dag": r.dag }, h("td", null, String(r.dag)), h("td", null, r.kaarten.length ? r.kaarten.join("; ") : "—"), h("td", null, r.gebeurtenissen.length ? r.gebeurtenissen.join("; ") : "—"));
+            })))),
+          p.vraag ? h("p", { klasse: "vraag" }, "Vraag: " + p.vraag) : null,
+          h("p", null, "Uitkomst: " + p.uitkomst));
+      }) : h("p", { klasse: "uitleg" }, "Er zijn nog geen pogingen om te laten zien."),
+      h("p", null, fokusMarkeer(knop("Terug", { id: "btn-overzicht-terug", klasse: "knop hoofd" }, function () { naarScherm(app.overzichtTerug === "eind" && app.uitkomst ? "eind" : "kies"); }), "btn-overzicht-terug"))
+    );
   }
 
   function meldingView() {
@@ -520,7 +574,7 @@
           knop(o.gehaald ? "Opnieuw spelen" : "Start", { klasse: "knop hoofd", "data-start": o.id, disabled: !o.open ? true : null, "aria-label": o.titel + (o.gehaald ? " opnieuw spelen" : " starten") },
             function () { startEpisode(o.id); }));
       })),
-      h("p", null, exportKnop())
+      h("p", null, exportKnop(), " ", overzichtKnop("kies"))
     );
   }
 
@@ -969,7 +1023,7 @@
       h("p", { klasse: "uitleg", id: "legedagen" }, "Dagen zonder actie: " + legeDagenTekst()),
       meldingView(),
       app.testmodus ? h("p", { klasse: "waarschuwing", id: "testmodus-melding" }, "Testmodus: deze poging telt niet mee als meting.") : null,
-      h("p", { klasse: "onderknoppen" }, exportKnop())
+      h("p", { klasse: "onderknoppen" }, exportKnop(), " ", overzichtKnop("eind"))
     );
   }
 
@@ -994,7 +1048,7 @@
     episodeOverzicht: episodeOverzicht, kaartenPerCategorie: kaartenPerCategorie, toegestaneDoelen: toegestaneDoelen,
     isDoelkaart: isDoelkaart, optiesVoor: optiesVoor, regelTitel: regelTitel, naSpelenTekst: naSpelenTekst,
     dagenModel: dagenModel, patientVelden: patientVelden, evaluatieModel: evaluatieModel, raadpleegModel: raadpleegModel,
-    aanhoudendTekst: aanhoudendTekst, opslagMelding: opslagMelding, actieDots: actieDots, doelLabel: doelLabel,
+    aanhoudendTekst: aanhoudendTekst, overzichtModel: overzichtModel, opslagMelding: opslagMelding, actieDots: actieDots, doelLabel: doelLabel,
     nadeelTekst: nadeelTekst, anderenZin: anderenZin, effectVoor: effectVoor, enigDoel: enigDoel, rondleiding: function () { return RONDLEIDING.slice(); }, gespeeldeKaarten: gespeeldeKaarten,
     _opslag: undefined,                               // alleen voor tests
     _rng: null,                                       // alleen voor tests: vaste toevalsbron voor de volgorde van opties

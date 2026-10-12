@@ -8,6 +8,768 @@ window.CASUSSEN = [
  "id": "uwi-eerstelijn",
  "versie": "1.1",
  "limiet": 1,
+ "regelnamen": [
+  {
+   "episode": "E1",
+   "invariant": "I1",
+   "naam": "Alarmsignalen ontbreken"
+  },
+  {
+   "episode": "E1",
+   "invariant": "I3",
+   "naam": "Afwachten zonder opvolgmoment"
+  },
+  {
+   "episode": "E1",
+   "invariant": "I4",
+   "naam": "Twee antibiotica tegelijk"
+  },
+  {
+   "episode": "E2",
+   "invariant": "I1",
+   "naam": "Alarmsignalen ontbreken"
+  },
+  {
+   "episode": "E2",
+   "invariant": "I4",
+   "naam": "Twee antibiotica tegelijk"
+  },
+  {
+   "episode": "E2",
+   "invariant": "I5",
+   "naam": "Nitrofurantoïne bij lage nierfunctie"
+  },
+  {
+   "episode": "E2",
+   "invariant": "I6",
+   "naam": "Geen kweek vooraf of afwachten",
+   "onderdelen": [
+    {
+     "naam": "geen kweek vooraf",
+     "als": {
+      "p": "of",
+      "args": [
+       {
+        "p": "en",
+        "args": [
+         {
+          "p": "gespeeld",
+          "kaart": "V3"
+         },
+         {
+          "p": "niet",
+          "arg": {
+           "p": "voor",
+           "a": {
+            "kaart": "O1"
+           },
+           "b": {
+            "kaart": "V3"
+           }
+          }
+         }
+        ]
+       },
+       {
+        "p": "en",
+        "args": [
+         {
+          "p": "gespeeld",
+          "kaart": "V4"
+         },
+         {
+          "p": "niet",
+          "arg": {
+           "p": "voor",
+           "a": {
+            "kaart": "O1"
+           },
+           "b": {
+            "kaart": "V4"
+           }
+          }
+         }
+        ]
+       },
+       {
+        "p": "en",
+        "args": [
+         {
+          "p": "gespeeld",
+          "kaart": "V5"
+         },
+         {
+          "p": "niet",
+          "arg": {
+           "p": "voor",
+           "a": {
+            "kaart": "O1"
+           },
+           "b": {
+            "kaart": "V5"
+           }
+          }
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "naam": "afwachten",
+     "als": {
+      "p": "of",
+      "args": [
+       {
+        "p": "gespeeld",
+        "kaart": "V1"
+       },
+       {
+        "p": "gespeeld",
+        "kaart": "V2"
+       },
+       {
+        "p": "niet",
+        "arg": {
+         "p": "of",
+         "args": [
+          {
+           "p": "gestart",
+           "middel": "V3"
+          },
+          {
+           "p": "gestart",
+           "middel": "V4"
+          },
+          {
+           "p": "gestart",
+           "middel": "V5"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "episode": "E2",
+   "invariant": "I7",
+   "naam": "Trimethoprim: kalium en halveren",
+   "onderdelen": [
+    {
+     "naam": "kalium",
+     "als": {
+      "p": "en",
+      "args": [
+       {
+        "p": "actiefNaDagen",
+        "middel": "V5",
+        "anker": {
+         "start": "V5"
+        },
+        "na": 2
+       },
+       {
+        "p": "niet",
+        "arg": {
+         "p": "opDagRelatief",
+         "kaart": "O2",
+         "anker": {
+          "start": "V5"
+         },
+         "van": 1,
+         "tot": 3
+        }
+       }
+      ]
+     }
+    },
+    {
+     "naam": "halveren",
+     "als": {
+      "p": "en",
+      "args": [
+       {
+        "p": "actiefNaDagen",
+        "middel": "V5",
+        "anker": {
+         "start": "V5"
+        },
+        "na": 3
+       },
+       {
+        "p": "niet",
+        "arg": {
+         "p": "opDagRelatief",
+         "kaart": "V6",
+         "doel": "V5",
+         "optie": "halveren",
+         "anker": {
+          "start": "V5"
+         },
+         "van": 3
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "episode": "E2",
+   "invariant": "I8",
+   "naam": "Resistent middel na de uitslag"
+  },
+  {
+   "episode": "E3",
+   "invariant": "I1",
+   "naam": "Alarmsignalen ontbreken"
+  },
+  {
+   "episode": "E3",
+   "invariant": "I4",
+   "naam": "Twee antibiotica tegelijk"
+  },
+  {
+   "episode": "E3",
+   "invariant": "I5",
+   "naam": "Nitrofurantoïne bij lage nierfunctie"
+  },
+  {
+   "episode": "E3",
+   "invariant": "I6",
+   "naam": "Geen kweek vooraf of afwachten",
+   "onderdelen": [
+    {
+     "naam": "geen kweek vooraf",
+     "als": {
+      "p": "en",
+      "args": [
+       {
+        "p": "gespeeld",
+        "K": {
+         "kaartUit": "antibiotica"
+        }
+       },
+       {
+        "p": "niet",
+        "arg": {
+         "p": "en",
+         "args": [
+          {
+           "p": "gespeeld",
+           "K": {
+            "kaart": "O1"
+           }
+          },
+          {
+           "p": "voor",
+           "a": {
+            "kaart": "O1"
+           },
+           "b": {
+            "kaartUit": "antibiotica"
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "naam": "afwachten",
+     "als": {
+      "p": "of",
+      "args": [
+       {
+        "p": "gespeeld",
+        "K": {
+         "kaart": "V1"
+        }
+       },
+       {
+        "p": "gespeeld",
+        "K": {
+         "kaart": "V2"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "episode": "E3",
+   "invariant": "I7",
+   "naam": "Trimethoprim: kalium en halveren",
+   "onderdelen": [
+    {
+     "naam": "kalium",
+     "als": {
+      "p": "en",
+      "args": [
+       {
+        "p": "actiefNaDagen",
+        "middel": "V5",
+        "anker": {
+         "start": "V5"
+        },
+        "na": 2
+       },
+       {
+        "p": "niet",
+        "arg": {
+         "p": "opDagRelatief",
+         "K": {
+          "kaart": "O2"
+         },
+         "anker": {
+          "start": "V5"
+         },
+         "van": 1,
+         "tot": 3
+        }
+       }
+      ]
+     }
+    },
+    {
+     "naam": "halveren",
+     "als": {
+      "p": "en",
+      "args": [
+       {
+        "p": "actiefNaDagen",
+        "middel": "V5",
+        "anker": {
+         "start": "V5"
+        },
+        "na": 3
+       },
+       {
+        "p": "niet",
+        "arg": {
+         "p": "opDagRelatief",
+         "K": {
+          "kaart": "V6",
+          "doel": "V5",
+          "optie": "halveren"
+         },
+         "anker": {
+          "start": "V5"
+         },
+         "van": 3
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "episode": "E3",
+   "invariant": "I8",
+   "naam": "Resistent middel na de uitslag"
+  },
+  {
+   "episode": "E3",
+   "invariant": "I9",
+   "naam": "Lisinopril en spironolacton laten liggen",
+   "onderdelen": [
+    {
+     "naam": "geen kalium en geen overleg",
+     "als": {
+      "p": "en",
+      "args": [
+       {
+        "p": "waar",
+        "veld": "eGFR",
+        "op": "<",
+        "waarde": 30
+       },
+       {
+        "p": "nietGespeeld",
+        "K": {
+         "kaart": "O2"
+        }
+       },
+       {
+        "p": "nietGespeeld",
+        "K": {
+         "kaart": "Ev2",
+         "doel": "spironolacton"
+        }
+       }
+      ]
+     }
+    },
+    {
+     "naam": "hervatten zonder overleg",
+     "als": {
+      "p": "en",
+      "args": [
+       {
+        "p": "gespeeld",
+        "K": {
+         "kaart": "B5",
+         "doel": "spironolacton"
+        }
+       },
+       {
+        "p": "niet",
+        "arg": {
+         "p": "en",
+         "args": [
+          {
+           "p": "gespeeld",
+           "K": {
+            "kaart": "Ev2",
+            "doel": "spironolacton"
+           }
+          },
+          {
+           "p": "voor",
+           "a": {
+            "kaart": "Ev2",
+            "doel": "spironolacton"
+           },
+           "b": {
+            "kaart": "B5",
+            "doel": "spironolacton"
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "episode": "E3",
+   "invariant": "I10",
+   "naam": "Weefselinvasie: middel werkt niet in het weefsel"
+  },
+  {
+   "episode": "E3",
+   "invariant": "I11",
+   "naam": "Wisselen zonder nieuwe kweek"
+  },
+  {
+   "episode": "E3",
+   "invariant": "I12",
+   "naam": "Cotrimoxazol"
+  },
+  {
+   "episode": "E3",
+   "invariant": "I13",
+   "naam": "Amoxicilline/clavulaanzuur zonder aangepaste dosis"
+  },
+  {
+   "episode": "E3",
+   "invariant": "I14",
+   "naam": "Ciprofloxacine naast calcium"
+  },
+  {
+   "episode": "E3",
+   "invariant": "I15",
+   "naam": "Sick day-maatregelen",
+   "onderdelen": [
+    {
+     "naam": "spironolacton stoppen",
+     "als": {
+      "p": "niet",
+      "arg": {
+       "p": "binnenBeurten",
+       "K": {
+        "kaart": "B3",
+        "doel": "spironolacton"
+       },
+       "naGebeurtenis": "B",
+       "n": 2
+      }
+     }
+    },
+    {
+     "naam": "lisinopril halveren",
+     "als": {
+      "p": "niet",
+      "arg": {
+       "p": "binnenBeurten",
+       "K": {
+        "kaart": "V6",
+        "doel": "lisinopril",
+        "optie": "halveren"
+       },
+       "naGebeurtenis": "B",
+       "n": 2
+      }
+     }
+    },
+    {
+     "naam": "drinkadvies",
+     "als": {
+      "p": "niet",
+      "arg": {
+       "p": "binnenBeurten",
+       "K": {
+        "kaart": "N3"
+       },
+       "naGebeurtenis": "B",
+       "n": 2
+      }
+     }
+    },
+    {
+     "naam": "opvolgmoment",
+     "als": {
+      "p": "niet",
+      "arg": {
+       "p": "binnenBeurten",
+       "K": {
+        "kaart": "Ev1"
+       },
+       "naGebeurtenis": "B",
+       "n": 2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "episode": "E3",
+   "invariant": "I16",
+   "naam": "Opvolgen en verwijzen na weefselinvasie",
+   "onderdelen": [
+    {
+     "naam": "geen opvolgmoment",
+     "als": {
+      "p": "niet",
+      "arg": {
+       "p": "binnenBeurten",
+       "K": {
+        "kaart": "Ev1"
+       },
+       "naGebeurtenis": "A",
+       "n": 2
+      }
+     }
+    },
+    {
+     "naam": "geen verwijzing",
+     "als": {
+      "p": "en",
+      "args": [
+       {
+        "p": "klachten",
+        "waarde": "geenVerbetering48"
+       },
+       {
+        "p": "nietGespeeld",
+        "K": {
+         "kaart": "Ev3"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "maten": [
+  {
+   "episode": "E1",
+   "id": "labVoorVoorschrijf",
+   "naam": "Labwaarden opgevraagd vóór de voorschrijfkaart",
+   "als": {
+    "p": "en",
+    "args": [
+     {
+      "p": "gespeeld",
+      "kaart": "G2"
+     },
+     {
+      "p": "alsDan",
+      "als": {
+       "p": "gespeeld",
+       "kaart": [
+        "V1",
+        "V2",
+        "V3",
+        "V4",
+        "V5"
+       ]
+      },
+      "dan": {
+       "p": "voor",
+       "a": {
+        "kaart": "G2"
+       },
+       "b": {
+        "kaart": [
+         "V1",
+         "V2",
+         "V3",
+         "V4",
+         "V5"
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "episode": "E2",
+   "id": "labVoorVoorschrijf",
+   "naam": "Labwaarden opgevraagd vóór de voorschrijfkaart",
+   "als": {
+    "p": "en",
+    "args": [
+     {
+      "p": "gespeeld",
+      "kaart": "G2"
+     },
+     {
+      "p": "alsDan",
+      "als": {
+       "p": "gespeeld",
+       "kaart": [
+        "V1",
+        "V2",
+        "V3",
+        "V4",
+        "V5"
+       ]
+      },
+      "dan": {
+       "p": "voor",
+       "a": {
+        "kaart": "G2"
+       },
+       "b": {
+        "kaart": [
+         "V1",
+         "V2",
+         "V3",
+         "V4",
+         "V5"
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "episode": "E3",
+   "id": "labVoorVoorschrijf",
+   "naam": "Labwaarden opgevraagd vóór de voorschrijfkaart",
+   "als": {
+    "p": "en",
+    "args": [
+     {
+      "p": "gespeeld",
+      "kaart": "G2"
+     },
+     {
+      "p": "alsDan",
+      "als": {
+       "p": "gespeeld",
+       "kaart": [
+        "V1",
+        "V2",
+        "V3",
+        "V4",
+        "V5",
+        "V6",
+        "V7",
+        "V8",
+        "V9",
+        "V10"
+       ]
+      },
+      "dan": {
+       "p": "voor",
+       "a": {
+        "kaart": "G2"
+       },
+       "b": {
+        "kaart": [
+         "V1",
+         "V2",
+         "V3",
+         "V4",
+         "V5",
+         "V6",
+         "V7",
+         "V8",
+         "V9",
+         "V10"
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "episode": "E3",
+   "id": "kweekenVoorKeuze",
+   "naam": "Eerdere kweken opgevraagd vóór de eerste keuze",
+   "als": {
+    "p": "en",
+    "args": [
+     {
+      "p": "gespeeld",
+      "kaart": "G3"
+     },
+     {
+      "p": "alsDan",
+      "als": {
+       "p": "gespeeld",
+       "kaart": [
+        "V1",
+        "V2",
+        "V3",
+        "V4",
+        "V5",
+        "V6",
+        "V7",
+        "V8",
+        "V9",
+        "V10"
+       ]
+      },
+      "dan": {
+       "p": "voor",
+       "a": {
+        "kaart": "G3"
+       },
+       "b": {
+        "kaart": [
+         "V1",
+         "V2",
+         "V3",
+         "V4",
+         "V5",
+         "V6",
+         "V7",
+         "V8",
+         "V9",
+         "V10"
+        ]
+       }
+      }
+     }
+    ]
+   }
+  }
+ ],
  "gevolgzinnen": [
   { "episode": "E1", "invariant": "I1", "tekst": "Mevrouw weet niet wanneer ze moet bellen.", "vrijgegeven": false },
   { "episode": "E1", "invariant": "I3", "tekst": "Er is geen moment om alsnog te starten als de klachten aanhouden.", "vrijgegeven": false },
@@ -1895,6 +2657,7 @@ window.CASUSSEN[0].episodes.push({
   gebeurtenissen: [
     {
       id: "A",
+      titel: "Weefselinvasie",
       groep: "AB",
       trigger: { type: "naKaart", n: 4 },
       toestand: "weefselinvasie",
@@ -1905,6 +2668,7 @@ window.CASUSSEN[0].episodes.push({
     },
     {
       id: "B",
+      titel: "Uitdroging",
       groep: "AB",
       trigger: { type: "naKaart", n: 7 },
       toestand: "uitdroging",
@@ -1920,6 +2684,7 @@ window.CASUSSEN[0].episodes.push({
     },
     {
       id: "C",
+      titel: "Kweekuitslag",
       trigger: { type: "naDagenNaKaart", kaart: "O1", dagen: 3 },
       aankondiging: "Uitslag verwacht",
       tekst: "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne.",

@@ -33,8 +33,11 @@
   var SLEUTEL = "egc.logging.v1";
   var SCHEIDER = ";";
   var BOM = "﻿";
-  var KOLOMMEN = ["pseudoniem", "casusId", "episodeId", "pogingnummer", "eerstePoging", "tijdstempel",
-    "geschonden", "scoreDuurzaamheid", "scoreDoelmatigheid", "profiel", "aantalKaarten", "tijdlijn", "onthuld"];
+  // Kolommen van de CSV voor onderzoek (één regel per poging, Nederlandse koppen). Het JSON-bestand bevat het volledige detail.
+  var KOLOMMEN = ["pseudoniem", "episode", "poging", "eerste poging", "testmodus", "casusversie", "speltijdstip",
+    "tijdlijn", "gebeurtenissen", "onthulde gegevens", "poort gehaald", "geschonden regels", "getoonde vraag",
+    "score duurzaamheid", "score doelmatigheid", "profiel", "reflectievraag",
+    "labwaarden vóór voorschrijfkaart", "eerdere kweken vóór eerste keuze", "dagen zonder actie", "aantal dagen", "aantal kaarten"];
 
   var geheugen = [];
   var laatsteSchrijfOk = true;
@@ -115,6 +118,16 @@
       pogingnummer: eerder + 1,
       eerstePoging: !testmodus && eerder === 0,
       testmodus: testmodus,
+      casusVersie: poging.casusVersie || null,
+      tijdlijnTekst: typeof poging.tijdlijnTekst === "string" ? poging.tijdlijnTekst : "",
+      gebeurtenissen: Array.isArray(poging.gebeurtenissen) ? kopie(poging.gebeurtenissen) : [],
+      onthuldTekst: typeof poging.onthuldTekst === "string" ? poging.onthuldTekst : "",
+      poortGehaald: typeof poging.poortGehaald === "boolean" ? poging.poortGehaald : null,
+      geschondenDetail: Array.isArray(poging.geschondenDetail) ? kopie(poging.geschondenDetail) : [],
+      vraag: poging.vraag || null,
+      reflectievraag: poging.reflectievraag || null,
+      afgeleid: poging.afgeleid && typeof poging.afgeleid === "object" ? kopie(poging.afgeleid) : {},
+      dagen: typeof poging.dagen === "number" ? poging.dagen : null,
       tijdlijn: kopie(poging.tijdlijn) || [],
       onthuld: kopie(poging.onthuld) || [],
       geschonden: (Array.isArray(poging.geschonden) ? poging.geschonden : []).map(function (x) {
@@ -130,11 +143,67 @@
     return kopie(rec);
   }
 
+  /* ---------- verrijking: alles in woorden, uit de data van de casus (geen casuslogica in deze laag) ---------- */
+  function casusVan(state) {
+    if (state && state._casus) return state._casus;
+    var l = g.CASUSSEN || [];
+    for (var i = 0; i < l.length; i++) if (l[i] && state && l[i].id === state.casusId) return l[i];
+    return null;
+  }
+  function labelVan(casus, ep, id) {
+    var k = (casus.kaarten || []).filter(function (x) { return x.id === id; })[0];
+    if (k) return k.label;
+    var m = ((ep && ep.patient && ep.patient.medicatie) || []).filter(function (x) { return x.id === id; })[0];
+    return m ? m.label : String(id);
+  }
+  function verrijk(state, uitkomst) {
+    var uit = { casusVersie: null, tijdlijnTekst: "", gebeurtenissen: [], onthuldTekst: "", poortGehaald: null, geschondenDetail: [],
+      vraag: null, reflectievraag: null, afgeleid: {}, dagen: null };
+    try {
+      if (uitkomst && typeof uitkomst.poortGehaald === "boolean") uit.poortGehaald = uitkomst.poortGehaald;
+      uit.vraag = (uitkomst && uitkomst.vraag) || null;
+      uit.reflectievraag = (uitkomst && uitkomst.profiel && uitkomst.profiel.reflectievraag) || null;
+      uit.geschondenDetail = ((uitkomst && uitkomst.geschonden) || []).map(function (x) {
+        return { id: x.id, naam: x.naam || null, onderdelen: Array.isArray(x.onderdelen) ? x.onderdelen.slice() : [] };
+      });
+      uit.dagen = typeof state.dag === "number" ? state.dag : null;
+      var c = casusVan(state);
+      if (!c) return uit;
+      uit.casusVersie = c.versie || null;
+      var ep = (c.episodes || []).filter(function (e) { return e.id === state.episodeId; })[0];
+      uit.tijdlijnTekst = (Array.isArray(state.tijdlijn) ? state.tijdlijn : []).slice().sort(function (a, b) { return (a.volg || 0) - (b.volg || 0); }).map(function (r) {
+        var t = "Dag " + r.dag + ": " + labelVan(c, ep, r.kaart);
+        if (r.doel) t += " → " + labelVan(c, ep, r.doel);
+        if (r.optie) t += " (" + r.optie + ")";
+        return t;
+      }).join("; ");
+      uit.gebeurtenissen = (Array.isArray(state.gebeurtenissen) ? state.gebeurtenissen : []).map(function (x) {
+        var d = ep && (ep.gebeurtenissen || []).filter(function (e) { return e.id === x.id; })[0];
+        return { id: x.id, titel: (d && d.titel) || x.id, dag: x.dag };
+      });
+      uit.onthuldTekst = (Array.isArray(state.onthuld) ? state.onthuld : []).map(function (o) {
+        return "Dag " + o.dag + ": " + labelVan(c, ep, o.kaart) + ": " + o.tekst;
+      }).join("; ");
+      if (g.Predicaten && ep) {
+        var ctx = g.Predicaten.maakContext(c, ep, state);
+        (c.maten || []).forEach(function (m) {
+          if (m && m.episode === state.episodeId) uit.afgeleid[m.id] = g.Predicaten.evalueer(m.als, ctx) ? "ja" : "nee";
+        });
+      }
+      if (g.Engine && typeof g.Engine.legeDagen === "function") uit.afgeleid.dagenZonderActie = g.Engine.legeDagen(state);
+    } catch (e) { /* de verrijking mag het bewaren nooit stoppen */ }
+    return uit;
+  }
+
   // Bouwt een poging uit spelstaat + uitkomst van Evaluatie.beoordeel / Engine.rondAf.
   function maakPoging(state, uitkomst, pseudoniem) {
     state = state || {};
     uitkomst = uitkomst || {};
+    var extra = verrijk(state, uitkomst);
     return {
+      casusVersie: extra.casusVersie, tijdlijnTekst: extra.tijdlijnTekst, gebeurtenissen: extra.gebeurtenissen, onthuldTekst: extra.onthuldTekst,
+      poortGehaald: extra.poortGehaald, geschondenDetail: extra.geschondenDetail, vraag: extra.vraag, reflectievraag: extra.reflectievraag,
+      afgeleid: extra.afgeleid, dagen: extra.dagen,
       pseudoniem: pseudoniem,
       casusId: state.casusId,
       episodeId: state.episodeId,
@@ -188,26 +257,53 @@
     return cel(waarde);
   }
 
+  function jaNee(w) { return w === true ? "ja" : (w === false ? "nee" : ""); }
+  // "I7 Trimethoprim: kalium en halveren (kalium)"; zonder detail alleen de id's.
+  function geschondenTekst(p) {
+    var d = Array.isArray(p.geschondenDetail) ? p.geschondenDetail : [];
+    if (!d.length) return Array.isArray(p.geschonden) ? p.geschonden.join(", ") : "";
+    return d.map(function (x) {
+      var t = x && x.id ? String(x.id) : "";
+      if (x && x.naam) t += " " + x.naam;
+      if (x && Array.isArray(x.onderdelen) && x.onderdelen.length) t += " (" + x.onderdelen.join(", ") + ")";
+      return t;
+    }).join("; ");
+  }
+  function gebeurtenisTekst(p) {
+    return (Array.isArray(p.gebeurtenissen) ? p.gebeurtenissen : []).map(function (x) { return (x && (x.titel || x.id)) + " (dag " + (x && x.dag) + ")"; }).join("; ");
+  }
+
   function exportCSV() {
     var regels = [KOLOMMEN.join(SCHEIDER)];
     alle().forEach(function (p) {
       var sc = (p.score && typeof p.score === "object") ? p.score : {};
       var tl = Array.isArray(p.tijdlijn) ? p.tijdlijn : [];
-      var onth = Array.isArray(p.onthuld) ? p.onthuld : [];
+      var af = (p.afgeleid && typeof p.afgeleid === "object") ? p.afgeleid : {};
+      var gehaald = typeof p.poortGehaald === "boolean" ? p.poortGehaald : (Array.isArray(p.geschonden) ? p.geschonden.length === 0 : null);
+      var ref = p.reflectievraag || (p.profiel && typeof p.profiel === "object" && p.profiel.reflectievraag) || "";
       regels.push([
         celTekst(p.pseudoniem),
-        celTekst(p.casusId),
         celTekst(p.episodeId),
         (typeof p.pogingnummer === "number" ? String(p.pogingnummer) : ""),
         p.eerstePoging ? "ja" : "nee",
+        p.testmodus ? "ja" : "nee",
+        celTekst(p.casusVersie),
         celTekst(p.tijdstempel),
-        celTekst(Array.isArray(p.geschonden) ? p.geschonden.join(", ") : ""),
+        celTekst(p.tijdlijnTekst),
+        celTekst(gebeurtenisTekst(p)),
+        celTekst(p.onthuldTekst),
+        jaNee(gehaald),
+        celTekst(geschondenTekst(p)),
+        celTekst(p.vraag),
         (sc.duurzaamheid === undefined || sc.duurzaamheid === null) ? "" : String(sc.duurzaamheid),
         (sc.doelmatigheid === undefined || sc.doelmatigheid === null) ? "" : String(sc.doelmatigheid),
         celTekst(p.profiel && typeof p.profiel === "object" && p.profiel.naam ? p.profiel.naam : ""),
-        String(tl.length),
-        celJson(tl),
-        celJson(onth)
+        celTekst(ref),
+        celTekst(af.labVoorVoorschrijf),
+        celTekst(af.kweekenVoorKeuze),
+        (typeof af.dagenZonderActie === "number" ? String(af.dagenZonderActie) : ""),
+        (typeof p.dagen === "number" ? String(p.dagen) : ""),
+        String(tl.length)
       ].join(SCHEIDER));
     });
     return BOM + regels.join("\r\n") + "\r\n";

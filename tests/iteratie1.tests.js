@@ -295,6 +295,74 @@
     });
   });
 
+
+  /* ---------- 7. export ---------- */
+  function csvRijen(csv) {   // eenvoudige CSV-lezer: ; en aanhalingstekens
+    var rijen = [], rij = [], cel = "", q = false, t = csv.replace(/^\uFEFF/, "");
+    for (var i = 0; i < t.length; i++) {
+      var c = t[i];
+      if (q) { if (c === '"' && t[i + 1] === '"') { cel += '"'; i++; } else if (c === '"') q = false; else cel += c; }
+      else if (c === '"') q = true;
+      else if (c === ";") { rij.push(cel); cel = ""; }
+      else if (c === "\r") { /* CRLF */ }
+      else if (c === "\n") { rij.push(cel); rijen.push(rij); rij = []; cel = ""; }
+      else cel += c;
+    }
+    return rijen;
+  }
+  function metLogging(fn) {
+    var d = {}, nep = { getItem: function (k) { return k in d ? d[k] : null; }, setItem: function (k, v) { d[k] = String(v); }, removeItem: function (k) { delete d[k]; } };
+    g.Logging._zetOpslag(nep);
+    try { fn(g.Logging); } finally { g.Logging._zetOpslag(undefined); g.Logging.wis(); }
+  }
+  T.registreer(G, "export: één regel per poging met de afgesproken kolommen, tijdlijn en gebeurtenissen in woorden, geschonden regel met onderdeel, afgeleide maten", function () {
+    metLogging(function (L) {
+      var s = nieuw("E2"); speel(s, "O1"); speel(s, "G2"); speel(s, "V5"); dagen(s, 1); speel(s, "N1");
+      dagen(s, 3); speel(s, "B1", "V4");
+      var u = afronden(s);
+      L.bewaarUitSpel(s, u, "Anna", { testmodus: false });
+      var kop = csvRijen(L.exportCSV())[0].join(";");
+      T.is(kop, "pseudoniem;episode;poging;eerste poging;testmodus;casusversie;speltijdstip;tijdlijn;gebeurtenissen;onthulde gegevens;poort gehaald;geschonden regels;getoonde vraag;score duurzaamheid;score doelmatigheid;profiel;reflectievraag;labwaarden vóór voorschrijfkaart;eerdere kweken vóór eerste keuze;dagen zonder actie;aantal dagen;aantal kaarten");
+      var r = csvRijen(L.exportCSV())[1];
+      T.is(r[0], "Anna"); T.is(r[1], "E2"); T.is(r[2], "1"); T.is(r[3], "ja"); T.is(r[4], "nee"); T.is(r[5], casus().versie);
+      T.is(r[7], "Dag 1: Urinekweek inzetten; Dag 1: Recente labwaarden opvragen; Dag 1: Trimethoprim; Dag 2: Alarmsignalen bespreken; Dag 5: Antibioticum wisselen → Fosfomycine");
+      T.is(r[8], "Kweekuitslag (dag 4)");
+      T.is(r[9].indexOf("Dag 1: Recente labwaarden opvragen: eGFR 29"), 0, "onthulde gegevens");
+      T.is(r[10], "nee");
+      T.waar(/^I7 Trimethoprim: kalium en halveren \(kalium, halveren\)/.test(r[11]), "naam en onderdeel: " + r[11]);
+      T.waar(r[12].indexOf("kalium") >= 0, "getoonde vraag");
+      T.is(r[17], "ja", "G2 is voor V5 gespeeld"); T.is(r[18], "", "geen kweekmaat in episode 2");
+      T.is(r[19], "2", "dagen zonder actie (dag 3 en 4)");
+    });
+  });
+  T.registreer(G, "export: de afgeleide maten (labwaarden vóór de voorschrijfkaart, eerdere kweken vóór de eerste keuze, dagen zonder actie) en testmodus", function () {
+    metLogging(function (L) {
+      var s = nieuw("E3"); speel(s, "G3"); speel(s, "G2"); speel(s, "V4"); dagen(s, 1); speel(s, "N1");
+      L.bewaarUitSpel(s, afronden(s), "Bob", { testmodus: false });
+      var t = nieuw("E3"); speel(t, "V4"); speel(t, "G3"); speel(t, "N1");
+      L.bewaarUitSpel(t, afronden(t), "Bob", { testmodus: true });
+      var rijen = csvRijen(L.exportCSV());
+      T.is(rijen[1][17], "ja"); T.is(rijen[1][18], "ja");
+      T.is(rijen[2][17], "nee"); T.is(rijen[2][18], "nee");
+      T.is(rijen[2][4], "ja", "testmodus"); T.is(rijen[2][3], "nee", "een testpoging is nooit de eerste poging");
+      T.is(rijen[1][3], "ja", "de echte poging blijft de eerste");
+      var j = JSON.parse(L.exportJSON());
+      T.is(j.length, 2); T.is(j[0].casusId, casus().id); T.waar(Array.isArray(j[0].tijdlijn) && j[0].tijdlijn.length === 4, "volledige tijdlijn in JSON");
+      T.is(j[1].testmodus, true);
+    });
+  });
+  T.registreer(G, "leesbaar overzicht: per poging een tabel per dag in woorden, met vraag en uitkomst", function () {
+    metLogging(function (L) {
+      var s = nieuw("E1"); speel(s, "V3"); dagen(s, 1); speel(s, "G1");
+      L.bewaarUitSpel(s, afronden(s), "Cas");
+      var m = g.UI.overzichtModel(casus(), L.alle(), "Cas");
+      T.is(m.length, 1); T.is(m[0].titel, "Episode 1, poging 1"); T.is(m[0].gehaald, false);
+      T.gelijk(m[0].rijen[0].kaarten, ["Nitrofurantoïne"]); T.gelijk(m[0].rijen[1].kaarten, ["Medicatieoverzicht nalopen"]);
+      T.is(m[0].rijen.length, 2);
+      T.waar(m[0].vraag && m[0].vraag.length > 10, "vraag"); T.is(m[0].uitkomst, "Nog niet veilig genoeg.");
+    });
+  });
+
   /* ---------- 9. pseudoniem en opslag ---------- */
   T.registreer(G, "opslag: de melding 'Resultaten staan alleen in dit tabblad: exporteer nu.' staat er ook als de browser niets kan bewaren, nog vóór de eerste poging", function () {
     var M = "Resultaten staan alleen in dit tabblad: exporteer nu.";

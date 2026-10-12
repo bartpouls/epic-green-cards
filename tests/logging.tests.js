@@ -156,17 +156,19 @@
     g.Test.is(rijen[0].join(";"), L.KOLOMMEN.join(";"));
     rijen.forEach(function (r) { g.Test.is(r.length, L.KOLOMMEN.length); });
     g.Test.waar(csv.indexOf("\r\n") > 0);
-    g.Test.is(rijen[1][4], "ja"); g.Test.is(rijen[2][4], "nee");
-    g.Test.is(rijen[1][6], "I1, I4");
-    g.Test.is(rijen[1][7], "2"); g.Test.is(rijen[1][8], "3"); g.Test.is(rijen[1][9], "P");
-    g.Test.is(rijen[1][10], "2");
+    g.Test.is(rijen[1][3], "ja"); g.Test.is(rijen[2][3], "nee"); g.Test.is(rijen[1][4], "nee", "testmodus");
+    g.Test.is(rijen[1][11], "I1, I4");
+    g.Test.is(rijen[1][13], "2"); g.Test.is(rijen[1][14], "3"); g.Test.is(rijen[1][15], "P");
+    g.Test.is(rijen[1][21], "2", "aantal kaarten");
   });
 
-  t("exportCSV: tijdlijn en onthuld komen als JSON in één cel, volledig terug te lezen", function (L) {
-    L.bewaar(basis());
+  t("exportJSON: tijdlijn en onthuld staan volledig in het JSON-bestand; de CSV heeft ze in woorden", function (L) {
+    L.bewaar(basis({ tijdlijnTekst: "Dag 1: Kaart een; Dag 2: Kaart twee", onthuldTekst: "Dag 1: Labwaarden: eGFR 29" }));
+    var j = JSON.parse(L.exportJSON())[0];
+    g.Test.gelijk(j.tijdlijn, TL);
+    g.Test.is(j.onthuld[0].sleutel, "eGFR");
     var rij = leesCSV(L.exportCSV())[1];
-    g.Test.gelijk(JSON.parse(rij[11]), TL);
-    g.Test.is(JSON.parse(rij[12])[0].sleutel, "eGFR");
+    g.Test.is(rij[7], "Dag 1: Kaart een; Dag 2: Kaart twee"); g.Test.is(rij[9], "Dag 1: Labwaarden: eGFR 29");
   });
 
   t("exportCSV: speciale tekens (; \" regeleinde ë) correct geëscaped", function (L) {
@@ -191,7 +193,7 @@
   t("exportCSV: ontbrekende score/profiel (schending) geven lege cellen", function (L) {
     L.bewaar(basis({ score: null, profiel: null }));
     var r = leesCSV(L.exportCSV())[1];
-    g.Test.is(r[7], ""); g.Test.is(r[8], ""); g.Test.is(r[9], "");
+    g.Test.is(r[13], ""); g.Test.is(r[14], ""); g.Test.is(r[15], "");
   });
 
   t("exportJSON: geldige JSON met alle pogingen en eerstePoging-vlag", function (L) {
@@ -349,7 +351,7 @@
     g.Test.waar(csv.indexOf("undefined") === -1, "undefined in CSV");
     var regels = csv.replace(/^\uFEFF/, "").split("\r\n");
     g.Test.is(regels.length, 5); // kop + 3 + afsluitende lege
-    g.Test.waar(/^q;uwi;E1;;nee;/.test(regels[1]), "pogingnummer ontbreekt moet lege cel zijn: " + regels[1]);
+    g.Test.waar(/^q;E1;;nee;nee;/.test(regels[1]), "pogingnummer ontbreekt moet lege cel zijn: " + regels[1]);
     g.Test.waar(regels[3].indexOf("I1, I2") !== -1);
     JSON.parse(L.exportJSON());
   });

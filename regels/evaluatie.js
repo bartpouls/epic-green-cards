@@ -97,6 +97,13 @@
         });
       });
     }
+    lijst(casus.regelnamen).forEach(function (r) {
+      if (!isObj(r) || r.episode !== ep.id) return;
+      lijst(r.onderdelen).forEach(function (o, i) { voeg("regelnamen " + r.invariant + ", onderdeel " + ((o && o.naam) || i) + ", als", o && o.als); });
+    });
+    lijst(casus.maten).forEach(function (m, i) {
+      if (isObj(m) && m.episode === ep.id) voeg("maten " + (m.id || i) + ", als", m.als);
+    });
     lijst(casus.kaarten).forEach(function (k) {
       var d = k && isObj(k.doelen) ? k.doelen[ep.id] : null;
       lijst(d).forEach(function (doel, i) {
@@ -218,6 +225,19 @@
     }
     return null;
   }
+  // Korte naam van een regel en de onderdelen (uit casus.regelnamen) die in deze poging niet gehaald zijn.
+  function regelNaam(casus, ep, inv, ctx, plek) {
+    var l = lijst(casus.regelnamen);
+    for (var i = 0; i < l.length; i++) {
+      var r = l[i];
+      if (!isObj(r) || r.episode !== ep.id || r.invariant !== inv.id) continue;
+      var delen = lijst(r.onderdelen).filter(function (o) {
+        return metPlek(plek + ", regelnamen " + r.invariant + ", onderdeel " + o.naam, function () { return P().evalueer(o.als, ctx); });
+      }).map(function (o) { return o.naam; });
+      return { naam: r.naam || null, onderdelen: delen };
+    }
+    return { naam: null, onderdelen: [] };
+  }
   function berekenAs(as, naam, ctx, plek) {
     if (!isObj(as)) return null;
     var min = isGetal(as.min) ? as.min : SCHAAL_MIN, max = isGetal(as.max) ? as.max : SCHAAL_MAX;
@@ -303,7 +323,10 @@
     });
 
     return {
-      geschonden: geschonden.map(function (x) { return { id: x.inv.id, ernst: x.inv.ernst, vraag: x.vraag }; }),
+      geschonden: geschonden.map(function (x) {
+        var rn = regelNaam(casus, ep, x.inv, ctx, plek);
+        return { id: x.inv.id, ernst: x.inv.ernst, vraag: x.vraag, naam: rn.naam, onderdelen: rn.onderdelen };
+      }),
       poortGehaald: poortGehaald,
       downsides: downsides,
       vraag: geschonden.length ? geschonden[0].vraag : null,

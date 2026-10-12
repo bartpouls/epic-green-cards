@@ -233,7 +233,7 @@
     var u = beoordeel(maakEp({ invarianten: [inv("A", 2)] }));
     T.gelijk(Object.keys(u).sort(), ["downsides", "extraVragen", "geschonden", "gevolg", "poortGehaald", "profiel", "score", "vraag", "zichtbaar"]);
     T.gelijk(JSON.parse(js(u)), JSON.parse(js(u)));
-    T.is(u.poortGehaald, false); T.is(u.vraag, "vraag A"); T.gelijk(u.geschonden, [{ id: "A", ernst: 2, vraag: "vraag A" }]);
+    T.is(u.poortGehaald, false); T.is(u.vraag, "vraag A"); T.gelijk(u.geschonden, [{ id: "A", ernst: 2, vraag: "vraag A", naam: null, onderdelen: [] }]);
     var gehaald = beoordeel(maakEp({ invarianten: [inv("A", 2, ONWAAR)] }));
     T.is(gehaald.poortGehaald, true); T.is(gehaald.vraag, null); T.gelijk(gehaald.geschonden, []);
     T.waar(gehaald.score !== null && typeof gehaald.score === "object", "score is een object bij gehaalde poort");

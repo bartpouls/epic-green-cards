@@ -497,20 +497,10 @@
     });
     return st;
   }
-  // TIJDELIJK (LEAD ruimt dit op zodra S6 `Evaluatie` bestaat): mini-evaluator volgens contract §5 (alleen data + Predicaten): geschonden ids en gekozen vraag van de ernstigste.
+  // De echte Evaluatie (regels/evaluatie.js): geschonden ids (op ernst) en de gekozen vraag van de ernstigste. De state draagt zijn eigen casusdata.
   function schending(st, e) {
-    var ctx = g.Predicaten.maakContext(casus(), e, st);
-    var gesch = e.invarianten.filter(function (i) {
-      var geldt = i.geldtIn.some(function (x) { return x === "*" || (x && x.gebeurtenis && st.gebeurtenissen.some(function (b) { return b.id === x.gebeurtenis; })); });
-      return geldt && g.Predicaten.evalueer(i.predicaat, ctx);
-    });
-    gesch.sort(function (a, b) { return a.ernst - b.ernst; });
-    var top = gesch[0], vraag = null;
-    if (top) {
-      vraag = top.vraag;
-      (top.vraagVarianten || []).some(function (v) { if (g.Predicaten.evalueer(v.als, ctx)) { vraag = v.vraag; return true; } return false; });
-    }
-    return { ids: gesch.map(function (i) { return i.id; }), vraag: vraag };
+    var u = g.Evaluatie.beoordeel(st._casus || casus(), "E2", st);
+    return { ids: u.geschonden.map(function (i) { return i.id; }), vraag: u.vraag };
   }
   var VR_KWEEK = "Wat vertelt een kweek van urine die al antibioticum heeft gezien?";
   var VR_AFW = "Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?";

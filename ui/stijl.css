@@ -182,3 +182,7 @@ p.fout:empty { display: none; }
 .smaak { font-style: italic; margin: 0 0 .6rem; }
 .kaartdosering, .kaarteffect { margin: .4rem 0; }
 .dlgknoppen { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+.tabelwrap { overflow-x: auto; }
+.overzicht table { width: 100%; border-collapse: collapse; }
+.overzicht th, .overzicht td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid #ccd; vertical-align: top; }
