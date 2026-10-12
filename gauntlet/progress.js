@@ -6,7 +6,7 @@ window.GAUNTLET = {
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-12 00:27",
+ "updated": "2026-10-12 00:53",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -53,8 +53,8 @@ window.GAUNTLET = {
   {
    "name": "S7 engine",
    "round": 5,
-   "verdict": "PENDING",
-   "evidence": "r5 (laatste) gebouwd (engine-groep 142, suite 738 groen Node+Chromium; M6-scan allowlist, 72 evasietrucs rood; 21 mutanten allemaal equivalent); criticus r5 bezig",
+   "verdict": "FAIL",
+   "evidence": "max 5 rondes bereikt; gedrag correct (BLIND=ONS); onder de lat: de test die bewijst dat de engine géén casusnamen/drempels bevat is te omzeilen (17 echte omzeilingen); in de huidige engine zit aantoonbaar niets hardgecodeerd",
    "artifact": ""
   },
   {
@@ -272,6 +272,12 @@ window.GAUNTLET = {
    "unit": "(infra)",
    "verdict": "PENDING",
    "note": "API-spendlimiet bereikt: 4 agents afgebroken (S4 criticus r4, S6 criticus r1, S7 criticus r5, S11 bouwer r2); na reset herstart door LEAD"
+  },
+  {
+   "round": 5,
+   "unit": "S7 engine",
+   "verdict": "FAIL",
+   "note": "engine gedraagt zich goed (15.900 proeven 0 afwijkingen, 900 spellen met Evaluatie schoon, BLIND=ONS); bewijs voor M6/M8 niet waterdicht: scan omzeilbaar met opgebouwde id in rondAf/herkansing/ontgrendeld (F1), verstopte drempel 1 - -1 (F2), kaliumx/egfrmeting (F3), 5 ongeteste gedragingen (F4). Maximum 5 rondes bereikt, gestopt"
   }
  ],
  "open": [
@@ -298,6 +304,7 @@ window.GAUNTLET = {
   "S5 predicaten:: de 4 testgaten zijn gedicht (door LEAD, niet blind beoordeeld, elk bewezen met de mutant van de criticus); 6 kleine punten zonder casusgevolg blijven (rapport S5_r5.md)",
   "S11 referentie:: gestopt na ronde 1 FAIL (ontbrekende casustekst: E2-kopbullet, E3-gebeurtenissentabel, repertoire-alinea's; samengevoegde string); tussenstand niet gereviewd",
   "S8 overzicht:: gestopt na ronde 2 FAIL: casusreferentie (feedbacktriggers, zichtbaar-als-ontbreekt-labels, patiëntkaartregels, repertoire, E3-gebeurtenissentabel) nog niet letterlijk getoond; dubbele weergaven; taalresten",
-  "S9 ui:: ronde 1 gebouwd maar NIET door een criticus beoordeeld (op verzoek gestopt)"
+  "S9 ui:: ronde 1 gebouwd maar NIET door een criticus beoordeeld (op verzoek gestopt)",
+  "S7 engine:: M6-bewijs (geen casusnamen/drempels in engine.js) niet waterdicht: de scan en de hernoemde-kopie-test sluiten een opgebouwde hardgecodeerde naam of drempel in rondAf/herkansing/ontgrendeld niet uit; 5 gedragingen ongetest; 11 ui-tests rood in Chromium (nep-DOM, hoort bij S9). De huidige engine bevat aantoonbaar geen casuswoorden (criticus: rename_check schoon)."
  ]
 };

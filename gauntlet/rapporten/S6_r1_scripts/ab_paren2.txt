@@ -1,0 +1,535 @@
+=== PAAR 1 (E1, A/B-volgorde A,B) ===
+--- X ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Terughoudend
+Reflectievraag: Je schreef niets voor. Bij welke patiënt zou dat niet mogen?
+Duurzaamheid: 3
+Doelmatigheid: 1
+Extra vragen: Wat doe je bij welke uitslag anders?
+Zichtbaar: (geen)
+Downsides:
+  V1 Afwachtend beleid: Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger
+  N1 Alarmsignalen bespreken: —
+  Ev1 Opvolgmoment afspreken: —
+  O1 Urinekweek inzetten: niet geïndiceerd, kost doelmatigheid
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  G1 Medicatieoverzicht nalopen: Kost een actie
+  G2 Recente labwaarden opvragen: Kost een actie
+--- Y ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Terughoudend
+Reflectievraag: Je schreef niets voor. Bij welke patiënt zou dat niet mogen?
+Duurzaamheid: 3
+Doelmatigheid: 1
+Extra vragen: Wat doe je bij welke uitslag anders?
+Zichtbaar: (geen)
+Downsides:
+  V1 Afwachtend beleid: Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger
+  N1 Alarmsignalen bespreken: —
+  Ev1 Opvolgmoment afspreken: —
+  O1 Urinekweek inzetten: niet geïndiceerd, kost doelmatigheid
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  G1 Medicatieoverzicht nalopen: Kost een actie
+  G2 Recente labwaarden opvragen: Kost een actie
+
+=== PAAR 2 (E1, A/B-volgorde A,B) ===
+--- X ---
+Poort: niet gehaald
+Vraag: Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: Mevrouw weet niet wanneer ze moet bellen. / Er is geen moment om alsnog te starten als de klachten aanhouden.
+Downsides:
+  V1 Afwachtend beleid: Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger
+  V2 Uitgesteld recept: Ze moet weten wanneer ze moet starten
+  V3 Nitrofurantoïne: Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G].
+--- Y ---
+Poort: niet gehaald
+Vraag: Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: Mevrouw weet niet wanneer ze moet bellen. / Er is geen moment om alsnog te starten als de klachten aanhouden.
+Downsides:
+  V1 Afwachtend beleid: Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger
+  V2 Uitgesteld recept: Ze moet weten wanneer ze moet starten
+  V3 Nitrofurantoïne: Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G].
+
+=== PAAR 3 (E1, A/B-volgorde A,B) ===
+--- X ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Direct behandelen
+Reflectievraag: Het werkt. Was het nodig, en koos zíj ervoor?
+Duurzaamheid: 1
+Doelmatigheid: 3
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  V1 Afwachtend beleid: Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger
+  V3 Nitrofurantoïne: Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G].
+  N1 Alarmsignalen bespreken: —
+  Ev1 Opvolgmoment afspreken: —
+--- Y ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Direct behandelen
+Reflectievraag: Het werkt. Was het nodig, en koos zíj ervoor?
+Duurzaamheid: 1
+Doelmatigheid: 3
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  V1 Afwachtend beleid: Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger
+  V3 Nitrofurantoïne: Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G].
+  N1 Alarmsignalen bespreken: —
+  Ev1 Opvolgmoment afspreken: —
+
+=== PAAR 4 (E2, A/B-volgorde A,B) ===
+--- X ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Kweekgestuurd, smal
+Reflectievraag: (geen)
+Duurzaamheid: 3
+Doelmatigheid: 3
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G2 Recente labwaarden opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  N2 Gebruik en verwachting uitleggen: —
+  B2 Antibioticum stoppen: Te vroeg stoppen geeft therapiefalen
+--- Y ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Kweekgestuurd, smal
+Reflectievraag: (geen)
+Duurzaamheid: 3
+Doelmatigheid: 3
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G2 Recente labwaarden opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  N2 Gebruik en verwachting uitleggen: —
+  B2 Antibioticum stoppen: Te vroeg stoppen geeft therapiefalen
+
+=== PAAR 5 (E2, A/B-volgorde A,B) ===
+--- X ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Bijgestuurd
+Reflectievraag: (geen)
+Duurzaamheid: 3
+Doelmatigheid: 3
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G2 Recente labwaarden opvragen: Kost een actie
+  V5 Trimethoprim: Naast een RAS-remmer of kaliumsparend diureticum stijgt het kalium (controle nodig bij een 7-daagse kuur). Bij eGFR 10–30: na dag 3 halveren en kans op therapiefalen. Hoge resistentie bij E. coli.
+  N1 Alarmsignalen bespreken: —
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+--- Y ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Bijgestuurd
+Reflectievraag: (geen)
+Duurzaamheid: 3
+Doelmatigheid: 3
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G2 Recente labwaarden opvragen: Kost een actie
+  V5 Trimethoprim: Naast een RAS-remmer of kaliumsparend diureticum stijgt het kalium (controle nodig bij een 7-daagse kuur). Bij eGFR 10–30: na dag 3 halveren en kans op therapiefalen. Hoge resistentie bij E. coli.
+  N1 Alarmsignalen bespreken: —
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+
+=== PAAR 6 (E2, A/B-volgorde A,B) ===
+--- X ---
+Poort: niet gehaald
+Vraag: Wat vertelt een kweek van urine die al antibioticum heeft gezien?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G2 Recente labwaarden opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+--- Y ---
+Poort: niet gehaald
+Vraag: Wat vertelt een kweek van urine die al antibioticum heeft gezien?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G2 Recente labwaarden opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+
+=== PAAR 7 (E2, A/B-volgorde A,B) ===
+--- X ---
+Poort: niet gehaald
+Vraag: Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.
+Downsides:
+  V3 Nitrofurantoïne: Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G].
+  N1 Alarmsignalen bespreken: —
+--- Y ---
+Poort: niet gehaald
+Vraag: Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.
+Downsides:
+  V3 Nitrofurantoïne: Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G].
+  N1 Alarmsignalen bespreken: —
+
+=== PAAR 8 (E3, A/B-volgorde A,B) ===
+--- X ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Richtlijn eerste keus
+Reflectievraag: Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?
+Duurzaamheid: 2
+Doelmatigheid: 3
+Extra vragen: De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?
+Zichtbaar: (geen)
+Downsides:
+  G3 Eerdere kweekuitslagen opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  B4 Innametijden aanpassen: Vraagt uitleg aan de patiënt
+  Ev1 Opvolgmoment afspreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  N3 Drinkadvies geven: —
+--- Y ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Richtlijn eerste keus
+Reflectievraag: Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?
+Duurzaamheid: 2
+Doelmatigheid: 3
+Extra vragen: De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?
+Zichtbaar: (geen)
+Downsides:
+  G3 Eerdere kweekuitslagen opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  B4 Innametijden aanpassen: Vraagt uitleg aan de patiënt
+  Ev1 Opvolgmoment afspreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  N3 Drinkadvies geven: —
+
+=== PAAR 9 (E3, A/B-volgorde B,A) ===
+--- X ---
+Poort: niet gehaald
+Vraag: Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.
+Downsides:
+  G3 Eerdere kweekuitslagen opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  N3 Drinkadvies geven: —
+  Ev1 Opvolgmoment afspreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  B5 Medicatie hervatten: Hervatten zonder herbeoordeling kan dezelfde schade herhalen
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+--- Y ---
+Poort: niet gehaald
+Vraag: Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.
+Downsides:
+  G3 Eerdere kweekuitslagen opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  N3 Drinkadvies geven: —
+  Ev1 Opvolgmoment afspreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  B5 Medicatie hervatten: Hervatten zonder herbeoordeling kan dezelfde schade herhalen
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+
+=== PAAR 10 (E3, A/B-volgorde B,A) ===
+--- X ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Kweekgestuurd
+Reflectievraag: (geen)
+Duurzaamheid: 3
+Doelmatigheid: 3
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G3 Eerdere kweekuitslagen opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  N3 Drinkadvies geven: —
+  Ev1 Opvolgmoment afspreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  G1 Medicatieoverzicht nalopen: Kost een actie
+--- Y ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Kweekgestuurd
+Reflectievraag: (geen)
+Duurzaamheid: 3
+Doelmatigheid: 3
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G3 Eerdere kweekuitslagen opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  N3 Drinkadvies geven: —
+  Ev1 Opvolgmoment afspreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  G1 Medicatieoverzicht nalopen: Kost een actie
+
+=== PAAR 11 (E3, A/B-volgorde A,B) ===
+--- X ---
+Poort: niet gehaald
+Vraag: Je wisselt. Waarop baseer je de wissel daarna?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G3 Eerdere kweekuitslagen opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  Ev1 Opvolgmoment afspreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+  N3 Drinkadvies geven: —
+--- Y ---
+Poort: niet gehaald
+Vraag: Je wisselt. Waarop baseer je de wissel daarna?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G3 Eerdere kweekuitslagen opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  Ev1 Opvolgmoment afspreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+  N3 Drinkadvies geven: —
+
+=== PAAR 12 (E3, A/B-volgorde A,B) ===
+--- X ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: 2
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  N1 Alarmsignalen bespreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+  Ev3 Verwijzen: Onnodig verwijzen kost doelmatigheid
+--- Y ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: 2
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  N1 Alarmsignalen bespreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+  Ev3 Verwijzen: Onnodig verwijzen kost doelmatigheid
+
+=== PAAR 13 (E3, A/B-volgorde B,A) ===
+--- X ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Kweekgestuurd
+Reflectievraag: (geen)
+Duurzaamheid: 3
+Doelmatigheid: 2
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G1 Medicatieoverzicht nalopen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  N3 Drinkadvies geven: —
+  Ev1 Opvolgmoment afspreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+--- Y ---
+Poort: gehaald
+Vraag: (geen)
+Profiel: Kweekgestuurd
+Reflectievraag: (geen)
+Duurzaamheid: 3
+Doelmatigheid: 2
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G1 Medicatieoverzicht nalopen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  N3 Drinkadvies geven: —
+  Ev1 Opvolgmoment afspreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+
+=== PAAR 14 (E3, A/B-volgorde B,A) ===
+--- X ---
+Poort: niet gehaald
+Vraag: Clavulaanzuur bij een eGFR van 28. Waar blijft het?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G3 Eerdere kweekuitslagen opvragen: Kost een actie
+  V8 Amoxicilline/clavulaanzuur: Bij eGFR < 30 stapelt clavulaanzuur: dan alleen 875/125 mg 2 dd
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  N1 Alarmsignalen bespreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+  N3 Drinkadvies geven: —
+  Ev1 Opvolgmoment afspreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+--- Y ---
+Poort: niet gehaald
+Vraag: Clavulaanzuur bij een eGFR van 28. Waar blijft het?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G3 Eerdere kweekuitslagen opvragen: Kost een actie
+  V8 Amoxicilline/clavulaanzuur: Bij eGFR < 30 stapelt clavulaanzuur: dan alleen 875/125 mg 2 dd
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  N1 Alarmsignalen bespreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+  N3 Drinkadvies geven: —
+  Ev1 Opvolgmoment afspreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+
+=== PAAR 15 (E3, A/B-volgorde A,B) ===
+--- X ---
+Poort: niet gehaald
+Vraag: Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G3 Eerdere kweekuitslagen opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  Ev1 Opvolgmoment afspreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
+--- Y ---
+Poort: niet gehaald
+Vraag: Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?
+Profiel: (geen)
+Reflectievraag: (geen)
+Duurzaamheid: (geen)
+Doelmatigheid: (geen)
+Extra vragen: (geen)
+Zichtbaar: (geen)
+Downsides:
+  G3 Eerdere kweekuitslagen opvragen: Kost een actie
+  V4 Fosfomycine: Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.
+  N1 Alarmsignalen bespreken: —
+  O2 Kalium bepalen: Alleen zinvol bij een indicatie; anders kost het doelmatigheid
+  Ev2 Overleggen met de voorschrijver: Kost een actie
+  B1 Antibioticum wisselen: Onnodig wisselen kost duurzaamheid
+  V6 Dosis aanpassen: Een verkeerde aanpassing geeft onder- of overdosering
+  Ev1 Opvolgmoment afspreken: —
+  B3 Medicatie tijdelijk stoppen: Vraagt een afspraak over herstart
