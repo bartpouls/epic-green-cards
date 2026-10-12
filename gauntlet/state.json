@@ -6,7 +6,7 @@
  "status": "running",
  "round": 5,
  "maxRounds": 5,
- "updated": "2026-10-12 00:18",
+ "updated": "2026-10-12 00:27",
  "units": [
   {
    "name": "S1 data-kaarten",
@@ -40,7 +40,7 @@
    "name": "S5 predicaten",
    "round": 5,
    "verdict": "FAIL",
-   "evidence": "max 5 rondes bereikt; code correct, BLIND=ONS; resterend: 4 testgaten (mutanten C58, D13, D14, D22; repro in rapporten/S5_r5_scripts/)",
+   "evidence": "max 5 rondes; code correct (BLIND=ONS); 4 ontbrekende testgaten door LEAD aangevuld op verzoek van de gebruiker (randgeval 1–4, elk groen op echte code en rood bij eigen mutant C58/D13/D14/D22) — NIET door een criticus beoordeeld",
    "artifact": ""
   },
   {
@@ -293,7 +293,7 @@
   "LEAD-ingreep 2 (aangepast): tests/engine.tests.js (S7) negeert bij 'casuswoorden' nu casus.referentie, casus.todoBart en TODO_BART-sleutels (beschrijvende tekst, geen speldata) en de minimale woordenlijst is 400 (was 500); S7-criticus r5 wordt opnieuw gestart"
  ],
  "belowBar": [
-  "S5 predicaten:: 4 randgevallen niet door tests bewaakt (zet met >1 id; pauze over wissel; twee gelijktijdige pauzes; kaart vóór anker bij opDagRelatief van:0) — code zelf klopt; 6 kleine punten zonder casusgevolg (rapport S5_r5.md)",
-  "S3 data-e2:: kleine restpunten (geen FAIL): enkele TODO-teksten bevatten nog jargon (A4, offset, in de data); TODO noemt het geval C-trigger op de laatste dag niet; medicatieTekst E2 zonder slotpunt (casus plaatst het na de verborgen ontwerpnotitie)"
+  "S3 data-e2:: kleine restpunten (geen FAIL): enkele TODO-teksten bevatten nog jargon (A4, offset, in de data); TODO noemt het geval C-trigger op de laatste dag niet; medicatieTekst E2 zonder slotpunt (casus plaatst het na de verborgen ontwerpnotitie)",
+  "S5 predicaten:: de 4 testgaten zijn gedicht (door LEAD, niet blind beoordeeld, elk bewezen met de mutant van de criticus); 6 kleine punten zonder casusgevolg blijven (rapport S5_r5.md)"
  ]
 }

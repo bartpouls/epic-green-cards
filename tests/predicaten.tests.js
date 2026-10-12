@@ -1690,3 +1690,61 @@
   });
 
 })();
+
+/* ---------- LEAD-aanvulling na criticus ronde 5: vier randgevallen (code was al goed, tests ontbraken) ----------
+   Door LEAD geschreven op verzoek van de opdrachtgever (geen nieuwe bouwer-/criticusronde): niet blind beoordeeld. */
+(function () {
+  var G = "predicaten", T = Test, P = window.Predicaten;
+  function t(naam, fn) { T.registreer(G, naam, fn); }
+  function R(volg, kaart, dag, doel) { return { volg: volg, kaart: kaart, dag: dag, doel: doel || null, optie: null }; }
+  var ROLLEN = { wissel: "B1", stop: "B2", pauzeer: "B3", hervat: "B5" };
+  function maak(tijdlijn, ep, geb) {
+    var e = { id: "EX", antibiotica: ["Q1", "Q2", "Q3"], patient: { waar: {}, medicatie: [{ id: "m1", label: "m1" }, { id: "m2", label: "m2" }] } };
+    Object.keys(ep || {}).forEach(function (k) { e[k] = ep[k]; });
+    return P.maakContext({ id: "cx", rollen: ROLLEN, episodes: [e] }, e,
+      { tijdlijn: tijdlijn, gebeurtenissen: geb || [], toestanden: [], klachten: [], dag: 7, aantalDagen: 7 });
+  }
+  function actiefResistent(m, c) { return P.evalueer({ p: "actief", middel: m, uitSet: "resistent" }, c); }
+
+  t("randgeval 1 (zet met meer dan één id): alle ids van zet.resistent komen in de set; zet.gevoelig haalt twee ids tegelijk weg", function () {
+    var tl = [R(1, "Q1", 1), R(2, "Q2", 1), R(3, "Q3", 1)];
+    var c = maak(tl, { gebeurtenissen: [{ id: "E", zet: { resistent: ["Q1", "Q2", "Q3"] } }] }, [{ id: "E", dag: 2, naVolg: 3 }]);
+    ["Q1", "Q2", "Q3"].forEach(function (m) { T.is(actiefResistent(m, c), true, m + " hoort resistent te zijn"); });
+    // vóór de gebeurtenis is niets resistent
+    var voor = maak(tl, { gebeurtenissen: [{ id: "E", zet: { resistent: ["Q1", "Q2", "Q3"] } }] }, []);
+    ["Q1", "Q2", "Q3"].forEach(function (m) { T.is(actiefResistent(m, voor), false, m + " is nog niet resistent vóór E"); });
+    // twee gebeurtenissen: E1 zet drie ids resistent, E2 zet twee ervan gevoelig -> alleen het derde blijft resistent
+    var c2 = maak(tl, { gebeurtenissen: [{ id: "E", zet: { resistent: ["Q1", "Q2", "Q3"] } }, { id: "F", zet: { gevoelig: ["Q1", "Q2"] } }] },
+      [{ id: "E", dag: 2, naVolg: 3 }, { id: "F", dag: 3, naVolg: 3 }]);
+    T.is(actiefResistent("Q1", c2), false, "Q1 weer gevoelig");
+    T.is(actiefResistent("Q2", c2), false, "Q2 weer gevoelig");
+    T.is(actiefResistent("Q3", c2), true, "Q3 blijft resistent");
+  });
+
+  t("randgeval 2 (pauze over een wissel): een gepauzeerde comedicatie blijft gepauzeerd als het antibioticum wisselt (B1)", function () {
+    var c = maak([R(1, "Q1", 1), R(2, "B3", 1, "m1"), R(3, "B1", 2, "Q2")]);
+    T.is(P.evalueer({ p: "medicatieActief", id: "m1" }, c), false, "m1 moet gepauzeerd blijven na de wissel");
+    T.is(P.evalueer({ p: "medicatieActief", id: "m2" }, c), true, "m2 is nooit gepauzeerd");
+  });
+
+  t("randgeval 3 (twee gelijktijdig gepauzeerd): B3 op m1 en m2, B5 alleen op m1 -> m1 actief, m2 nog gepauzeerd", function () {
+    var c = maak([R(1, "B3", 1, "m1"), R(2, "B3", 1, "m2"), R(3, "B5", 2, "m1")]);
+    T.is(P.evalueer({ p: "medicatieActief", id: "m1" }, c), true, "m1 hervat");
+    T.is(P.evalueer({ p: "medicatieActief", id: "m2" }, c), false, "m2 blijft gepauzeerd");
+    var c2 = maak([R(1, "B3", 1, "m1"), R(2, "B3", 1, "m2")]);
+    T.is(P.evalueer({ p: "medicatieActief", id: "m1" }, c2), false, "m1 gepauzeerd");
+    T.is(P.evalueer({ p: "medicatieActief", id: "m2" }, c2), false, "m2 gepauzeerd");
+  });
+
+  t("randgeval 4 (kaart vóór het anker): opDagRelatief telt een negatief dagverschil niet als 0; verschil 0 en 1 wel", function () {
+    function w(dagK) {
+      var c = maak([R(1, "Q2", dagK), R(2, "Q1", 3)]);
+      return P.evalueer({ p: "opDagRelatief", K: { kaart: "Q2" }, anker: { kaart: "Q1" }, van: 0, tot: 1 }, c);
+    }
+    T.is(w(1), false, "Q2 twee dagen vóór het anker (verschil -2) telt niet");
+    T.is(w(2), false, "Q2 één dag vóór het anker (verschil -1) telt niet");
+    T.is(w(3), true, "zelfde dag (verschil 0) telt");
+    T.is(w(4), true, "één dag erna (verschil 1) telt");
+    T.is(w(5), false, "twee dagen erna (verschil 2) valt buiten het venster");
+  });
+})();
