@@ -115,7 +115,7 @@
     "use strict", "undefined" /* alleen buiten de modulefunctie: typeof window */, "function", "object", "string", "number", ".",                       // taal en typeof
     "_casus", "_opties", "rng", "_bron", "poortGehaald", "TODO_BART", "statusTeksten",              // vaste sleutels (contract / engine)
     "actief", "af", "aan", "geenVerbetering48",                                                    // predicaat- en statuswaarden (contract 3, 3b)
-    "naKaart", "naAantalKaarten", "naKaartVanKaart", "naDagenNaKaart",                                               // triggertypes (contract 4b)
+    "naKaart", "naAantalKaarten", "naKaartVanKaart", "naDagenNaKaart", "opTeller",                                               // triggertypes (contract 4b)
     "De regeltaal (Predicaten) is niet geladen.", "De beoordeling (Evaluatie) is niet geladen.",    // foutmeldingen (Nederlands, engine-eigen)
     "De casus bij dit spel is niet gevonden.", "De episode bij dit spel is niet gevonden.", "Onbekende episode: ",
     "De episode mist de knoppen (actiesPerBeurt, aantalDagen) in de data.",
@@ -133,7 +133,7 @@
   ];
   var TOEGESTANE_EIGENSCHAPPEN = [
     // contract- en state-velden
-    "AB", "CASUSSEN", "aan", "dagen", "escalatie", "doelEvent", "nummer", "reeks", "aankondiging", "Engine", "Evaluatie", "Predicaten", "_casus", "_opties", "aantalDagen", "actief", "actiesOver", "actiesPerBeurt", "afgerond",
+    "AB", "CASUSSEN", "aan", "dagen", "escalatie", "doelEvent", "stappen", "nummer", "reeks", "aankondiging", "Engine", "Evaluatie", "Predicaten", "_casus", "_opties", "aantalDagen", "actief", "actiesOver", "actiesPerBeurt", "afgerond",
     "afrondenPasNaGebeurtenissen", "alleenAlsGespeeld", "als", "antibiotica", "beoordeel", "bronnen", "casusId", "dag", "dagenVoorbij", "doel", "doelen",
     "doelkaart", "episodeId", "episodes", "evalueer", "gebeurtenissen", "geschonden", "gevoelig", "groep", "groepen", "id", "kaart", "kaarten",
     "klachten", "knoppen", "label", "limiet", "maakContext", "naVolg", "onthuld", "onthult", "optie", "opties", "patient", "poortGehaald", "raadplegen",

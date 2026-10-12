@@ -365,7 +365,7 @@
   // Een extra veld (bv. een hint voor de student) of een ontbrekend veld in welk object ook geeft rood.
   var SLEUTELS = {
     "E1": ["id", "level", "startToestanden", "knoppen", "afrondenPasNaGebeurtenissen", "startUitleg", "escalatie", "antibiotica", "patient", "repertoire", "gebeurtenissen", "werkzaamheid", "statusTeksten", "invarianten", "score", "profielen", "feedbackExtra", "zichtbaarAlsOntbreekt"],
-    "E1.escalatie": ["aan", "dagen"],
+    "E1.escalatie": ["aan"],
     "E1.knoppen": ["actiesPerBeurt", "aantalDagen", "raadplegenKost"],
     "E1.patient": ["zichtbaar", "waar", "medicatie", "verborgen", "meta"],
     "E1.patient.zichtbaar": ["kop", "naam", "leeftijd", "klachten", "medicatie", "medicatieTekst", "lab", "labTekst"],

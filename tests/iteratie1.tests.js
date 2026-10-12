@@ -106,39 +106,64 @@
       T.waar(typeof e.startUitleg === "string" && e.startUitleg.length > 10, e.id + " startuitleg");
     });
     T.is(ep("E1").escalatie.aan, false); T.is(ep("E2").escalatie.aan, false); T.is(ep("E3").escalatie.aan, true);
-    T.is(ep("E3").escalatie.dagen, 4);
+    T.gelijk(ep("E3").escalatie.stappen, [{ doelEvent: "A", dagen: 4 }, { doelEvent: "S", dagen: 4 }]);
   });
-  T.registreer(G, "escalatie: E3 zonder antibioticum: waarschuwing dag 1, 2, 3; op dag 4 weefselinvasie (A) met toestand en banner", function () {
+  T.registreer(G, "escalatie: E3 zonder antibioticum: waarschuwing dag 2 (dag 1), 3, 4; na vier volle dagen op dag 5 weefselinvasie (A)", function () {
     var s = nieuw("E3");
-    T.is(s.klachten[1].reeks, 1);
-    dagen(s, 1); T.is(s.klachten[2].reeks, 2);
-    dagen(s, 1); T.is(s.klachten[3].reeks, 3);
-    T.is(geb(s, "A"), undefined, "dag 3: nog geen weefselinvasie");
+    T.is(s.klachten[1].reeks, 0);
+    dagen(s, 1); T.is(s.klachten[2].reeks, 1);
+    dagen(s, 1); T.is(s.klachten[3].reeks, 2);
+    dagen(s, 1); T.is(s.klachten[4].reeks, 3);
+    T.is(geb(s, "A"), undefined, "dag 4: nog geen weefselinvasie");
     dagen(s, 1);
-    T.is(geb(s, "A").dag, 4); T.waar(s.toestanden.indexOf("weefselinvasie") >= 0);
-    T.is(s.klachten[4].reeks, 0, "na de escalatie telt de teller niet meer");
-    dagen(s, 3); T.is(s.klachten[7].status, "geenVerbetering48", "de 48-uursregel geldt ook na escalatie");
+    T.is(geb(s, "A").dag, 5); T.waar(s.toestanden.indexOf("weefselinvasie") >= 0);
+    T.is(s.klachten[5].reeks, 0, "na de stap begint de teller opnieuw");
+    dagen(s, 2); T.is(s.klachten[7].status, "geenVerbetering48", "de 48-uursregel geldt ook na escalatie");
+  });
+  T.registreer(G, "escalatie: bij weefselinvasie en opnieuw vier volle dagen aanhoudende klachten volgt sepsis (S); daarna geen verdere stap", function () {
+    var s = nieuw("E3"); dagen(s, 4);
+    T.is(geb(s, "A").dag, 5);
+    dagen(s, 3); T.is(geb(s, "S"), undefined, "dag 8: nog niet"); T.is(s.klachten[8].reeks, 3);
+    dagen(s, 1);
+    T.is(geb(s, "S").dag, 9); T.waar(s.toestanden.indexOf("sepsis") >= 0);
+    dagen(s, 3); T.is(s.klachten[12].reeks, 0, "geen stap meer over");
+    T.is(s.gebeurtenissen.filter(function (x) { return x.id === "S"; }).length, 1);
+  });
+  T.registreer(G, "escalatie: een werkzaam middel na weefselinvasie (V8 + dosis) stopt de teller en voorkomt sepsis", function () {
+    var s = nieuw("E3"); dagen(s, 4); speel(s, "O1"); speel(s, "V8"); speel(s, "V6", "V8", "875/125 mg 2 dd"); dagen(s, 1);
+    T.is(s.klachten[6].status, "af"); T.is(s.klachten[6].reeks, 0);
+    dagen(s, 8); T.is(geb(s, "S"), undefined);
+  });
+  T.registreer(G, "escalatie: sepsis blokkeert het afronden niet (alleen kaart- en tijdgebeurtenissen tellen)", function () {
+    function spel7() {   // 7 kaarten: A (4e) en B (7e) komen
+      var s = nieuw("E3"); speel(s, "G1"); speel(s, "G2"); speel(s, "G3"); dagen(s, 1);
+      speel(s, "N1"); speel(s, "O2"); speel(s, "N3"); dagen(s, 1); speel(s, "Ev1"); dagen(s, 1);
+      return s;
+    }
+    var s = spel7(); dagen(s, 1);
+    T.waar(!!geb(s, "A") && !!geb(s, "B") && !geb(s, "S"), "A en B geweest, sepsis nog niet");
+    T.is(g.Engine.rondAf(s).poortGehaald === undefined, false, "afronden kan: sepsis komt hoogstens nog");
   });
   T.registreer(G, "escalatie: een werkzaam antibioticum (fosfomycine) stopt de teller; wie afwacht (V1) loopt wel naar de escalatie", function () {
     var s = nieuw("E3"); speel(s, "V4"); dagen(s, 1);
     T.is(s.klachten[2].status, "af"); T.is(s.klachten[2].reeks, 0);
     dagen(s, 6); T.is(geb(s, "A"), undefined, "geen escalatie met een werkzaam middel");
-    var w = nieuw("E3"); speel(w, "V1"); dagen(w, 3);
-    T.is(geb(w, "A").dag, 4, "afwachten: escalatie op dag 4");
+    var w = nieuw("E3"); speel(w, "V1"); dagen(w, 4);
+    T.is(geb(w, "A").dag, 5, "afwachten: escalatie op dag 5");
     // een niet-werkzaam middel (trimethoprim, resistent) stopt de teller niet
-    var t = nieuw("E3"); speel(t, "V5"); dagen(t, 3);
-    T.is(geb(t, "A").dag, 4, "trimethoprim werkt niet: escalatie");
+    var t = nieuw("E3"); speel(t, "V5"); dagen(t, 4);
+    T.is(geb(t, "A").dag, 5, "trimethoprim werkt niet: escalatie");
   });
   T.registreer(G, "escalatie: een werkzaam middel op dag 3 voorkomt de escalatie (de klachten nemen af op dag 4)", function () {
-    var s = nieuw("E3"); dagen(s, 2); speel(s, "V4"); dagen(s, 1);
-    T.is(s.dag, 4); T.is(geb(s, "A"), undefined); T.is(s.klachten[4].status, "af");
+    var s = nieuw("E3"); dagen(s, 3); speel(s, "V4"); dagen(s, 1);
+    T.is(s.dag, 5); T.is(geb(s, "A"), undefined); T.is(s.klachten[5].status, "af");
   });
   T.registreer(G, "escalatie: A komt ook nog op de vaste trigger (4e en 7e kaart); komt A al eerder, dan niet twee keer", function () {
     var s = nieuw("E3"); speel(s, "G1"); speel(s, "G2"); speel(s, "G3"); dagen(s, 1); speel(s, "N1"); dagen(s, 1);
     T.is(geb(s, "A").dag, 3, "vaste trigger: A na de 4e kaart (dag 2), zichtbaar op dag 3");
     dagen(s, 5); T.is(s.gebeurtenissen.filter(function (x) { return x.id === "A"; }).length, 1, "A maar één keer");
-    var t = nieuw("E3"); dagen(t, 3);
-    T.is(geb(t, "A").dag, 4);
+    var t = nieuw("E3"); dagen(t, 4);
+    T.is(geb(t, "A").dag, 5);
     speel(t, "G1"); speel(t, "G2"); speel(t, "G3"); dagen(t, 1); speel(t, "N1"); speel(t, "O2"); speel(t, "N3");
     dagen(t, 1); T.is(t.gebeurtenissen.filter(function (x) { return x.id === "A"; }).length, 1, "A niet nog een keer na de vaste trigger");
   });

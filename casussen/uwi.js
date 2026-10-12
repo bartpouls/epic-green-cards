@@ -1040,9 +1040,15 @@ window.CASUSSEN = [
   },
   {
    "id": "TODO_BART-N1",
-   "vraag": "Aanhoudende klachten leiden tot weefselinvasie. Drie vragen: (1) Geldt '4 dagen aanhoudende klachten leiden tot weefselinvasie' ook in episode 2 (daar komt de kweekuitslag op dag 4)? (2) Tellen die 4 dagen vanaf de start van het middel of vanaf het begin van de klachten? (3) Op de dag waarop de teller 4 bereikt, begint de weefselinvasie; is dat de bedoeling? De NHG-termijnen zijn niet gecheckt; leg (1) en (2) voor aan een huisarts.",
-   "gekozenLezing": "Alleen in episode 3 aan (episode 1 en 2: escalatie.aan = false). De teller telt de dagen op rij vanaf dag 1 van de episode waarop geen werkzaam antibioticum actief was (ook als er niets is voorgeschreven); een werkzaam antibioticum stopt de teller. Op de dag dat de teller 4 bereikt volgt weefselinvasie (gebeurtenis A), tenzij A al eerder kwam.",
+   "vraag": "Aanhoudende klachten leiden tot weefselinvasie en daarna tot sepsis. Gekozen volgens Barts antwoord: vier volle dagen aanhoudende klachten (dus pas op dag 5) geven weefselinvasie; bij weefselinvasie en opnieuw vier volle dagen aanhoudende klachten volgt sepsis. Nog open voor een huisarts: (1) geldt dit ook in episode 2 (daar komt de kweekuitslag op dag 4)? (2) tellen de vier dagen vanaf de start van het middel of vanaf het begin van de klachten? De NHG-termijnen zijn niet gecheckt.",
+   "gekozenLezing": "Alleen in episode 3 aan (episode 1 en 2: uit). De teller telt de volle dagen op rij vanaf dag 1 waarop de klachten niet afnamen (ook als er niets is voorgeschreven); een werkzaam antibioticum stopt de teller. Na vier volle dagen volgt op dag 5 weefselinvasie (A), tenzij A al eerder kwam; daarna begint de teller opnieuw en volgt na nog eens vier volle dagen sepsis (S).",
    "plek": "E1.escalatie; E2.escalatie; E3.escalatie"
+  },
+  {
+   "id": "TODO_BART-N4",
+   "vraag": "Sepsis is een concept: de melding 'Sepsis: de patiënt is ernstig ziek.' is niet uit de casus. Wat moet er in het spel gebeuren bij sepsis: alleen de melding, moet de episode eindigen, of moet Verwijzen dan de enige geldige reactie zijn? En welke klinische tekst hoort erbij?",
+   "gekozenLezing": "Alleen een melding en de toestand 'sepsis'; er is nog geen nieuwe veiligheidsregel en de episode gaat door.",
+   "plek": "E3.gebeurtenissen.S"
   },
   {
    "id": "TODO_BART-N2",
@@ -1077,7 +1083,7 @@ window.CASUSSEN[0].episodes.push({
   knoppen: { actiesPerBeurt: 3, aantalDagen: 14, raadplegenKost: 0 },
   afrondenPasNaGebeurtenissen: true,
   startUitleg: "Het doel: de klachten nemen zo snel mogelijk af. Houden ze aan, dan wordt het erger.",
-  escalatie: { aan: false, dagen: 4 },
+  escalatie: { aan: false },
   antibiotica: ["V3", "V4", "V5"],
   patient: {
     zichtbaar: {
@@ -1227,7 +1233,7 @@ window.CASUSSEN[0].episodes.push({
   knoppen: { actiesPerBeurt: 3, aantalDagen: 14, raadplegenKost: 0 },
   afrondenPasNaGebeurtenissen: true,
   startUitleg: "Het doel: de klachten nemen zo snel mogelijk af. Houden ze aan, dan wordt het erger.",
-  escalatie: { aan: false, dagen: 4 },
+  escalatie: { aan: false },
   antibiotica: ["V3", "V4", "V5"],
   patient: {
     zichtbaar: {
@@ -1778,7 +1784,8 @@ window.CASUSSEN[0].episodes.push({
   afrondenPasNaGebeurtenissen: true,
   startUitleg: "Het doel: de klachten nemen zo snel mogelijk af. Houden ze aan, dan wordt het erger.",
   escalatie: {
-    aan: true, dagen: 4, doelEvent: "A",
+    aan: true,
+    stappen: [{ doelEvent: "A", dagen: 4 }, { doelEvent: "S", dagen: 4 }],
     waarschuwing: "Klachten houden aan: dag",
     uitleg: "Houden de klachten aan, dan wordt het erger. Kies nu een middel of stuur bij."
   },
@@ -1863,6 +1870,13 @@ window.CASUSSEN[0].episodes.push({
       toestand: "uitdroging",
       tekst: "Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK]",
       meta: { opmerking: "De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler." }
+    },
+    {
+      id: "S",
+      titel: "Sepsis",
+      trigger: { type: "opTeller" },
+      toestand: "sepsis",
+      tekst: "Sepsis: de patiënt is ernstig ziek."
     },
     {
       id: "C",

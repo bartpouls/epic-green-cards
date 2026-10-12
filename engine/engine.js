@@ -107,7 +107,7 @@
       rng: rng,
       uitkomst: null
     };
-    if (ep.escalatie && ep.escalatie.aan) state.klachten[1].reeks = 1;
+    if (ep.escalatie && ep.escalatie.aan) state.klachten[1].reeks = 0;
     Object.defineProperty(state, "_casus", { value: casus, enumerable: false, writable: true, configurable: true });
     var bewaard = {}; for (var ok in opties) if (ok !== "rng") bewaard[ok] = opties[ok];
     Object.defineProperty(state, "_opties", { value: bewaard, enumerable: false, writable: true, configurable: true });
@@ -374,11 +374,14 @@
     else if (!vorige.actief.length) status = null;
     else status = vorige.werkzaam ? "af" : "aan";
     var teksten = ep.statusTeksten || (ep.werkzaamheid && ep.werkzaamheid.statusTeksten) || {};
-    // Aanhoudende klachten (escalatie): aantal dagen op rij zonder werkzaam antibioticum; stopt bij "af", en na de escalatie zelf.
+    // Aanhoudende klachten (escalatie): aantal volle dagen op rij waarop de klachten niet afnamen; stopt bij "af" en begint opnieuw
+    // op de dag waarop een stap van de escalatie plaatsvindt. Zonder stap die nog kan komen blijft de teller 0.
     var ec = ep.escalatie, uit = { dag: d, status: status, tekst: status && teksten[status] != null ? teksten[status] : null };
     if (ec && ec.aan) {
       var vorigeReeks = d === 1 ? 0 : (state.klachten[d - 1] && state.klachten[d - 1].reeks) || 0;
-      uit.reeks = isBezig(state, ec.doelEvent) || status === "af" ? 0 : vorigeReeks + 1;
+      var nieuweStap = ec.stappen.some(function (st) { return state.gebeurtenissen.some(function (x) { return x.id === st.doelEvent && x.dag === d; }); });
+      var rest = ec.stappen.some(function (st) { return !isBezig(state, st.doelEvent); });
+      uit.reeks = !rest || nieuweStap || status === "af" ? 0 : vorigeReeks + 1;
     }
     return uit;
   }
@@ -418,10 +421,9 @@
     // Atomisch: gaat er halverwege iets mis (bv. een kapot predicaat in de data), dan blijft de state precies zoals hij was.
     return atomisch(state, function () {
       var nieuw = state.dag + 1, ec = ep.escalatie;
-      // Escalatie: houden de klachten `dagen` dagen aan, dan volgt de gebeurtenis ec.doelEvent (als die nog niet is geweest).
-      if (ec && ec.aan && !isBezig(state, ec.doelEvent) && berekenKlachten(state, ep, nieuw).reeks >= ec.dagen) {
-        state.wachtend.push({ id: ec.doelEvent, naVolg: state.tijdlijn.length });
-      }
+      // Escalatie in stappen: houden de klachten `dagen` volle dagen aan, dan volgt de gebeurtenis van de eerstvolgende stap die nog niet is geweest.
+      var stap = ec && ec.aan ? ec.stappen.filter(function (st) { return !isBezig(state, st.doelEvent); })[0] : null;
+      if (stap && berekenKlachten(state, ep, nieuw).reeks >= stap.dagen) state.wachtend.push({ id: stap.doelEvent, naVolg: state.tijdlijn.length });
       controleerTijd(state, ep, nieuw);
       pasGebeurtenissenToe(state, ep, nieuw);
       state.dag = nieuw;
@@ -443,6 +445,7 @@
         // Een gebeurtenis op tijd telt alleen mee als de kaart die haar aankondigt is gespeeld; die op kaartaantal telt altijd mee.
         var open = (ep.gebeurtenissen || []).some(function (e) {
           if (state.gebeurtenissen.some(function (x) { return x.id === e.id; })) return false;
+          if (e.trigger && e.trigger.type === "opTeller") return false;
           return !(e.trigger && e.trigger.type === "naDagenNaKaart") || dagVanTrigger(state, e.trigger) !== null;
         });
         if (open) throw new Error("Je kunt deze episode pas afronden nadat de gebeurtenissen zich hebben voorgedaan.");
