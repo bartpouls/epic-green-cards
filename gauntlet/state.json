@@ -68,7 +68,7 @@
    "name": "S9 ui",
    "round": 1,
    "verdict": "PENDING",
-   "evidence": "ronde 1: bouwer bezig",
+   "evidence": "r1 gebouwd (30 eigen tests; Playwright-speelscript 69/69 incl. 121 routes via klikken); criticus r1 bezig",
    "artifact": ""
   },
   {
