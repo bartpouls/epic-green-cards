@@ -187,11 +187,16 @@
     ]
   };
   // Volgorde van de sleutels per episode is vast (ref-9 test dat); TODO_BART* komen erachter.
-  var SLEUTELS = ["episodeKop", "knoppen", "patientkaart", "repertoireTekst", "gebeurtenisUitleg", "gebeurtenissenTabel", "geldigeRoutes", "geldigeRoutesNoot", "routeBijWeefselinvasie", "bronconflict",
+  // (In de casus staat de gebeurtenissentabel van E3 vóór de alinea eronder, en de routes vóór de noot; ref-9 toetst dat ook tegen de casusvolgorde.)
+  var SLEUTELS = ["episodeKop", "labels", "knoppen", "patientkaart", "repertoireTekst", "gebeurtenissenTabel", "gebeurtenisUitleg", "geldigeRoutes", "geldigeRoutesNoot", "routeBijWeefselinvasie", "bronconflict",
     "altijdFout", "volgorde", "score", "zichtbaarAlsOntbreekt", "feedbackTabel", "brug", "tabelkoppen", "inspringing", "volgordeVanSecties"];
+  // Sleutel(s) per casuskopje, om de volgorde van de sleutels met de volgorde van de casus te vergelijken.
+  var KOPSLEUTELS = [["Knoppen", ["knoppen"]], ["Patiëntkaart", ["patientkaart"]], ["Repertoire", ["repertoireTekst"]], ["Gebeurtenis", ["gebeurtenissenTabel", "gebeurtenisUitleg"]],
+    ["Geldige routes", ["geldigeRoutes", "geldigeRoutesNoot"]], ["Route bij weefselinvasie", ["routeBijWeefselinvasie"]], ["Bronconflict", ["bronconflict"]], ["Invarianten", ["altijdFout"]],
+    ["Volgorde", ["volgorde"]], ["Score", ["score"]], ["Wat er zichtbaar", ["zichtbaarAlsOntbreekt"]], ["Feedback", ["feedbackTabel"]], ["Brug", ["brug"]]];
   // Waar staat elk kopje van de casus in de referentie? (kopje (begin van de naam) -> sleutels die de tekst ervan dragen)
   var KOPJES = [
-    ["Knoppen", ["knoppen", "volgordeVanSecties"]],
+    ["Knoppen", ["knoppen", "labels", "volgordeVanSecties"]],
     ["Patiëntkaart", ["patientkaart", "volgordeVanSecties"]],
     ["Repertoire", ["repertoireTekst", "volgordeVanSecties"]],
     ["Gebeurtenis", ["gebeurtenisUitleg", "gebeurtenissenTabel", "tabelkoppen", "volgordeVanSecties"]],
@@ -199,7 +204,7 @@
     ["Route bij weefselinvasie", ["routeBijWeefselinvasie", "tabelkoppen", "volgordeVanSecties"]],
     ["Bronconflict", ["bronconflict", "volgordeVanSecties"]],
     ["Invarianten", ["altijdFout", "tabelkoppen", "volgordeVanSecties"]],
-    ["Volgorde", ["volgorde", "volgordeVanSecties"]],
+    ["Volgorde", ["volgorde", "labels", "volgordeVanSecties"]],
     ["Score", ["score", "volgordeVanSecties"]],
     ["Wat er zichtbaar", ["zichtbaarAlsOntbreekt", "volgordeVanSecties"]],
     ["Feedback", ["feedbackTabel", "tabelkoppen", "volgordeVanSecties"]],
@@ -210,7 +215,7 @@
     E3: ["TODO_BART_gebeurtenisUitleg", "TODO_BART_gebeurtenissenTabel", "TODO_BART_geldigeRoutes", "TODO_BART_overigeCasusregels", "TODO_BART_volgordeVanSecties"] };
   var PLEKKEN = { "TODO_BART-R1": "referentie.E1/E2/E3.volgordeVanSecties", "TODO_BART-R2": "referentie.E1.geldigeRoutesNoot", "TODO_BART-R3": "referentie.E2.gebeurtenisUitleg",
     "TODO_BART-R4": "referentie.E3.gebeurtenisUitleg", "TODO_BART-R5": "referentie.E3.geldigeRoutes", "TODO_BART-R6": "referentie.E3.gebeurtenissenTabel",
-    "TODO_BART-R7": "referentie.E1/E2/E3.patientkaart, repertoireTekst, zichtbaarAlsOntbreekt, feedbackTabel, tabelkoppen, episodeKop" };
+    "TODO_BART-R7": "referentie.E1/E2/E3.patientkaart, repertoireTekst, zichtbaarAlsOntbreekt, feedbackTabel, tabelkoppen, episodeKop, labels" };
   var TODO_IDS = ["TODO_BART-R1", "TODO_BART-R2", "TODO_BART-R3", "TODO_BART-R4", "TODO_BART-R5", "TODO_BART-R6", "TODO_BART-R7"];
   var EPS = ["E1", "E2", "E3"];
 
@@ -229,7 +234,7 @@
     lijst.forEach(function (l) {
       if (l.indexOf("## ") === 0) return;
       if (l.indexOf("### ") === 0) { cur = { naam: l.slice(4).trim(), regels: [] }; uit.push(cur); return; }
-      if (/^\*\*[^*]+:\*\*$/.test(l)) { cur = { naam: labelVan(l), regels: [] }; uit.push(cur); return; }
+      if (/^\*\*[^*]+:\*\*$/.test(l)) { cur = { naam: labelVan(l), label: schoon(l), regels: [] }; uit.push(cur); return; }
       if (isLabelRegel(l)) { cur = { naam: labelVan(l), regels: [l] }; uit.push(cur); return; }
       if (l.charAt(0) === "|" && cellen(l)[0] === "Route bij weefselinvasie") { cur = { naam: "Route bij weefselinvasie", regels: [l] }; uit.push(cur); return; }
       cur.regels.push(l);
@@ -247,6 +252,7 @@
     var geld = deel(d, "Geldige routes"), geb = deel(d, "Gebeurtenis"), weef = deel(d, "Route bij weefselinvasie"), inv = deel(d, "Invarianten"), vo = deel(d, "Volgorde"), br = deel(d, "Brug"), bc = deel(d, "Bronconflict");
     var fb = tabelRijen(deel(d, "Feedback").regels), pk = deel(d, "Patiëntkaart").regels;
     o.episodeKop = kop(lijst);
+    o.labels = { knoppen: deel(d, "Knoppen").label, volgorde: vo ? (vo.label || schoon(vo.regels[0]).split(":")[0] + ":") : null };
     o.knoppen = bul(deel(d, "Knoppen").regels);
     o.patientkaart = bul(pk);
     o.repertoireTekst = deel(d, "Repertoire").regels.map(schoon).join(" ");
@@ -297,16 +303,16 @@
       if (isSep(l)) return;
       if (l.indexOf("## ") === 0) s[schoon(l.slice(3))] = 1;
       else if (l.indexOf("### ") === 0) s[l.slice(4).trim()] = 1;
-      else if (/^\*\*[^*]+:\*\*$/.test(l)) s[labelVan(l)] = 1;
+      else if (/^\*\*[^*]+:\*\*$/.test(l)) { s[labelVan(l)] = 1; s[schoon(l)] = 1; }
       else if (l.charAt(0) === "|") cellen(l).forEach(function (c) { s[c] = 1; });
       else if (l.indexOf("- ") === 0 || l.indexOf("  - ") === 0) s[schoon(l.replace(/^ *- /, ""))] = 1;
-      else { s[schoon(l)] = 1; if (isLabelRegel(l)) s[labelVan(l)] = 1; }
+      else { s[schoon(l)] = 1; if (isLabelRegel(l)) { s[labelVan(l)] = 1; if (/^\*\*Volgorde vrij:\*\*/.test(l)) s[labelVan(l) + ":"] = 1; } }
     });
     return Object.keys(s);
   }
 
   // ---- hulpfuncties ----
-  // canon: volgorde van arrays EN van objectsleutels telt mee. (De volgorde van de sleutels op episodeniveau wordt niet vergeleken: die zijn per sleutel getoetst.)
+  // canon: volgorde van arrays EN van objectsleutels telt mee (de volgorde van de sleutels op episodeniveau toetst afwijkingen() apart).
   function canon(x, diepte) {
     if (Array.isArray(x)) return "[" + x.map(function (v) { return canon(v, diepte + 1); }).join(",") + "]";
     if (x && typeof x === "object") {
@@ -335,13 +341,14 @@
   // Vergelijkt de referentie (zonder TODO_BART*-sleutels) met de verwachting uit de casus; geeft een lijst afwijkingen.
   function afwijkingen(data) {
     var v = verwacht(), uit = [];
-    var kd = Object.keys(data).sort().join(",");
+    var kd = Object.keys(data).join(",");
     if (kd !== "E1,E2,E3") uit.push("sleutels op topniveau: " + kd);
     EPS.forEach(function (e) {
       var d = data[e];
       if (!d || typeof d !== "object") { uit.push(e + " ontbreekt"); return; }
       var ks = Object.keys(d).sort().join(","), vs = SLEUTELS.slice().sort().join(",");
       if (ks !== vs) uit.push(e + ": sleutels " + ks + " i.p.v. " + vs);
+      else if (Object.keys(d).join(",") !== SLEUTELS.join(",")) uit.push(e + ": sleutels staan niet in de vaste volgorde (casusvolgorde)");
       SLEUTELS.forEach(function (s) { if (c0(d[s]) !== c0(v[e][s])) uit.push(e + "." + s + " wijkt af"); });
       // Elke tekst in de referentie is een tekstdeel van de casus en elk tekstdeel van de casus staat erin (verzameling, beide richtingen).
       var a = atomen(e).sort().join("\u0001"), b = uniek(stringsVan(d)).sort().join("\u0001");
@@ -440,6 +447,7 @@
           else delen_[schoon(l.replace(/^ *- /, ""))] = 1;
         });
         delen_[x.naam] = 1;
+        if (x.label) delen_[x.label] = 1;
         Object.keys(delen_).forEach(function (t) { T.waar(strs.indexOf(t) !== -1, e + " kopje '" + x.naam + "': tekst ontbreekt in " + plek[1].join("/") + ": " + JSON.stringify(t)); });
       });
     });
@@ -461,6 +469,18 @@
       T.is(r[e].inspringing.gebeurtenisUitleg.length, r[e].gebeurtenisUitleg.length, e + " inspringing gebeurtenisUitleg");
       (r[e].routeBijWeefselinvasie || []).forEach(function (x, i) { T.gelijk(Object.keys(x), ["route", "poort", "profiel"], e + " weefselrij " + i); });
       (r[e].gebeurtenissenTabel || []).forEach(function (x, i) { T.gelijk(Object.keys(x), ["id", "trigger", "inhoud"], e + " gebeurtenisrij " + i); });
+    });
+    T.gelijk(Object.keys(r), ["E1", "E2", "E3"], "volgorde episodes");
+    EPS.forEach(function (e) {
+      var alle = Object.keys(r[e]), echt = alle.filter(function (k) { return k.indexOf("TODO_BART") !== 0; });
+      T.gelijk(echt, SLEUTELS, e + " volgorde van de sleutels");
+      T.gelijk(alle.slice(0, echt.length), echt, e + ": TODO_BART-sleutels staan achter de gewone sleutels");
+      // Volgorde van de sleutels = volgorde van de kopjes in de casus (alleen de kopjes die in deze episode voorkomen).
+      var vanCasus = [];
+      delen(RAW[e]).forEach(function (x) { var k = KOPSLEUTELS.filter(function (z) { return x.naam.indexOf(z[0]) === 0; })[0]; T.waar(!!k, e + " kopje zonder sleutel: " + x.naam); k[1].forEach(function (s) { vanCasus.push(s); }); });
+      var inData = echt.filter(function (k) { return vanCasus.indexOf(k) !== -1; });
+      T.gelijk(inData, vanCasus.filter(function (k) { return inData.indexOf(k) !== -1; }), e + ": volgorde van de sleutels wijkt af van de volgorde van de kopjes in de casus");
+      T.gelijk(Object.keys(r[e].labels), ["knoppen", "volgorde"], e + " labels");
     });
     T.gelijk(r.E3.gebeurtenissenTabel.map(function (x) { return x.id; }), ["A", "B", "C"]);
     // De Id-volgorde komt uit de ingebedde casusregels, niet uit een vaste lijst.
@@ -520,6 +540,18 @@
     var m7 = kloon(basis); m7.E3.gebeurtenisUitleg = m7.E2.gebeurtenisUitleg; toets("kruiskopie gebeurtenisUitleg", m7);
     var m8 = kloon(basis); m8.E2.repertoireTekst = m8.E3.repertoireTekst; toets("kruiskopie repertoireTekst", m8);
     var m9 = kloon(basis); m9.E1.altijdFout = m9.E2.altijdFout; toets("kruiskopie altijdFout", m9);
+    // Volgorde van de sleutels op topniveau en op episodeniveau (de casus kent een vaste kopjesvolgorde)
+    function herorden(o, perm) { var ks = perm(Object.keys(o)), nieuw = {}; ks.forEach(function (x) { nieuw[x] = o[x]; }); return nieuw; }
+    var perms = { omgekeerd: function (k) { return k.reverse(); }, geroteerd: function (k) { k.push(k.shift()); return k; }, "eerste twee gewisseld": function (k) { var t = k[0]; k[0] = k[1]; k[1] = t; return k; },
+      "laatste twee gewisseld": function (k) { var t = k[k.length - 1]; k[k.length - 1] = k[k.length - 2]; k[k.length - 2] = t; return k; } };
+    Object.keys(perms).forEach(function (pn) {
+      var m = kloon(basis); toets("topniveau sleutels " + pn, herorden(m, perms[pn]));
+      EPS.forEach(function (e) { var m2 = kloon(basis); m2[e] = herorden(m2[e], perms[pn]); toets(e + " sleutels " + pn, m2); });
+    });
+    EPS.forEach(function (e) {
+      var ks = Object.keys(basis[e]);
+      for (var i = 0; i + 1 < ks.length; i++) { var m3 = kloon(basis); m3[e] = herorden(m3[e], function (k) { var t = k[i]; k[i] = k[i + 1]; k[i + 1] = t; return k; }); toets(e + " sleutel " + ks[i] + " en " + ks[i + 1] + " gewisseld", m3); }
+    });
     T.waar(n >= 400, "te weinig mutaties: " + n);
     T.is(gemist.length, 0, "mutaties niet gevonden: " + gemist.slice(0, 8).join(" | "));
   });

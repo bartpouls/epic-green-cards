@@ -3,6 +3,10 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
   window.CASUSSEN[0].referentie = {
     "E1": {
       "episodeKop": "4. Episode 1 — level 1",
+      "labels": {
+        "knoppen": "Knoppen:",
+        "volgorde": "Volgorde vrij:"
+      },
       "knoppen": [
         "repertoire klein (12 kaarten)",
         "acties per beurt ruim",
@@ -17,8 +21,8 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
         "Verborgen: niets."
       ],
       "repertoireTekst": "G1, G2, O1, O2, V1, V2, V3, V4, V5, N1, N2, Ev1",
-      "gebeurtenisUitleg": [],
       "gebeurtenissenTabel": null,
+      "gebeurtenisUitleg": [],
       "geldigeRoutes": [
         {
           "route": "Afwachten",
@@ -146,6 +150,10 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
     },
     "E2": {
       "episodeKop": "5. Episode 2 — level 2",
+      "labels": {
+        "knoppen": "Knoppen:",
+        "volgorde": "Volgorde:"
+      },
       "knoppen": [
         "repertoire groter, met afleiders (15 kaarten)",
         "acties per beurt ruim",
@@ -159,6 +167,7 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
         "Verborgen achter G2: eGFR 29 uit de jaarlijkse controle. Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG]."
       ],
       "repertoireTekst": "Alles uit episode 1, plus V6, B1 en B2.",
+      "gebeurtenissenTabel": null,
       "gebeurtenisUitleg": [
         "Kweekuitslag, na de 4e gespeelde kaart (ongeveer dag 3). Alleen als O1 gespeeld is.",
         "E. coli, resistent voor trimethoprim en amoxicilline.",
@@ -168,7 +177,6 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
         "Trimethoprim: klachten houden aan.",
         "Fosfomycine: klachten nemen af."
       ],
-      "gebeurtenissenTabel": null,
       "geldigeRoutes": [
         {
           "route": "Fosfomycine",
@@ -305,6 +313,10 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
     },
     "E3": {
       "episodeKop": "6. Episode 3 — level 3",
+      "labels": {
+        "knoppen": "Knoppen:",
+        "volgorde": null
+      },
       "knoppen": [
         "volledig repertoire (26 kaarten)",
         "acties per beurt krap",
@@ -318,9 +330,6 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
         "Verborgen achter G3: de kweek uit episode 2, met trimethoprim resistent. Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG]."
       ],
       "repertoireTekst": "Alle kaarten uit de bibliotheek (G1–Ev3).",
-      "gebeurtenisUitleg": [
-        "De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler."
-      ],
       "gebeurtenissenTabel": [
         {
           "id": "A",
@@ -337,6 +346,9 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
           "trigger": "3 kaarten na O1",
           "inhoud": "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne."
         }
+      ],
+      "gebeurtenisUitleg": [
+        "De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler."
       ],
       "geldigeRoutes": [
         {
@@ -591,8 +603,8 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
     {
       "id": "TODO_BART-R7",
       "vraag": "Het overzicht heeft de gewone speldata voor de patiëntkaart, het repertoire, de kaarten die ontbreken en de feedbackvragen, maar de casus zet er ook kopjes, labels en een kolom 'Trigger' bij (bijvoorbeeld 'Zonder N1:', 'I6, geen kweek', 'Verborgen: niets.'). Moeten die casusregels in het overzicht naast de speldata getoond worden?",
-      "gekozenLezing": "Ja: de hele tekst van deze kopjes staat letterlijk in de referentie (patientkaart, repertoireTekst, zichtbaarAlsOntbreekt, feedbackTabel, tabelkoppen, episodeKop), zodat elk kopje van de casus regel voor regel te vergelijken is. Alternatief: alleen de speldata tonen en deze casusregels weglaten.",
-      "plek": "referentie.E1/E2/E3.patientkaart, repertoireTekst, zichtbaarAlsOntbreekt, feedbackTabel, tabelkoppen, episodeKop"
+      "gekozenLezing": "Ja: de hele tekst van deze kopjes staat letterlijk in de referentie (patientkaart, repertoireTekst, zichtbaarAlsOntbreekt, feedbackTabel, tabelkoppen, episodeKop, labels), zodat elk kopje van de casus regel voor regel te vergelijken is. Alternatief: alleen de speldata tonen en deze casusregels weglaten.",
+      "plek": "referentie.E1/E2/E3.patientkaart, repertoireTekst, zichtbaarAlsOntbreekt, feedbackTabel, tabelkoppen, episodeKop, labels"
     }
   );
 }
