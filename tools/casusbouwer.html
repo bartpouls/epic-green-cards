@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Casusbouwer — Epic green cards</title>
+<style>
+:root{
+  --bg:#f6f7f5; --kaart:#ffffff; --tekst:#1f2a24; --zacht:#5b675f; --lijn:#d9ded9;
+  --accent:#2f7d4f; --accent-licht:#e4f2ea; --waarschuw:#b45309; --waarschuw-licht:#fdf0dc;
+  --fout:#b42318; --fout-licht:#fde8e6; --ok:#2f7d4f;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#161a17;--kaart:#1f2521;--tekst:#e8ece9;--zacht:#a3afa7;--lijn:#334038;
+  --accent:#58b883;--accent-licht:#1d3a2a;--waarschuw:#f0a64a;--waarschuw-licht:#3a2c14;--fout:#ff8a80;--fout-licht:#3d1f1c;--ok:#58b883;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tekst);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header.top{background:var(--kaart);border-bottom:1px solid var(--lijn);padding:12px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+header.top h1{font-size:18px;margin:0}
+header.top .sub{color:var(--zacht);font-size:13px}
+.acties{display:flex;gap:8px;flex-wrap:wrap}
+button,.knop{font:inherit;border:1px solid var(--lijn);background:var(--kaart);color:var(--tekst);padding:7px 12px;border-radius:8px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.primair{background:var(--accent);color:#fff;border-color:var(--accent)}
+button.klein{padding:3px 9px;font-size:13px}
+button.gevaar{color:var(--fout)}
+.tabs{display:flex;gap:0;padding:0 20px;background:var(--kaart);border-bottom:1px solid var(--lijn)}
+.tabs button{border:0;border-bottom:3px solid transparent;border-radius:0;padding:12px 18px;font-weight:600;background:none;color:var(--zacht)}
+.tabs button.actief{color:var(--accent);border-bottom-color:var(--accent)}
+main{max-width:1100px;margin:0 auto;padding:20px}
+.stappen{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.stappen button{display:flex;gap:8px;align-items:center}
+.stappen button .nr{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--lijn);font-size:12px;font-weight:700}
+.stappen button.actief{border-color:var(--accent);background:var(--accent-licht)}
+.stappen button.actief .nr{background:var(--accent);color:#fff}
+.paneel{background:var(--kaart);border:1px solid var(--lijn);border-radius:12px;padding:20px}
+.paneel h2{margin:0 0 4px;font-size:20px}
+.paneel .intro{color:var(--zacht);margin:0 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.veld{display:flex;flex-direction:column;gap:3px}
+.veld.breed{grid-column:1/-1}
+.veld .lab{font-size:13px;font-weight:600}
+.veld .hint{font-size:12px;color:var(--zacht)}
+input,textarea,select{font:inherit;color:var(--tekst);background:var(--bg);border:1px solid var(--lijn);border-radius:7px;padding:6px 8px;width:100%}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--accent);outline-offset:0}
+textarea{resize:vertical}
+.rij{border:1px solid var(--lijn);border-left:5px solid var(--lijn);border-radius:10px;padding:12px;margin:10px 0;background:var(--bg)}
+.rij .kop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.rij .kop strong{font-size:14px}
+details{border:1px solid var(--lijn);border-radius:10px;margin:12px 0;background:var(--kaart)}
+details>summary{cursor:pointer;padding:10px 14px;font-weight:700;list-style:none}
+details>summary::before{content:"▸ ";color:var(--accent)}
+details[open]>summary::before{content:"▾ "}
+details>.binnen{padding:4px 14px 14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;gap:5px;align-items:center;border:1px solid var(--lijn);border-radius:999px;padding:2px 9px;font-size:13px;cursor:pointer;background:var(--bg);user-select:none}
+.chip.aan{background:var(--accent-licht);border-color:var(--accent);font-weight:600}
+.epkeuze{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.epkeuze button.actief{background:var(--accent-licht);border-color:var(--accent);font-weight:700}
+.uitleg{background:var(--accent-licht);border:1px solid var(--accent);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:14px}
+.uitleg ul{margin:6px 0 0 18px;padding:0}
+.navrij{display:flex;justify-content:space-between;margin-top:18px}
+.melding{border-radius:8px;padding:8px 12px;margin:6px 0;font-size:14px;display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.melding.fout{background:var(--fout-licht);border:1px solid var(--fout)}
+.melding.let{background:var(--waarschuw-licht);border:1px solid var(--waarschuw)}
+.melding.ok{background:var(--accent-licht);border:1px solid var(--accent)}
+.tel{display:flex;gap:10px;margin:8px 0 14px;flex-wrap:wrap}
+.tel span{padding:4px 12px;border-radius:999px;font-weight:700;font-size:13px}
+.tel .f{background:var(--fout-licht);color:var(--fout)}
+.tel .l{background:var(--waarschuw-licht);color:var(--waarschuw)}
+.tel .o{background:var(--accent-licht);color:var(--ok)}
+#mdUit{font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;min-height:420px}
+table.t{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0}
+table.t th,table.t td{border:1px solid var(--lijn);padding:6px 9px;text-align:left;vertical-align:top}
+table.t th{background:var(--accent-licht)}
+.svgwrap{overflow:auto;border:1px solid var(--lijn);border-radius:12px;background:var(--kaart);padding:10px}
+.legenda{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--zacht);margin:8px 0}
+.legenda i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:4px}
+.verborgen{display:none}
+@media print{header.top,.tabs,.stappen,.navrij{display:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>Casusbouwer — Epic green cards</h1>
+    <div class="sub">Bouw een casus in het vaste format en laat er een markdown-bestand uit rollen. Alles blijft in je eigen browser.</div>
+  </div>
+  <div class="acties">
+    <button id="bNieuw">Nieuwe casus</button>
+    <button id="bVoorbeeld">Voorbeeld laden (UWI)</button>
+    <button id="bOpslaan">Werk bewaren (.json)</button>
+    <button id="bLaden">Werk openen (.json)</button>
+    <input type="file" id="fLaden" accept=".json,application/json" class="verborgen">
+  </div>
+</header>
+<nav class="tabs" role="tablist">
+  <button id="tab1" class="actief" role="tab">1 · Casus bouwen</button>
+  <button id="tab2" role="tab">2 · Doorloopschema</button>
+</nav>
+<main>
+  <section id="view1">
+    <div class="stappen" id="stappen"></div>
+    <div class="paneel" id="paneel"></div>
+    <div class="navrij"><button id="bVorige">← Vorige stap</button><button id="bVolgende" class="primair">Volgende stap →</button></div>
+  </section>
+  <section id="view2" class="verborgen">
+    <div class="paneel">
+      <h2>Doorloopschema</h2>
+      <p class="intro">Wordt automatisch opgebouwd uit wat je in tab 1 invult: de episodes, de gebeurtenissen en de toestanden waarin elke poort-regel (invariant) geldt. Bij gebeurtenissen met dezelfde groepsletter is de volgorde vrij.</p>
+      <div class="acties" style="margin-bottom:10px"><button id="bSvg">Schema downloaden (.svg)</button></div>
+      <div class="svgwrap" id="schemaSvg"></div>
+      <div class="legenda" id="legenda"></div>
+      <h3>Welke regels gelden in welke toestand</h3>
+      <div id="schemaTabel"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= Vaste onderdelen van het format ================= */
+var CATS=['Gegevens','Onderzoek','Voorschrijven','Bijsturen','Informeren','Evalueren'];
+var CATKLEUR={Gegevens:'#2b6cb0',Onderzoek:'#6b46c1',Voorschrijven:'#2f7d4f',Bijsturen:'#c05621',Informeren:'#b7791f',Evalueren:'#c53030'};
+var VASTE=['Gegevens','Onderzoek','Informeren','Evalueren'];
+var BLOOM=['Onthouden','Begrijpen','Toepassen','Analyseren','Evalueren','Creëren'];
+var STORE='epicgreencards.casusbouwer.v1';
+var VERBODEN=['juiste','verkeerde','fout','beste','eerst','daarna','na dag','alleen bij','niet doen'];
+
+var STAPPEN=['Start','Probleem & leerdoelen','Kaarten','Episodes','Controle','Markdown'];
+
+/* ================= Toestand ================= */
+function leegEpisode(n){
+  return {id:'E'+n,titel:'',level:n,startToestand:'',contextwissel:'',erft:'',
+    knoppen:{repertoire:'',acties:'',gebeurtenissen:'',raadplegen:''},
+    patient:{naam:'',leeftijd:'',klachten:'',medicatie:'',lab:'',risico:'',verborgen:[]},
+    repertoire:[],gebeurtenissen:[],routes:[],invarianten:[],
+    score:{duurzaamheid:'',doelmatigheid:''},profielen:[],feedbackExtra:[],bronconflict:'',volgorde:''};
+}
+function leeg(){
+  return {basis:{id:'',titel:'',versie:'0.1',datum:datum(),functie:'',signatuur:'',validatie:'',bronnen:[{code:'',tekst:''}]},
+    prestatie:{probleem:'',anders:''},leerdoelen:[],kaarten:[],episodes:[leegEpisode(1)],open:[]};
+}
+function datum(){var d=new Date();return d.getDate()+' '+['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'][d.getMonth()]+' '+d.getFullYear();}
+var S=leeg(), stap=0, epIdx=0, saveT=null;
+var offen={};
+
+function bewaar(){
+  clearTimeout(saveT);
+  saveT=setTimeout(function(){try{localStorage.setItem(STORE,JSON.stringify(S));}catch(e){}},300);
+}
+function laadOpgeslagen(){
+  try{var s=localStorage.getItem(STORE);if(s){var o=JSON.parse(s);if(o&&o.basis&&o.episodes){S=o;}}}catch(e){}
+}
+
+/* ================= Kleine hulpfuncties ================= */
+function el(t,p,k){
+  var e=document.createElement(t);p=p||{};
+  for(var a in p){
+    if(a==='class')e.className=p[a];
+    else if(a==='text')e.textContent=p[a];
+    else if(a.slice(0,2)==='on')e.addEventListener(a.slice(2),p[a]);
+    else if(p[a]!==null&&p[a]!==undefined)e.setAttribute(a,p[a]);
+  }
+  (k||[]).forEach(function(c){if(c==null)return;e.appendChild(typeof c==='string'?document.createTextNode(c):c);});
+  return e;
+}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function veld(label,obj,key,o){
+  o=o||{};var inp;
+  if(o.type==='area')inp=el('textarea',{rows:o.rows||3});
+  else if(o.type==='select'){inp=el('select');o.options.forEach(function(x){inp.appendChild(el('option',{value:x,text:x}));});}
+  else inp=el('input',{type:o.type||'text'});
+  inp.value=obj[key]==null?'':obj[key];
+  if(o.ph)inp.placeholder=o.ph;
+  inp.addEventListener('input',function(){
+    obj[key]=(o.type==='number')?(inp.value===''?'':Number(inp.value)):inp.value;
+    bewaar();if(o.onchange)o.onchange();
+  });
+  return el('label',{class:'veld'+(o.breed?' breed':'')},[el('span',{class:'lab',text:label}),inp,o.hint?el('span',{class:'hint',text:o.hint}):null]);
+}
+function rij(titel,kleur,onweg,kids){
+  var r=el('div',{class:'rij'},[
+    el('div',{class:'kop'},[el('strong',{text:titel}),onweg?el('button',{class:'klein gevaar',text:'Verwijderen',onclick:function(){if(confirm('Weghalen: '+titel+'?'))onweg();}}):null]),
+    el('div',{class:'grid'},kids)]);
+  if(kleur)r.style.borderLeftColor=kleur;
+  return r;
+}
+function nietLeeg(s){return s!=null&&String(s).trim()!=='';}
+function kaartIds(){return S.kaarten.map(function(k){return k.id;}).filter(nietLeeg);}
+function kaartBy(id){for(var i=0;i<S.kaarten.length;i++)if(S.kaarten[i].id===id)return S.kaarten[i];return null;}
+function bronCodes(){return S.basis.bronnen.map(function(b){return (b.code||'').trim();}).filter(nietLeeg);}
+function ep(){return S.episodes[epIdx]||S.episodes[0];}
+
+/* ================= Stappen-navigatie ================= */
+function tekenStappen(){
+  var c=document.getElementById('stappen');c.innerHTML='';
+  STAPPEN.forEach(function(n,i){
+    c.appendChild(el('button',{class:i===stap?'actief':'',onclick:function(){stap=i;render();}},[el('span',{class:'nr',text:String(i+1)}),n]));
+  });
+  document.getElementById('bVorige').style.visibility=stap===0?'hidden':'visible';
+  document.getElementById('bVolgende').style.visibility=stap===STAPPEN.length-1?'hidden':'visible';
+}
+function render(){
+  tekenStappen();
+  var p=document.getElementById('paneel');p.innerHTML='';
+  [stapStart,stapProbleem,stapKaarten,stapEpisodes,stapControle,stapMarkdown][stap](p);
+  window.scrollTo(0,0);
+}
+
+/* ================= Stap 1: Start ================= */
+function stapStart(p){
+  var b=S.basis;
+  p.appendChild(el('h2',{text:'Start: waar gaat de casus over?'}));
+  p.appendChild(el('p',{class:'intro',text:'Vul eerst de basis in. Een casus is een patiënt die je meestal in drie episodes (levels) volgt, terwijl de context verandert. Je werk wordt automatisch bewaard in deze browser; wil je het delen of meenemen, gebruik dan "Werk bewaren (.json)" bovenaan.'}));
+  var u=el('div',{class:'uitleg'});
+  u.innerHTML='<strong>Spelregels voor casusbouwers</strong><ul>'+
+   '<li>Het spel begint <em>na</em> de diagnose: die staat op de patiëntkaart. Kaarten gaan over middelkeuze, dosis, interacties, monitoring, stoppen en bijsturen.</li>'+
+   '<li>Eén casus toetst <em>één</em> signatuurvaardigheid. Zonder scoorbaar gedrag en invarianten met bron is de casus nog niet klaar.</li>'+
+   '<li>Elke klinische regel (invariant) krijgt een bron. Staat iets niet in een bron, markeer het dan met <strong>[G]</strong> (uit geheugen of ontwerpkeuze).</li>'+
+   '<li>Kaartlabels zijn neutraal: ze verraden geen timing en geen oplossing. Elke kaart heeft een downside.</li>'+
+   '<li>Alles wat je invult is concept tot een voorschrijfdeskundige het heeft gevalideerd.</li></ul>';
+  p.appendChild(u);
+  p.appendChild(el('div',{class:'grid'},[
+    veld('Casus-id',b,'id',{ph:'bijv. pijn-eerstelijn',hint:'Korte naam zonder spaties, kleine letters.'}),
+    veld('Titel',b,'titel',{ph:'Casus UWI in de eerste lijn'}),
+    veld('Versie',b,'versie'),
+    veld('Datum',b,'datum'),
+    veld('Functie in het spel',b,'functie',{breed:true,ph:'bijv. Tutorialcasus: leert het spel én de signatuurvaardigheid'}),
+    veld('Signatuurvaardigheid',b,'signatuur',{breed:true,ph:'bijv. Veranderende context: empirisch starten → bijsturen → nierfunctie en comedicatie',hint:'Eén vaardigheid per casus.'}),
+    veld('Klinische validatie',b,'validatie',{type:'area',rows:2,breed:true,ph:'Wie valideert wat? Bijv. voorschrijven: naam (gevalideerd/concept); diagnostiek: nog voorleggen aan huisarts'})
+  ]));
+  p.appendChild(el('h3',{text:'Klinische bronnen'}));
+  p.appendChild(el('p',{class:'intro',text:'Geef elke bron een korte code (bijv. NHG). Die code gebruik je later achter regels, tussen vierkante haken.'}));
+  b.bronnen.forEach(function(br,i){
+    p.appendChild(rij('Bron '+(i+1),null,b.bronnen.length>1?function(){b.bronnen.splice(i,1);bewaar();render();}:null,[
+      veld('Code',br,'code',{ph:'NHG'}),
+      veld('Volledige bron (titel, versie/datum)',br,'tekst',{breed:true,ph:'NHG-Standaard Urineweginfecties, versie juli 2026'})
+    ]));
+  });
+  p.appendChild(el('button',{text:'+ Bron toevoegen',onclick:function(){b.bronnen.push({code:'',tekst:''});bewaar();render();}}));
+}
+
+/* ================= Stap 2: Probleem & leerdoelen ================= */
+function stapProbleem(p){
+  p.appendChild(el('h2',{text:'Prestatieprobleem en leerdoelen'}));
+  p.appendChild(el('p',{class:'intro',text:'Begin bij wat studenten nu verkeerd doen, niet bij de stof. Per episode één leerdoel met een scoorbaar gedrag.'}));
+  p.appendChild(el('div',{class:'grid'},[
+    veld('Prestatieprobleem',S.prestatie,'probleem',{type:'area',rows:4,breed:true,ph:'Wat doen beginnende voorschrijvers nu, en waarom gaat dat mis?'}),
+    veld('Wat ze na deze casus anders doen',S.prestatie,'anders',{type:'area',rows:2,breed:true})
+  ]));
+  p.appendChild(el('h3',{text:'Leerdoelen (één per episode)'}));
+  S.episodes.forEach(function(e){
+    var ld=null;S.leerdoelen.forEach(function(l){if(l.episode===e.id)ld=l;});
+    if(!ld){ld={episode:e.id,doel:'',bloom:'Evalueren',gedrag:'',meting:''};S.leerdoelen.push(ld);}
+    p.appendChild(rij('Leerdoel episode '+e.id.replace('E',''),null,null,[
+      veld('Leerdoel',ld,'doel',{type:'area',rows:3,breed:true,ph:'De student ...'}),
+      veld('Bloom-niveau',ld,'bloom',{type:'select',options:BLOOM}),
+      veld('Scoorbaar gedrag',ld,'gedrag',{type:'area',rows:2,hint:'Wat doet de speler concreet met kaarten?'}),
+      veld('Meting (eerste poging)',ld,'meting',{type:'area',rows:2,hint:'Wat leg je vast?'})
+    ]));
+  });
+  S.leerdoelen=S.leerdoelen.filter(function(l){return S.episodes.some(function(e){return e.id===l.episode;});});
+}
+
+/* ================= Stap 3: Kaarten ================= */
+function stapKaarten(p){
+  p.appendChild(el('h2',{text:'Kaartenbibliotheek'}));
+  p.appendChild(el('p',{class:'intro',text:'Eén lijst met alle kaarten van de casus. Zes categorieën, in de volgorde van de voorschrijfcyclus. Gegevens, Onderzoek, Informeren en Evalueren komen in elke casus terug; Voorschrijven en Bijsturen verschillen per casus.'}));
+  var leg=el('div',{class:'legenda'});
+  CATS.forEach(function(c){leg.appendChild(el('span',{},[el('i',{style:'background:'+CATKLEUR[c]}),c]));});
+  p.appendChild(leg);
+  var sorted=S.kaarten.map(function(k,i){return {k:k,i:i};});
+  sorted.sort(function(a,b){return CATS.indexOf(a.k.categorie)-CATS.indexOf(b.k.categorie);});
+  sorted.forEach(function(x){
+    var k=x.k;
+    var r=rij((k.id||'(nieuw)')+' · '+(k.label||'zonder label'),CATKLEUR[k.categorie],function(){S.kaarten.splice(x.i,1);bewaar();render();},[
+      veld('Kaart-id',k,'id',{ph:'V5'}),
+      veld('Categorie',k,'categorie',{type:'select',options:CATS,onchange:function(){render();}}),
+      veld('Label (neutraal)',k,'label',{ph:'Trimethoprim'}),
+      veld('Vanaf episode',k,'vanaf',{type:'number'}),
+      veld('Doelkaart?',k,'doel',{type:'select',options:['nee','ja'],hint:'Ja = de speler kiest een middel uit de lijst waarop de kaart werkt.'}),
+      veld('Bron',k,'bron',{ph:'NHG'}),
+      veld('Effect / wat de kaart onthult',k,'effect',{type:'area',rows:3,breed:true}),
+      veld('Downside (verplicht)',k,'downside',{type:'area',rows:2,breed:true,hint:'Wat kost of riskeert deze kaart? Bij Informeren mag dit "—" zijn als er geen nadeel is.'})
+    ]);
+    p.appendChild(r);
+  });
+  p.appendChild(el('button',{class:'primair',text:'+ Kaart toevoegen',onclick:function(){S.kaarten.push({id:'',categorie:'Voorschrijven',label:'',vanaf:1,doel:'nee',effect:'',downside:'',bron:''});bewaar();render();}}));
+}
+
+/* ================= Stap 4: Episodes ================= */
+function stapEpisodes(p){
+  p.appendChild(el('h2',{text:'Episodes'}));
+  p.appendChild(el('p',{class:'intro',text:'Tussen episodes (maanden tot jaren, bij een recidief) verandert de context. Binnen een episode (dagen) verandert de ernst, via gebeurtenissen. Regels hangen aan de toestand, niet aan de route.'}));
+  var keuze=el('div',{class:'epkeuze'});
+  S.episodes.forEach(function(e,i){keuze.appendChild(el('button',{class:i===epIdx?'actief':'',text:'Episode '+(i+1),onclick:function(){epIdx=i;render();}}));});
+  keuze.appendChild(el('button',{text:'+ Episode',onclick:function(){S.episodes.push(leegEpisode(S.episodes.length+1));epIdx=S.episodes.length-1;bewaar();render();}}));
+  if(S.episodes.length>1)keuze.appendChild(el('button',{class:'gevaar',text:'Deze episode verwijderen',onclick:function(){if(confirm('Episode '+(epIdx+1)+' helemaal weghalen?')){var oud=S.episodes[epIdx].id;S.leerdoelen=S.leerdoelen.filter(function(l){return l.episode!==oud;});var map={};S.episodes.splice(epIdx,1);S.episodes.forEach(function(e,i){map[e.id]='E'+(i+1);e.id='E'+(i+1);e.level=i+1;});S.leerdoelen.forEach(function(l){if(map[l.episode])l.episode=map[l.episode];});epIdx=0;bewaar();render();}}}));
+  p.appendChild(keuze);
+  var e=ep();
+
+  var d1=el('details',{open:'open'},[el('summary',{text:'A. Opzet van deze episode'}),el('div',{class:'binnen'},[el('div',{class:'grid'},[
+    veld('Naam van de startsituatie (toestand)',e,'startToestand',{ph:'cystitis',hint:'Dit wordt het eerste vakje in het doorloopschema.'}),
+    veld('Wat verandert t.o.v. de vorige episode?',e,'contextwissel',{ph:'6 jaar later · eGFR gedaald · + calcium',hint:'Komt op de pijl tussen de episodes (laat leeg bij episode 1).'}),
+    veld('Knop: zichtbaar repertoire',e.knoppen,'repertoire',{ph:'klein (12 kaarten)'}),
+    veld('Knop: acties per beurt',e.knoppen,'acties',{ph:'ruim'}),
+    veld('Knop: gebeurtenissen',e.knoppen,'gebeurtenissen',{ph:'geen / 1 / 2 in vrije volgorde'}),
+    veld('Knop: richtlijn raadplegen',e.knoppen,'raadplegen',{ph:'kost niets / kost tempo'}),
+    veld('Geldende regels uit eerdere episodes',e,'erft',{ph:'I1, I4, I5',hint:'Invariant-id\'s die hier blijven gelden. Komen in het schema bij elke toestand.'}),
+    veld('Volgorde-afspraken',e,'volgorde',{type:'area',rows:2,breed:true,ph:'bijv. O1 vóór de eerste antibioticumkaart. De rest is vrij.'})
+  ])])]);
+  p.appendChild(d1);
+
+  var pt=e.patient;
+  var d2=el('details',{open:'open'},[el('summary',{text:'B. Patiëntkaart (wat de speler ziet) en verborgen informatie'}),el('div',{class:'binnen'},[el('div',{class:'grid'},[
+    veld('Naam',pt,'naam',{ph:'Mevrouw V.'}),
+    veld('Leeftijd',pt,'leeftijd',{ph:'72 jaar'}),
+    veld('Klachten / diagnose (de diagnose staat op de kaart)',pt,'klachten',{type:'area',rows:2,breed:true}),
+    veld('Medicatie',pt,'medicatie',{type:'area',rows:2,breed:true,ph:'lisinopril (hypertensie)'}),
+    veld('Labwaarden op de kaart',pt,'lab',{ph:'eGFR 42, recent'}),
+    veld('Risicogroep / context',pt,'risico',{type:'area',rows:2,breed:true,hint:'Wat is waar, ook als de speler het nog niet ziet?'})
+  ]),el('h4',{text:'Verborgen gegevens (alleen als ze een voorschrijfkeuze omdraaien)'})].concat(
+    pt.verborgen.map(function(v,i){return rij('Verborgen '+(i+1),null,function(){pt.verborgen.splice(i,1);bewaar();render();},[
+      veld('Achter welke kaart?',v,'kaart',{type:'select',options:[''].concat(kaartIds())}),
+      veld('Wat onthult die kaart?',v,'onthult',{type:'area',rows:2,breed:true})]);}),
+    [el('button',{text:'+ Verborgen gegeven',onclick:function(){pt.verborgen.push({kaart:'',onthult:''});bewaar();render();}})]))]);
+  p.appendChild(d2);
+
+  var d3=el('details',{},[el('summary',{text:'C. Repertoire: welke kaarten zijn er in deze episode?'}),el('div',{class:'binnen'},[])]);
+  var ch=el('div',{class:'chips'});
+  if(!S.kaarten.length)ch.appendChild(el('span',{class:'hint',text:'Maak eerst kaarten aan in stap 3.'}));
+  S.kaarten.forEach(function(k){
+    if(!nietLeeg(k.id))return;
+    var aan=e.repertoire.indexOf(k.id)>=0;
+    var c=el('span',{class:'chip'+(aan?' aan':''),text:k.id+' '+(k.label||''),title:k.categorie,onclick:function(){
+      var i=e.repertoire.indexOf(k.id);if(i>=0)e.repertoire.splice(i,1);else e.repertoire.push(k.id);bewaar();c.classList.toggle('aan');}});
+    c.style.borderLeft='5px solid '+CATKLEUR[k.categorie];
+    ch.appendChild(c);
+  });
+  d3.lastChild.appendChild(el('div',{class:'chips-wrap'},[ch]));
+  d3.lastChild.appendChild(el('div',{class:'melding ok',style:'margin-top:10px',text:'Tip: klik op een kaart om hem wel of niet in het repertoire te zetten.'}));
+  p.appendChild(d3);
+
+  var d4=el('details',{},[el('summary',{text:'D. Gebeurtenissen en toestanden'}),el('div',{class:'binnen'},[])]);
+  d4.lastChild.appendChild(el('p',{class:'hint',text:'Een gebeurtenis die de ernst verandert krijgt een toestand (bijv. weefselinvasie). Een gebeurtenis die alleen informatie brengt (bijv. een kweekuitslag) laat je zonder toestand. Geef gebeurtenissen met een vrije volgorde dezelfde groepsletter.'}));
+  e.gebeurtenissen.forEach(function(g,i){
+    d4.lastChild.appendChild(rij('Gebeurtenis '+(g.id||'?'),null,function(){e.gebeurtenissen.splice(i,1);bewaar();render();},[
+      veld('Id',g,'id',{ph:'A'}),
+      veld('Wanneer? (trigger)',g,'trigger',{ph:'na kaart n / 3 kaarten na O1'}),
+      veld('Naam toestand (leeg = alleen informatie)',g,'toestand',{ph:'weefselinvasie'}),
+      veld('Groep (vrije volgorde)',g,'groep',{ph:'AB'}),
+      veld('Wat ziet de speler?',g,'tekst',{type:'area',rows:2,breed:true})]));
+  });
+  d4.lastChild.appendChild(el('button',{text:'+ Gebeurtenis',onclick:function(){e.gebeurtenissen.push({id:'',trigger:'',toestand:'',groep:'',tekst:''});bewaar();render();}}));
+  p.appendChild(d4);
+
+  var d5=el('details',{},[el('summary',{text:'E. Geldige routes'}),el('div',{class:'binnen'},[])]);
+  d5.lastChild.appendChild(el('p',{class:'hint',text:'Meerdere goede antwoorden geven verschillende voorschrijfprofielen. Noem per route de kern (kaarten) en het profiel.'}));
+  e.routes.forEach(function(r,i){
+    d5.lastChild.appendChild(rij('Route '+(i+1)+(r.naam?' · '+r.naam:''),null,function(){e.routes.splice(i,1);bewaar();render();},[
+      veld('Naam',r,'naam',{ph:'Afwachten'}),veld('Profiel',r,'profiel',{ph:'Terughoudend'}),
+      veld('Kern (kaarten)',r,'kern',{breed:true,ph:'V1 + N1 + Ev1'})]));
+  });
+  d5.lastChild.appendChild(el('button',{text:'+ Route',onclick:function(){e.routes.push({naam:'',kern:'',profiel:''});bewaar();render();}}));
+  p.appendChild(d5);
+
+  var d6=el('details',{},[el('summary',{text:'F. Invarianten (de poort): wat is altijd fout?'}),el('div',{class:'binnen'},[])]);
+  d6.lastChild.appendChild(el('p',{class:'hint',text:'Alleen echte klinische regels, elk met bron. Wie een invariant schendt krijgt geen score en ziet de downside, plus één Socratische vraag. De vraag zegt niet voor.'}));
+  e.invarianten.forEach(function(v,i){
+    d6.lastChild.appendChild(rij((v.id||'?')+' · '+(v.fout||'nieuwe invariant').slice(0,60),null,function(){e.invarianten.splice(i,1);bewaar();render();},[
+      veld('Id',v,'id',{ph:'I1'}),
+      veld('Ernst (1 = ernstigst)',v,'ernst',{type:'select',options:['1','2','3','4','5'],hint:'Bij meerdere schendingen krijgt de speler alleen de vraag van de ernstigste.'}),
+      veld('Bron',v,'bron',{ph:'NHG',hint:'Code uit stap 1, of [G]'}),
+      veld('Geldt in toestand(en)',v,'geldtIn',{ph:'* of weefselinvasie, uitdroging',hint:'* = alle toestanden. Gebruik de toestandsnamen uit D.'}),
+      veld('Altijd fout als...',v,'fout',{type:'area',rows:2,breed:true}),
+      veld('Socratische vraag (zegt niet voor)',v,'vraag',{type:'area',rows:2,breed:true}),
+      veld('Wat wordt zichtbaar als de kaart ontbreekt?',v,'weglaat',{type:'area',rows:2,breed:true,hint:'Neutrale gevolgzin, zonder getallen als de bron geen getallen geeft.'})]));
+  });
+  d6.lastChild.appendChild(el('button',{text:'+ Invariant',onclick:function(){e.invarianten.push({id:'',ernst:'3',bron:'',geldtIn:'*',fout:'',vraag:'',weglaat:''});bewaar();render();}}));
+  p.appendChild(d6);
+
+  var d7=el('details',{},[el('summary',{text:'G. Score, profielen en extra feedback'}),el('div',{class:'binnen'},[])]);
+  d7.lastChild.appendChild(el('div',{class:'grid'},[
+    veld('Score-as duurzaamheid',e.score,'duurzaamheid',{type:'area',rows:2,breed:true,ph:'afwachten > uitgesteld recept > antibioticum'}),
+    veld('Score-as doelmatigheid',e.score,'doelmatigheid',{type:'area',rows:2,breed:true,ph:'een kweek zonder indicatie kost punten'})]));
+  d7.lastChild.appendChild(el('h4',{text:'Voorschrijfprofielen met reflectievraag'}));
+  e.profielen.forEach(function(r,i){
+    d7.lastChild.appendChild(rij('Profiel '+(i+1)+(r.naam?' · '+r.naam:''),null,function(){e.profielen.splice(i,1);bewaar();render();},[
+      veld('Profiel',r,'naam',{ph:'Terughoudend'}),veld('Reflectievraag',r,'vraag',{type:'area',rows:2,breed:true})]));
+  });
+  d7.lastChild.appendChild(el('button',{text:'+ Profiel',onclick:function(){e.profielen.push({naam:'',vraag:''});bewaar();render();}}));
+  d7.lastChild.appendChild(el('h4',{text:'Extra feedbackmomenten (niet-poort)'}));
+  e.feedbackExtra.forEach(function(r,i){
+    d7.lastChild.appendChild(rij('Feedback '+(i+1),null,function(){e.feedbackExtra.splice(i,1);bewaar();render();},[
+      veld('Trigger',r,'trigger',{ph:'O1 gespeeld'}),veld('Vraag',r,'vraag',{type:'area',rows:2,breed:true})]));
+  });
+  d7.lastChild.appendChild(el('button',{text:'+ Feedbackmoment',onclick:function(){e.feedbackExtra.push({trigger:'',vraag:''});bewaar();render();}}));
+  d7.lastChild.appendChild(el('div',{class:'grid',style:'margin-top:12px'},[
+    veld('Bronconflict (geen poort, wel feedbackmoment)',e,'bronconflict',{type:'area',rows:2,breed:true,ph:'Twee bronnen zeggen iets anders: beschrijf het en wat er in de feedback gebeurt. Leeg als er geen is.'})]));
+  p.appendChild(d7);
+  [d1,d2,d3,d4,d5,d6,d7].forEach(function(d,i){
+    if(offen[i]!==undefined)d.open=offen[i];
+    d.addEventListener('toggle',function(){offen[i]=d.open;});
+  });
+}
+
+/* ================= Stap 5: Controle ================= */
+function controle(){
+  var m=[];
+  function f(t,s){m.push({n:'fout',t:t,s:s});}
+  function l(t,s){m.push({n:'let',t:t,s:s});}
+  var b=S.basis;
+  if(!nietLeeg(b.id))f('Casus-id ontbreekt.',0);
+  if(!nietLeeg(b.titel))l('Titel ontbreekt.',0);
+  if(!nietLeeg(b.signatuur))f('Signatuurvaardigheid ontbreekt: zonder die is niet duidelijk wat de casus toetst.',0);
+  if(!nietLeeg(b.validatie))l('Klinische validatie niet beschreven: zet erbij wie wat valideert.',0);
+  var codes=bronCodes();
+  if(!codes.length)f('Geen enkele bron met code ingevuld.',0);
+  if(!nietLeeg(S.prestatie.probleem))f('Prestatieprobleem ontbreekt.',1);
+  S.episodes.forEach(function(e){
+    var ld=null;S.leerdoelen.forEach(function(x){if(x.episode===e.id)ld=x;});
+    if(!ld||!nietLeeg(ld.doel))f('Episode '+e.id.replace('E','')+': leerdoel ontbreekt.',1);
+    else if(!nietLeeg(ld.gedrag))l('Episode '+e.id.replace('E','')+': scoorbaar gedrag ontbreekt bij het leerdoel.',1);
+  });
+  if(!S.kaarten.length)f('Er zijn nog geen kaarten.',2);
+  var gezien={};
+  S.kaarten.forEach(function(k){
+    var n=(k.id||'(zonder id)')+' '+(k.label||'');
+    if(!nietLeeg(k.id))f('Een kaart heeft geen id ('+(k.label||'zonder label')+').',2);
+    else if(gezien[k.id])f('Kaart-id '+k.id+' komt dubbel voor.',2);
+    gezien[k.id]=true;
+    if(!nietLeeg(k.label))f('Kaart '+k.id+' heeft geen label.',2);
+    if(!nietLeeg(k.downside))f('Kaart '+n+': downside ontbreekt (verplicht veld).',2);
+    if(!nietLeeg(k.effect))l('Kaart '+n+': effect ontbreekt.',2);
+    if(!nietLeeg(k.bron))l('Kaart '+n+': geen bron. Zet [G] als het uit geheugen komt.',2);
+    VERBODEN.forEach(function(w){if((k.label||'').toLowerCase().indexOf(w)>=0)l('Kaart '+n+': het label bevat "'+w+'". Labels moeten neutraal zijn en geen timing of oplossing verraden.',2);});
+  });
+  VASTE.forEach(function(c){if(S.kaarten.length&&!S.kaarten.some(function(k){return k.categorie===c;}))l('Geen kaart in de vaste categorie '+c+'.',2);});
+  var invIds={};
+  S.episodes.forEach(function(e){
+    var nr=e.id.replace('E','');var pre='Episode '+nr+': ';
+    if(!nietLeeg(e.patient.naam)||!nietLeeg(e.patient.klachten))f(pre+'patiëntkaart is niet ingevuld.',3);
+    if(!e.repertoire.length)f(pre+'repertoire is leeg.',3);
+    e.repertoire.forEach(function(id){
+      var k=kaartBy(id);
+      if(!k)f(pre+'repertoire verwijst naar onbekende kaart '+id+'.',3);
+      else if(Number(k.vanaf)>Number(nr))l(pre+'kaart '+id+' staat in het repertoire maar is gemarkeerd als beschikbaar vanaf episode '+k.vanaf+'.',3);
+    });
+    e.patient.verborgen.forEach(function(v){
+      if(!nietLeeg(v.kaart))l(pre+'een verborgen gegeven heeft geen kaart waar het achter zit.',3);
+      else if(e.repertoire.indexOf(v.kaart)<0)f(pre+'verborgen gegeven zit achter '+v.kaart+', maar die kaart zit niet in het repertoire.',3);
+      if(!nietLeeg(v.onthult))l(pre+'verborgen gegeven bij '+v.kaart+' heeft geen tekst.',3);
+    });
+    e.gebeurtenissen.forEach(function(g){
+      if(!nietLeeg(g.id))f(pre+'een gebeurtenis heeft geen id.',3);
+      if(!nietLeeg(g.tekst))l(pre+'gebeurtenis '+g.id+' heeft geen tekst voor de speler.',3);
+      if(!nietLeeg(g.trigger))l(pre+'gebeurtenis '+g.id+' heeft geen trigger.',3);
+    });
+    if(!e.routes.length)l(pre+'geen geldige routes beschreven.',3);
+    if(!e.invarianten.length)f(pre+'geen invarianten: er is dan geen poort.',3);
+    var toest=toestanden(e).nodes.map(function(n){return n.namen.join('|').toLowerCase();}).join('|').split('|');
+    e.invarianten.forEach(function(v){
+      var n=pre+(v.id||'invariant zonder id');
+      if(!nietLeeg(v.id))f(pre+'een invariant heeft geen id.',3);
+      else{if(invIds[v.id]&&invIds[v.id]!==e.id&&!nietLeeg(e.erft))l(n+': dit id komt ook in een andere episode voor. Bedoel je een andere regel? Geef die dan een eigen id.',3);invIds[v.id]=e.id;}
+      if(!nietLeeg(v.fout))f(n+': omschrijving ontbreekt.',3);
+      if(!nietLeeg(v.bron))f(n+': bron ontbreekt. Een klinische regel zonder bron wordt niet afgedwongen. Gebruik [G] als het uit geheugen komt.',3);
+      else{
+        var tags=(v.bron.match(/\[?[A-Za-z]+\]?/g)||[]);
+        if(v.bron.replace(/\[|\]/g,'').trim()!=='G'){var ok=false;tags.forEach(function(t){var c=t.replace(/[\[\]]/g,'');if(codes.indexOf(c)>=0||c==='G')ok=true;});if(!ok)l(n+': bron "'+v.bron+'" komt niet voor in je bronnenlijst (stap 1).',3);}
+      }
+      if(!nietLeeg(v.vraag))f(n+': Socratische vraag ontbreekt.',3);
+      var gi=(v.geldtIn||'*').split(',').map(function(x){return x.trim().toLowerCase();}).filter(nietLeeg);
+      gi.forEach(function(t){if(t!=='*'&&t!=='alle'&&toest.indexOf(t)<0)l(n+': toestand "'+t+'" komt niet voor in de gebeurtenissen van deze episode (zie schema).',3);});
+    });
+    if(!nietLeeg(e.score.duurzaamheid)||!nietLeeg(e.score.doelmatigheid))l(pre+'beide score-assen invullen.',3);
+    e.profielen.forEach(function(r){if(!nietLeeg(r.vraag))l(pre+'profiel '+(r.naam||'zonder naam')+' heeft geen reflectievraag.',3);});
+    if(e.profielen.length<1)l(pre+'geen voorschrijfprofielen.',3);
+  });
+  return m;
+}
+function stapControle(p){
+  p.appendChild(el('h2',{text:'Controle'}));
+  p.appendChild(el('p',{class:'intro',text:'Controleert of de casus compleet en consistent is. Rood moet je oplossen vóór je het markdown-bestand deelt; oranje is een aandachtspunt. Klik op "Ga erheen" om naar de plek te springen.'}));
+  var m=controle();var nf=m.filter(function(x){return x.n==='fout';}).length,nl=m.length-nf;
+  p.appendChild(el('div',{class:'tel'},[el('span',{class:'f',text:nf+' om op te lossen'}),el('span',{class:'l',text:nl+' aandachtspunten'}),nf+nl===0?el('span',{class:'o',text:'Alles in orde'}):null]));
+  if(!m.length)p.appendChild(el('div',{class:'melding ok',text:'Geen bevindingen. Ga door naar de markdown.'}));
+  m.sort(function(a,b){return (a.n==='fout'?0:1)-(b.n==='fout'?0:1);});
+  m.forEach(function(x){
+    p.appendChild(el('div',{class:'melding '+(x.n==='fout'?'fout':'let')},[el('span',{text:x.t}),el('button',{class:'klein',text:'Ga erheen',onclick:function(){stap=x.s;render();}})]));
+  });
+}
+
+/* ================= Toestandsgraaf (gedeeld door tab 2 en markdown) ================= */
+function toestanden(e){
+  var startNaam=nietLeeg(e.startToestand)?e.startToestand.trim():'start';
+  var nodes=[{id:'start',naam:startNaam,namen:[startNaam],level:0,evs:[]}],edges=[],info=[],groups={},order=[];
+  e.gebeurtenissen.forEach(function(g){
+    if(nietLeeg(g.toestand)){
+      var k=nietLeeg(g.groep)?g.groep.trim():('_'+(g.id||order.length));
+      if(!groups[k]){groups[k]=[];order.push(k);}
+      groups[k].push(g);
+    }else info.push(g);
+  });
+  order.forEach(function(k){
+    var gs=groups[k],singles=[];
+    gs.forEach(function(g,i){
+      var n={id:'n_'+k+'_'+i,naam:g.toestand.trim(),namen:[g.toestand.trim()],level:1,evs:[g.id]};
+      nodes.push(n);singles.push(n);edges.push({van:'start',naar:n.id,label:g.id||''});
+    });
+    if(gs.length>1){
+      var namen=[];singles.forEach(function(s){namen=namen.concat(s.namen);});
+      var c={id:'c_'+k,naam:namen.join(' + '),namen:namen,level:2,evs:gs.map(function(g){return g.id;})};
+      nodes.push(c);singles.forEach(function(s,i){edges.push({van:s.id,naar:c.id,label:gs[(i+1)%gs.length].id||''});});
+    }
+  });
+  return {nodes:nodes,edges:edges,info:info};
+}
+function splitIds(s){return String(s||'').split(/[,\s;]+/).filter(nietLeeg);}
+function regelsBij(e,node){
+  var alg=[],spec=[];
+  splitIds(e.erft).forEach(function(id){alg.push(id);});
+  e.invarianten.forEach(function(v){
+    if(!nietLeeg(v.id))return;
+    var gi=String(v.geldtIn||'*').split(',').map(function(x){return x.trim().toLowerCase();}).filter(nietLeeg);
+    if(!gi.length||gi.indexOf('*')>=0||gi.indexOf('alle')>=0){alg.push(v.id);return;}
+    var hit=gi.some(function(t){return node.namen.some(function(n){var nl=n.toLowerCase();return nl===t||nl.indexOf(t)>=0||t.indexOf(nl)>=0;});});
+    if(hit)spec.push(v.id);
+  });
+  var all=[];alg.concat(spec).forEach(function(x){if(all.indexOf(x)<0)all.push(x);});
+  all.sort(function(a,b){return (parseInt(a.replace(/\D/g,''),10)||0)-(parseInt(b.replace(/\D/g,''),10)||0);});
+  return all;
+}
+
+/* ================= Tab 2: doorloopschema (SVG) ================= */
+function wrap(t,n){
+  var w=String(t||'').split(/\s+/),r=[],cur='';
+  w.forEach(function(x){if((cur+' '+x).trim().length>n&&cur){r.push(cur);cur=x;}else cur=(cur+' '+x).trim();});
+  if(cur)r.push(cur);return r;
+}
+function tekst(x,y,lines,o){
+  o=o||{};var s='<text x="'+x+'" y="'+y+'" text-anchor="'+(o.anchor||'start')+'" font-size="'+(o.size||12)+'" font-weight="'+(o.bold?700:400)+'" fill="'+(o.fill||'currentColor')+'">';
+  lines.forEach(function(l,i){s+='<tspan x="'+x+'" dy="'+(i===0?0:(o.lh||15))+'">'+esc(l)+'</tspan>';});
+  return s+'</text>';
+}
+function schemaSvg(fit){
+  var NW=150,NH=48,GAP=14,PADX=20,EPGAP=160,top=20;
+  var cols=[],x=PADX,maxH=0,out='';
+  S.episodes.forEach(function(e){
+    var g=toestanden(e);
+    var l1=g.nodes.filter(function(n){return n.level===1;}),l2=g.nodes.filter(function(n){return n.level===2;});
+    var nc=Math.max(1,l1.length,l2.length);
+    var W=Math.max(300,nc*(NW+GAP)+GAP);
+    cols.push({e:e,g:g,x:x,W:W,l1:l1,l2:l2});
+    x+=W+EPGAP;
+  });
+  var totalW=x-EPGAP+PADX;
+  var defs='<defs><marker id="pijl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5b675f"/></marker><marker id="pijlG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2f7d4f"/></marker></defs>';
+  cols.forEach(function(c,ci){
+    var e=c.e,g=c.g,y0=top;
+    // header
+    out+='<rect x="'+c.x+'" y="'+y0+'" width="'+c.W+'" height="86" rx="12" fill="#e4f2ea" stroke="#2f7d4f" stroke-width="1.5"/>';
+    out+=tekst(c.x+14,y0+24,['Episode '+(ci+1)+' · level '+(e.level||ci+1)],{bold:1,size:14,fill:'#1f2a24'});
+    var ptxt=[e.patient.naam,e.patient.leeftijd].filter(nietLeeg).join(', ');
+    var sub=wrap([ptxt,e.patient.lab].filter(nietLeeg).join(' · '),Math.floor(c.W/6.6));
+    out+=tekst(c.x+14,y0+44,sub.slice(0,3),{size:12,fill:'#1f2a24'});
+    // info events
+    var iy=y0+104;
+    g.info.forEach(function(ev){
+      out+='<rect x="'+(c.x+c.W-170)+'" y="'+(y0-2)+'" width="0" height="0"/>';
+    });
+    // nodes layout
+    var rinfo={};
+    function regelLijnen(n){if(!rinfo[n.id]){var reg=regelsBij(e,n);rinfo[n.id]={reg:reg,rl:wrap(reg.join(', '),24)};}return rinfo[n.id];}
+    var mx0=regelLijnen(g.nodes[0]).rl.length;
+    var mx1=0;c.l1.forEach(function(n){mx1=Math.max(mx1,regelLijnen(n).rl.length);});
+    var yA=iy+10,yB=yA+NH+34+13*mx0,yC=yB+NH+34+13*mx1;
+    function px(list,i){var tot=list.length*(NW+GAP)-GAP;return c.x+(c.W-tot)/2+i*(NW+GAP);}
+    var pos={};
+    pos.start={x:c.x+(c.W-NW)/2,y:yA};
+    c.l1.forEach(function(n,i){pos[n.id]={x:px(c.l1,i),y:yB};});
+    c.l2.forEach(function(n,i){pos[n.id]={x:px(c.l2,i),y:yC};});
+    // edges
+    g.edges.forEach(function(ed){
+      var a=pos[ed.van],b=pos[ed.naar];if(!a||!b)return;
+      var srcN=null;g.nodes.forEach(function(n){if(n.id===ed.van)srcN=n;});
+      var sl=srcN?regelLijnen(srcN):{reg:[],rl:[]};
+      var x1=a.x+NW/2,y1=a.y+NH+(sl.reg.length?10+sl.rl.length*13:0),x2=b.x+NW/2,y2=b.y;
+      out+='<path d="M'+x1+' '+y1+' C'+x1+' '+(y1+30)+' '+x2+' '+(y2-30)+' '+x2+' '+y2+'" fill="none" stroke="#5b675f" stroke-width="1.5" marker-end="url(#pijl)"/>';
+      if(ed.label)out+=tekst(x2+(x1<x2?-14:(x1>x2?14:10)),y2-12,[ed.label],{size:11,fill:'#5b675f',anchor:'middle',bold:1});
+    });
+    // nodes
+    var lastY=yA+NH;
+    g.nodes.forEach(function(n){
+      var p=pos[n.id],ri=regelLijnen(n),reg=ri.reg;
+      var kleur=n.level===0?'#2b6cb0':(n.level===1?'#b7791f':'#c53030');
+      out+='<rect x="'+p.x+'" y="'+p.y+'" width="'+NW+'" height="'+NH+'" rx="10" fill="#fff" stroke="'+kleur+'" stroke-width="2"/>';
+      var nl=wrap(n.naam,22);out+=tekst(p.x+NW/2,p.y+(nl.length>1?19:28),nl.slice(0,2),{anchor:'middle',bold:1,size:12,fill:'#1f2a24'});
+      var rl=ri.rl;
+      if(reg.length)out+=tekst(p.x+NW/2,p.y+NH+16,rl,{anchor:'middle',size:11,fill:'#5b675f',lh:13});
+      lastY=Math.max(lastY,p.y+NH+(reg.length?16+rl.length*13:0));
+    });
+    // verwijzen
+    var vy=lastY+30;
+    var vx=c.x+(c.W-NW)/2;
+    out+='<rect x="'+vx+'" y="'+vy+'" width="'+NW+'" height="'+(NH-10)+'" rx="10" fill="none" stroke="#5b675f" stroke-width="1.5" stroke-dasharray="5 4"/>';
+    out+=tekst(vx+NW/2,vy+24,['Verwijzen'],{anchor:'middle',size:12,fill:'#5b675f',bold:1});
+    out+='<path d="M'+(pos.start.x+NW)+' '+(yA+NH/2)+' L'+(c.x+c.W-6)+' '+(yA+NH/2)+' C'+(c.x+c.W+16)+' '+(yA+NH/2)+' '+(c.x+c.W+16)+' '+(vy+16)+' '+(vx+NW)+' '+(vy+16)+'" fill="none" stroke="#5b675f" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#pijl)"/>';
+    // info gebeurtenissen onder
+    var infoY=vy+NH+14;
+    g.info.forEach(function(ev,i){
+      var w=wrap('Gebeurtenis '+(ev.id||'?')+' ('+(ev.trigger||'')+')'+(ev.tekst?': '+ev.tekst:''),Math.floor(c.W/6));
+      out+='<rect x="'+c.x+'" y="'+infoY+'" width="'+c.W+'" height="'+(w.length*15+14)+'" rx="8" fill="#fdf0dc" stroke="#b45309"/>';
+      out+=tekst(c.x+10,infoY+18,w,{size:11,fill:'#1f2a24'});
+      infoY+=w.length*15+22;
+    });
+    maxH=Math.max(maxH,infoY+10);
+    // pijl naar volgende episode
+    if(ci<cols.length-1){
+      var nx=cols[ci+1].x;
+      out+='<path d="M'+(c.x+c.W+4)+' '+(y0+74)+' L'+(nx-8)+' '+(y0+74)+'" stroke="#2f7d4f" stroke-width="3" marker-end="url(#pijlG)"/>';
+      var cw=wrap(cols[ci+1].e.contextwissel||'context verandert',22);
+      out+=tekst((c.x+c.W+nx)/2,y0+12,cw.slice(0,5),{anchor:'middle',size:11,fill:'#2f7d4f',bold:1,lh:13});
+    }
+  });
+  var H=maxH+20;
+  var afm=fit?'style="width:100%;min-width:720px;max-width:'+totalW+'px;height:auto;color:#1f2a24;background:#ffffff"':'width="'+totalW+'" height="'+H+'" style="color:#1f2a24;background:#ffffff"';
+  return '<svg xmlns="http://www.w3.org/2000/svg" '+afm+' viewBox="0 0 '+totalW+' '+H+'" font-family="system-ui,Segoe UI,Roboto,sans-serif">'+defs+out+'</svg>';
+}
+function schemaTabel(){
+  var h='<table class="t"><tr><th>Toestand</th><th>Episode</th><th>Regels die hier gelden</th></tr>';
+  S.episodes.forEach(function(e,i){
+    var g=toestanden(e);
+    g.nodes.forEach(function(n){
+      h+='<tr><td>E'+(i+1)+' · '+esc(n.naam)+'</td><td>'+(i+1)+'</td><td>'+(esc(regelsBij(e,n).join(', '))||'—')+'</td></tr>';
+    });
+  });
+  return h+'</table>';
+}
+function tekenSchema(){
+  document.getElementById('schemaSvg').innerHTML=schemaSvg(true);
+  document.getElementById('schemaTabel').innerHTML=schemaTabel();
+  document.getElementById('legenda').innerHTML='<span><i style="background:#2b6cb0"></i>startsituatie</span><span><i style="background:#b7791f"></i>ernst verandert (1 gebeurtenis)</span><span><i style="background:#c53030"></i>combinatie van gebeurtenissen</span><span><i style="background:#fdf0dc;border:1px solid #b45309"></i>informatie-gebeurtenis</span><span>Onder een vakje staan de regels (invarianten) die daar gelden. Gestippeld: verwijzen kan vanuit elk vakje.</span>';
+}
+
+/* ================= Stap 6: Markdown ================= */
+function mdCel(s){return String(s==null?'':s).replace(/\|/g,'\\|').replace(/\r?\n/g,' ').trim()||'—';}
+function bullets(arr){return arr.filter(nietLeeg).map(function(x){return '- '+x;}).join('\n');}
+function genereerMarkdown(){
+  var b=S.basis,o=[],n=0;
+  o.push('# '+(b.titel||'Casus')+(b.signatuur?'':''));
+  o.push('');
+  o.push('| | |\n|---|---|');
+  o.push('| Casus-id | `'+(b.id||'')+'` |');
+  o.push('| Versie | '+mdCel(b.versie+' — '+b.datum)+' |');
+  o.push('| Functie | '+mdCel(b.functie)+' |');
+  o.push('| Signatuurvaardigheid | '+mdCel(b.signatuur)+' |');
+  o.push('| Klinische validatie | '+mdCel(b.validatie)+' |');
+  var bronnen=S.basis.bronnen.filter(function(x){return nietLeeg(x.code)||nietLeeg(x.tekst);}).map(function(x){return mdCel(x.tekst)+' **['+x.code+']**';}).join(' · ');
+  o.push('| Bronnen | '+(bronnen||'—')+' |');
+  o.push('| Markering | **[G]** = berust niet op een van deze bronnen (uit geheugen of ontwerpkeuze) |');
+  o.push('');o.push('---');o.push('');
+  n++;
+  o.push('## '+n+'. Prestatieprobleem en leerdoelen');o.push('');
+  o.push('### Prestatieprobleem');o.push(S.prestatie.probleem||'—');o.push('');
+  if(nietLeeg(S.prestatie.anders)){o.push('**Wat ze na deze casus anders doen:** '+S.prestatie.anders);o.push('');}
+  o.push('### Leerdoelen');o.push('');
+  o.push('| Level = episode | Leerdoel | Bloom | Scoorbaar gedrag |\n|---|---|---|---|');
+  S.episodes.forEach(function(e,i){var ld=null;S.leerdoelen.forEach(function(l){if(l.episode===e.id)ld=l;});ld=ld||{};o.push('| '+(i+1)+' | '+mdCel(ld.doel)+' | '+mdCel(ld.bloom)+' | '+mdCel(ld.gedrag)+' |');});
+  o.push('');o.push('### Toetsmatrijs');o.push('');
+  o.push('| Leerdoel | Poort (invarianten) | Score-as | Meting (eerste poging) |\n|---|---|---|---|');
+  S.episodes.forEach(function(e,i){
+    var ld=null;S.leerdoelen.forEach(function(l){if(l.episode===e.id)ld=l;});ld=ld||{};
+    var ids=e.invarianten.map(function(v){return v.id;}).filter(nietLeeg).join(', ');
+    var as=[];if(nietLeeg(e.score.duurzaamheid))as.push('Duurzaamheid');if(nietLeeg(e.score.doelmatigheid))as.push('Doelmatigheid');
+    o.push('| '+(i+1)+' '+mdCel((ld.doel||'').split(/[.:]/)[0].slice(0,60))+' | '+mdCel(ids)+' | '+mdCel(as.join(', '))+' | '+mdCel(ld.meting)+' |');
+  });
+  o.push('');o.push('---');o.push('');
+  n++;
+  o.push('## '+n+'. Opbouw: de toestandsgraaf');o.push('');
+  o.push('- **Tussen episodes** (maanden tot jaren, bij een recidief) verandert de **context**.');
+  o.push('- **Binnen een episode** (dagen) verandert de **ernst**, via gebeurtenissen. De volgorde is vrij waar gebeurtenissen dezelfde groep hebben.');
+  o.push('- **Klinische regels hangen aan de toestand, niet aan de route.**');
+  o.push('- **Verwijzen** is de rand van de kaart en kan vanuit elke toestand.');
+  o.push('');
+  var asc=S.episodes.map(function(e,i){return 'Episode '+(i+1)+' ('+[e.patient.leeftijd,e.startToestand].filter(nietLeeg).join(', ')+')';}).join('  →  ');
+  o.push('```');o.push(asc);
+  S.episodes.forEach(function(e,i){
+    var g=toestanden(e);
+    if(g.nodes.length>1||g.info.length){
+      var l=['  Episode '+(i+1)+': '+g.nodes[0].naam];
+      g.nodes.slice(1).forEach(function(nd){l.push('    ↳ '+nd.naam+(nd.evs.length?' (gebeurtenis '+nd.evs.join('/')+')':''));});
+      g.info.forEach(function(ev){l.push('    ⇢ gebeurtenis '+ev.id+': '+(ev.trigger||''));});
+      o.push(l.join('\n'));
+    }
+  });
+  o.push('    ⇢ verwijzen (vanuit elke toestand)');
+  o.push('```');o.push('');
+  o.push('| Toestand | Episode | Invarianten die hier gelden |\n|---|---|---|');
+  S.episodes.forEach(function(e,i){toestanden(e).nodes.forEach(function(nd){o.push('| E'+(i+1)+' · '+mdCel(nd.naam)+' | '+(i+1)+' | '+mdCel(regelsBij(e,nd).join(', '))+' |');});});
+  o.push('');o.push('---');o.push('');
+  n++;
+  o.push('## '+n+'. Kaartenbibliotheek');o.push('');
+  o.push('- Labels zijn neutraal: ze verraden geen timing en geen oplossing.');
+  o.push('- Elke kaart heeft een verplichte downside.');
+  o.push('- Kaarten met een **doel** (⊙) richten zich op een middel uit de lijst.');
+  o.push('- Gegevens, Onderzoek, Informeren en Evalueren zijn vaste kaarten die in elke casus terugkomen.');o.push('');
+  o.push('| Id | Categorie | Label | Vanaf | Effect / wat de kaart onthult | Downside | Bron |\n|---|---|---|---|---|---|---|');
+  var ks=S.kaarten.slice().sort(function(a,b){return CATS.indexOf(a.categorie)-CATS.indexOf(b.categorie);});
+  ks.forEach(function(k){o.push('| '+mdCel(k.id)+' | '+k.categorie+(k.doel==='ja'?' ⊙':'')+' | '+mdCel(k.label)+' | E'+(k.vanaf||1)+' | '+mdCel(k.effect)+' | '+mdCel(k.downside)+' | '+mdCel(k.bron)+' |');});
+  o.push('');o.push('---');o.push('');
+  S.episodes.forEach(function(e,i){
+    n++;var pt=e.patient;
+    o.push('## '+n+'. Episode '+(i+1)+' — level '+(e.level||i+1));o.push('');
+    o.push('**Knoppen:**');
+    o.push(bullets(['repertoire: '+e.knoppen.repertoire,'acties per beurt: '+e.knoppen.acties,'gebeurtenissen: '+e.knoppen.gebeurtenissen,'richtlijn raadplegen: '+e.knoppen.raadplegen].filter(function(x){return !/: $/.test(x);})));o.push('');
+    if(nietLeeg(e.contextwissel)){o.push('**Wat verandert t.o.v. de vorige episode:** '+e.contextwissel);o.push('');}
+    o.push('### Patiëntkaart');
+    o.push(bullets([
+      '**'+[pt.naam,pt.leeftijd].filter(nietLeeg).join(', ')+'.** '+(pt.klachten||''),
+      nietLeeg(pt.medicatie)?'**Medicatie:** '+pt.medicatie:'',
+      nietLeeg(pt.lab)?'**Lab:** '+pt.lab:'',
+      nietLeeg(pt.risico)?pt.risico:'',
+      '**Verborgen:** '+(pt.verborgen.length?pt.verborgen.map(function(v){return 'achter '+v.kaart+': '+v.onthult;}).join('; '):'niets.')
+    ]));o.push('');
+    o.push('### Repertoire');
+    o.push(e.repertoire.length?e.repertoire.join(', '):'—');o.push('');
+    if(nietLeeg(e.volgorde)){o.push('**Volgorde:** '+e.volgorde);o.push('');}
+    if(e.gebeurtenissen.length){
+      o.push('### Gebeurtenissen');o.push('');
+      o.push('| Id | Trigger | Toestand | Groep | Inhoud |\n|---|---|---|---|---|');
+      e.gebeurtenissen.forEach(function(g){o.push('| '+mdCel(g.id)+' | '+mdCel(g.trigger)+' | '+mdCel(g.toestand)+' | '+mdCel(g.groep)+' | '+mdCel(g.tekst)+' |');});
+      o.push('');
+    }
+    if(e.routes.length){
+      o.push('### Geldige routes');o.push('');
+      o.push('| Route | Kern | Profiel |\n|---|---|---|');
+      e.routes.forEach(function(r){o.push('| '+mdCel(r.naam)+' | '+mdCel(r.kern)+' | '+mdCel(r.profiel)+' |');});
+      o.push('');
+    }
+    if(e.invarianten.length){
+      o.push('### Invarianten (poort'+(nietLeeg(e.erft)?'; '+e.erft+' blijven gelden':'')+')');o.push('');
+      o.push('| Id | Ernst | Altijd fout | Geldt in | Bron |\n|---|---|---|---|---|');
+      e.invarianten.forEach(function(v){o.push('| '+mdCel(v.id)+' | '+mdCel(v.ernst)+' | '+mdCel(v.fout)+' | '+mdCel(v.geldtIn==='*'?'alle toestanden':v.geldtIn)+' | '+mdCel(v.bron)+' |');});
+      o.push('');
+    }
+    if(nietLeeg(e.score.duurzaamheid)||nietLeeg(e.score.doelmatigheid)){
+      o.push('### Score');
+      o.push(bullets([nietLeeg(e.score.duurzaamheid)?'**Duurzaamheid:** '+e.score.duurzaamheid:'',nietLeeg(e.score.doelmatigheid)?'**Doelmatigheid:** '+e.score.doelmatigheid:'']));o.push('');
+    }
+    var wz=e.invarianten.filter(function(v){return nietLeeg(v.weglaat);});
+    if(wz.length){o.push('### Wat er zichtbaar wordt als een kaart ontbreekt');o.push(bullets(wz.map(function(v){return '**'+v.id+':** '+v.weglaat;})));o.push('');}
+    var fb=e.invarianten.filter(function(v){return nietLeeg(v.vraag);}).map(function(v){return [v.id,v.vraag];})
+      .concat(e.feedbackExtra.filter(function(x){return nietLeeg(x.vraag);}).map(function(x){return [x.trigger,x.vraag];}))
+      .concat(e.profielen.filter(function(x){return nietLeeg(x.vraag);}).map(function(x){return ['Profiel '+x.naam,x.vraag];}));
+    if(fb.length){o.push('### Feedback (scherp-Socratisch, zegt niet voor)');o.push('');o.push('| Trigger | Vraag |\n|---|---|');fb.forEach(function(x){o.push('| '+mdCel(x[0])+' | '+mdCel(x[1])+' |');});o.push('');}
+    if(nietLeeg(e.bronconflict)){o.push('**Bronconflict, geen poort:** '+e.bronconflict);o.push('');}
+    o.push('---');o.push('');
+  });
+  n++;
+  o.push('## '+n+'. Spelregels die de casus veronderstelt');o.push('');
+  o.push('*Standaardtekst van het casussjabloon; wijkt deze casus af, pas het dan hier aan.*');o.push('');
+  o.push('**Poort en score:**');
+  o.push('- Veiligheid is een poort. Bij een schending geeft het spel geen score, toont de downside en stelt één Socratische vraag over de ernstigste schending. Daarna volgt een herkansing.');
+  o.push('- Wie de poort haalt, ziet de score per as, het voorschrijfprofiel en één reflectievraag.');
+  o.push('- Score-assen zijn onder meer duurzaamheid en doelmatigheid.');o.push('');
+  o.push('**Meten:** alleen de eerste poging telt als meting. Herkansingen zijn om van te leren.');o.push('');
+  o.push('**Episodes en gebeurtenissen:** gebeurtenissen worden getriggerd op het aantal gespeelde kaarten. Het aantal acties per beurt en de triggerwaarden zijn engine-parameters, geen klinische regels.');o.push('');
+  o.push('---');o.push('');
+  n++;
+  o.push('## '+n+'. Open punten (blokkeren het bouwen niet)');o.push('');
+  var op=S.open.filter(nietLeeg);
+  var auto=controle().filter(function(x){return x.n==='fout';}).map(function(x){return 'Nog invullen: '+x.t;});
+  o.push(bullets(op.concat(auto))||'- Geen.');
+  o.push('');
+  return o.join('\n').replace(/\n{3,}/g,'\n\n');
+}
+function stapMarkdown(p){
+  p.appendChild(el('h2',{text:'Markdown genereren'}));
+  p.appendChild(el('p',{class:'intro',text:'Dit is je casus in het vaste format. Kopieer de tekst of download het bestand en stuur het naar de bouwer of validator. Wijzig je iets in een eerdere stap, kom dan hier terug en genereer opnieuw.'}));
+  var m=controle();var nf=m.filter(function(x){return x.n==='fout';}).length;
+  if(nf)p.appendChild(el('div',{class:'melding fout'},[el('span',{text:'Er zijn nog '+nf+' punten om op te lossen. De markdown bevat ze onder "Open punten".'}),el('button',{class:'klein',text:'Naar controle',onclick:function(){stap=4;render();}})]));
+  else p.appendChild(el('div',{class:'melding ok',text:m.length?'Niets om op te lossen. De aandachtspunten in de controle zijn optioneel.':'Controle is schoon.'}));
+  p.appendChild(el('h3',{text:'Open punten die jij zelf wilt toevoegen'}));
+  S.open.forEach(function(x,i){
+    var inp=el('input',{type:'text',value:x});
+    inp.addEventListener('input',function(){S.open[i]=inp.value;bewaar();});
+    p.appendChild(el('div',{class:'rij',style:'display:flex;gap:8px;align-items:center'},[inp,el('button',{class:'klein gevaar',text:'Weg',onclick:function(){S.open.splice(i,1);bewaar();render();}})]));
+  });
+  p.appendChild(el('button',{text:'+ Open punt',onclick:function(){S.open.push('');bewaar();render();}}));
+  var ta=el('textarea',{id:'mdUit',rows:24,style:'margin-top:16px',readonly:'readonly'});
+  function vul(){ta.value=genereerMarkdown();}
+  vul();
+  p.appendChild(el('div',{class:'acties',style:'margin-top:14px'},[
+    el('button',{class:'primair',text:'Genereer opnieuw',onclick:vul}),
+    el('button',{text:'Kopieer',onclick:function(){vul();ta.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}if(!ok&&navigator.clipboard)navigator.clipboard.writeText(ta.value);this.textContent='Gekopieerd ✓';var b=this;setTimeout(function(){b.textContent='Kopieer';},1500);}}),
+    el('button',{text:'Download .md',onclick:function(){vul();download('casus-'+(S.basis.id||'nieuw')+'.md',ta.value,'text/markdown');}})
+  ]));
+  p.appendChild(ta);
+}
+function download(naam,inhoud,type){
+  var blob=new Blob([inhoud],{type:type+';charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=naam;document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+}
+
+/* ================= Voorbeeld: casus UWI (uit casus-uwi.md, versie 1.1) ================= */
+function K(id,categorie,label,vanaf,doel,effect,downside,bron){return {id:id,categorie:categorie,label:label,vanaf:vanaf,doel:doel?'ja':'nee',effect:effect,downside:downside,bron:bron};}
+function voorbeeld(){
+  var o=leeg();
+  o.basis={id:'uwi-eerstelijn',titel:'Casus UWI in de eerste lijn — tutorialcasus Epic green cards',versie:'1.1',datum:'11 oktober 2026',
+    functie:'Tutorialcasus: leert het spel én de signatuurvaardigheid',
+    signatuur:'Veranderende context: empirisch starten → bijsturen op de kweek → nierfunctie en comedicatie',
+    validatie:'Voorschrijven en wat daarna komt: Bart Pouls (gevalideerd). Diagnostiek en klinische context: nog voorleggen aan een huisarts',
+    bronnen:[{code:'NHG',tekst:'NHG-Standaard Urineweginfecties, versie juli 2026'},{code:'SIDRIK',tekst:'SIDRIK-stroomschema medicatieadvies bij sick day, Universiteit Utrecht 2025'},{code:'Kompas',tekst:'Farmacotherapeutisch Kompas, preparaatteksten spironolacton en ciprofloxacine'},{code:'KNMP',tekst:'KNMP medisch-farmaceutische beslisregel 7025-4 "Kalium controle na 3 dagen"'}]};
+  o.prestatie={probleem:'Beginnende voorschrijvers kiezen het eerstekeusmiddel uit het protocol, klikken bewakingssignalen weg en beschouwen een gekozen beleid als afgerond. Een nieuw gegeven leidt bij hen tot een ander antibioticum, maar niet tot een herziening van de hele medicatielijst. Daalt de nierfunctie, dan kijken ze alleen naar wat ze nu voorschrijven en niet naar alles wat de patiënt al gebruikt.',
+    anders:'ze toetsen elke keuze aan de actuele context van déze patiënt. Komt er nieuwe informatie bij, dan herzien ze het hele plan.'};
+  o.leerdoelen=[
+    {episode:'E1',doel:'Kiest bij een ongecompliceerde cystitis een beleid dat bij de patiënt en de richtlijn past (afwachten hoort daarbij) en borgt de veiligheid met alarmsignalen en een opvolgmoment',bloom:'Evalueren',gedrag:'Haalt de poort I1, I3 en I4. Het gekozen voorschrijfprofiel wordt vastgelegd.',meting:'Profiel, plus poort gehaald ja/nee'},
+    {episode:'E2',doel:'Herkent dat de beslisinformatie verouderd is, haalt de actuele nierfunctie op, past middel, kweek en monitoring daarop aan en stuurt bij op de kweekuitslag',bloom:'Evalueren',gedrag:'Speelt G2 vóór een voorschrijfkaart. Haalt de poort I5–I8. Wisselt niet onnodig.',meting:'Is G2 gespeeld vóór de voorschrijfkaart ja/nee; poort ja/nee'},
+    {episode:'E3',doel:'Herziet bij verslechtering het hele medicatieplan: een antibioticum dat het weefsel bereikt in een aangepaste dosis, de interactie met calcium, de sick day rules, en de bestaande combinatie RAAS-remmer plus spironolacton; volgt op of verwijst',bloom:'Creëren',gedrag:'Haalt de poort I9–I16. Gebruikt de eerdere kweek. De-escaleert na de kweek.',meting:'Poort per invariant; aantal gemiste invarianten'}];
+  o.kaarten=[
+    K('G1','Gegevens','Medicatieoverzicht nalopen',1,0,'Toont de actuele medicatielijst','Kost een actie','—'),
+    K('G2','Gegevens','Recente labwaarden opvragen',1,0,'E1: eGFR 42, recent. E2: eGFR 29 (verborgen). E3: eGFR 28, bevestigd.','Kost een actie','—'),
+    K('G3','Gegevens','Eerdere kweekuitslagen opvragen',3,0,'Toont de kweek uit episode 2','Kost een actie','NHG: kweken tot ongeveer 1 jaar terug meewegen'),
+    K('O1','Onderzoek','Urinekweek inzetten',1,0,'Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag in E2 na de 4e gespeelde kaart, in E3 drie kaarten na O1.','E1: niet geïndiceerd, kost doelmatigheid','NHG'),
+    K('O2','Onderzoek','Kalium bepalen',1,0,'Bepaalt de kaliumspiegel','Alleen zinvol bij een indicatie; anders kost het doelmatigheid','NHG, KNMP'),
+    K('V1','Voorschrijven','Afwachtend beleid',1,0,'Geen antibioticum; ruim drinken, zo nodig pijnstilling','Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger','NHG'),
+    K('V2','Voorschrijven','Uitgesteld recept',1,0,'De patiënt start zelf als de klachten aanhouden of toenemen','Ze moet weten wanneer ze moet starten','NHG'),
+    K('V3','Voorschrijven','Nitrofurantoïne',1,0,'E1: 5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen.','Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G].','NHG'),
+    K('V4','Voorschrijven','Fosfomycine',1,0,'Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht','Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.','NHG'),
+    K('V5','Voorschrijven','Trimethoprim',1,0,'E1: 3 dagen 1 dd 300 mg. Risicogroep: 7 dagen.','Naast een RAS-remmer of kaliumsparend diureticum stijgt het kalium (controle nodig bij een 7-daagse kuur). Bij eGFR 10–30: na dag 3 halveren en kans op therapiefalen. Hoge resistentie bij E. coli.','NHG, KNMP'),
+    K('V6','Voorschrijven','Dosis aanpassen',2,1,'Past dosis of interval aan van een nieuw of bestaand middel (ook lisinopril halveren bij sick day)','Een verkeerde aanpassing geeft onder- of overdosering','NHG, SIDRIK'),
+    K('V7','Voorschrijven','Ciprofloxacine',3,0,'7 dagen 2 dd 500 mg','Bij ouderen: kans op peesschade, QT-verlenging, aneurysma. Minder opname naast calcium. NHG: terughoudend bij ouderen en bij een nierfunctiestoornis.','NHG, Kompas'),
+    K('V8','Voorschrijven','Amoxicilline/clavulaanzuur',3,0,'10 dagen 3 dd 500/125 mg','Bij eGFR < 30 stapelt clavulaanzuur: dan alleen 875/125 mg 2 dd','NHG'),
+    K('V9','Voorschrijven','Cotrimoxazol',3,0,'10 dagen 2 dd 960 mg','Gecontra-indiceerd bij een ernstige nierfunctiestoornis. Met spironolacton kans op ernstige hyperkaliëmie.','NHG, Kompas'),
+    K('V10','Voorschrijven','Amoxicilline',3,0,'3 dd 500 mg, alleen bij aangetoonde gevoeligheid','De kweek laat resistentie zien: geen werking','NHG'),
+    K('B1','Bijsturen','Antibioticum wisselen',2,1,'Vervangt het lopende antibioticum','Onnodig wisselen kost duurzaamheid','NHG'),
+    K('B2','Bijsturen','Antibioticum stoppen',2,1,'Stopt het lopende antibioticum','Te vroeg stoppen geeft therapiefalen','—'),
+    K('B3','Bijsturen','Medicatie tijdelijk stoppen',3,1,'Pauzeert een bestaand middel (sick day)','Vraagt een afspraak over herstart','SIDRIK'),
+    K('B4','Bijsturen','Innametijden aanpassen',3,1,'Ciprofloxacine 1–2 uur vóór of ten minste 4 uur ná calcium','Vraagt uitleg aan de patiënt','Kompas'),
+    K('B5','Bijsturen','Medicatie hervatten',3,1,'Hervat een eerder gestopt middel. Volgens SIDRIK: herstarten zodra de klachten weg zijn.','Hervatten zonder herbeoordeling kan dezelfde schade herhalen','SIDRIK'),
+    K('N1','Informeren','Alarmsignalen bespreken',1,0,'Bij koorts of ziek worden direct contact opnemen','—','NHG'),
+    K('N2','Informeren','Gebruik en verwachting uitleggen',1,1,'Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg','—','NHG'),
+    K('N3','Informeren','Drinkadvies geven',3,0,'2–2,5 liter per dag','—','SIDRIK'),
+    K('Ev1','Evalueren','Opvolgmoment afspreken',1,0,'Afwachten: na 1 week alsnog starten. Na een kuur: als de klachten 24–48 uur na afloop niet duidelijk minder zijn, opnieuw urineonderzoek. Weefselinvasie: contact binnen 48 uur. Sick day: monitoring na 1–3 dagen.','—','NHG, SIDRIK'),
+    K('Ev2','Evalueren','Overleggen met de voorschrijver',3,1,'Legt een bestaand middel voor aan de voorschrijver','Kost een actie','Bart; CVRM-richtlijn via Mistral, niet zelf gecheckt'),
+    K('Ev3','Evalueren','Verwijzen',3,0,'Verlaat de kaart: de patiënt gaat naar de tweede lijn','Onnodig verwijzen kost doelmatigheid','NHG')];
+  var e1=leegEpisode(1),e2=leegEpisode(2),e3=leegEpisode(3);
+  var r1=['G1','G2','O1','O2','V1','V2','V3','V4','V5','N1','N2','Ev1'];
+  e1.startToestand='cystitis';e1.knoppen={repertoire:'klein (12 kaarten)',acties:'ruim',gebeurtenissen:'geen',raadplegen:'kost niets'};
+  e1.patient={naam:'Mevrouw V.',leeftijd:'72 jaar',klachten:'Eerste cystitis: pijnlijke en frequente mictie sinds 2 dagen, geen koorts, nitriettest positief.',medicatie:'lisinopril (hypertensie)',lab:'eGFR 42, recent',risico:'Geen risicogroep. De eGFR is ≥ 30 [NHG]. De leeftijd ligt bewust onder 75, de grens die de NHG noemt als factor bij verminderde weerstand [NHG].',verborgen:[]};
+  e1.repertoire=r1.slice();e1.volgorde='Alle kaarten mogen in elke volgorde.';
+  e1.routes=[{naam:'Afwachten',kern:'V1 + N1 + Ev1',profiel:'Terughoudend'},{naam:'Uitgesteld recept',kern:'V2 (+ middel) + N1 + N2 + Ev1',profiel:'Gedeelde regie'},{naam:'Nitrofurantoïne 5 dagen',kern:'V3 + N1 (+ N2, Ev1)',profiel:'Direct behandelen, 1e keus'},{naam:'Fosfomycine',kern:'V4 + N1 + N2',profiel:'Direct behandelen, 2e keus'},{naam:'Trimethoprim 3 dagen',kern:'V5 + N1',profiel:'Direct behandelen, 3e keus'}];
+  e1.invarianten=[
+    {id:'I1',ernst:'5',bron:'NHG',geldtIn:'*',fout:'Een route zonder N1',vraag:'Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?',weglaat:'Mevrouw weet niet wanneer ze moet bellen.'},
+    {id:'I3',ernst:'5',bron:'NHG',geldtIn:'*',fout:'V1 zonder Ev1',vraag:'Je wacht af. Tot wanneer, en wat gebeurt er dan?',weglaat:'Er is geen moment om alsnog te starten als de klachten aanhouden.'},
+    {id:'I4',ernst:'5',bron:'[G]',geldtIn:'*',fout:'Twee antibiotica tegelijk',vraag:'Wat lost het tweede middel op dat het eerste niet oplost?',weglaat:''}];
+  e1.score={duurzaamheid:'afwachten > uitgesteld recept > direct een antibioticum',doelmatigheid:'O1 (kweek niet geïndiceerd) en O2 (geen indicatie) kosten punten'};
+  e1.profielen=[{naam:'Terughoudend',vraag:'Je schreef niets voor. Bij welke patiënt zou dat niet mogen?'},{naam:'Gedeelde regie',vraag:''},{naam:'Direct behandelen',vraag:'Het werkt. Was het nodig, en koos zíj ervoor?'}];
+  e1.feedbackExtra=[{trigger:'O1 gespeeld',vraag:'Wat doe je bij welke uitslag anders?'}];
+
+  e2.startToestand='cystitis';e2.contextwissel='6 jaar later · 78 jaar · + calcium/colecalciferol · eGFR gedaald (verborgen)';
+  e2.knoppen={repertoire:'groter, met afleiders (15 kaarten)',acties:'ruim',gebeurtenissen:'1 (kweekuitslag)',raadplegen:'kost niets'};
+  e2.patient={naam:'Mevrouw V.',leeftijd:'78 jaar',klachten:'Tweede cystitis, geen koorts, nitriettest positief.',medicatie:'lisinopril; calcium/colecalciferol (afleider, bereidt episode 3 voor)',lab:'laatst bekende eGFR 42, van 6 jaar geleden',risico:'Eerdere UWI: episode 1, toen geen kweek gedaan. De ware eGFR is 29: daarmee valt ze in de risicogroep.',verborgen:[{kaart:'G2',onthult:'eGFR 29 uit de jaarlijkse controle. Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG].'}]};
+  e2.repertoire=r1.concat(['V6','B1','B2']);e2.erft='I1, I4';e2.volgorde='O1 vóór de eerste antibioticumkaart. O2 ná V5. De rest is vrij.';
+  e2.gebeurtenissen=[{id:'C',trigger:'na de 4e gespeelde kaart, alleen als O1 gespeeld is',toestand:'',groep:'',tekst:'Kweekuitslag: E. coli, resistent voor trimethoprim en amoxicilline; gevoelig voor nitrofurantoïne, fosfomycine, amoxicilline/clavulaanzuur en ciprofloxacine.'}];
+  e2.routes=[{naam:'Fosfomycine',kern:'G2 → O1 → V4 + N1 + N2 → na de uitslag niet wisselen',profiel:'Kweekgestuurd, smal'},{naam:'Trimethoprim 7 dagen',kern:'G2 → O1 → V5 + O2 (dag 2–4) + V6 (na dag 3) + N1 → na de uitslag B1 naar fosfomycine',profiel:'Bijgestuurd'}];
+  e2.invarianten=[
+    {id:'I5',ernst:'2',bron:'NHG',geldtIn:'*',fout:'Nitrofurantoïne bij eGFR < 30, ook als de kweek "gevoelig" zegt',vraag:'Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?',weglaat:'De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.'},
+    {id:'I6',ernst:'4',bron:'NHG',geldtIn:'*',fout:'Een antibioticum starten zonder O1 vooraf, of afwachten (V1/V2) in de risicogroep',vraag:'Wat vertelt een kweek van urine die al antibioticum heeft gezien?',weglaat:''},
+    {id:'I7',ernst:'3',bron:'NHG, KNMP',geldtIn:'*',fout:'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3',vraag:'Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?',weglaat:'De kaliumspiegel is onbekend.'},
+    {id:'I8',ernst:'4',bron:'NHG',geldtIn:'*',fout:'Bij aanhoudende klachten doorgaan met een middel waarvoor de bacterie resistent is',vraag:'De kweek is binnen en de klachten blijven. Waar wacht je nog op?',weglaat:''}];
+  e2.score={duurzaamheid:'wisselen terwijl het middel werkt en de klachten afnemen, kost punten',doelmatigheid:'G2 spelen vóór de voorschrijfkaart levert punten op'};
+  e2.profielen=[{naam:'Kweekgestuurd, smal',vraag:''},{naam:'Bijgestuurd',vraag:''}];
+  e2.feedbackExtra=[{trigger:'Verouderde eGFR niet opgemerkt',vraag:'Hoe oud was de eGFR waarop je besloot? Wat is er sindsdien met haar gebeurd?'},{trigger:'Onnodig gewisseld',vraag:'Het werkte en de klachten namen af. Wat won je met wisselen?'}];
+
+  e3.startToestand='cystitis';e3.contextwissel='1 jaar later · 79 jaar · + spironolacton · eGFR 28';
+  e3.knoppen={repertoire:'volledig (26 kaarten)',acties:'krap',gebeurtenissen:'2 in vrije volgorde, plus de kweekuitslag',raadplegen:'kost tempo'};
+  e3.patient={naam:'Mevrouw V.',leeftijd:'79 jaar',klachten:'Cystitis, geen koorts.',medicatie:'lisinopril, spironolacton (hypertensie), calcium/colecalciferol. Wie spironolacton heeft gestart en waarom, staat er bewust niet op.',lab:'eGFR 28, recent',risico:'Risicogroep [NHG].',verborgen:[{kaart:'G3',onthult:'De kweek uit episode 2, met trimethoprim resistent. Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG].'}]};
+  e3.repertoire=kaartIdsVan(o.kaarten);e3.erft='I1, I4, I5, I6, I7, I8';
+  e3.gebeurtenissen=[
+    {id:'A',trigger:'na kaart n (engine-parameter); volgorde met B willekeurig',toestand:'weefselinvasie',groep:'AB',tekst:'Koorts 38,6 °C en flankpijn.'},
+    {id:'B',trigger:'na kaart m (engine-parameter); volgorde met A willekeurig',toestand:'uitdroging',groep:'AB',tekst:'Eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald.'},
+    {id:'C',trigger:'3 kaarten na O1',toestand:'',groep:'',tekst:'Kweekuitslag: E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne.'}];
+  e3.routes=[{naam:'Amoxicilline/clavulaanzuur 875/125 mg 2 dd (bij weefselinvasie)',kern:'O1 → B1 → V8 + V6',profiel:'Kweekgestuurd; scoort hoger'},{naam:'Ciprofloxacine met calcium gescheiden of gestopt (bij weefselinvasie)',kern:'O1 → B1 → V7 + B4 of B3',profiel:'Richtlijn eerste keus; eigen profiel'}];
+  e3.invarianten=[
+    {id:'I9',ernst:'3',bron:'Bart; SIDRIK; herstart-nuance [G]',geldtIn:'*',fout:'De combinatie lisinopril + spironolacton bij eGFR < 30 laten liggen (geen O2 én geen Ev2), of spironolacton na de sick day hervatten (B5) zonder eerst Ev2',vraag:'Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?',weglaat:'Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.'},
+    {id:'I10',ernst:'2',bron:'NHG',geldtIn:'weefselinvasie',fout:'Bij weefselinvasie doorgaan met nitrofurantoïne of fosfomycine: onvoldoende concentratie in het weefsel',vraag:'Fosfomycine werkt in de blaas. Waar zit de infectie nu?',weglaat:''},
+    {id:'I11',ernst:'4',bron:'NHG',geldtIn:'weefselinvasie',fout:'Bij weefselinvasie wisselen zonder eerst een nieuwe kweek',vraag:'Je wisselt. Waarop baseer je de wissel daarna?',weglaat:''},
+    {id:'I12',ernst:'1',bron:'NHG, Kompas',geldtIn:'*',fout:'Cotrimoxazol voorschrijven',vraag:'Cotrimoxazol naast spironolacton bij een eGFR van 28. Wat doet dat met haar kalium?',weglaat:''},
+    {id:'I13',ernst:'3',bron:'NHG',geldtIn:'*',fout:'Amoxicilline/clavulaanzuur zonder V6 naar 875/125 mg 2 dd',vraag:'Clavulaanzuur bij een eGFR van 28. Waar blijft het?',weglaat:''},
+    {id:'I14',ernst:'3',bron:'Kompas; B3-route [G]',geldtIn:'weefselinvasie',fout:'Ciprofloxacine zonder B4 (scheiden van calcium) en zonder B3 (calcium tijdelijk stoppen)',vraag:'Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?',weglaat:'Na 48 uur geen verbetering.'},
+    {id:'I15',ernst:'2',bron:'SIDRIK',geldtIn:'uitdroging',fout:'Na het halen van de sick day-drempel niet: spironolacton stoppen, lisinopril halveren, drinkadvies, monitoring binnen 1–3 dagen',vraag:'Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?',weglaat:'De nierfunctie daalt verder en het kalium stijgt.'},
+    {id:'I16',ernst:'3',bron:'NHG',geldtIn:'weefselinvasie',fout:'Geen contact binnen 48 uur, of geen verwijzing als ze dan niet beter is',vraag:'Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?',weglaat:''}];
+  e3.score={duurzaamheid:'de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op',doelmatigheid:'G3 gebruiken vóór de eerste keuze levert punten op'};
+  e3.profielen=[{naam:'Kweekgestuurd (V8)',vraag:''},{naam:'Richtlijn eerste keus (V7)',vraag:'Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?'}];
+  e3.feedbackExtra=[{trigger:'Automatische herstart',vraag:'De koorts is weg. Wat herstart je, en wat juist niet zonder overleg?'},{trigger:'Ciprofloxacine-dosis (bronconflict)',vraag:'De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?'}];
+  e3.bronconflict='Voor ciprofloxacine bij eGFR 10–30 geeft de NHG de normale keerdosis eenmaal per 24 uur [NHG]. Het Kompas past de dosis pas aan bij een klaring ≤ 15 [Kompas]. Beide zijn verdedigbaar; het wordt een feedbackmoment.';
+  o.episodes=[e1,e2,e3];
+  o.open=['Voorleggen aan de huisarts: de diagnostische kant en de geloofwaardigheid van de eGFR-daling van 42 naar 29 in 6 jaar.','Rol van de speler (apotheker of huisarts) per variant. Zelf spironolacton stoppen kan later een geldige route worden.'];
+  return o;
+}
+function kaartIdsVan(k){return k.map(function(x){return x.id;});}
+
+/* ================= Verbinden ================= */
+function toonTab(n){
+  document.getElementById('view1').classList.toggle('verborgen',n!==1);
+  document.getElementById('view2').classList.toggle('verborgen',n!==2);
+  document.getElementById('tab1').classList.toggle('actief',n===1);
+  document.getElementById('tab2').classList.toggle('actief',n===2);
+  if(n===2)tekenSchema();
+}
+document.getElementById('tab1').onclick=function(){toonTab(1);};
+document.getElementById('tab2').onclick=function(){toonTab(2);};
+document.getElementById('bVorige').onclick=function(){if(stap>0){stap--;render();}};
+document.getElementById('bVolgende').onclick=function(){if(stap<STAPPEN.length-1){stap++;render();}};
+document.getElementById('bNieuw').onclick=function(){if(confirm('Alles wissen en een lege casus starten? Bewaar eerst je werk als je het nog wilt hebben.')){S=leeg();stap=0;epIdx=0;bewaar();render();}};
+document.getElementById('bVoorbeeld').onclick=function(){if(confirm('Het voorbeeld (casus UWI) vervangt wat je nu hebt. Doorgaan?')){S=voorbeeld();stap=0;epIdx=0;bewaar();render();}};
+document.getElementById('bOpslaan').onclick=function(){download('casus-'+(S.basis.id||'nieuw')+'.json',JSON.stringify(S,null,2),'application/json');};
+document.getElementById('bLaden').onclick=function(){document.getElementById('fLaden').click();};
+document.getElementById('fLaden').onchange=function(ev){
+  var f=ev.target.files[0];if(!f)return;
+  var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(!o.basis||!o.episodes)throw new Error('geen casusbestand');S=o;stap=0;epIdx=0;bewaar();render();}catch(e){alert('Dit bestand is geen geldig casusbestand van de Casusbouwer.');}};
+  r.readAsText(f);ev.target.value='';
+};
+document.getElementById('bSvg').onclick=function(){download('doorloopschema-'+(S.basis.id||'nieuw')+'.svg',schemaSvg(),'image/svg+xml');};
+
+window.addEventListener('pagehide',function(){try{localStorage.setItem(STORE,JSON.stringify(S));}catch(e){}});
+laadOpgeslagen();
+render();
+window.__CB={get S(){return S;},set S(v){S=v;},controle:controle,genereerMarkdown:genereerMarkdown,schemaSvg:schemaSvg,schemaTabel:schemaTabel,voorbeeld:voorbeeld,toestanden:toestanden,leeg:leeg};
+})();
+</script>
+</body>
+</html>
