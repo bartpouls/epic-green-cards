@@ -10,7 +10,7 @@ Meelezen: `casus-uwi.md` (versie 1.1). Dat bestand is de **enige bron van klinis
 - **Doel:** een speelbaar prototype van de drie episodes uit `casus-uwi.md`. Het wordt gebruikt voor een playtest met studenten en een collega-onderwijskundige. Het moet werken en meten. Mooi hoeft nog niet.
 - **Opdrachtgever is geen programmeur.** Leg elke stap uit zonder vakjargon. Vraag niets wat terminal- of Git-kennis vereist. Stel na elke mijlpaal één controlevraag in gewone taal.
 - **Het budget is beperkt.** Bouw de kleinste versie die aan de acceptatiecriteria voldoet. Geen frameworks, geen build-stap en geen externe libraries zonder toestemming. Doe niets aan vormgeving voordat mijlpaal 4 is goedgekeurd.
-- **Klinische inhoud verzin je nooit.** Alles wat klinisch is (middelen, doseringen, regels, feedbackteksten) neem je letterlijk over uit `casus-uwi.md` of uit sectie 6 van dit document. Ontbreekt er iets of is het dubbelzinnig? Zet dan in de data `"TODO_BART": "<vraag>"` en meld het. Vul het niet zelf in.
+- **Klinische inhoud verzin je nooit.** Alles wat klinisch is (middelen, doseringen, regels, feedbackteksten) neem je letterlijk over uit `casus-uwi.md` of uit sectie 6 van dit document. Ontbreekt er iets of is het dubbelzinnig? Zet dan in de data `"TODO": "<vraag>"` en meld het. Vul het niet zelf in.
 
 ## 1. Scope
 
@@ -163,7 +163,7 @@ Hieronder staan kaartnamen en codes naast elkaar (codes zie bibliotheek in `casu
 | I3 | 5 | Afwachtend beleid (V1) zonder Opvolgmoment afspreken (Ev1) | E1 |
 | I4 | 5 | Op enig moment meer dan één antibioticum tegelijk actief | E1–E3 |
 
-De ernst-volgorde is een voorstel van Claude. Bart heeft hem nog niet bevestigd (`TODO_BART`): bouw hem zo, maar houd hem instelbaar in de data.
+De ernst-volgorde is een voorstel van Claude. De opdrachtgever heeft hem nog niet bevestigd (`TODO`): bouw hem zo, maar houd hem instelbaar in de data.
 
 ### 6.2 Opties van V6 "Dosis aanpassen", per doel
 In elke lijst staat de goede optie. De andere opties zijn bewuste afleiders.
@@ -229,7 +229,7 @@ Level 3 voelt "krap" doordat er meer moet gebeuren binnen hetzelfde budget, niet
 1. **Data en overzicht.**
    - Zet `casus-uwi.md` en sectie 6 om naar `casussen/uwi.js`.
    - Bouw `tools/overzicht.html`: een leesbare weergave per episode met patiëntkaart, repertoire, gebeurtenissen, invarianten met hun vraag, score en profielen. Gebruik dezelfde labels als in de casus.
-   - Bart controleert dit overzicht naast de casus. Lijst alle `TODO_BART`-punten op.
+   - De opdrachtgever controleert dit overzicht naast de casus. Lijst alle `TODO`-punten op.
 2. **Regels en tests.**
    - Bouw `predicaten.js` en `evaluatie.js`, plus `tests/tests.html`, met:
      - per episode alle **geldige routes** uit de casus: die moeten de poort halen en het verwachte profiel opleveren;
@@ -257,5 +257,5 @@ Level 3 voelt "krap" doordat er meer moet gebeuren binnen hetzelfde budget, niet
 - Schrijf in het Nederlands.
 - Leg een stap uit in hooguit drie zinnen, met wat hij moet zien of aanklikken.
 - Vraag nooit om commando's in een terminal te typen.
-- Krijg je twijfel over klinische inhoud: stop, zet het als `TODO_BART` in de data en ga verder met iets anders.
+- Krijg je twijfel over klinische inhoud: stop, zet het als `TODO` in de data en ga verder met iets anders.
 - Commit na elke mijlpaal, met een begrijpelijke omschrijving.

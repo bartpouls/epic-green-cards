@@ -100,7 +100,7 @@ Episode 1 (72 jr, context A)  →  Episode 2 (78 jr, context B)  →  Episode 3 
 | N2 | Informeren ⊙ | Gebruik en verwachting uitleggen | E1 | Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg | — | NHG |
 | N3 | Informeren | Drinkadvies geven | E3 | 2–2,5 liter per dag | — | SIDRIK |
 | Ev1 | Evalueren | Opvolgmoment afspreken | E1 | Afwachten: na 1 week alsnog starten. Na een kuur: als de klachten 24–48 uur na afloop niet duidelijk minder zijn, opnieuw urineonderzoek. Weefselinvasie: contact binnen 48 uur. Sick day: monitoring na 1–3 dagen. | — | NHG, SIDRIK |
-| Ev2 | Evalueren ⊙ | Overleggen met de voorschrijver | E3 | Legt een bestaand middel voor aan de voorschrijver | Kost een actie | Bart; CVRM-richtlijn via Mistral, niet zelf gecheckt |
+| Ev2 | Evalueren ⊙ | Overleggen met de voorschrijver | E3 | Legt een bestaand middel voor aan de voorschrijver | Kost een actie | Bart; CVRM-richtlijn [G], nog te verifiëren |
 | Ev3 | Evalueren | Verwijzen | E3 | Verlaat de kaart: de patiënt gaat naar de tweede lijn | Onnodig verwijzen kost doelmatigheid | NHG |
 
 ---
@@ -184,7 +184,7 @@ Alles uit episode 1, plus V6, B1 en B2.
 - **Kweekuitslag**, na de 4e gespeelde kaart (ongeveer dag 3). Alleen als O1 gespeeld is.
   - E. coli, **resistent** voor trimethoprim en amoxicilline.
   - **Gevoelig** voor nitrofurantoïne, fosfomycine, amoxicilline/clavulaanzuur en ciprofloxacine.
-  - De doorlooptijd van 2–4 dagen kwam via Mistral en is niet zelf gecheckt.
+  - De doorlooptijd van 2–4 dagen berust op geen van de genoemde bronnen [G] en moet nog worden geverifieerd.
 - **Wat de patiënt laat zien, hangt af van de keuze:**
   - Trimethoprim: klachten houden aan.
   - Fosfomycine: klachten nemen af.
