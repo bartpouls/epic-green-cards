@@ -1,0 +1,152 @@
+{
+ "1": {
+  "naam": "Patiëntkaart: kop en klachten",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "2": {
+  "naam": "Patiëntkaart: medicatieregel",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "3": {
+  "naam": "Patiëntkaart: lab en risicogroep",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "4": {
+  "naam": "Patiëntkaart: toelichting spironolacton",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "5": {
+  "naam": "Verborgen achter G3",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "6": {
+  "naam": "Gebeurtenis A",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "7": {
+  "naam": "Gebeurtenis B",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "8": {
+  "naam": "Gebeurtenis C",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "9": {
+  "naam": "Vraag I1",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "10": {
+  "naam": "Vraag I4",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "11": {
+  "naam": "Vraag I5",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "12": {
+  "naam": "Vraag I6 geen kweek",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "13": {
+  "naam": "Vraag I6 afwachten",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "14": {
+  "naam": "Vraag I7 geen kalium",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "15": {
+  "naam": "Vraag I7 niet gehalveerd",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "16": {
+  "naam": "Vraag I8",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "17": {
+  "naam": "Vraag I9",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "18": {
+  "naam": "Vraag I10",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "19": {
+  "naam": "Vraag I11",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "20": {
+  "naam": "Vraag I12",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "21": {
+  "naam": "Vraag I13",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "22": {
+  "naam": "Vraag I14",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "23": {
+  "naam": "Vraag I15",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "24": {
+  "naam": "Vraag I16",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "25": {
+  "naam": "Zichtbaar: geen sick day-maatregelen",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "26": {
+  "naam": "Zichtbaar: ciprofloxacine zonder B4/B3",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "27": {
+  "naam": "Zichtbaar: I9 gemist",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "28": {
+  "naam": "Profiel ciprofloxacine reflectie",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "29": {
+  "naam": "Bronconflict ciprofloxacine (feedbackmoment)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "30": {
+  "naam": "Automatische herstart",
+  "X": "spel",
+  "Y": "bron"
+ }
+}

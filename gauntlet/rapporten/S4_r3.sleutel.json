@@ -1,0 +1,200 @@
+[
+ {
+  "n": 1,
+  "titel": "Patiëntkaart kop+klachten",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 2,
+  "titel": "Patiëntkaart medicatie",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 3,
+  "titel": "Patiëntkaart lab",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 4,
+  "titel": "Toelichting spironolacton",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 5,
+  "titel": "Onthulling G3",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 6,
+  "titel": "Gebeurtenis A (inhoud)",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 7,
+  "titel": "Gebeurtenis B (inhoud)",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 8,
+  "titel": "Gebeurtenis C (inhoud)",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 9,
+  "titel": "Triggers A/B/C, volgorde AB",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 10,
+  "titel": "Triggers A/B/C, volgorde BA",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 11,
+  "titel": "Feedback I1 (route schendt precies: I1)",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 12,
+  "titel": "Feedback I9 (route schendt precies: I9)",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 13,
+  "titel": "Feedback I10 (route schendt precies: I10)",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 14,
+  "titel": "Feedback I11 (route schendt precies: I11)",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 15,
+  "titel": "Feedback I12 (route schendt precies: I12)",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 16,
+  "titel": "Feedback I13 (route schendt precies: I13)",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 17,
+  "titel": "Feedback I14 (route schendt precies: I14)",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 18,
+  "titel": "Feedback I15 (route schendt precies: I15)",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 19,
+  "titel": "Feedback I16 (route schendt precies: I16)",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 20,
+  "titel": "Feedback I5 (route schendt precies: I5)",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 21,
+  "titel": "Feedback I8 (route schendt precies: I8)",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 22,
+  "titel": "Feedback I4 (route schendt precies: I4)",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 23,
+  "titel": "Zichtbaar: geen sick day-maatregelen",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 24,
+  "titel": "Zichtbaar: cipro zonder B4/B3",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 25,
+  "titel": "Zichtbaar: I9 gemist",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 26,
+  "titel": "Route amox/clav 875/125 (profiel)",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 27,
+  "titel": "Route cipro + B4 (profiel)",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 28,
+  "titel": "Route cipro dan de-escalatie (score)",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 29,
+  "titel": "Doelmatigheid G3 niet eerst",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 30,
+  "titel": "Invariant-rij I9",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 31,
+  "titel": "Invariant-rij I14",
+  "X": "BRON",
+  "Y": "SPEL"
+ },
+ {
+  "n": 32,
+  "titel": "Invariant-rij I15",
+  "X": "SPEL",
+  "Y": "BRON"
+ },
+ {
+  "n": 33,
+  "titel": "Invariant-rij I16",
+  "X": "SPEL",
+  "Y": "BRON"
+ }
+]

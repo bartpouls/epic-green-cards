@@ -1,0 +1,612 @@
+{
+ "patient": [
+  {
+   "veld": "kop",
+   "tekst": "Mevrouw V., 79 jaar (1 jaar na episode 2)."
+  },
+  {
+   "veld": "klachten",
+   "tekst": "Cystitis, geen koorts."
+  },
+  {
+   "veld": "medicatieTekst",
+   "tekst": "Medicatie: lisinopril, spironolacton (hypertensie), calcium/colecalciferol."
+  },
+  {
+   "veld": "labTekst",
+   "tekst": "Lab: eGFR 28, recent."
+  }
+ ],
+ "patientHtmlTekst": "PatiëntkaartMevrouw V., 79 jaar (1 jaar na episode 2).Cystitis, geen koorts.Medicatie: lisinopril, spironolacton (hypertensie), calcium/colecalciferol.Lab: eGFR 28, recent.",
+ "onthulling": [
+  "de kweek uit episode 2, met trimethoprim resistent."
+ ],
+ "patientNaG3": [
+  {
+   "veld": "kop",
+   "tekst": "Mevrouw V., 79 jaar (1 jaar na episode 2)."
+  },
+  {
+   "veld": "klachten",
+   "tekst": "Cystitis, geen koorts."
+  },
+  {
+   "veld": "medicatieTekst",
+   "tekst": "Medicatie: lisinopril, spironolacton (hypertensie), calcium/colecalciferol."
+  },
+  {
+   "veld": "labTekst",
+   "tekst": "Lab: eGFR 28, recent."
+  },
+  {
+   "veld": "eerdereKweek",
+   "tekst": "Eerdere kweek: de kweek uit episode 2, met trimethoprim resistent. Nieuw"
+  }
+ ],
+ "banners_AB": [
+  {
+   "dag": "5",
+   "banners": [],
+   "status": [
+    "Patiënt: klachten nemen af."
+   ]
+  },
+  {
+   "dag": "4",
+   "banners": [
+    {
+     "id": "B",
+     "tekst": "Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK]"
+    }
+   ],
+   "status": [
+    "Patiënt: klachten nemen af."
+   ]
+  },
+  {
+   "dag": "3",
+   "banners": [
+    {
+     "id": "A",
+     "tekst": "Weefselinvasie: koorts 38,6 °C en flankpijn"
+    },
+    {
+     "id": "C",
+     "tekst": "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne."
+    }
+   ],
+   "status": [
+    "Patiënt: klachten houden aan."
+   ]
+  },
+  {
+   "dag": "2",
+   "banners": [],
+   "status": [
+    "Patiënt: klachten nemen af."
+   ]
+  },
+  {
+   "dag": "1",
+   "banners": [],
+   "status": []
+  }
+ ],
+ "banners_BA": [
+  {
+   "dag": "6",
+   "banners": [],
+   "status": [
+    "Patiënt: klachten nemen af."
+   ]
+  },
+  {
+   "dag": "5",
+   "banners": [
+    {
+     "id": "A",
+     "tekst": "Weefselinvasie: koorts 38,6 °C en flankpijn"
+    }
+   ],
+   "status": [
+    "Patiënt: klachten houden aan."
+   ]
+  },
+  {
+   "dag": "4",
+   "banners": [
+    {
+     "id": "C",
+     "tekst": "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne."
+    }
+   ],
+   "status": [
+    "Patiënt: klachten nemen af."
+   ]
+  },
+  {
+   "dag": "3",
+   "banners": [
+    {
+     "id": "B",
+     "tekst": "Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK]"
+    }
+   ],
+   "status": [
+    "Patiënt: klachten nemen af."
+   ]
+  },
+  {
+   "dag": "2",
+   "banners": [],
+   "status": [
+    "Patiënt: klachten nemen af."
+   ]
+  },
+  {
+   "dag": "1",
+   "banners": [],
+   "status": []
+  }
+ ],
+ "uitslagen": {
+  "G-V8 direct [AB]": {
+   "kop": "Veiligheid gehaald",
+   "vraag": null,
+   "profiel": "Kweekgestuurd",
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "G-cipro+B4 [AB]": {
+   "kop": "Veiligheid gehaald",
+   "vraag": null,
+   "profiel": "Richtlijn eerste keus",
+   "reflectie": "Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?",
+   "extra": [
+    "De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?"
+   ],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "G-cipro+B3calcium [AB]": {
+   "kop": "Veiligheid gehaald",
+   "vraag": null,
+   "profiel": "Richtlijn eerste keus",
+   "reflectie": "Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?",
+   "extra": [
+    "De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?"
+   ],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "G-cipro->V8 na C [AB]": {
+   "kop": "Veiligheid gehaald",
+   "vraag": null,
+   "profiel": "Kweekgestuurd",
+   "reflectie": null,
+   "extra": [
+    "De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?"
+   ],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "G-B5 hervatten na Ev2 [AB]": {
+   "kop": "Veiligheid gehaald",
+   "vraag": null,
+   "profiel": "Kweekgestuurd",
+   "reflectie": null,
+   "extra": [
+    "De koorts is weg. Wat herstart je, en wat juist niet zonder overleg?"
+   ],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "G-V5 route (O2 d2, halveren d5) [AB]": {
+   "kop": "Veiligheid gehaald",
+   "vraag": null,
+   "profiel": "Kweekgestuurd",
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "G-verwijzen [AB]": {
+   "kop": "Veiligheid gehaald",
+   "vraag": null,
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 12,
+   "pageerrors": []
+  },
+  "G-vroeg afronden na 6 kaarten [AB]": {
+   "kop": "Veiligheid gehaald",
+   "vraag": null,
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 5,
+   "pageerrors": []
+  },
+  "I1 geen N1 [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I4 V4+V8 tegelijk, V4 gestopt op A-dag [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Wat lost het tweede middel op dat het eerste niet oplost?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I5 V3 ipv V4 [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I6 V4 voor O1 (geen kweek) [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Wat vertelt een kweek van urine die al antibioticum heeft gezien?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I6 V1 afwachten erbij [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I6 V2 uitgesteld recept erbij [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I6 geen O1 helemaal (V4 zonder kweek), zonder A-wissel [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Wat vertelt een kweek van urine die al antibioticum heeft gezien?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 12,
+   "pageerrors": []
+  },
+  "I7 geen O2 [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 9,
+   "pageerrors": []
+  },
+  "I7 geen halveren [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Dag 4. Hoeveel trimethoprim klaren haar nieren nog?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I7 verdubbelen ipv halveren [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Dag 4. Hoeveel trimethoprim klaren haar nieren nog?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I7 interval 48 uur ipv halveren [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Dag 4. Hoeveel trimethoprim klaren haar nieren nog?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I7 geen O2 en geen halveren (vraag O2-variant) [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I8 V5 blijft na C (klachten houden aan) [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "De kweek is binnen en de klachten blijven. Waar wacht je nog op?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I9 geen O2 en geen Ev2 [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 9,
+   "pageerrors": []
+  },
+  "I9 B5 zonder Ev2 (O2 wel) [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I9 Ev2 pas NA B5 [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 12,
+   "pageerrors": []
+  },
+  "I9 Ev2 op lisinopril telt niet (geen O2) [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I10 V4 blijft actief [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Fosfomycine werkt in de blaas. Waar zit de infectie nu?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I10 wissel een dag te laat [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Fosfomycine werkt in de blaas. Waar zit de infectie nu?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I11 wissel zonder O1 na A [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Je wisselt. Waarop baseer je de wissel daarna?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I11 O1 pas na de wissel [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Je wisselt. Waarop baseer je de wissel daarna?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I12 cotrimoxazol als wissel [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Cotrimoxazol naast spironolacton bij een eGFR van 28. Wat doet dat met haar kalium?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I13 V8 zonder V6 [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Clavulaanzuur bij een eGFR van 28. Waar blijft het?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I13 V6 500/125 2 dd [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Clavulaanzuur bij een eGFR van 28. Waar blijft het?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I13 V6 500/125 1 dd [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Clavulaanzuur bij een eGFR van 28. Waar blijft het?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I13 V6 875/125 pas de dag erna [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Clavulaanzuur bij een eGFR van 28. Waar blijft het?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I14 cipro zonder B4/B3 [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I14 B4 twee dagen te laat [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 12,
+   "pageerrors": []
+  },
+  "I15 geen B3 spironolacton [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I15 B3 op lisinopril ipv spironolacton (V6 dan onmogelijk) [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I15 geen V6 lisinopril [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I15 lisinopril stoppen ipv halveren [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I15 lisinopril verdubbelen ipv halveren [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I15 geen N3 [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I15 Ev1 in A-venster maar buiten B-venster [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  },
+  "I16 Ev1 alleen in B-venster [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 10,
+   "pageerrors": []
+  },
+  "I16 48 uur geen verbetering zonder Ev3 [AB]": {
+   "kop": "Nog niet veilig genoeg",
+   "vraag": "Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?",
+   "profiel": null,
+   "reflectie": null,
+   "extra": [],
+   "zichtbaar": [],
+   "downsides": 11,
+   "pageerrors": []
+  }
+ }
+}

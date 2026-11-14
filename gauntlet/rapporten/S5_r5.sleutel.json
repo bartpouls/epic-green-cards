@@ -1,0 +1,135 @@
+[
+ {
+  "paar": 1,
+  "X": "bron",
+  "Y": "spel",
+  "verwacht": true,
+  "spel": true
+ },
+ {
+  "paar": 2,
+  "X": "bron",
+  "Y": "spel",
+  "verwacht": false,
+  "spel": false
+ },
+ {
+  "paar": 3,
+  "X": "bron",
+  "Y": "spel",
+  "verwacht": true,
+  "spel": true
+ },
+ {
+  "paar": 4,
+  "X": "bron",
+  "Y": "spel",
+  "verwacht": true,
+  "spel": true
+ },
+ {
+  "paar": 5,
+  "X": "spel",
+  "Y": "bron",
+  "verwacht": false,
+  "spel": false
+ },
+ {
+  "paar": 6,
+  "X": "spel",
+  "Y": "bron",
+  "verwacht": true,
+  "spel": true
+ },
+ {
+  "paar": 7,
+  "X": "bron",
+  "Y": "spel",
+  "verwacht": false,
+  "spel": false
+ },
+ {
+  "paar": 8,
+  "X": "bron",
+  "Y": "spel",
+  "verwacht": false,
+  "spel": false
+ },
+ {
+  "paar": 9,
+  "X": "bron",
+  "Y": "spel",
+  "verwacht": true,
+  "spel": true
+ },
+ {
+  "paar": 10,
+  "X": "spel",
+  "Y": "bron",
+  "verwacht": true,
+  "spel": true
+ },
+ {
+  "paar": 11,
+  "X": "bron",
+  "Y": "spel",
+  "verwacht": true,
+  "spel": true
+ },
+ {
+  "paar": 12,
+  "X": "spel",
+  "Y": "bron",
+  "verwacht": false,
+  "spel": false
+ },
+ {
+  "paar": 13,
+  "X": "bron",
+  "Y": "spel",
+  "verwacht": true,
+  "spel": true
+ },
+ {
+  "paar": 14,
+  "X": "spel",
+  "Y": "bron",
+  "verwacht": true,
+  "spel": true
+ },
+ {
+  "paar": 15,
+  "X": "spel",
+  "Y": "bron",
+  "verwacht": false,
+  "spel": false
+ },
+ {
+  "paar": 16,
+  "X": "spel",
+  "Y": "bron",
+  "verwacht": true,
+  "spel": true
+ },
+ {
+  "paar": 17,
+  "X": "bron",
+  "Y": "spel",
+  "verwacht": false,
+  "spel": false
+ },
+ {
+  "paar": 18,
+  "X": "bron",
+  "Y": "spel",
+  "verwacht": true,
+  "spel": true
+ },
+ {
+  "paar": 19,
+  "X": "spel",
+  "Y": "bron",
+  "verwacht": false,
+  "spel": false
+ }
+]

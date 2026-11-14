@@ -1,0 +1,134 @@
+[
+ {
+  "paar": 1,
+  "titel": "Patiëntkaart: kop en klachten",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 2,
+  "titel": "Patiëntkaart: medicatie",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 3,
+  "titel": "Patiëntkaart: lab op de kaart",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 4,
+  "titel": "Patiëntkaart: eerdere UWI",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 5,
+  "titel": "Na G2: wat wordt onthuld",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 6,
+  "titel": "Na G2: zichtbare labregel op de patiëntkaart",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 7,
+  "titel": "Gebeurtenis C (banner)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 8,
+  "titel": "Klachtenstatus trimethoprim (dag na V5)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 9,
+  "titel": "Klachtenstatus fosfomycine (dag na V4)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 10,
+  "titel": "Feedback I5 (V3 gestart)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 11,
+  "titel": "Feedback I6 geen kweek (V4 zonder O1)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 12,
+  "titel": "Feedback I6 afwachten (V1)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 13,
+  "titel": "Feedback I7 geen kalium (V5 zonder O2)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 14,
+  "titel": "Feedback I7 niet gehalveerd (O2 op tijd, V6 te vroeg)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 15,
+  "titel": "Feedback I8 (V5 blijft na C)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 16,
+  "titel": "Feedback Verouderde eGFR (V4 zonder G2, poort gehaald)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 17,
+  "titel": "Feedback Onnodig gewisseld (B1 terwijl status af)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 18,
+  "titel": "Zichtbaar als kaart ontbreekt: nitrofurantoïne zonder G2",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 19,
+  "titel": "Zichtbaar als kaart ontbreekt: V5 zonder O2",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 20,
+  "titel": "Profiel route Fosfomycine",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 21,
+  "titel": "Profiel route Trimethoprim 7 dagen",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 22,
+  "titel": "Brug naar episode 3",
+  "X": "spel",
+  "Y": "bron"
+ }
+]

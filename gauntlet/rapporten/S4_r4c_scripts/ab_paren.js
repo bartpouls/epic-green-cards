@@ -1,0 +1,47 @@
+const fs=require("fs"); const L=require("./load.js");
+const md=fs.readFileSync(L.R+"casus-uwi.md","utf8").replace(/\*\*/g,""); const lines=md.split("\n");
+const ui=require("./ui_uit.json");
+const cells=ln=>ln.split("|").slice(1,-1).map(c=>c.trim()); const unq=s=>s.replace(/^"(.*)"$/,"$1");
+const fb=(trigger,min,max)=>{ for(let i=min;i<max;i++){ const l=lines[i]; if(/^\|/.test(l)){ const c=cells(l); if(c[0]===trigger&&/^"/.test(c[1])) return unq(c[1]); } } throw new Error("fb "+trigger); };
+const geb=id=>cells(lines.filter(l=>new RegExp("^\\| "+id+" \\|").test(l))[0])[2];
+const uitsl=(k,veld)=>ui.uitslagen[k][veld];
+const velden=Object.fromEntries(ui.patient.map(v=>[v.veld,v.tekst]));
+const pairs=[];
+const P=(naam,bron,spel)=>pairs.push({naam,bron,spel});
+P("patiëntkaart kop+klachten", lines.filter(l=>/^- Mevrouw V., 79/.test(l))[0].replace(/^- /,""), velden.kop+" "+velden.klachten);
+P("patiëntkaart medicatie", lines.filter(l=>/^- Medicatie: lisinopril, spiro/.test(l))[0].replace(/^- /,""), velden.medicatieTekst);
+P("patiëntkaart lab (zonder risicogroepzin)", "Lab: eGFR 28, recent.", velden.labTekst);
+P("onthulling G3", "de kweek uit episode 2, met trimethoprim resistent.", ui.onthulling[0]);
+const bAB=ui.banners_AB; const bannerTekst=id=>{ for(const d of bAB) for(const b of d.banners) if(b.id===id) return b.tekst; };
+P("banner A", geb("A"), bannerTekst("A")); P("banner B", geb("B"), bannerTekst("B")); P("banner C", geb("C"), bannerTekst("C"));
+P("klachtenstatus af", "klachten nemen af.", bAB.find(d=>d.dag==="2").status[0]);
+const v="I1 geen N1 [AB]";
+P("vraag I1", fb("I1",100,165), uitsl("I1 geen N1 [AB]","vraag"));
+P("vraag I4", fb("I4",100,165), uitsl("I4 V4+V8 tegelijk, V4 gestopt op A-dag [AB]","vraag"));
+P("vraag I5", fb("I5",166,234), uitsl("I5 V3 ipv V4 [AB]","vraag"));
+P("vraag I6 geen kweek", fb("I6, geen kweek",166,234), uitsl("I6 V4 voor O1 (geen kweek) [AB]","vraag"));
+P("vraag I6 afwachten", fb("I6, afwachten",166,234), uitsl("I6 V1 afwachten erbij [AB]","vraag"));
+P("vraag I7 geen kalium", fb("I7, geen kalium",166,234), uitsl("I7 geen O2 [AB]","vraag"));
+P("vraag I7 niet gehalveerd", fb("I7, niet gehalveerd",166,234), uitsl("I7 geen halveren [AB]","vraag"));
+P("vraag I8", fb("I8",166,234), uitsl("I8 V5 blijft na C (klachten houden aan) [AB]","vraag"));
+P("vraag I9", fb("I9",300,324), uitsl("I9 geen O2 en geen Ev2 [AB]","vraag"));
+P("vraag I10", fb("I10",300,324), uitsl("I10 V4 blijft actief [AB]","vraag"));
+P("vraag I11", fb("I11",300,324), uitsl("I11 wissel zonder O1 na A [AB]","vraag"));
+P("vraag I12", fb("I12",300,324), uitsl("I12 cotrimoxazol als wissel [AB]","vraag"));
+P("vraag I13", fb("I13",300,324), uitsl("I13 V8 zonder V6 [AB]","vraag"));
+P("vraag I14", fb("I14",300,324), uitsl("I14 cipro zonder B4/B3 [AB]","vraag"));
+P("vraag I15", fb("I15",300,324), uitsl("I15 geen N3 [AB]","vraag"));
+P("vraag I16", fb("I16",300,324), uitsl("I16 48 uur geen verbetering zonder Ev3 [AB]","vraag"));
+P("extra Automatische herstart", fb("Automatische herstart",300,324), uitsl("G-B5 hervatten na Ev2 [AB]","extra")[0]);
+P("extra cipro-dosis", fb("Ciprofloxacine-dosis (bronconflict)",300,324), uitsl("G-cipro+B4 [AB]","extra")[0]);
+P("reflectievraag Profiel ciprofloxacine", fb("Profiel ciprofloxacine",300,324), uitsl("G-cipro+B4 [AB]","reflectie"));
+P("profielnaam Kweekgestuurd", "Kweekgestuurd", uitsl("G-V8 direct [AB]","profiel"));
+// willekeurig toewijzen (seed uit tijd)
+let s=(Date.now()%100000)+7; const rnd=()=>{s=(s*1664525+1013904223)%4294967296;return s/4294967296;};
+const sleutel={}, uit=[];
+pairs.forEach((p,i)=>{ const bronIsX=rnd()<0.5; const id="P"+(i+1); sleutel[id]={naam:p.naam,X:bronIsX?"bron":"spel",Y:bronIsX?"spel":"bron"}; uit.push({id,naam:p.naam,X:bronIsX?p.bron:p.spel,Y:bronIsX?p.spel:p.bron}); });
+fs.writeFileSync(L.R+"gauntlet/rapporten/S4_r4.sleutel.json",JSON.stringify(sleutel,null,1));
+fs.writeFileSync(__dirname+"/ab_paren.json",JSON.stringify(uit,null,1));
+// letter-voor-letter diff (zonder de sleutel te tonen)
+function diff(a,b){ if(a===b) return "IDENTIEK"; let i=0; while(i<a.length&&i<b.length&&a[i]===b[i]) i++; let ja=a.length,jb=b.length; while(ja>i&&jb>i&&a[ja-1]===b[jb-1]){ja--;jb--;} return "verschil vanaf teken "+i+": X-deel="+JSON.stringify(a.slice(i,ja))+" Y-deel="+JSON.stringify(b.slice(i,jb)); }
+uit.forEach(p=>console.log(p.id,p.naam,"\n  X:",JSON.stringify(p.X),"\n  Y:",JSON.stringify(p.Y),"\n  =>",diff(p.X,p.Y)));

@@ -1,0 +1,41 @@
+const sb=require("./load.js");const P=sb.Predicaten;
+const ep={id:"EX",antibiotica:["Q1","Q2"],patient:{waar:{w:1},medicatie:[{id:"m1"}]},gebeurtenissen:[{id:"E"}]};
+const casus={rollen:{wissel:"B1",stop:"B2",pauzeer:"B3",hervat:"B5"},episodes:[ep]};
+const ctx=P.maakContext(casus,ep,{tijdlijn:[{volg:1,kaart:"A",dag:3}],gebeurtenissen:[{id:"E",dag:3}]});
+function t(naam,p,c){let r;try{r=P.evalueer(p,c||ctx);}catch(e){r="FOUT: "+e.message}console.log(naam.padEnd(60),JSON.stringify(r));}
+t("binnenBeurten nested K.naGebeurtenis onbekend",{p:"binnenBeurten",K:{kaart:"A",naGebeurtenis:"Nooit"},naGebeurtenis:"E",n:2});
+t("binnenBeurten nested K.naGebeurtenis type getal",{p:"binnenBeurten",K:{kaart:"A",naGebeurtenis:5},naGebeurtenis:"E",n:2});
+t("binnenBeurten plat + K nested maar naGebeurtenis in K en niet top",{p:"binnenBeurten",K:{kaart:"A",naGebeurtenis:"E"},n:2});
+t("opDagRelatief K.naGebeurtenis onbekend",{p:"opDagRelatief",K:{kaart:"A",naGebeurtenis:"Nooit"},anker:{kaart:"A"},van:0});
+t("gespeeld naGebeurtenis onbekend",{p:"gespeeld",kaart:"A",naGebeurtenis:"Nooit"});
+t("gestart middel niet antibioticum",{p:"gestart",middel:"A"});
+t("gestart middel onbekend id",{p:"gestart",middel:"ZZ"});
+t("klachten op eindeBeurt zonder offset",{p:"klachten",waarde:"af",op:{eindeBeurtNaGebeurtenis:"E"}});
+t("medicatieActief op naKaart",{p:"medicatieActief",id:"m1",op:{naKaart:{kaart:"A"}}});
+t("tel gespeeld terwijlKlachten nested in K?",{p:"tel",teller:{t:"gespeeld",K:{kaart:"A"},terwijlKlachten:"af"},op:">=",waarde:0});
+t("tel teller K + terwijlKlachten binnen K (fout)",{p:"tel",teller:{t:"gespeeld",K:{kaart:"A",terwijlKlachten:"af"}},op:">=",waarde:0});
+t("kaart leeg string",{p:"gespeeld",kaart:""});
+t("kaart lege lijst",{p:"gespeeld",kaart:[]});
+t("kaart lege lijst (match alles?)",{p:"nietGespeeld",kaart:[]});
+t("start lege lijst",{p:"gespeeld",start:[]});
+t("middel lege lijst (gestart)",{p:"gestart",middel:[]});
+t("actief middel lege lijst",{p:"actief",middel:[]});
+t("optieNiet lege lijst",{p:"gespeeld",kaart:"A",optieNiet:[]});
+t("n negatief aantal",{p:"aantalActieveAntibiotica",op:">",n:-1});
+t("waar veld met undefined waarde in waar",{p:"waar",veld:"u",op:"==",waarde:null},P.maakContext(casus,{id:"EX",antibiotica:[],patient:{waar:{u:null}}},{}));
+t("waar waarde ontbreekt (null)",{p:"waar",veld:"w",op:"==",waarde:null});
+t("waar waarde undefined",{p:"waar",veld:"w",op:"==",waarde:undefined});
+t("en met extra veld",{p:"en",args:[],x:1});
+t("alsDan met TODO_BART",{p:"alsDan",als:{p:"waarheid",waarde:true},dan:{p:"waarheid",waarde:false},TODO_BART:"x"});
+t("p met spatie",{p:"gespeeld ",kaart:"A"});
+t("p hoofdletter",{p:"Gespeeld",kaart:"A"});
+// ctx onvolledig
+t("ctx zonder episode",{p:"waarheid",waarde:true},{});
+t("ctx null",{p:"waarheid",waarde:true},null);
+t("ctx.episode ontbreekt gespeeld",{p:"gespeeld",kaart:"A"},{tijdlijn:[]});
+t("ctx zonder status func (valideer)", 1);
+// tijdlijn kapot
+const bad=P.maakContext(casus,ep,{tijdlijn:[{kaart:"A"}]});
+t("tijdlijnregel zonder dag, binnenBeurten",{p:"binnenBeurten",kaart:"A",naGebeurtenis:"E",n:2},P.maakContext(casus,ep,{tijdlijn:[{kaart:"A"}],gebeurtenissen:[{id:"E",dag:1}]}));
+t("tijdlijnregel null",{p:"gespeeld",kaart:"A"},P.maakContext(casus,ep,{tijdlijn:[null]}));
+t("gebeurtenis zonder dag naGebeurtenis",{p:"gespeeld",kaart:"A",naGebeurtenis:"E"},P.maakContext(casus,ep,{tijdlijn:[{kaart:"A",dag:1}],gebeurtenissen:[{id:"E"}]}));

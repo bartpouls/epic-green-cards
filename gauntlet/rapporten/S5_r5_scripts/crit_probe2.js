@@ -1,0 +1,26 @@
+const sb=require("../S5_r3_scripts/load.js");const P=sb.Predicaten;
+function t(n,f){let r;try{r=JSON.stringify(f());}catch(e){r="FOUT: "+e.message}console.log(n.padEnd(46),r);}
+const ep={id:"EX",antibiotica:["Q1"],patient:{waar:{},medicatie:[]}};const casus={rollen:{wissel:"B1",stop:"B2",pauzeer:"B3",hervat:"B5"},episodes:[ep]};
+t("evalueer ctx null",()=>P.evalueer({p:"waarheid",waarde:true},null));
+t("evalueer ctx undefined",()=>P.evalueer({p:"waarheid",waarde:true}));
+t("tel ctx undef",()=>P.tel({t:"gespeeld",kaart:"Q1"}));
+t("valideer(pred) zonder casus",()=>P.valideer({p:"waarheid",waarde:true}));
+t("valideer(pred,null,null)",()=>P.valideer({p:"gespeeld",kaart:"Q1"},null,null));
+t("maakContext() leeg",()=>Object.keys(P.maakContext()));
+t("maakContext(casus,undefined)",()=>Object.keys(P.maakContext(casus)));
+t("maakContext episode array",()=>{const c=P.maakContext(casus,[],{});return P.evalueer({p:"waarheid",waarde:true},c)});
+t("maakContext episode getal",()=>{const c=P.maakContext(casus,5,{});return P.evalueer({p:"waarheid",waarde:true},c)});
+t("maakContext episode string onbekend",()=>P.maakContext(casus,"nee",{}));
+t("maakContext episode null: gespeeld",()=>P.evalueer({p:"gespeeld",kaart:"Q1"},P.maakContext(casus,null,{tijdlijn:[{volg:1,kaart:"Q1",dag:1}]})));
+t("maakContext episode undefined: actief",()=>P.evalueer({p:"actief"},P.maakContext(casus,undefined,{tijdlijn:[{volg:1,kaart:"Q1",dag:1}]})));
+t("tijdlijn regel dag string",()=>P.evalueer({p:"binnenBeurten",kaart:"Q1",naGebeurtenis:"E",n:2},P.maakContext(casus,{id:"x",antibiotica:["Q1"],gebeurtenissen:[{id:"E"}]},{tijdlijn:[{volg:1,kaart:"Q1",dag:"2"}],gebeurtenissen:[{id:"E",dag:2}]})));
+t("tijdlijn regel zonder kaart",()=>P.evalueer({p:"gespeeld",kaart:"Q1"},P.maakContext(casus,ep,{tijdlijn:[{volg:1,dag:1}]})));
+t("tijdlijn regel null",()=>P.evalueer({p:"gespeeld",kaart:"Q1"},P.maakContext(casus,ep,{tijdlijn:[null]})));
+t("tijdlijn regel volg string",()=>P.evalueer({p:"voor",a:{kaart:"Q1"},b:{kaart:"Q2"}},P.maakContext(casus,ep,{tijdlijn:[{volg:"2",kaart:"Q1",dag:1},{volg:"1",kaart:"Q2",dag:1}]})));
+t("tijdlijn regel dag ontbreekt, opDag",()=>P.evalueer({p:"opDagRelatief",kaart:"Q1",anker:{kaart:"Q1"},van:0},P.maakContext(casus,ep,{tijdlijn:[{volg:1,kaart:"Q1"}]})));
+t("gebeurtenis zonder dag",()=>P.evalueer({p:"gebeurtenisGeweest",id:"E"},P.maakContext(casus,{id:"x",antibiotica:[],gebeurtenissen:[{id:"E"}],patient:{}},{gebeurtenissen:[{id:"E"}]})));
+t("gebeurtenis dag null binnenBeurten",()=>P.evalueer({p:"binnenBeurten",kaart:"Q1",naGebeurtenis:"E",n:2},P.maakContext(casus,{id:"x",antibiotica:["Q1"],gebeurtenissen:[{id:"E"}]},{tijdlijn:[{volg:1,kaart:"Q1",dag:1}],gebeurtenissen:[{id:"E",dag:null}]})));
+t("toestanden niet-tekst",()=>P.evalueer({p:"inToestand",t:"a"},P.maakContext(casus,ep,{toestanden:[null,"a"]})));
+t("klachten status ongeldig in state",()=>P.evalueer({p:"klachten",waarde:"af"},P.maakContext(casus,ep,{klachten:[{dag:1,status:"AF"}]})));
+t("state.dag string",()=>P.maakContext(casus,ep,{dag:"3"}).laatsteDag);
+t("ctx.waar ontbreekt, waar-pred",()=>P.evalueer({p:"waar",veld:"x",op:"==",waarde:1},P.maakContext(casus,{id:"x"},{})));

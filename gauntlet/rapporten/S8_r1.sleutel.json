@@ -1,0 +1,92 @@
+[
+ {
+  "paar": 1,
+  "naam": "E1 patiëntkaart",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 2,
+  "naam": "E2 patiëntkaart",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 3,
+  "naam": "E3 patiëntkaart",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 4,
+  "naam": "E1 invarianten",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 5,
+  "naam": "E2 invarianten",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 6,
+  "naam": "E3 invarianten",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 7,
+  "naam": "E1 score",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 8,
+  "naam": "E2 score",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 9,
+  "naam": "E3 score",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 10,
+  "naam": "E1 zichtbaar-als-ontbreekt",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 11,
+  "naam": "E3 zichtbaar-als-ontbreekt",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 12,
+  "naam": "E1 feedback",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 13,
+  "naam": "E3 feedback",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 14,
+  "naam": "E3 gebeurtenissen",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 15,
+  "naam": "E2 gebeurtenis",
+  "X": "bron",
+  "Y": "spel"
+ }
+]

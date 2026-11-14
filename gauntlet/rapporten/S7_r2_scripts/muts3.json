@@ -1,0 +1,9 @@
+[
+{"naam":"casuslogica: kaart-id V9 geblokkeerd","van":"var casus = casusVan(state), ep = episodeVan(state), kaart = kaartVan(casus, kaartId);","naar":"var casus = casusVan(state), ep = episodeVan(state), kaart = kaartVan(casus, kaartId); if (kaartId === \"V9\") return fout(\"nee\");"},
+{"naam":"casuslogica: episode-id E3 in raadpleeg (kost 1)","van":"var ep = episodeVan(state), kost = (ep.knoppen && ep.knoppen.raadplegenKost) || 0;","naar":"var ep = episodeVan(state), kost = state.episodeId === \"E3\" ? 1 : 0;"},
+{"naam":"casuslogica: gebeurtenis-id C alleen na O1 hardcoded zonder naam O1 in tekst (via data-loze check)","van":"if (gehad) return;","naar":"if (gehad) return; if (e.id === \"C\" && state.tijdlijn.length < 3) return;"},
+{"naam":"casuslogica: episode E2 actiesbudget 3","van":"state.actiesOver = ep.knoppen.actiesPerBeurt;","naar":"state.actiesOver = state.episodeId === \"E2\" ? 3 : ep.knoppen.actiesPerBeurt;"},
+{"naam":"casuslogica: drempel 30 op waar.eGFR via variabele naam","van":"var doel = opts.doel == null ? null : opts.doel,","naar":"var veldNaam = \"eGF\" + \"R\"; if ((ep.patient.waar || {})[veldNaam] < 30 && kaartId.length > 5) return fout(\"x\"); var doel = opts.doel == null ? null : opts.doel,"},
+{"naam":"casuslogica: gebeurtenis-id A/B hardcoded in statusoverride","van":"if (!def || !def.zet || !def.zet.statusNaBeurten) return;","naar":"if (!def || gb.id !== \"A\") return; def = {zet:{statusNaBeurten:2}};"},
+{"naam":"casuslogica: toestand-id weefselinvasie via concat","van":"function werkzaamheidVan(state, ep) {","naar":"function werkzaamheidVan(state, ep) { if (bevat(state.toestanden, \"weefsel\" + \"invasie\")) return ep.werkzaamheid.weefselinvasie;"}
+]

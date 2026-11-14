@@ -1,0 +1,18 @@
+[
+{"naam":"override blijft niet staan na dA+2","van":"(d === gb.dag + n || vorigeStatus === \"geenVerbetering48\")","naar":"(d === gb.dag + n)"},
+{"naam":"override onbeperkt: ook als werkzaam middel weer actief (guard weg)","van":"if (!vorige.werkzaam) {\n      state.gebeurtenissen.forEach","naar":"if (!vorige.werkzaam || vorigeStatus === \"geenVerbetering48\") {\n      state.gebeurtenissen.forEach"},
+{"naam":"override: dag-gebeurtenis ipv >=","van":"if (d >= gb.dag + n &&","naar":"if (d >= gb.dag + n - 1 &&"},
+{"naam":"onthuld.dag = dag+1","van":"var rij = { kaart: kaartId, dag: state.dag,","naar":"var rij = { kaart: kaartId, dag: state.dag + 1,"},
+{"naam":"naKaartVanKaart zonder kaart-check","van":"return v != null && volg === v + t.n;","naar":"return volg === (v || 0) + t.n;"},
+{"naam":"ctx zonder tijdlijn","van":"function ctxVan(state) { return P().maakContext(casusVan(state), episodeVan(state), state); }","naar":"function ctxVan(state) { var k = {}; for (var x in state) k[x] = state[x]; k.tijdlijn = []; return P().maakContext(casusVan(state), episodeVan(state), k); }"},
+{"naam":"ctx zonder gebeurtenissen","van":"function ctxVan(state) { return P().maakContext(casusVan(state), episodeVan(state), state); }","naar":"function ctxVan(state) { var k = {}; for (var x in state) k[x] = state[x]; k.gebeurtenissen = []; return P().maakContext(casusVan(state), episodeVan(state), k); }"},
+{"naam":"ctx zonder klachten","van":"function ctxVan(state) { return P().maakContext(casusVan(state), episodeVan(state), state); }","naar":"function ctxVan(state) { var k = {}; for (var x in state) k[x] = state[x]; k.klachten = []; return P().maakContext(casusVan(state), episodeVan(state), k); }"},
+{"naam":"sets gevoelig: resistent wint altijd (volgorde)","van":"lijstVan(e.zet.gevoelig).forEach(function (m) {","naar":"lijstVan([]).forEach(function (m) {"},
+{"naam":"actiesOver wordt negatief bij raadplegen (check weg)","van":"if (state.actiesOver < kost) return fout(\"Je hebt niet genoeg acties over om de richtlijn te raadplegen.\");","naar":""},
+{"naam":"volgendeDag op afgerond toegestaan","van":"if (state.afgerond) throw new Error(\"Deze episode is al afgerond.\");\n    if (state.dagenVoorbij) throw new Error(\"De laatste dag is al voorbij.\");","naar":"if (state.dagenVoorbij) throw new Error(\"De laatste dag is al voorbij.\");"},
+{"naam":"rondAf: afrondenPas fout niet gegooid","van":"if (open) throw new Error(\"Je kunt deze episode pas afronden nadat de gebeurtenissen zich hebben voorgedaan.\");","naar":""},
+{"naam":"zichtbaar: patch meng met referentie ipv kopie","van":"else doel[k] = kopie(patch[k]);","naar":"else doel[k] = patch[k];"},
+{"naam":"onthul: rij waarde kopie weg (state alias op casus)","van":"zetPad(state.zichtbaar, v.sleutel, kopie(waarde));","naar":"zetPad(state.zichtbaar, v.sleutel, waarde);"},
+{"naam":"nieuwSpel: toestanden alias op casus","van":"var toestanden = ep.startToestanden.slice();","naar":"var toestanden = ep.startToestanden;"},
+{"naam":"onthuld teruggeven als alias","van":"state.onthuld.push(rij); nieuw.push(kopie(rij));","naar":"state.onthuld.push(rij); nieuw.push(rij);"}
+]

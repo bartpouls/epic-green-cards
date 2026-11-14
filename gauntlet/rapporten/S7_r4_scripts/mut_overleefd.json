@@ -1,0 +1,142 @@
+[
+ {
+  "regel": 100,
+  "wat": "true -> false @88",
+  "tekst": "Object.defineProperty(state, \"_casus\", { value: casus, enumerable: false, writable: true, configurable: true }"
+ },
+ {
+  "regel": 102,
+  "wat": "true -> false @111",
+  "tekst": "Object.defineProperty(state, \"_opties\", { value: bewaard, enumerable: false, writable: true, configurable: tru"
+ },
+ {
+  "regel": 57,
+  "wat": ">= -> > @14",
+  "tekst": "if (!(j >= i)) j = i;"
+ },
+ {
+  "regel": 311,
+  "wat": "< -> <= @71",
+  "tekst": "var periodeGehad = state.klachten.some(function (kl, i) { return i < d && kl && kl.status === \"geenVerbetering"
+ },
+ {
+  "regel": 65,
+  "wat": "regel weg",
+  "tekst": "opties = opties || {};"
+ },
+ {
+  "regel": 45,
+  "wat": "return -> undefined",
+  "tekst": "return null;"
+ },
+ {
+  "regel": 29,
+  "wat": "return -> undefined",
+  "tekst": "return null;"
+ },
+ {
+  "regel": 107,
+  "wat": "regel weg",
+  "tekst": "opties = opties || {};"
+ },
+ {
+  "regel": 272,
+  "wat": ".push -> .unshift @25",
+  "tekst": "state.raadplegingen.push({ dag: state.dag });"
+ },
+ {
+  "regel": 203,
+  "wat": "regel weg",
+  "tekst": "if (!e) return;"
+ },
+ {
+  "regel": 287,
+  "wat": "return -> undefined",
+  "tekst": "return null;"
+ },
+ {
+  "regel": 306,
+  "wat": "- -> + @64",
+  "tekst": "var ctx = ctxVan(state), vorige = eindeDag(state, ep, ctx, d - 1), status;"
+ },
+ {
+  "regel": 193,
+  "wat": "if -> false",
+  "tekst": "if (gehad) return;"
+ },
+ {
+  "regel": 76,
+  "wat": ".push -> .unshift @62",
+  "tekst": "if (!groepen[e.groep]) { groepen[e.groep] = []; groepIds.push(e.groep); }"
+ },
+ {
+  "regel": 191,
+  "wat": "|| -> && @84",
+  "tekst": "var gehad = state.gebeurtenissen.some(function (x) { return x.id === e.id; }) ||"
+ },
+ {
+  "regel": 58,
+  "wat": "> -> >= @12",
+  "tekst": "if (j > n - 1) j = n - 1;"
+ },
+ {
+  "regel": 121,
+  "wat": "0 -> 1 @32",
+  "tekst": "if (sleutel.indexOf(\".\") >= 0) {"
+ },
+ {
+  "regel": 17,
+  "wat": "regel weg",
+  "tekst": "\"use strict\";"
+ },
+ {
+  "regel": 367,
+  "wat": "return -> undefined",
+  "tekst": "return state;"
+ },
+ {
+  "regel": 121,
+  "wat": ">= -> > @29",
+  "tekst": "if (sleutel.indexOf(\".\") >= 0) {"
+ },
+ {
+  "regel": 337,
+  "wat": "&& -> || @27",
+  "tekst": "if (Array.isArray(oud) && Array.isArray(nieuw)) {"
+ },
+ {
+  "regel": 100,
+  "wat": "true -> false @108",
+  "tekst": "Object.defineProperty(state, \"_casus\", { value: casus, enumerable: false, writable: true, configurable: true }"
+ },
+ {
+  "regel": 380,
+  "wat": ".some -> .every @44",
+  "tekst": "var open = (ep.gebeurtenissen || []).some(function (e) {"
+ },
+ {
+  "regel": 193,
+  "wat": "regel weg",
+  "tekst": "if (gehad) return;"
+ },
+ {
+  "regel": 102,
+  "wat": "true -> false @91",
+  "tekst": "Object.defineProperty(state, \"_opties\", { value: bewaard, enumerable: false, writable: true, configurable: tru"
+ },
+ {
+  "regel": 112,
+  "wat": "&& -> || @46",
+  "tekst": "if (o.afrondenPasNaGebeurtenissen == null && state.afrondenPasNaGebeurtenissen != null) o.afrondenPasNaGebeurt"
+ },
+ {
+  "regel": 161,
+  "wat": "regel weg",
+  "tekst": "if (!e.groep) return e.trigger;"
+ },
+ {
+  "regel": 186,
+  "wat": "return -> undefined",
+  "tekst": "return false;"
+ }
+]

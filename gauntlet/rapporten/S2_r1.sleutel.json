@@ -1,0 +1,67 @@
+[
+ {
+  "paar": "P1 patiëntkaart klachten",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": "P2 medicatie+lab",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": "P3 risicogroep",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": "P4 I1 spel zonder N1 (V3 alleen)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": "P5 V1+N1 zonder Ev1",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": "P6 twee antibiotica",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": "P7 route Afwachten",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": "P8 route Uitgesteld recept",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": "P9 route Nitrofurantoïne",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": "P10 route Fosfomycine",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": "P11 route Trimethoprim + onderzoek",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": "P12 alleen N1 gespeeld",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": "P13 V1+V2+N1+Ev1",
+  "X": "spel",
+  "Y": "bron"
+ }
+]

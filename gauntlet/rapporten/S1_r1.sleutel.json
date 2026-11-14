@@ -1,0 +1,92 @@
+[
+ {
+  "paar": 1,
+  "naam": "kaart G2",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 2,
+  "naam": "kaart O1",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 3,
+  "naam": "kaart V3",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 4,
+  "naam": "kaart V5",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 5,
+  "naam": "kaart V6",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 6,
+  "naam": "kaart V7",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 7,
+  "naam": "kaart B5",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 8,
+  "naam": "kaart B4",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 9,
+  "naam": "kaart N2",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 10,
+  "naam": "kaart Ev1",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 11,
+  "naam": "kaart Ev2",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 12,
+  "naam": "kaart N1",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 13,
+  "naam": "kaart V9",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 14,
+  "naam": "casuskop bronnen",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 15,
+  "naam": "V6 opties (bouwopdracht 6.2)",
+  "X": "bron",
+  "Y": "spel"
+ }
+]

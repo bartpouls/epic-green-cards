@@ -1,0 +1,128 @@
+[
+ {
+  "nr": 1,
+  "naam": "Patiëntkaart (kop, klachten)",
+  "X": "Mevrouw V., 79 jaar (1 jaar na episode 2). Cystitis, geen koorts.",
+  "Y": "Mevrouw V., 79 jaar (1 jaar na episode 2). Cystitis, geen koorts."
+ },
+ {
+  "nr": 2,
+  "naam": "Patiëntkaart (medicatie)",
+  "X": "lisinopril, spironolacton (hypertensie), calcium/colecalciferol.",
+  "Y": "lisinopril, spironolacton (hypertensie), calcium/colecalciferol."
+ },
+ {
+  "nr": 3,
+  "naam": "Patiëntkaart (lab zoals de student het ziet)",
+  "X": "eGFR 28, recent.",
+  "Y": "eGFR 28, recent."
+ },
+ {
+  "nr": 4,
+  "naam": "Verborgen achter G3 (onthuld)",
+  "X": "de kweek uit episode 2, met trimethoprim resistent.",
+  "Y": "de kweek uit episode 2, met trimethoprim resistent."
+ },
+ {
+  "nr": 5,
+  "naam": "Banner A (weefselinvasie)",
+  "X": "Weefselinvasie: koorts 38,6 °C en flankpijn",
+  "Y": "Weefselinvasie: koorts 38,6 °C en flankpijn"
+ },
+ {
+  "nr": 6,
+  "naam": "Banner B (uitdroging)",
+  "X": "Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK]",
+  "Y": "Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK]"
+ },
+ {
+  "nr": 7,
+  "naam": "Banner C (kweekuitslag)",
+  "X": "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne.",
+  "Y": "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne."
+ },
+ {
+  "nr": 8,
+  "naam": "Socratische vraag I9 (echte foutroute, Evaluatie)",
+  "X": "Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?",
+  "Y": "Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?"
+ },
+ {
+  "nr": 9,
+  "naam": "Socratische vraag I10 (echte foutroute, Evaluatie)",
+  "X": "Fosfomycine werkt in de blaas. Waar zit de infectie nu?",
+  "Y": "Fosfomycine werkt in de blaas. Waar zit de infectie nu?"
+ },
+ {
+  "nr": 10,
+  "naam": "Socratische vraag I11 (echte foutroute, Evaluatie)",
+  "X": "Je wisselt. Waarop baseer je de wissel daarna?",
+  "Y": "Je wisselt. Waarop baseer je de wissel daarna?"
+ },
+ {
+  "nr": 11,
+  "naam": "Socratische vraag I12 (echte foutroute, Evaluatie)",
+  "X": "Cotrimoxazol naast spironolacton bij een eGFR van 28. Wat doet dat met haar kalium?",
+  "Y": "Cotrimoxazol naast spironolacton bij een eGFR van 28. Wat doet dat met haar kalium?"
+ },
+ {
+  "nr": 12,
+  "naam": "Socratische vraag I13 (echte foutroute, Evaluatie)",
+  "X": "Clavulaanzuur bij een eGFR van 28. Waar blijft het?",
+  "Y": "Clavulaanzuur bij een eGFR van 28. Waar blijft het?"
+ },
+ {
+  "nr": 13,
+  "naam": "Socratische vraag I14 (echte foutroute, Evaluatie)",
+  "X": "Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?",
+  "Y": "Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?"
+ },
+ {
+  "nr": 14,
+  "naam": "Socratische vraag I15 (echte foutroute, Evaluatie)",
+  "X": "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?",
+  "Y": "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?"
+ },
+ {
+  "nr": 15,
+  "naam": "Socratische vraag I16 (echte foutroute, Evaluatie)",
+  "X": "Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?",
+  "Y": "Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?"
+ },
+ {
+  "nr": 16,
+  "naam": "Reflectievraag profiel ciprofloxacine (Evaluatie)",
+  "X": "Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?",
+  "Y": "Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?"
+ },
+ {
+  "nr": 17,
+  "naam": "Feedback Ciprofloxacine-dosis (extraVragen)",
+  "X": "De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?",
+  "Y": "De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?"
+ },
+ {
+  "nr": 18,
+  "naam": "Feedback Automatische herstart (extraVragen)",
+  "X": "De koorts is weg. Wat herstart je, en wat juist niet zonder overleg?",
+  "Y": "De koorts is weg. Wat herstart je, en wat juist niet zonder overleg?"
+ },
+ {
+  "nr": 19,
+  "naam": "Zichtbaar als kaart ontbreekt: I9 gemist",
+  "X": "Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.",
+  "Y": "Het kalium is onbekend, en niemand heeft naar spironolacton gekeken."
+ },
+ {
+  "nr": 20,
+  "naam": "Zichtbaar als kaart ontbreekt: ciprofloxacine zonder B4/B3",
+  "X": "Na 48 uur geen verbetering.",
+  "Y": "Na 48 uur geen verbetering."
+ },
+ {
+  "nr": 21,
+  "naam": "Statustekst af / aan / geen verbetering",
+  "X": "klachten nemen af. | klachten houden aan. | Na 48 uur geen verbetering.",
+  "Y": "klachten nemen af. | klachten houden aan. | Na 48 uur geen verbetering."
+ }
+]

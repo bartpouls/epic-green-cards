@@ -1,0 +1,170 @@
+[
+ {
+  "paar": 1,
+  "naam": "kop+klachten",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 2,
+  "naam": "medicatie",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": false
+ },
+ {
+  "paar": 3,
+  "naam": "lab op kaart",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 4,
+  "naam": "eerdere UWI",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 5,
+  "naam": "verborgen G2 (na G2)",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 6,
+  "naam": "gebeurtenis C",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 7,
+  "naam": "status trimethoprim",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 8,
+  "naam": "status fosfomycine",
+  "X": "spel",
+  "Y": "bron",
+  "gelijk": true
+ },
+ {
+  "paar": 9,
+  "naam": "feedback I1",
+  "X": "spel",
+  "Y": "bron",
+  "gelijk": true
+ },
+ {
+  "paar": 10,
+  "naam": "feedback Verouderde eGFR",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 11,
+  "naam": "feedback I5",
+  "X": "spel",
+  "Y": "bron",
+  "gelijk": true
+ },
+ {
+  "paar": 12,
+  "naam": "feedback I6 geen kweek",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 13,
+  "naam": "feedback I6 afwachten",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 14,
+  "naam": "feedback I7 geen kalium",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 15,
+  "naam": "feedback I7 niet gehalveerd",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 16,
+  "naam": "feedback I8",
+  "X": "spel",
+  "Y": "bron",
+  "gelijk": true
+ },
+ {
+  "paar": 17,
+  "naam": "feedback Onnodig gewisseld",
+  "X": "spel",
+  "Y": "bron",
+  "gelijk": true
+ },
+ {
+  "paar": 18,
+  "naam": "zichtbaar nitrofurantoine",
+  "X": "spel",
+  "Y": "bron",
+  "gelijk": true
+ },
+ {
+  "paar": 19,
+  "naam": "zichtbaar V5 zonder O2",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 20,
+  "naam": "titel",
+  "X": "spel",
+  "Y": "bron",
+  "gelijk": true
+ },
+ {
+  "paar": 21,
+  "naam": "profielen",
+  "X": "spel",
+  "Y": "bron",
+  "gelijk": true
+ },
+ {
+  "paar": 22,
+  "naam": "brug",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 23,
+  "naam": "bron I8",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ },
+ {
+  "paar": 24,
+  "naam": "repertoire",
+  "X": "bron",
+  "Y": "spel",
+  "gelijk": true
+ }
+]

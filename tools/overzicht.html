@@ -1,0 +1,1213 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overzicht casus-data</title>
+<style>
+:root {
+  --bg: #ffffff; --tekst: #1d2330; --zacht: #5a6272; --lijn: #d5d9e0; --vlak: #f4f6f9;
+  --accent: #1f4e79; --open: #fff4d6; --open-lijn: #d9a400; --meta: #eceff3; --meta-lijn: #8a93a3;
+  --rood: #a4161a; --goed: #1b6b3a;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 56px; }
+body { margin: 0; background: var(--bg); color: var(--tekst); font: 15px/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+header.balk { position: sticky; top: 0; z-index: 5; background: var(--accent); color: #fff; padding: 8px 20px; display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
+header.balk strong { margin-right: 8px; }
+header.balk a { color: #fff; text-decoration: none; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,.4); font-size: 14px; }
+header.balk a:hover { background: rgba(255,255,255,.2); }
+main { max-width: 1180px; margin: 0 auto; padding: 8px 20px 60px; }
+h1 { font-size: 24px; margin: 20px 0 4px; }
+h2 { font-size: 20px; margin: 34px 0 8px; padding-bottom: 4px; border-bottom: 2px solid var(--accent); color: var(--accent); }
+h3 { font-size: 16px; margin: 22px 0 6px; }
+h4 { font-size: 15px; margin: 14px 0 4px; }
+p { margin: 6px 0; }
+.zacht { color: var(--zacht); }
+.klein { font-size: 13px; }
+table { border-collapse: collapse; width: 100%; margin: 6px 0 10px; font-size: 13.5px; }
+th, td { border: 1px solid var(--lijn); padding: 4px 8px; vertical-align: top; text-align: left; }
+th { background: var(--vlak); font-weight: 600; }
+td.id { font-weight: 700; white-space: nowrap; }
+dl.kv { display: grid; grid-template-columns: minmax(120px, 190px) 1fr; gap: 3px 14px; margin: 6px 0; }
+dl.kv dt { color: var(--zacht); }
+dl.kv dd { margin: 0; }
+dl.kv dl.kv { margin: 0; }
+ul, ol { margin: 4px 0; padding-left: 22px; }
+.kaartlijst { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.kaartlijst li { border: 1px solid var(--lijn); background: var(--vlak); border-radius: 4px; padding: 2px 8px; font-size: 13.5px; }
+.kaartlijst li b { margin-right: 6px; }
+.kaart-blok, .inv, .blok { border: 1px solid var(--lijn); border-radius: 6px; padding: 8px 12px; margin: 8px 0; background: #fff; }
+.inv > .kop { font-weight: 700; margin-bottom: 4px; }
+.inv .ernst { display: inline-block; min-width: 64px; background: var(--vlak); border: 1px solid var(--lijn); border-radius: 4px; padding: 0 6px; margin-left: 8px; font-weight: 400; font-size: 13px; }
+.etiket { color: var(--zacht); font-size: 12.5px; text-transform: none; }
+.casus-tekst { border-left: 3px solid var(--accent); padding-left: 10px; margin: 4px 0; }
+.meta { background: var(--meta); border-left: 4px solid var(--meta-lijn); border-radius: 3px; padding: 4px 10px; margin: 6px 0; font-size: 13.5px; }
+.meta > .etiket { display: block; font-weight: 600; margin-bottom: 2px; }
+.open-badge { display: inline-block; background: var(--open); border: 1px solid var(--open-lijn); color: #6b4c00; border-radius: 10px; padding: 0 8px; font-size: 12px; margin-left: 6px; text-decoration: none; white-space: nowrap; font-weight: 400; }
+.open-vraag { background: var(--open); border: 1px solid var(--open-lijn); border-radius: 6px; padding: 8px 12px; margin: 8px 0; }
+.open-vraag .nr { font-weight: 700; }
+.open-vraag p { margin: 4px 0; }
+.open-vraag[hidden], .open-groep[hidden], .inhoud li[hidden] { display: none; }
+.zoekbalk { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 8px 0; }
+.zoekbalk input { flex: 1 1 320px; max-width: 520px; padding: 6px 10px; font-size: 15px; border: 1px solid var(--meta-lijn); border-radius: 4px; }
+.groepnav a { margin-right: 14px; }
+ul.inhoud { margin: 4px 0; columns: 1; font-size: 13.5px; }
+.geen-markering { color: #6b4c00; font-style: italic; }
+.open-groep h3 { margin-top: 26px; }
+.pred { margin: 2px 0; }
+.pred ul { list-style: none; margin: 2px 0 2px 4px; padding-left: 14px; border-left: 2px solid var(--lijn); }
+.pred li { margin: 3px 0; }
+.pred .bind { font-weight: 600; color: var(--accent); }
+.pred .niet { font-weight: 700; color: var(--rood); }
+.pred-blok { background: var(--vlak); border-radius: 4px; padding: 6px 10px; margin: 4px 0; }
+.waarsch { color: var(--rood); font-weight: 600; }
+details { margin: 6px 0; }
+details > summary { cursor: pointer; color: var(--accent); }
+pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-size: 12px; margin: 4px 0; }
+.goed { color: var(--goed); font-weight: 600; }
+.fout-melding { background: #fde8e8; border: 1px solid var(--rood); padding: 10px 14px; border-radius: 6px; margin: 20px 0; }
+@media print { header.balk { display: none; } }
+@media (max-width: 800px) { main { padding: 8px 12px 40px; } dl.kv { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="balk" id="balk"><strong>Overzicht casus-data</strong></header>
+<main id="app"><p class="zacht">Bezig met laden…</p></main>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- Laden (klassieke scripts, werkt via file://) ----------
+  function laadScript(src, klaar) {
+    var s = document.createElement('script');
+    s.src = src;
+    s.onload = function () { klaar(null); };
+    s.onerror = function () { klaar(new Error('Kon ' + src + ' niet laden.')); };
+    document.head.appendChild(s);
+  }
+  function laadReeks(lijst, klaar) {
+    var i = 0;
+    (function stap(fout) {
+      if (fout) return klaar(fout);
+      if (i >= lijst.length) return klaar(null);
+      laadScript(lijst[i++], stap);
+    })(null);
+  }
+  // Het uitgeknipte bestandsdeel (uwi-e1..e3) wordt alleen geladen als uwi.js zelf nog geen episodes bevat.
+  laadReeks(['../casussen/uwi.js', '../regels/predicaten.js'], function (f) {
+    if (f) return toonFout(f.message);
+    var c = window.CASUSSEN && window.CASUSSEN[0];
+    var extra = (c && c.episodes && c.episodes.length) ? [] : ['../casussen/uwi-e1.js', '../casussen/uwi-e2.js', '../casussen/uwi-e3.js'];
+    laadReeks(extra, function (f2) {
+      if (f2) return toonFout(f2.message);
+      c = window.CASUSSEN && window.CASUSSEN[0];
+      // De casusreferentie staat in een eigen bestand, tenzij die al in de casus is samengevoegd.
+      if (c && !c.referentie) laadScript('../casussen/uwi-referentie.js', function () { opbouwen(); });
+      else opbouwen();
+    });
+  });
+
+  function opbouwen() {
+    try { start(); window.OVERZICHT_KLAAR = true; }
+    catch (e) { toonFout('Er ging iets mis bij het opbouwen van het overzicht: ' + e.message); window.OVERZICHT_FOUT = String(e && e.stack || e); }
+  }
+
+  function toonFout(tekst) {
+    var app = document.getElementById('app');
+    app.innerHTML = '';
+    var d = document.createElement('div'); d.className = 'fout-melding'; d.textContent = tekst;
+    app.appendChild(d);
+    window.OVERZICHT_FOUT = tekst;
+  }
+
+  // ---------- DOM-hulpjes ----------
+  function voegToe(e, kids) {
+    if (kids == null || kids === false) return;
+    if (!Array.isArray(kids)) kids = [kids];
+    kids.forEach(function (c) {
+      if (c == null || c === false) return;
+      if (Array.isArray(c)) return voegToe(e, c);
+      e.appendChild(typeof c === 'object' ? c : document.createTextNode(String(c)));
+    });
+  }
+  function el(tag, attrs, kids) {
+    var e = document.createElement(tag);
+    if (attrs) for (var k in attrs) {
+      if (k === 'class') e.className = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    }
+    voegToe(e, kids);
+    return e;
+  }
+  function isTodoSleutel(k) { return /^TODO_BART/.test(k); }
+  function isLeeg(v) { return v === null || v === undefined; }
+
+  // ---------- Toestand van het overzicht ----------
+  var casus = null, ep = null, todoMap = [];
+
+  // ---------- Opzoeken van labels (alles uit de data) ----------
+  function kaartVan(id) {
+    var l = casus.kaarten || [];
+    for (var i = 0; i < l.length; i++) if (l[i].id === id) return l[i];
+    return null;
+  }
+  function medicatieVan(id) {
+    var l = (ep && ep.patient && ep.patient.medicatie) || [];
+    for (var i = 0; i < l.length; i++) {
+      var m = l[i];
+      if (typeof m === 'string' ? m === id : m.id === id) return m;
+    }
+    return null;
+  }
+  function lab(id) {
+    var k = kaartVan(id);
+    if (k) return '‘' + k.label + '’ (' + id + ')';
+    var m = medicatieVan(id);
+    if (m) return '‘' + (typeof m === 'string' ? m : m.label) + '’';
+    return '‘' + id + '’';
+  }
+  function labs(x, woord) {
+    return (Array.isArray(x) ? x : [x]).map(lab).join(woord || ' of ');
+  }
+  function rolLab(rol) {
+    var r = casus.rollen && casus.rollen[rol];
+    return r ? lab(r) : 'de bijbehorende bijsturingskaart';
+  }
+  function gebeurtenisLab(id) { return 'gebeurtenis ' + id; }
+
+  // ---------- Open vragen (TODO_BART) ----------
+  function todoSleutels(obj) {
+    var r = [];
+    if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+      Object.keys(obj).forEach(function (k) { if (isTodoSleutel(k) && typeof obj[k] === 'string') r.push(obj[k]); });
+    }
+    return r;
+  }
+  // Bij een open vraag op de plek zelf: kies de vraag uit de lijst die bij deze tekst hoort (bij dubbelen: die van de huidige episode).
+  function todoIdVoor(stuk) {
+    var l = casus.todoBart || [], gevonden = [];
+    for (var i = 0; i < l.length; i++) if ((l[i].vraag || '').indexOf(stuk) >= 0) gevonden.push(l[i].id);
+    if (!gevonden.length) return null;
+    if (ep && gevonden.length > 1) {
+      for (var k = 0; k < gevonden.length; k++) if (gevonden[k].indexOf('-' + ep.id + '-') >= 0) return gevonden[k];
+    }
+    return gevonden[0];
+  }
+  var badgeNr = {};     // id van de open vraag -> aantal markeringen op de plek zelf
+  function badges(obj) {
+    var uit = [];
+    todoSleutels(obj).forEach(function (t) {
+      t.split(' | ').forEach(function (stuk) {
+        var id = todoIdVoor(stuk);
+        if (id) {
+          badgeNr[id] = (badgeNr[id] || 0) + 1;
+          uit.push(el('a', { 'class': 'open-badge', href: '#todo-' + id, id: 'plek-' + id + '-' + badgeNr[id] }, 'open vraag ' + id));
+        } else uit.push(el('span', { 'class': 'open-badge' }, 'open vraag'));
+      });
+    });
+    return uit;
+  }
+
+  // Leesbare plek-aanduiding (de data heeft code-achtige plekken zoals "E2.invarianten[].ernst").
+  var PLEKWOORD = {
+    patient: 'patiëntkaart', zichtbaar: 'wat de student ziet', verborgen: 'verborgen gegevens', waar: 'ware waarden', meta: 'toelichting voor de ontwerper',
+    invarianten: 'invarianten', invariant: 'invariant', vraagVarianten: 'andere vragen', weglaatDownside: 'downside bij weglaten', ernst: 'ernst',
+    score: 'score', regels: 'regels', profielen: 'profielen',
+    feedbackExtra: 'extra feedbackvragen', zichtbaarAlsOntbreekt: 'wat er zichtbaar wordt als een kaart ontbreekt', statusTeksten: 'statusteksten',
+    gebeurtenissen: 'gebeurtenissen', knoppen: 'knoppen', werkzaamheid: 'werkzaamheid', kaarten: 'kaarten', doelen: 'doelen en opties', effect: 'effect',
+    downside: 'downside', raadplegen: 'richtlijn raadplegen', bronnen: 'bronnen', repertoire: 'repertoire', casusMedicatieregel: 'medicatieregel uit de casus',
+    volgordeVanSecties: 'volgorde van de onderdelen', geldigeRoutes: 'geldige routes', geldigeRoutesNoot: 'opmerking onder de geldige routes',
+    gebeurtenisUitleg: 'uitleg bij de gebeurtenissen'
+  };
+  function plekTxt(plek) {
+    if (isLeeg(plek)) return '';
+    return String(plek).split(/\s*;\s*/).map(function (deel) {
+      deel = deel.replace(/^referentie\./, '');
+      var m = /^(E\d+)\.(.*)$/.exec(deel), voor = '', rest = deel;
+      if (m) { voor = 'Episode ' + m[1].slice(1); rest = m[2]; }
+      var m3 = /^E1\/E2\/E3\.(.*)$/.exec(deel);
+      if (m3) { voor = 'Episode 1, 2 en 3'; rest = m3[1]; }
+      var haakje = '';
+      var h = /\s*(\(.*\))\s*$/.exec(rest);
+      if (h) { haakje = ' ' + h[1]; rest = rest.slice(0, h.index); }
+      var delen = rest.split('.').filter(Boolean).map(function (d, idx, all) {
+        var b = /^([A-Za-zÀ-ÿ_]+)\[(.*)\]$/.exec(d);
+        if (b) {
+          var naam = PLEKWOORD[b[1]] || b[1];
+          return b[2] ? naam + ' ' + b[2].split(',').join(', ') : naam;
+        }
+        if (/^I\d+(,\s*I\d+)*$/.test(d) && idx > 0 && all[idx - 1] === 'invarianten') return d;
+        return PLEKWOORD[d] || (/[a-z][A-Z]/.test(d) ? veldnaam(d).toLowerCase() : d);
+      });
+      // "invarianten, I1" -> "invariant I1"
+      var uit = [];
+      for (var q = 0; q < delen.length; q++) {
+        if (delen[q] === 'invarianten' && q + 1 < delen.length && /^I\d/.test(delen[q + 1])) { uit.push('invariant ' + delen[q + 1]); q++; }
+        else uit.push(delen[q]);
+      }
+      return [voor].concat(uit).filter(Boolean).join(', ') + haakje;
+    }).join('; ');
+  }
+  window.OVERZICHT_PLEK = plekTxt;
+
+  // ---------- Generieke weergave van waarden ----------
+  // Alleen vaste, niet-klinische namen. Alle andere veldnamen worden uit de sleutel in de data afgeleid.
+  var VELDNAMEN = {
+    raadplegenKost: 'Richtlijn raadplegen kost (acties)',
+    casusTekst: 'Zoals in de casus', afrondenPasNaGebeurtenissen: 'Afronden pas na de gebeurtenissen'
+  };
+  function veldnaam(k) {
+    if (VELDNAMEN[k]) return VELDNAMEN[k];
+    if (/^[a-z][A-Z]/.test(k)) return String(k);
+    var t = String(k).replace(/Tekst$/, '').replace(/([a-z]{2,})([A-Z])/g, '$1 $2').replace(/ ([A-Z])([a-z])/g, function (m, a, b) { return ' ' + a.toLowerCase() + b; });
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  }
+
+  function waarde(v) {
+    if (isLeeg(v)) return el('span', { 'class': 'zacht' }, '(leeg)');
+    if (typeof v === 'boolean') return document.createTextNode(v ? 'ja' : 'nee');
+    if (typeof v === 'string' || typeof v === 'number') return document.createTextNode(String(v));
+    if (Array.isArray(v)) {
+      if (v.every(function (x) { return typeof x !== 'object' || x === null; })) return document.createTextNode(v.join(', '));
+      return el('ul', null, v.map(function (x) { return el('li', null, waarde(x)); }));
+    }
+    return velden(v, []);
+  }
+  function velden(obj, sla) {
+    var rijen = [];
+    Object.keys(obj).forEach(function (k) {
+      if (isTodoSleutel(k) || (sla && sla.indexOf(k) >= 0)) return;
+      if (k === 'meta') { rijen.push({ meta: obj[k] }); return; }
+      rijen.push({ k: k, v: obj[k] });
+    });
+    if (!rijen.length) return document.createTextNode('');
+    var dl = el('dl', { 'class': 'kv' });
+    rijen.forEach(function (r) {
+      if (r.meta !== undefined) {
+        dl.appendChild(el('dt', null, 'Alleen voor de ontwerper'));
+        dl.appendChild(el('dd', null, metaBox(r.meta)));
+      } else {
+        dl.appendChild(el('dt', null, veldnaam(r.k)));
+        dl.appendChild(el('dd', null, waarde(r.v)));
+      }
+    });
+    return dl;
+  }
+  function rest(obj, bekend) {
+    var dl = velden(obj, bekend);
+    return dl.nodeType === 1 ? dl : null;
+  }
+  function metaBox(m, titel) {
+    return el('div', { 'class': 'meta' }, [
+      el('span', { 'class': 'etiket' }, titel || 'Niet zichtbaar voor de student (alleen voor de ontwerper)'),
+      waarde(m),
+      (m && typeof m === 'object') ? badges(m) : null
+    ]);
+  }
+  function casusQuote(tekst) {
+    if (isLeeg(tekst)) return null;
+    var lijst = Array.isArray(tekst) ? tekst : [tekst];
+    return el('div', { 'class': 'casus-tekst' }, [el('span', { 'class': 'etiket' }, 'Zoals in de casus: '), lijst.join(' / ')]);
+  }
+
+  // ---------- Predicaat naar leesbare Nederlandse tekst (generiek) ----------
+  var KVELDEN = ['kaart', 'doel', 'optie', 'optieNiet', 'kaartUit', 'start', 'naGebeurtenis', 'voorGebeurtenis'];
+  function kOf(p, uitsluiten) {
+    if (p.K && typeof p.K === 'object') return p.K;
+    var k = {};
+    KVELDEN.forEach(function (f) {
+      if (f in p && !(uitsluiten && uitsluiten.indexOf(f) >= 0)) k[f] = p[f];
+    });
+    return k;
+  }
+  var OPERATOREN = {
+    '<': 'kleiner dan', '<=': 'kleiner dan of gelijk aan', '>': 'groter dan', '>=': 'groter dan of gelijk aan',
+    '==': 'gelijk aan', '=': 'gelijk aan', '!=': 'niet gelijk aan'
+  };
+  function opTxt(o) { return OPERATOREN[o] || String(o); }
+
+  // NU = true: het predicaat wordt tijdens het spel op de huidige stand beoordeeld (bij 'Kan alleen gekozen worden als').
+  var NU = false;
+
+  // Beschrijving van een kaartverwijzing (K).
+  function kd(k) {
+    var s;
+    if (k.start != null) {
+      s = 'het starten van ' + labs(k.start) + ' (met die kaart zelf, of met ' + rolLab('wissel') + ' waarbij dat middel het doel is)';
+    } else if (k.kaartUit != null) {
+      var lijst = (ep && ep[k.kaartUit]) || [];
+      s = 'een van deze kaarten: ' + lijst.map(lab).join(', ');
+    } else if (k.kaart != null) {
+      s = labs(k.kaart);
+    } else {
+      s = 'een kaart';
+    }
+    if ('doel' in k) s += isLeeg(k.doel) ? ', zonder doel' : ', met doel ' + lab(k.doel);
+    if ('optie' in k) s += isLeeg(k.optie) ? ', zonder optie' : ', met optie ‘' + k.optie + '’';
+    if (k.optieNiet && k.optieNiet.length) s += ', niet met de optie ' + k.optieNiet.map(function (o) { return '‘' + o + '’'; }).join(' of ') + ' (een regel zonder optie telt wel mee)';
+    if (k.naGebeurtenis != null) s += ', op of na de dag van ' + gebeurtenisLab(k.naGebeurtenis);
+    if (k.voorGebeurtenis != null) s += ', vóór de dag van ' + gebeurtenisLab(k.voorGebeurtenis);
+    return s;
+  }
+  // Moment bij actief / medicatieActief.
+  function momentTxt(op) {
+    if (isLeeg(op)) return '';
+    if (op.dag != null) return 'aan het einde van dag ' + op.dag;
+    if (op.eindeBeurtNaGebeurtenis != null) {
+      var off = op.offset || 0;
+      return 'aan het einde van de beurt van ' + gebeurtenisLab(op.eindeBeurtNaGebeurtenis) + (off ? ' ' + (off > 0 ? '+' : '−') + Math.abs(off) + ' dag(en)' : '') + ' (is die gebeurtenis niet geweest, dan is dit niet waar)';
+    }
+    if (op.naKaart) return 'direct na de eerste keer dat ' + kd(op.naKaart) + ' is gespeeld';
+    return 'op een ander, niet herkend moment';
+  }
+  // De klachtenstatussen: de tekst voor de student komt uit de data, de uitleg beschrijft alleen wanneer de status geldt.
+  var STATUSUITLEG = {
+    af: 'minstens één werkzaam middel is actief',
+    aan: 'er is een middel actief, maar geen enkel werkzaam middel',
+    geenVerbetering48: 'er is te lang geen werkzaam middel actief geweest'
+  };
+  function statusUitleg(w) { return STATUSUITLEG[w] || 'een andere status'; }
+  function statusTxt(w) {
+    var t = ep && ep.statusTeksten && ep.statusTeksten[w];
+    return 'de klachtenstatus ' + (t ? '“' + t + '”' : '(zonder tekst voor de student)') + ' (' + statusUitleg(w) + ')';
+  }
+  function tellerTxt(t) {
+    if (t.t === 'gespeeld') {
+      return 'het aantal keer dat ' + kd(kOf(t)) + ' is gespeeld' + (t.terwijlKlachten ? ' (alleen op dagen waarop ' + statusTxt(t.terwijlKlachten) + ')' : '');
+    }
+    if (t.t === 'aantalActieveAntibiotica') return 'het hoogste aantal tegelijk actieve antibiotica tijdens de episode';
+    return 'een telling die dit overzicht niet kent (‘' + t.t + '’)';
+  }
+
+  function tekst(s) { return el('span', null, s); }
+  function lijstPred(kop, args, klasse) {
+    var d = el('div', { 'class': 'pred' }, [el('span', { 'class': klasse || 'bind' }, kop)]);
+    if (!args || !args.length) { d.appendChild(el('span', { 'class': 'zacht' }, ' (lege lijst)')); return d; }
+    var ul = el('ul');
+    args.forEach(function (a) { ul.appendChild(el('li', null, pred(a))); });
+    d.appendChild(ul);
+    return d;
+  }
+  function waardeTxt(v) { return v === true ? 'ja' : v === false ? 'nee' : String(v); }
+
+  function pred(p) {
+    if (!p || typeof p !== 'object') return tekst('(geen predicaat)');
+    switch (p.p) {
+      case 'gespeeld': return tekst((NU ? 'Tot nu toe gespeeld: ' : 'Gespeeld: ') + kd(kOf(p)));
+      case 'nietGespeeld': return tekst((NU ? 'Tot nu toe niet gespeeld: ' : 'Niet gespeeld: ') + kd(kOf(p)));
+      case 'voor': return tekst('Eerder gespeeld: ' + kd(p.a) + ', vóór ' + kd(p.b) + ' (de eerste keer van elk; is een van beide niet gespeeld, dan is dit niet waar)');
+      case 'na': return tekst('Later gespeeld: ' + kd(p.a) + ', ná ' + kd(p.b) + ' (de eerste keer van elk; is een van beide niet gespeeld, dan is dit niet waar)');
+      case 'binnenBeurten': {
+        var gb = p.naGebeurtenis != null ? p.naGebeurtenis : (p.K && p.K.naGebeurtenis);
+        return tekst('Gespeeld: ' + kd(kOf(p, ['naGebeurtenis'])) + ', binnen ' + p.n + ' beurt(en) vanaf ' + gebeurtenisLab(gb) + ' (de beurt van die gebeurtenis telt als eerste; is de gebeurtenis niet geweest, dan is dit niet waar)');
+      }
+      case 'binnenBeurtenNaKaart':
+        return tekst('Gespeeld: ' + kd(kOf(p)) + ', binnen ' + p.n + ' beurt(en) vanaf de beurt waarin ' + kd(p.naKaart) + ' voor het eerst is gespeeld (die beurt telt als eerste)');
+      case 'opDagRelatief': {
+        var bereik = isLeeg(p.tot) ? 'minstens ' + p.van + ' dag(en)' : (p.van === p.tot ? 'precies ' + p.van + ' dag(en)' : 'tussen ' + p.van + ' en ' + p.tot + ' dagen');
+        return tekst('Gespeeld: ' + kd(kOf(p)) + ', ' + bereik + ' na de dag waarop ' + kd(p.anker) + ' voor het eerst is gespeeld (dezelfde dag = 0 dagen erna)');
+      }
+      case 'gestart': return tekst('Gestart: ' + labs(p.middel) + ' (met die kaart zelf, of met ' + rolLab('wissel') + ' waarbij dat middel het doel is)');
+      case 'actief': {
+        var wie = p.middel != null ? labs(p.middel) : 'minstens één van de antibiotica van deze episode (' + (ep && ep.antibiotica ? ep.antibiotica.map(lab).join(', ') : '') + ')';
+        var s = 'Actief (gestart en niet gestopt of vervangen): ' + wie;
+        if (p.uitSet) s += ', en dat middel is ‘' + p.uitSet + '’ volgens de gebeurtenissen die zijn geweest';
+        s += p.op ? ', ' + momentTxt(p.op) : (NU ? ', op dit moment' : ', aan het einde van de episode');
+        return tekst(s);
+      }
+      case 'aantalActieveAntibiotica':
+        return tekst('Het hoogste aantal tegelijk actieve antibiotica (na elke gespeelde kaart gemeten' + (NU ? ', tot nu toe' : '') + ') is ' + opTxt(p.op) + ' ' + p.n);
+      case 'medicatieActief':
+        return tekst('Medicatie ' + lab(p.id) + ' is actief (niet gepauzeerd, of na de pauze weer hervat)' + (p.op ? ', ' + momentTxt(p.op) : (NU ? ', op dit moment' : ', aan het einde van de episode')));
+      case 'waar':
+        return tekst('De ware waarde van ‘' + p.veld + '’ (ook als de student die niet ziet) is ' + opTxt(p.op) + ' ' + waardeTxt(p.waarde));
+      case 'inToestand': return tekst('De patiënt is in de toestand ‘' + p.t + '’');
+      case 'gebeurtenisGeweest': return tekst('Gebeurtenis ' + p.id + ' heeft plaatsgevonden');
+      case 'klachten': {
+        var wanneer = NU ? 'tot nu toe' : 'ooit tijdens de episode';
+        if (p.op === 'laatste') wanneer = 'op de laatste dag';
+        else if (p.op && p.op.dag != null) wanneer = 'op dag ' + p.op.dag;
+        else if (p.op && p.op.eindeBeurtNaGebeurtenis != null) wanneer = 'op de dag van ' + gebeurtenisLab(p.op.eindeBeurtNaGebeurtenis) + (p.op.offset ? ' ' + (p.op.offset > 0 ? '+' : '−') + Math.abs(p.op.offset) + ' dag(en)' : '');
+        return tekst('Er geldt ' + statusTxt(p.waarde) + ', ' + wanneer);
+      }
+      case 'en': return lijstPred('Alle onderstaande zijn waar:', p.args);
+      case 'of': return lijstPred('Minstens één van onderstaande is waar:', p.args);
+      case 'niet': {
+        var d = el('div', { 'class': 'pred' }, [el('span', { 'class': 'niet' }, 'NIET: ')]);
+        d.appendChild(pred(p.arg));
+        return d;
+      }
+      case 'alsDan': {
+        var b = el('div', { 'class': 'pred' }, [el('span', { 'class': 'bind' }, 'Als dit waar is:')]);
+        var u = el('ul');
+        u.appendChild(el('li', null, pred(p.als)));
+        u.appendChild(el('li', null, [el('span', { 'class': 'bind' }, 'dan moet ook dit waar zijn:'), el('ul', null, el('li', null, pred(p.dan)))]));
+        b.appendChild(u);
+        return b;
+      }
+      case 'waarheid': return tekst(p.waarde ? 'Altijd waar' : 'Nooit waar');
+      case 'tel': return tekst('Aantal: ' + tellerTxt(p.teller || {}) + ' is ' + opTxt(p.op) + ' ' + p.waarde);
+      default:
+        return el('span', { 'class': 'waarsch' }, 'Onbekend predicaat ‘' + p.p + '’: dit overzicht kan de regel niet in gewoon Nederlands tonen.');
+    }
+  }
+
+  // Predicaat met geldigheidscontrole. nu = true bij een voorwaarde die tijdens het spelen wordt beoordeeld.
+  function predBlok(p, kop, nu) {
+    var blok = el('div', { 'class': 'pred-blok' });
+    if (kop) blok.appendChild(el('div', { 'class': 'etiket' }, kop));
+    NU = !!nu;
+    try { blok.appendChild(pred(p)); } finally { NU = false; }
+    try {
+      if (window.Predicaten && typeof window.Predicaten.valideer === 'function') window.Predicaten.valideer(p, casus, ep);
+    } catch (e) {
+      blok.appendChild(el('div', { 'class': 'waarsch' }, 'Let op: deze regel is volgens de regeltaal niet geldig: ' + e.message));
+    }
+    return blok;
+  }
+
+  // ---------- Onderdelen ----------
+  function kortTitel(t) {
+    var v = String(t.vraag || ''), q = v.indexOf('?');
+    var begin = 0;
+    if (q >= 0) { var b = v.lastIndexOf('. ', q); begin = b >= 0 && q - b < 220 ? b + 2 : 0; }
+    var z = v.slice(begin, q >= 0 ? q + 1 : undefined);
+    return z.length > 150 ? z.slice(0, 147) + '…' : z;
+  }
+
+  function openVragen(c) {
+    var wrap = el('section', { id: 'open' });
+    var lijst = c.todoBart || [];
+    wrap.appendChild(el('h2', null, 'Open vragen voor Bart (' + lijst.length + ')'));
+    wrap.appendChild(el('p', { 'class': 'zacht' }, 'Hier staat alles wat de casus niet of dubbelzinnig zegt. Per vraag staat de lezing waarmee nu is doorgewerkt. Gegroepeerd per kaarten en per episode. Vragen met het label “geen markering op de plek” staan alleen in deze lijst; bij de andere vragen staat een gele knop op de plek zelf.'));
+
+    var groepen = [{ sleutel: '', titel: 'Kaartenbibliotheek en algemeen', items: [] }];
+    (c.episodes || []).forEach(function (e) { groepen.push({ sleutel: e.id, titel: 'Episode ' + e.id.replace(/^E/, ''), items: [] }); });
+    groepen.push({ sleutel: 'R', titel: 'Koppen, routes en volgorde uit de casus', items: [] });
+    lijst.forEach(function (t) {
+      var m = /^TODO_BART-(E\d+)-/.exec(t.id || '') || /^(E\d+)[.\[]/.exec(t.plek || '');
+      var g = groepen[0];
+      if (/^TODO_BART-R\d/.test(t.id || '') || /^referentie\./.test(t.plek || '')) g = groepen[groepen.length - 1];
+      else if (m) for (var i = 1; i < groepen.length; i++) if (groepen[i].sleutel === m[1]) g = groepen[i];
+      g.items.push(t);
+    });
+    function nr(t) { var m = /(\d+)\s*$/.exec(t.id || ''); return m ? +m[1] : 0; }
+    groepen.forEach(function (g) { g.items.sort(function (a, b) { return nr(a) - nr(b); }); });
+    var zichtbareGroepen = groepen.filter(function (g) { return g.items.length; });
+
+    // Zoekveld en inhoudsopgave per groep
+    var zoek = el('input', { type: 'search', id: 'zoek', placeholder: 'Zoek in de open vragen (nummer, kaart, woord)…', 'aria-label': 'Zoek in de open vragen' });
+    var teller = el('span', { id: 'zoekteller', 'class': 'zacht klein' }, lijst.length + ' van ' + lijst.length + ' vragen getoond');
+    wrap.appendChild(el('div', { 'class': 'zoekbalk' }, [zoek, teller]));
+    var nav = el('p', { 'class': 'groepnav' }, [el('span', { 'class': 'etiket' }, 'Spring naar: ')]);
+    zichtbareGroepen.forEach(function (g, i) {
+      nav.appendChild(el('a', { href: '#open-groep-' + (g.sleutel || 'K') }, g.titel + ' (' + g.items.length + ')'));
+    });
+    wrap.appendChild(nav);
+    wrap.appendChild(el('p', { id: 'zoekleeg', 'class': 'zacht', hidden: 'hidden' }, 'Geen enkele open vraag past bij deze zoekterm.'));
+
+    zichtbareGroepen.forEach(function (g) {
+      var sec = el('div', { 'class': 'open-groep', id: 'open-groep-' + (g.sleutel || 'K') });
+      sec.appendChild(el('h3', null, g.titel + ' (' + g.items.length + ')'));
+      var ul = el('ul', { 'class': 'inhoud' });
+      g.items.forEach(function (t) {
+        ul.appendChild(el('li', { 'data-index-id': t.id }, [el('a', { href: '#todo-' + t.id }, t.id), ' — ', kortTitel(t)]));
+      });
+      sec.appendChild(el('details', { open: 'open' }, [el('summary', null, 'Inhoud van deze groep'), ul]));
+      g.items.forEach(function (t) {
+        var plekLinks = [], aantalPlekken = badgeNr[t.id] || 0;
+        for (var n = 1; n <= aantalPlekken; n++) plekLinks.push(el('a', { href: '#plek-' + t.id + '-' + n }, aantalPlekken > 1 ? 'plek ' + n : 'Naar de plek in het overzicht'));
+        var markering = plekLinks.length
+          ? el('p', { 'class': 'klein plek-links' }, aantalPlekken > 1 ? ['Staat op ' + aantalPlekken + ' plekken in het overzicht: '].concat(plekLinks.map(function (a) { return [a, '  ']; })) : plekLinks)
+          : el('p', { 'class': 'klein geen-markering' }, 'Geen markering op de plek: in de data staat deze vraag alleen in deze lijst, niet ook bij de kaart of regel zelf. Zie “plek” hierboven.');
+        sec.appendChild(el('div', { 'class': 'open-vraag', id: 'todo-' + t.id, 'data-todo-id': t.id }, [
+          el('p', null, [el('span', { 'class': 'nr' }, t.id), el('span', { 'class': 'zacht' }, ' · plek: '), plekTxt(t.plek)]),
+          el('p', null, [el('b', null, 'Vraag: '), t.vraag]),
+          el('p', null, [el('b', null, 'Gekozen lezing: '), t.gekozenLezing]),
+          markering
+        ]));
+      });
+      wrap.appendChild(sec);
+    });
+
+    // Open vragen die alleen op de plek zelf in de data staan en niet in de lijst.
+    var extra = [];
+    (function loop(o, pad) {
+      if (Array.isArray(o)) return o.forEach(function (x, i) { loop(x, pad + '[' + i + ']'); });
+      if (!o || typeof o !== 'object') return;
+      Object.keys(o).forEach(function (k) {
+        if (isTodoSleutel(k) && typeof o[k] === 'string') {
+          o[k].split(' | ').forEach(function (stuk) { if (!todoIdVoor(stuk)) extra.push({ pad: pad + '.' + k, tekst: stuk }); });
+        } else loop(o[k], pad + '.' + k);
+      });
+    })(c, 'casus');
+    if (extra.length) {
+      var sec2 = el('div', { 'class': 'open-groep', id: 'open-groep-extra' });
+      sec2.appendChild(el('h3', null, 'Alleen op de plek zelf vastgelegd, niet in de lijst hierboven (' + extra.length + ')'));
+      extra.forEach(function (x) {
+        sec2.appendChild(el('div', { 'class': 'open-vraag', 'data-todo-plek': x.pad }, [
+          el('p', { 'class': 'zacht' }, 'plek: ' + plekTxt(x.pad.replace(/^casus\./, ''))), el('p', null, x.tekst)
+        ]));
+      });
+      wrap.appendChild(sec2);
+    }
+
+    // Zoeken: verbergt vragen die niet passen (de tekst blijft in de pagina).
+    zoek.addEventListener('input', function () {
+      var q = zoek.value.toLowerCase().replace(/\s+/g, ' ').trim(), getoond = 0, totaal = 0;
+      var kaarten = wrap.querySelectorAll('.open-vraag');
+      Array.prototype.forEach.call(kaarten, function (k) {
+        totaal++;
+        var pas = !q || k.textContent.toLowerCase().replace(/\s+/g, ' ').indexOf(q) >= 0;
+        k.hidden = !pas;
+        if (pas) getoond++;
+        var id = k.getAttribute('data-todo-id');
+        if (id) { var li = wrap.querySelector('[data-index-id="' + id + '"]'); if (li) li.hidden = !pas; }
+      });
+      Array.prototype.forEach.call(wrap.querySelectorAll('.open-groep'), function (g) {
+        g.hidden = !g.querySelector('.open-vraag:not([hidden])');
+      });
+      teller.textContent = getoond + ' van ' + totaal + ' vragen getoond';
+      wrap.querySelector('#zoekleeg').hidden = getoond > 0;
+    });
+    return wrap;
+  }
+
+  function effectCel(eff) {
+    if (isLeeg(eff)) return el('span', { 'class': 'zacht' }, '(ontbreekt)');
+    if (typeof eff === 'string') return document.createTextNode(eff);
+    return Object.keys(eff).filter(function (k) { return !isTodoSleutel(k); }).map(function (k) {
+      return el('div', null, k === 'alle' ? String(eff[k]) : k + ': ' + eff[k]);
+    });
+  }
+
+  function bibliotheek(c) {
+    var wrap = el('section', { id: 'kaarten' });
+    wrap.appendChild(el('h2', null, 'Kaartenbibliotheek (' + (c.kaarten || []).length + ' kaarten)'));
+    wrap.appendChild(el('p', { 'class': 'zacht' }, 'Zelfde kolommen en volgorde als sectie 3 van de casus. ⊙ achter de categorie betekent: doelkaart (de speler kiest een doel).'));
+    var t = el('table', { 'data-tabel': 'kaarten' });
+    t.appendChild(el('thead', null, el('tr', null, ['Id', 'Categorie', 'Label', 'Vanaf', 'Effect / wat de kaart onthult', 'Downside', 'Bron'].map(function (h) { return el('th', null, h); }))));
+    var tb = el('tbody');
+    (c.kaarten || []).forEach(function (k) {
+      var tr = el('tr', { 'data-kaart-id': k.id });
+      tr.appendChild(el('td', { 'class': 'id' }, k.id));
+      tr.appendChild(el('td', null, k.categorie + (k.doelkaart ? ' ⊙' : '')));
+      tr.appendChild(el('td', null, [k.label, badges(k)]));
+      tr.appendChild(el('td', null, 'E' + k.vanafEpisode));
+      tr.appendChild(el('td', null, effectCel(k.effect)));
+      tr.appendChild(el('td', null, effectCel(k.downside)));
+      tr.appendChild(el('td', null, isLeeg(k.bron) ? '' : String(k.bron)));
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    wrap.appendChild(t);
+
+    if (c.raadplegen) {
+      var r = c.raadplegen;
+      var blok = el('div', { 'class': 'blok', id: 'raadplegen' }, [
+        el('h4', null, [r.titel || 'Richtlijn raadplegen', badges(r)]),
+        el('p', { 'class': 'zacht klein' }, 'Naslagkaart met verwijzing naar de bronnen (staat op casusniveau, voor alle episodes gelijk).')
+      ]);
+      var ul = el('ul');
+      (r.bronnen || []).forEach(function (b) { ul.appendChild(el('li', null, [el('b', null, b), (c.bronnen && c.bronnen[b]) ? ' — ' + c.bronnen[b] : ''])); });
+      blok.appendChild(ul);
+      wrap.appendChild(blok);
+    }
+    return wrap;
+  }
+
+  function kop(c) {
+    var wrap = el('section');
+    wrap.appendChild(el('h1', null, c.titel || c.id));
+    wrap.appendChild(el('p', { 'class': 'zacht' }, 'Casus-id ' + c.id + ' · versie ' + c.versie + ' · ' + (c.episodes || []).length + ' episodes · ' + (c.kaarten || []).length + ' kaarten'));
+    wrap.appendChild(el('p', null, 'Dit overzicht laat de casus zien zoals het spel hem gebruikt, met dezelfde onderdelen in dezelfde volgorde als casus-uwi.md, zodat je hem regel voor regel ernaast kunt leggen. Alle tekst komt rechtstreeks uit de gegevens van het spel; grijze vakken zijn dingen die de student niet te zien krijgt. Bij elke open vraag staat een gele knop op de plek waar het over gaat.'));
+    if (c.bronnen) {
+      var dl = el('dl', { 'class': 'kv' });
+      Object.keys(c.bronnen).forEach(function (b) { dl.appendChild(el('dt', null, b)); dl.appendChild(el('dd', null, c.bronnen[b])); });
+      wrap.appendChild(el('h4', null, 'Bronnen'));
+      wrap.appendChild(dl);
+    }
+    if (c.rollen) {
+      var dl2 = el('dl', { 'class': 'kv' });
+      Object.keys(c.rollen).forEach(function (r) { dl2.appendChild(el('dt', null, r)); dl2.appendChild(el('dd', null, lab(c.rollen[r]))); });
+      wrap.appendChild(el('h4', null, 'Rol van de bijsturingskaarten in de regels'));
+      wrap.appendChild(dl2);
+    }
+    wrap.appendChild(uitleg());
+    return wrap;
+  }
+
+  function uitleg() {
+    return el('details', null, [
+      el('summary', null, 'Uitleg bij de regels in dit overzicht'),
+      el('ul', null, [
+        el('li', null, 'Een invariant (poortregel) is geschonden als de “Schending als”-voorwaarde waar is en de invariant geldt in de toestand van dat moment.'),
+        el('li', null, 'Ernst 1 is het ernstigst. Bij meerdere schendingen krijgt de student alleen de vraag bij de ernstigste.'),
+        el('li', null, '“Actief” betekent: gestart en niet gestopt of vervangen. “Gestart” betekent: de kaart zelf is gespeeld, of de wisselkaart met dat middel als doel.'),
+        el('li', null, 'Een beurt is één dag. “Binnen n beurten”: de beurt van de gebeurtenis telt als eerste.'),
+        el('li', null, 'Bij de score geldt: de eerste regel met een vaste score die klopt, wint; regels met een verschil (+/−) tellen op of af. De uitkomst wordt tussen 1 en 3 gehouden.'),
+        el('li', null, 'Bij profielen wint het eerste profiel (op volgorde) waarvan de voorwaarde klopt.')
+      ])
+    ]);
+  }
+
+  // ----- Per episode -----
+  var ZICHTBAAR_VOLGORDE = ['kop', 'klachten', 'medicatieTekst', 'labTekst'];
+  var ZICHTBAAR_LOS = ['naam', 'leeftijd', 'leeftijdTekst', 'medicatie', 'lab'];   // losse velden voor de regels, dubbel met de tekstregels
+
+  function refVan(e) { return (casus.referentie && casus.referentie[e.id]) || null; }
+  function lijstTekst(l) {
+    if (isLeeg(l) || !l.length) return null;
+    return el('ul', null, l.map(function (x) { return el('li', null, x); }));
+  }
+
+  function patientKaart(e, naam) {
+    var p = e.patient || {};
+    var w = el('div', { 'data-sectie': 'patient' });
+    w.appendChild(el('h3', null, naam));
+    // zichtbaar
+    if (p.zichtbaar) {
+      w.appendChild(el('h4', null, 'Wat de student ziet'));
+      var keys = Object.keys(p.zichtbaar).filter(function (k) { return !isTodoSleutel(k) && k !== 'meta' && ZICHTBAAR_LOS.indexOf(k) < 0; });
+      keys.sort(function (a, b) {
+        var ia = ZICHTBAAR_VOLGORDE.indexOf(a), ib = ZICHTBAAR_VOLGORDE.indexOf(b);
+        return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+      });
+      var dl = el('dl', { 'class': 'kv', 'data-blok': 'zichtbaar' });
+      keys.forEach(function (k) { dl.appendChild(el('dt', null, veldnaam(k))); dl.appendChild(el('dd', null, waarde(p.zichtbaar[k]))); });
+      w.appendChild(dl);
+      var los = Object.keys(p.zichtbaar).filter(function (k) { return ZICHTBAAR_LOS.indexOf(k) >= 0; });
+      if (los.length) {
+        var dlos = el('dl', { 'class': 'kv', 'data-blok': 'zichtbaar-los' });
+        los.forEach(function (k) { dlos.appendChild(el('dt', null, veldnaam(k) + (/Tekst$/.test(k) ? ' (tekstregel)' : ' (los veld)'))); dlos.appendChild(el('dd', null, waarde(p.zichtbaar[k]))); });
+        w.appendChild(el('details', { 'class': 'klein' }, [el('summary', null, 'Dezelfde gegevens als losse velden (daar rekent het spel mee)'), dlos]));
+      }
+    }
+    // ware waarden
+    if (p.waar) {
+      w.appendChild(el('h4', null, 'Ware waarden (de regels rekenen hiermee, ook als de student ze niet ziet)'));
+      var dw = el('dl', { 'class': 'kv', 'data-blok': 'waar' });
+      Object.keys(p.waar).forEach(function (k) { dw.appendChild(el('dt', null, veldnaam(k))); dw.appendChild(el('dd', null, waarde(p.waar[k]))); });
+      w.appendChild(dw);
+    }
+    // medicatie waarop kaarten kunnen wijzen
+    if (p.medicatie && p.medicatie.length) {
+      w.appendChild(el('h4', null, 'Medicatie waarop kaarten kunnen wijzen (doelen)'));
+      w.appendChild(el('ul', null, p.medicatie.map(function (m) { return el('li', null, typeof m === 'string' ? m : [el('b', null, m.label), el('span', { 'class': 'zacht' }, ' (' + m.id + ')')]); })));
+    }
+    // verborgen
+    w.appendChild(el('h4', null, 'Verborgen (komt pas te zien na de bijbehorende kaart)'));
+    var vb = p.verborgen || [];
+    if (!vb.length) w.appendChild(el('p', { 'class': 'zacht' }, 'Niets verborgen.'));
+    vb.forEach(function (v, i) {
+      var blok = el('div', { 'class': 'blok', 'data-verborgen': e.id + ':' + i }, [
+        el('div', null, [el('b', null, 'Achter kaart ' + lab(v.kaart)), badges(v)]),
+        el('div', null, [el('span', { 'class': 'etiket' }, 'Onthult: '), isLeeg(v.onthult) ? '' : v.onthult])
+      ]);
+      var dl = el('dl', { 'class': 'kv' });
+      if (!isLeeg(v.sleutel)) { dl.appendChild(el('dt', null, 'Onthuld gegeven')); dl.appendChild(el('dd', null, veldnaam(v.sleutel))); }
+      if (!isLeeg(v.waarde)) { dl.appendChild(el('dt', null, 'Waarde')); dl.appendChild(el('dd', null, waarde(v.waarde))); }
+      if (v.zichtbaar) { dl.appendChild(el('dt', null, 'Daarna ziet de student')); dl.appendChild(el('dd', null, waarde(v.zichtbaar))); }
+      if (dl.children.length) blok.appendChild(dl);
+      if (v.meta) blok.appendChild(metaBox(v.meta));
+      var r = rest(v, ['kaart', 'onthult', 'sleutel', 'waarde', 'zichtbaar', 'meta']);
+      if (r) blok.appendChild(r);
+      w.appendChild(blok);
+    });
+    // meta en overig
+    if (p.meta) w.appendChild(metaBox(p.meta, 'Niet zichtbaar voor de student (patiëntkaart, alleen voor de ontwerper)'));
+    if (!isLeeg(p.casusMedicatieregel)) w.appendChild(casusQuote(p.casusMedicatieregel));
+    var ov = rest(p, ['zichtbaar', 'waar', 'medicatie', 'verborgen', 'meta', 'casusMedicatieregel']);
+    if (ov) w.appendChild(ov);
+    badges(p).forEach(function (b) { w.appendChild(b); });
+    return w;
+  }
+
+  function repertoireBlok(e, naam) {
+    var w = el('div', { 'data-sectie': 'repertoire' });
+    var r = e.repertoire || [];
+    w.appendChild(el('h3', null, naam));
+    w.appendChild(el('p', { 'class': 'zacht klein' }, r.length + ' kaarten'));
+    w.appendChild(el('ul', { 'class': 'kaartlijst', 'data-blok': 'repertoire' }, r.map(function (id) {
+      var k = kaartVan(id);
+      return el('li', null, [el('b', null, id), k ? k.label : '(kaart niet in bibliotheek)']);
+    })));
+    return w;
+  }
+
+  function knoppenBlok(e, naam, ref) {
+    var w = el('div', { 'data-sectie': 'knoppen' });
+    w.appendChild(el('h3', null, naam));
+    if (ref && ref.knoppen && ref.knoppen.length) w.appendChild(lijstTekst(ref.knoppen));
+    var kn = e.knoppen || {};
+    var dl = el('dl', { 'class': 'kv', 'data-blok': 'knoppen' });
+    Object.keys(kn).forEach(function (k) {
+      if (isTodoSleutel(k)) return;
+      dl.appendChild(el('dt', null, veldnaam(k)));
+      dl.appendChild(el('dd', null, k === 'casusTekst' ? el('ul', null, kn[k].map(function (x) { return el('li', null, x); })) : waarde(kn[k])));
+    });
+    w.appendChild(el('details', { 'class': 'klein', open: 'open' }, [el('summary', null, 'Zo staat het in het spel ingesteld'), dl]));
+    badges(kn).forEach(function (b) { w.appendChild(b); });
+    return w;
+  }
+
+  function triggerTxt(t) {
+    if (!t) return '';
+    var s;
+    if (t.type === 'naKaart') s = 'na de ' + t.n + 'e gespeelde kaart';
+    else if (t.type === 'naKaartVanKaart') s = t.n + ' gespeelde kaart(en) nadat ' + lab(t.kaart) + ' is gespeeld';
+    else if (t.type === 'naAantalKaarten') s = 'na ' + t.n + ' gespeelde kaarten';
+    else s = 'op een moment dat dit overzicht niet herkent';
+    if (t.alleenAlsGespeeld) s += ', alleen als ' + lab(t.alleenAlsGespeeld) + ' gespeeld is';
+    return s;
+  }
+
+  function gebeurtenissenBlok(e, naam, ref) {
+    var w = el('div', { 'data-sectie': 'gebeurtenissen' });
+    var g = e.gebeurtenissen || [];
+    w.appendChild(el('h3', null, naam));
+    if (!g.length) w.appendChild(el('p', { 'class': 'zacht' }, 'Geen gebeurtenissen.'));
+    g.forEach(function (x) {
+      var blok = el('div', { 'class': 'blok', 'data-gebeurtenis': e.id + ':' + x.id });
+      blok.appendChild(el('div', null, [el('b', null, 'Gebeurtenis ' + x.id), x.titel ? ' — ' + x.titel : '', badges(x)]));
+      blok.appendChild(el('div', null, [el('span', { 'class': 'etiket' }, 'Tekst voor de student: '), x.tekst]));
+      var dl = el('dl', { 'class': 'kv' });
+      dl.appendChild(el('dt', null, 'Wanneer')); dl.appendChild(el('dd', null, triggerTxt(x.trigger)));
+      if (x.groep) { dl.appendChild(el('dt', null, 'Volgorde')); dl.appendChild(el('dd', null, 'Gebeurtenissen met dezelfde groep (' + x.groep + ') komen per poging in willekeurige volgorde.')); }
+      if (x.toestand) { dl.appendChild(el('dt', null, 'Nieuwe toestand')); dl.appendChild(el('dd', null, x.toestand)); }
+      if (x.zet) {
+        var zl = [];
+        Object.keys(x.zet).forEach(function (zk) {
+          var zv = x.zet[zk];
+          if (Array.isArray(zv)) zl.push(el('div', null, zk + ': ' + zv.map(lab).join(', ')));
+          else if (zk === 'statusNaBeurten') {
+            var gv = ep && ep.statusTeksten && ep.statusTeksten.geenVerbetering48;
+            zl.push(el('div', null, 'Na ' + zv + ' beurten zonder werkzaam middel krijgt de student de klachtenstatus ' + (gv ? '“' + gv + '”' : '(zonder tekst)')));
+          } else zl.push(el('div', null, veldnaam(zk) + ': ' + waardeTxt(zv)));
+        });
+        dl.appendChild(el('dt', null, 'Gevolg')); dl.appendChild(el('dd', null, zl));
+      }
+      blok.appendChild(dl);
+      if (x.meta) blok.appendChild(metaBox(x.meta));
+      var r = rest(x, ['id', 'titel', 'trigger', 'groep', 'toestand', 'zet', 'tekst', 'meta']);
+      if (r) blok.appendChild(r);
+      w.appendChild(blok);
+    });
+    if (ref && ref.gebeurtenisUitleg && ref.gebeurtenisUitleg.length) w.appendChild(lijstTekst(ref.gebeurtenisUitleg));
+    return w;
+  }
+
+  function geldtInTxt(g) {
+    return (g || []).map(function (x) {
+      if (x === '*') return 'alle toestanden';
+      if (typeof x === 'string') return 'toestand ‘' + x + '’';
+      if (x && x.gebeurtenis) return 'zodra gebeurtenis ' + x.gebeurtenis + ' heeft plaatsgevonden';
+      return 'een voorwaarde die dit overzicht niet herkent';
+    }).join('; ');
+  }
+
+  function invariantenBlok(e, naam, ref) {
+    var w = el('div', { 'data-sectie': 'invarianten' });
+    var inv = e.invarianten || [];
+    w.appendChild(el('h3', null, naam));
+    w.appendChild(el('p', { 'class': 'zacht klein' }, 'Ernst 1 = ernstigst. De voorwaarde hieronder is de schending: is die waar (in een toestand waarin de invariant geldt), dan is de poort niet gehaald.'));
+    inv.forEach(function (i) {
+      var blok = el('div', { 'class': 'inv', 'data-invariant': e.id + ':' + i.id });
+      blok.appendChild(el('div', { 'class': 'kop' }, [i.id, el('span', { 'class': 'ernst' }, 'ernst ' + i.ernst), badges(i)]));
+      var dl = el('dl', { 'class': 'kv' });
+      var af = ref && ref.altijdFout && ref.altijdFout[i.id];
+      var afBron = null;   // episode waar de casus deze invariant voor het eerst beschrijft
+      if (!af && casus.referentie) {
+        for (var q = 0; q < (casus.episodes || []).length && !af; q++) {
+          var eerder = casus.episodes[q];
+          if (eerder.id === e.id) break;
+          var rq = casus.referentie[eerder.id];
+          if (rq && rq.altijdFout && rq.altijdFout[i.id]) { af = rq.altijdFout[i.id]; afBron = eerder.id; }
+        }
+      }
+      var afTekst = af ? af.tekst : i.altijdFout;
+      if (!isLeeg(afTekst)) {
+        dl.appendChild(el('dt', null, afBron ? 'Altijd fout (zoals in episode ' + afBron.replace(/^E/, '') + ')' : 'Altijd fout'));
+        dl.appendChild(el('dd', null, afTekst));
+      }
+      var geldtCasus = af && !isLeeg(af.geldtIn) ? af.geldtIn : i.geldtInTekst;
+      dl.appendChild(el('dt', null, 'Geldt in'));
+      dl.appendChild(el('dd', null, !isLeeg(geldtCasus) ? [geldtCasus, el('span', { 'class': 'zacht' }, '  (in het spel: ' + geldtInTxt(i.geldtIn) + ')')] : geldtInTxt(i.geldtIn)));
+      dl.appendChild(el('dt', null, 'Bron')); dl.appendChild(el('dd', null, isLeeg(i.bron) ? '' : String(i.bron)));
+      if (af && !isLeeg(af.bron) && String(af.bron) !== String(i.bron)) { dl.appendChild(el('dt', null, 'Bron volgens de casus')); dl.appendChild(el('dd', null, String(af.bron))); }
+      dl.appendChild(el('dt', null, 'Vraag aan de student')); dl.appendChild(el('dd', null, isLeeg(i.vraag) ? el('span', { 'class': 'zacht' }, '(leeg)') : i.vraag));
+      if (i.vraagVarianten && i.vraagVarianten.length) {
+        var vv = el('ol');
+        i.vraagVarianten.forEach(function (v) {
+          vv.appendChild(el('li', null, [
+            el('div', null, [el('span', { 'class': 'etiket' }, 'Als: '), pred(v.als)]),
+            el('div', null, [el('span', { 'class': 'etiket' }, 'Vraag: '), v.vraag, badges(v)])
+          ]));
+        });
+        dl.appendChild(el('dt', null, 'Andere vragen (de eerste die klopt wint, anders de vraag hierboven)'));
+        dl.appendChild(el('dd', null, vv));
+      }
+      if (!isLeeg(i.weglaatDownside)) {
+        dl.appendChild(el('dt', null, 'Downside bij weglaten'));
+        dl.appendChild(el('dd', null, typeof i.weglaatDownside === 'string' && kaartVan(i.weglaatDownside) ? lab(i.weglaatDownside) : waarde(i.weglaatDownside)));
+      }
+      blok.appendChild(dl);
+      blok.appendChild(predBlok(i.predicaat, 'Schending als'));
+      if (i.meta) blok.appendChild(metaBox(i.meta));
+      var r = rest(i, ['id', 'ernst', 'geldtIn', 'geldtInTekst', 'altijdFout', 'predicaat', 'vraag', 'vraagVarianten', 'bron', 'weglaatDownside', 'meta']);
+      if (r) blok.appendChild(r);
+      w.appendChild(blok);
+    });
+    return w;
+  }
+
+  function scoreAs(naam, as, metCasusTekst) {
+    var w = el('div', { 'class': 'blok', 'data-score': naam });
+    w.appendChild(el('div', null, [el('b', null, naam.charAt(0).toUpperCase() + naam.slice(1)), badges(as)]));
+    if (as.casusTekst && metCasusTekst) w.appendChild(casusQuote(as.casusTekst));
+    if (!isLeeg(as.start)) w.appendChild(el('p', null, 'Begint op ' + as.start + '.'));
+    var regels = as.regels || [];
+    if (regels.length) {
+      var ol = el('ol');
+      regels.forEach(function (r) {
+        var li = el('li');
+        var uitkomst;
+        if (!isLeeg(r.punten)) uitkomst = 'score ' + r.punten;
+        else if (!isLeeg(r.delta)) uitkomst = (r.delta > 0 ? '+' : '−') + Math.abs(r.delta) + ' punt';
+        else uitkomst = '(geen uitkomst)';
+        if (r.perKeer) {
+          li.appendChild(el('div', null, ['Voor elke keer dat geldt: ', tellerTxt(r.perKeer), ' → ', el('b', null, uitkomst), badges(r)]));
+        } else {
+          li.appendChild(el('div', null, ['Als: ', el('b', null, '→ ' + uitkomst), badges(r)]));
+          li.appendChild(predBlok(r.als));
+        }
+        if (r.meta) li.appendChild(metaBox(r.meta));
+        var ov = rest(r, ['als', 'perKeer', 'punten', 'delta', 'meta']);
+        if (ov) li.appendChild(ov);
+        ol.appendChild(li);
+      });
+      w.appendChild(ol);
+    }
+    var ov2 = rest(as, ['casusTekst', 'start', 'regels']);
+    if (ov2) w.appendChild(ov2);
+    return w;
+  }
+
+  function scoreBlok(e, naam, ref) {
+    var w = el('div', { 'data-sectie': 'score' });
+    w.appendChild(el('h3', null, naam));
+    var s = e.score || {};
+    if (ref && ref.score && ref.score.length) w.appendChild(el('div', { 'class': 'casus-tekst', 'data-blok': 'score-casus' }, lijstTekst(ref.score)));
+    badges(s).forEach(function (b) { w.appendChild(b); });
+    w.appendChild(el('p', { 'class': 'zacht klein' }, 'Zo rekent het spel:'));
+    Object.keys(s).forEach(function (k) {
+      if (isTodoSleutel(k)) return;
+      if (s[k] && typeof s[k] === 'object' && !Array.isArray(s[k])) w.appendChild(scoreAs(k, s[k], !(ref && ref.score && ref.score.length)));
+    });
+    return w;
+  }
+
+  var WANNEER = {
+    altijd: 'altijd (ook bij een poortschending, naast de ene vraag van de ernstigste schending)',
+    alleenBijGehaaldePoort: 'alleen als de poort gehaald is'
+  };
+  // Eén tabel Trigger | Vraag, zoals in de casus: invarianten, extra vragen en profielen.
+  function feedbackBlok(e, naam) {
+    var w = el('div', { 'data-sectie': 'feedback' });
+    w.appendChild(el('h3', null, naam));
+    var t = el('table', { 'data-tabel': 'feedback' });
+    t.appendChild(el('thead', null, el('tr', null, [el('th', null, 'Trigger'), el('th', null, 'Vraag')])));
+    var tb = el('tbody');
+    function rij(trigger, vraag, attr) {
+      var tr = el('tr', attr);
+      tr.appendChild(el('td', null, trigger));
+      tr.appendChild(el('td', null, vraag));
+      tb.appendChild(tr);
+    }
+    function wanneer(inhoud) { return el('details', { 'class': 'klein' }, [el('summary', null, 'Wanneer precies'), inhoud]); }
+    (e.invarianten || []).forEach(function (i, n) {
+      var varianten = i.vraagVarianten || [];
+      // De standaardvraag staat al als variant in de lijst als de tekst gelijk is: dan geen dubbele rij.
+      var dubbel = varianten.some(function (v) { return v.vraag === i.vraag; });
+      if (!dubbel) rij([el('b', null, i.id)], isLeeg(i.vraag) ? el('span', { 'class': 'zacht' }, '(leeg)') : i.vraag, { 'data-feedback': e.id + ':inv:' + i.id });
+      varianten.forEach(function (v, m) {
+        rij([el('b', null, i.id), wanneer(pred(v.als))], [v.vraag, badges(v)], { 'data-feedback': e.id + ':inv:' + i.id + ':' + m });
+      });
+    });
+    (e.feedbackExtra || []).forEach(function (x, i) {
+      var eenvoudig = x.trigger && ['gespeeld', 'nietGespeeld', 'gebeurtenisGeweest', 'klachten'].indexOf(x.trigger.p) >= 0;
+      var kel = [eenvoudig ? predBlok(x.trigger) : wanneer(predBlok(x.trigger)), el('div', { 'class': 'klein zacht' }, [el('span', { 'class': 'etiket' }, 'Verschijnt: '), WANNEER[x.wanneer] || String(x.wanneer)])];
+      if (x.meta) kel.push(metaBox(x.meta));
+      var ov = rest(x, ['trigger', 'vraag', 'wanneer', 'meta']);
+      if (ov) kel.push(ov);
+      rij(kel, [isLeeg(x.vraag) ? '' : x.vraag, badges(x)], { 'data-feedback': e.id + ':' + i });
+    });
+    (e.profielen || []).forEach(function (p, i) {
+      var kel = [el('b', null, 'Profiel ' + p.naam), badges(p), wanneer(predBlok(p.als, 'Profiel als'))];
+      if (p.casusTekst) kel.push(casusQuote(p.casusTekst));
+      if (p.meta) kel.push(metaBox(p.meta));
+      var ov = rest(p, ['naam', 'als', 'reflectievraag', 'casusTekst', 'meta']);
+      if (ov) kel.push(ov);
+      rij(kel, isLeeg(p.reflectievraag) ? el('span', { 'class': 'zacht' }, '(geen reflectievraag in de casus)') : p.reflectievraag, { 'data-profiel': e.id + ':' + i });
+    });
+    t.appendChild(tb);
+    w.appendChild(t);
+    w.appendChild(el('p', { 'class': 'zacht klein' }, 'Bij het eerste profiel (op volgorde) waarvan de voorwaarde klopt hoort de reflectievraag. Bij een poortschending verschijnt alleen de vraag van de ernstigste invariant.'));
+    return w;
+  }
+
+  function zichtbaarBlok(e, naam) {
+    var w = el('div', { 'data-sectie': 'zichtbaar' });
+    var z = e.zichtbaarAlsOntbreekt || [];
+    w.appendChild(el('h3', null, naam));
+    z.forEach(function (x, i) {
+      var blok = el('div', { 'class': 'blok', 'data-zichtbaar': e.id + ':' + i });
+      blok.appendChild(el('div', null, [el('b', null, 'Tekst: '), isLeeg(x.tekst) ? '' : x.tekst, badges(x)]));
+      blok.appendChild(predBlok(x.trigger, 'Wanneer geldt dit'));
+      if (x.meta) blok.appendChild(metaBox(x.meta));
+      var ov = rest(x, ['trigger', 'tekst', 'meta']);
+      if (ov) blok.appendChild(ov);
+      w.appendChild(blok);
+    });
+    if (!z.length) w.appendChild(el('p', { 'class': 'zacht' }, 'Geen.'));
+    return w;
+  }
+
+  function werkzaamheidBlok(e) {
+    var w = el('div');
+    w.appendChild(el('h4', null, 'Werkzaamheid (bepaalt de klachtenstatus per dag)'));
+    var wz = e.werkzaamheid || {};
+    Object.keys(wz).forEach(function (toestand) {
+      if (isTodoSleutel(toestand)) return;
+      var t = wz[toestand];
+      var blok = el('div', { 'class': 'blok', 'data-werkzaamheid': e.id + ':' + toestand });
+      blok.appendChild(el('div', null, [el('b', null, 'Toestand ‘' + toestand + '’'), badges(t)]));
+      ['werkzaam', 'nietWerkzaam'].forEach(function (soort) {
+        var l = t[soort] || [];
+        blok.appendChild(el('h4', null, (soort === 'werkzaam' ? 'Werkzaam: ' + statusTxt('af') : 'Niet werkzaam: ' + statusTxt('aan'))));
+        if (!l.length) { blok.appendChild(el('p', { 'class': 'zacht' }, 'Geen.')); return; }
+        blok.appendChild(el('ul', null, l.map(function (x) {
+          var li = el('li', null, [lab(x.kaart), badges(x)]);
+          if (x.als) li.appendChild(predBlok(x.als, 'Alleen als'));
+          if (x.meta) li.appendChild(metaBox(x.meta));
+          var ov = rest(x, ['kaart', 'als', 'meta']);
+          if (ov) li.appendChild(ov);
+          return li;
+        })));
+      });
+      var ov2 = rest(t, ['werkzaam', 'nietWerkzaam']);
+      if (ov2) blok.appendChild(ov2);
+      w.appendChild(blok);
+    });
+    badges(wz).forEach(function (b) { w.appendChild(b); });
+    return w;
+  }
+
+  function statusBlok(e) {
+    var w = el('div');
+    w.appendChild(el('h4', null, 'Statusteksten (klachten per dag)'));
+    var st = e.statusTeksten || {};
+    var dl = el('dl', { 'class': 'kv', 'data-blok': 'statusTeksten' });
+    Object.keys(st).forEach(function (k) {
+      if (isTodoSleutel(k)) return;
+      var u = statusUitleg(k);
+      dl.appendChild(el('dt', null, 'Als ' + u));
+      dl.appendChild(el('dd', null, isLeeg(st[k]) ? el('span', { 'class': 'zacht' }, '(geen tekst)') : st[k]));
+    });
+    w.appendChild(dl);
+    badges(st).forEach(function (b) { w.appendChild(b); });
+    return w;
+  }
+
+  function doelenBlok(e) {
+    var w = el('div');
+    w.appendChild(el('h4', null, 'Doelen en opties per kaart'));
+    var gevonden = false;
+    (e.repertoire || []).forEach(function (id) {
+      var k = kaartVan(id);
+      if (!k || !k.doelkaart) return;
+      gevonden = true;
+      var blok = el('div', { 'class': 'blok', 'data-doelkaart': e.id + ':' + id });
+      blok.appendChild(el('div', null, [el('b', null, lab(id)), badges(k)]));
+      var d = k.doelen && k.doelen[e.id];
+      if (!d || !d.length) { blok.appendChild(el('p', { 'class': 'zacht' }, 'Geen doelen vastgelegd voor deze episode.')); w.appendChild(blok); return; }
+      var ul = el('ul');
+      d.forEach(function (x) {
+        var li = el('li', null, [el('b', null, x.label), el('span', { 'class': 'zacht' }, ' (' + x.id + ')')]);
+        if (x.vereist) li.appendChild(predBlok(x.vereist, 'Kan alleen gekozen worden als (beoordeeld op het moment van spelen)', true));
+        var opts = k.opties && k.opties[x.id];
+        if (opts) {
+          li.appendChild(el('div', { 'class': 'etiket' }, 'Opties bij dit doel (“goed” is alleen ter informatie; de poort gebruikt de invarianten):'));
+          li.appendChild(el('ul', null, opts.map(function (o) {
+            return el('li', { 'data-optie': e.id + ':' + id + ':' + x.id }, [o.tekst, o.goed ? el('span', { 'class': 'goed' }, '  — goed volgens de casus') : null]);
+          })));
+        }
+        ul.appendChild(li);
+      });
+      blok.appendChild(ul);
+      w.appendChild(blok);
+    });
+    if (!gevonden) w.appendChild(el('p', { 'class': 'zacht' }, 'Geen doelkaarten in dit repertoire.'));
+    return w;
+  }
+
+  // ----- Casusreferentie: routes, volgorde, brug, bronconflict -----
+  function kernCel(k) {
+    if (Array.isArray(k)) return k.length ? el('ul', null, k.map(function (x) { return el('li', null, x); })) : '';
+    return isLeeg(k) ? '' : String(k);
+  }
+  function routesBlok(e, naam, ref) {
+    var w = el('div', { 'data-sectie': 'routes' });
+    w.appendChild(el('h3', null, naam));
+    var r = ref.geldigeRoutes || [];
+    var metProfiel = r.some(function (x) { return !isLeeg(x.profiel); });
+    var t = el('table', { 'data-tabel': 'routes' });
+    t.appendChild(el('thead', null, el('tr', null, ['Route', 'Kern'].concat(metProfiel ? ['Profiel'] : []).map(function (h) { return el('th', null, h); }))));
+    var tb = el('tbody');
+    r.forEach(function (x) {
+      var tr = el('tr');
+      tr.appendChild(el('td', null, x.route));
+      tr.appendChild(el('td', null, kernCel(x.kern)));
+      if (metProfiel) tr.appendChild(el('td', null, isLeeg(x.profiel) ? '' : x.profiel));
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    w.appendChild(t);
+    if (!isLeeg(ref.geldigeRoutesNoot)) w.appendChild(el('p', { 'class': 'casus-tekst' }, ref.geldigeRoutesNoot));
+    return w;
+  }
+  function routeWeefselBlok(e, naam, ref) {
+    var w = el('div', { 'data-sectie': 'routeBij' });
+    w.appendChild(el('h3', null, naam));
+    var t = el('table', { 'data-tabel': 'routeBij' });
+    t.appendChild(el('thead', null, el('tr', null, ['Route', 'Poort', 'Profiel'].map(function (h) { return el('th', null, h); }))));
+    var tb = el('tbody');
+    (ref.routeBijWeefselinvasie || []).forEach(function (x) {
+      tb.appendChild(el('tr', null, [el('td', null, x.route), el('td', null, x.poort), el('td', null, x.profiel)]));
+    });
+    t.appendChild(tb);
+    w.appendChild(t);
+    return w;
+  }
+  function tekstSectie(naam, regels, sleutel) {
+    var w = el('div', { 'data-sectie': sleutel });
+    w.appendChild(el('h3', null, naam));
+    var l = Array.isArray(regels) ? regels : [regels];
+    if (l.length === 1) w.appendChild(el('p', { 'class': 'casus-tekst' }, l[0]));
+    else w.appendChild(el('div', { 'class': 'casus-tekst' }, lijstTekst(l)));
+    return w;
+  }
+
+  // Welke weergave bij welke kop uit de casus hoort (op het begin van de kopnaam).
+  var SECTIETYPES = [
+    [/^Knoppen/i, 'knoppen'], [/^Pati[ëe]ntkaart/i, 'patient'], [/^Repertoire/i, 'repertoire'], [/^Gebeurtenis/i, 'gebeurtenissen'],
+    [/^Geldige routes/i, 'routes'], [/^Route bij/i, 'routeBij'], [/^Bronconflict/i, 'bronconflict'], [/^Invarianten/i, 'invarianten'],
+    [/^Volgorde/i, 'volgorde'], [/^Score/i, 'score'], [/^Wat er zichtbaar/i, 'zichtbaar'], [/^Feedback/i, 'feedback'], [/^Brug/i, 'brug']
+  ];
+  function sectieType(naam) {
+    for (var i = 0; i < SECTIETYPES.length; i++) if (SECTIETYPES[i][0].test(naam)) return SECTIETYPES[i][1];
+    return null;
+  }
+  // Zonder casusreferentie: vaste volgorde en neutrale namen (en een melding bovenaan).
+  var NOODVOLGORDE = ['patient', 'repertoire', 'knoppen', 'gebeurtenissen', 'invarianten', 'score', 'zichtbaar', 'feedback'];
+  var NOODNAMEN = { patient: 'Patiëntkaart', repertoire: 'Repertoire', knoppen: 'Knoppen', gebeurtenissen: 'Gebeurtenissen', invarianten: 'Invarianten (poort)', score: 'Score', zichtbaar: 'Wat er zichtbaar wordt als een kaart ontbreekt', feedback: 'Feedback' };
+
+  function episodeKop(e) {
+    if (e.titel) return e.titel;
+    var n = /(\d+)/.exec(e.id);
+    return 'Episode ' + (n ? n[1] : e.id) + ' — level ' + e.level;
+  }
+
+  function episode(e) {
+    ep = e;
+    var ref = refVan(e);
+    var s = el('section', { id: e.id, 'data-episode': e.id });
+    s.appendChild(el('h2', null, episodeKop(e)));
+    var dl = el('dl', { 'class': 'kv' });
+    if (e.startToestanden) { dl.appendChild(el('dt', null, 'Begint in toestand')); dl.appendChild(el('dd', null, e.startToestanden.join(', '))); }
+    if (e.antibiotica) { dl.appendChild(el('dt', null, 'Antibiotica in deze episode')); dl.appendChild(el('dd', null, e.antibiotica.map(lab).join(', '))); }
+    s.appendChild(dl);
+    if (e.meta) s.appendChild(metaBox(e.meta));
+    if (!ref) s.appendChild(el('p', { 'class': 'waarsch', 'data-waarschuwing': 'referentie' }, 'De casusreferentie van deze episode ontbreekt: koppen, geldige routes en “altijd fout” komen daardoor niet uit de casus.'));
+
+    // Secties in de volgorde en met de namen van de casus.
+    var lijst = [];   // { type, naam }
+    if (ref && ref.volgordeVanSecties && ref.volgordeVanSecties.length) {
+      ref.volgordeVanSecties.forEach(function (n) { lijst.push({ type: sectieType(n), naam: n }); });
+      // Onderdelen die de casus wel heeft maar die niet als kop genoemd zijn, komen op de logische plek.
+      var heeft = function (t) { return lijst.some(function (x) { return x.type === t; }); };
+      var invoegenNa = function (t, nieuw) {
+        var idx = -1; lijst.forEach(function (x, i) { if (x.type === t) idx = i; });
+        lijst.splice(idx >= 0 ? idx + 1 : lijst.length, 0, nieuw);
+      };
+      if (ref.volgorde && ref.volgorde.length && !heeft('volgorde')) invoegenNa('invarianten', { type: 'volgorde', naam: 'Volgorde' });
+      if (ref.bronconflict && !heeft('bronconflict')) invoegenNa('routes', { type: 'bronconflict', naam: 'Bronconflict, geen poort' });
+      if (ref.brug && !heeft('brug')) lijst.push({ type: 'brug', naam: 'Brug' });
+    } else {
+      NOODVOLGORDE.forEach(function (t) { lijst.push({ type: t, naam: NOODNAMEN[t] }); });
+    }
+    lijst.forEach(function (x) {
+      var blok;
+      switch (x.type) {
+        case 'knoppen': blok = knoppenBlok(e, x.naam, ref); break;
+        case 'patient': blok = patientKaart(e, x.naam); break;
+        case 'repertoire': blok = repertoireBlok(e, x.naam); break;
+        case 'gebeurtenissen': blok = gebeurtenissenBlok(e, x.naam, ref); break;
+        case 'routes': blok = ref ? routesBlok(e, x.naam, ref) : null; break;
+        case 'routeBij': blok = ref && ref.routeBijWeefselinvasie ? routeWeefselBlok(e, x.naam, ref) : null; break;
+        case 'bronconflict': blok = ref && ref.bronconflict ? tekstSectie(x.naam, ref.bronconflict, 'bronconflict') : null; break;
+        case 'invarianten': blok = invariantenBlok(e, x.naam, ref); break;
+        case 'volgorde': blok = ref && ref.volgorde && ref.volgorde.length ? tekstSectie(x.naam, ref.volgorde, 'volgorde') : null; break;
+        case 'score': blok = scoreBlok(e, x.naam, ref); break;
+        case 'zichtbaar': blok = zichtbaarBlok(e, x.naam); break;
+        case 'feedback': blok = feedbackBlok(e, x.naam); break;
+        case 'brug': blok = ref && ref.brug ? tekstSectie(x.naam, ref.brug, 'brug') : null; break;
+        default: blok = el('div', { 'data-sectie': 'onbekend' }, [el('h3', null, x.naam), el('p', { 'class': 'zacht' }, 'Dit onderdeel van de casus heeft dit overzicht niet.')]);
+      }
+      if (blok) s.appendChild(blok);
+    });
+    if (ref) badges(ref).forEach(function (b) { s.appendChild(b); });
+
+    // Wat niet als tabel in de casus staat, maar wel in het spel zit.
+    var aan = el('div', { 'data-sectie': 'aanvullend' });
+    aan.appendChild(el('h3', null, 'Aanvullend (staat niet als tabel in de casus)'));
+    aan.appendChild(werkzaamheidBlok(e));
+    aan.appendChild(statusBlok(e));
+    aan.appendChild(doelenBlok(e));
+    s.appendChild(aan);
+    var ov = rest(e, ['id', 'level', 'titel', 'startToestanden', 'knoppen', 'antibiotica', 'patient', 'repertoire', 'gebeurtenissen', 'werkzaamheid', 'statusTeksten', 'invarianten', 'score', 'profielen', 'feedbackExtra', 'zichtbaarAlsOntbreekt', 'meta']);
+    if (ov) { s.appendChild(el('h3', null, 'Overige velden')); s.appendChild(ov); }
+    ep = null;
+    return s;
+  }
+
+  // ---------- Start ----------
+  function start() {
+    var app = document.getElementById('app');
+    var balk = document.getElementById('balk');
+    app.innerHTML = '';
+    var alle = window.CASUSSEN || [];
+    if (!alle.length) throw new Error('Geen casus gevonden in window.CASUSSEN.');
+    alle.forEach(function (c) {
+      casus = c;
+      document.title = 'Overzicht: ' + (c.titel || c.id);
+      app.appendChild(kop(c));
+      // Eerst alles opbouwen (zodat bekend is welke open vragen op de plek zelf gemarkeerd zijn), dan de open vragen bovenaan zetten.
+      var plaats = el('div');
+      app.appendChild(plaats);
+      var rest2 = [bibliotheek(c)];
+      (c.episodes || []).forEach(function (e) { rest2.push(episode(e)); });
+      app.appendChild(openVragen(c));
+      rest2.forEach(function (x) { app.appendChild(x); });
+      app.removeChild(plaats);
+      balk.appendChild(el('a', { href: '#open' }, 'Open vragen (' + (c.todoBart || []).length + ')'));
+      balk.appendChild(el('a', { href: '#kaarten' }, 'Kaarten'));
+      (c.episodes || []).forEach(function (e) { balk.appendChild(el('a', { href: '#' + e.id }, 'Episode ' + e.id.replace(/^E/, ''))); });
+    });
+  }
+})();
+</script>
+</body>
+</html>

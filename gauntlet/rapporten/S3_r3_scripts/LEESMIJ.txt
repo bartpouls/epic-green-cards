@@ -1,0 +1,12 @@
+Scripts van de S3-criticus ronde 3. Ze verwachten een map "snap/" naast de scripts met een kopie van
+casussen/*.js, regels/predicaten.js, engine/engine.js, tests/testlib.js en tests/data-e2.tests.js
+(git HEAD 20f48df/a5d01b0; engine.js in de werkboom werd tijdens de review door een ander stuk gewijzigd).
+  node oracle.js 20000 <seed>     eigen orakel voor I1,I4-I8, C-dag, klachtenstatus, vraagkeuze (echte Engine+Predicaten)
+  node oracle2.js 25000 <seed>    idem + score, profiel, feedbackExtra, zichtbaarAlsOntbreekt
+  node mut.js 1 0 alle            mutaties op de episode-data en E2-TODO's (draait groep data-e2)
+  node mutsrc.js regels/predicaten.js 150 | engine/engine.js 140   bronmutaties; overlevers worden met het orakel gecontroleerd
+  node semmut.js                  9 gerichte semantische datamutaties
+  node routes.js                  casus- en foutroutes
+  node extract.js / rev.js        letterlijke diff data<->casus sectie 5 (beide richtingen)
+  node ab.js                      18 blinde X/Y-paren, sleutel naar gauntlet/rapporten/S3_r3.sleutel.json
+  node br.js                      data-e2 in headless Chromium via file://

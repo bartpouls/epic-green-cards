@@ -1,0 +1,56 @@
+{
+ "toewijzing": {
+  "1": {
+   "X": "spel",
+   "Y": "bron"
+  },
+  "2": {
+   "X": "spel",
+   "Y": "bron"
+  },
+  "3": {
+   "X": "spel",
+   "Y": "bron"
+  },
+  "4": {
+   "X": "bron",
+   "Y": "spel"
+  },
+  "5": {
+   "X": "spel",
+   "Y": "bron"
+  },
+  "6": {
+   "X": "bron",
+   "Y": "spel"
+  },
+  "7": {
+   "X": "bron",
+   "Y": "spel"
+  },
+  "8": {
+   "X": "bron",
+   "Y": "spel"
+  },
+  "9": {
+   "X": "bron",
+   "Y": "spel"
+  },
+  "10": {
+   "X": "bron",
+   "Y": "spel"
+  },
+  "11": {
+   "X": "bron",
+   "Y": "spel"
+  },
+  "12": {
+   "X": "bron",
+   "Y": "spel"
+  },
+  "13": {
+   "X": "spel",
+   "Y": "bron"
+  }
+ }
+}

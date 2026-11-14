@@ -1,0 +1,44 @@
+mutanten totaal 216, geselecteerd 216
+{"totaal":216,"gedood":175,"overleefd":41}
+gedood alleen door routes: 0, alleen door evaluatie-unit: 37
+OVERLEEFD @133 [&& -> ||] ...& isTekst(x.gebeurtenis) && Object.keys(x).filter(fu
+OVERLEEFD @64 [return null -> return undefined] ...=== id) return k[i];     return null;   }    /* ---------- al
+OVERLEEFD @188 [&& -> ||] ...unction (ge) { return ge && ge.id === x.gebeurtenis;
+OVERLEEFD @72 [+ 1 -> + 0] ... && inv.id) || ("#" + (i + 1)));       voeg(n + ", pr
+OVERLEEFD @81 [+ 1 -> + 0] ..." + as + ", regel " + (i + 1);         if (r.perKeer 
+OVERLEEFD @264 [.slice() -> ] ...;     lijst(ctx.tijdlijn).slice().sort(function (a, b) { r
+OVERLEEFD @133 [0 -> 1] ...indexOf("TODO_BART") !== 0; }).length === 1) {     
+OVERLEEFD @217 [1 -> 0] ...naam + ", regel " + (i + 1) + ", als", function () 
+OVERLEEFD @264 [0 -> 1] ....volg || 0) - (b.volg || 0); }).forEach(function (r
+OVERLEEFD @92 [|| -> &&] ...dexOf("TODO_BART") === 0 || !isObj(w)) return;      
+OVERLEEFD @159 [1 -> 0] ... = n + ", regel " + (i + 1);         if (!isObj(r))
+OVERLEEFD @217 [+ 1 -> + 0] ...+ naam + ", regel " + (i + 1) + ", als", function () 
+OVERLEEFD @81 [1 -> 0] ...+ as + ", regel " + (i + 1);         if (r.perKeer 
+OVERLEEFD @222 [+ 1 -> + 0] ...+ naam + ", regel " + (i + 1);       if (r.perKeer !=
+OVERLEEFD @43 [=== -> !==] ...tion kopie(x) { return x === undefined ? undefined : 
+OVERLEEFD @205 [|| -> &&] ... null || t === undefined || t === "") return null;  
+OVERLEEFD @92 [0 -> 1] ...indexOf("TODO_BART") === 0 || !isObj(w)) return;   
+OVERLEEFD @327 [false -> true] ..., "_bron", { enumerable: false, value: evaluatieModule.
+OVERLEEFD @264 [0 -> 1] ..., b) { return (a.volg || 0) - (b.volg || 0); }).for
+OVERLEEFD @112 [true -> false] ...(function (t) { set[t] = true; n++; });     lijst(ep.g
+OVERLEEFD @170 [|| -> &&] ...i) {       if (!isObj(p) || !isTekst(p.naam)) fout(p
+OVERLEEFD @113 [true -> false] ...(function (t) { set[t] = true; n++; }); });     return
+OVERLEEFD @133 [&& -> ||] ...  }         if (isObj(x) && isTekst(x.gebeurtenis) &
+OVERLEEFD @121 [+ 1 -> + 0] ... && inv.id) || ("#" + (i + 1)));       if (!isObj(inv
+OVERLEEFD @51 [|| -> &&] ...": " + ((e && e.message) || String(e))); }   }    fu
+OVERLEEFD @121 [&& -> ||] ...+ ", invariant " + ((inv && inv.id) || ("#" + (i + 1
+OVERLEEFD @175 [|| -> &&] ..."]";       if (!isObj(f) || !isTekst(f.vraag)) fout(
+OVERLEEFD @111 [0 -> 1] ... {     var set = {}, n = 0;     lijst(ep.startToest
+OVERLEEFD @86 [+ 1 -> + 0] ... && p.naam) || ("#" + (i + 1))) + ", als", p && p.als
+OVERLEEFD @147 [|| -> &&] ...       if (!isTekst(kid) || !kaartVan(casus, kid)) f
+OVERLEEFD @51 [&& -> ||] ... Error(plek + ": " + ((e && e.message) || String(e))
+OVERLEEFD @121 [|| -> &&] ...ant " + ((inv && inv.id) || ("#" + (i + 1)));       
+OVERLEEFD @265 [true -> false] ...     gespeeld[r.kaart] = true;       voegDownside(r.ka
+OVERLEEFD @86 [1 -> 0] ...& p.naam) || ("#" + (i + 1))) + ", als", p && p.als
+OVERLEEFD @145 [!== -> ===] ... if (inv.weglaatDownside !== undefined) {         lij
+OVERLEEFD @222 [1 -> 0] ...naam + ", regel " + (i + 1);       if (r.perKeer !=
+OVERLEEFD @259 [true -> false] ...       gezien[kaartId] = true;       var tekst = downs
+OVERLEEFD @72 [1 -> 0] ...& inv.id) || ("#" + (i + 1)));       voeg(n + ", pr
+OVERLEEFD @159 [+ 1 -> + 0] ...rn = n + ", regel " + (i + 1);         if (!isObj(r))
+OVERLEEFD @121 [1 -> 0] ...& inv.id) || ("#" + (i + 1)));       if (!isObj(inv
+OVERLEEFD @328 [!== -> ===] ...g() }); })(typeof window !== "undefined" ? window : g

@@ -1,0 +1,104 @@
+[
+ {
+  "paar": 1,
+  "naam": "patiëntkaart (startscherm)",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 2,
+  "naam": "G2 onthult",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 3,
+  "naam": "kweekuitslag-banner",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 4,
+  "naam": "klachtstatus trimethoprim",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 5,
+  "naam": "klachtstatus fosfomycine",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 6,
+  "naam": "I5 vraag",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 7,
+  "naam": "I6 geen kweek",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 8,
+  "naam": "I6 afwachten",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 9,
+  "naam": "I7 geen kalium",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 10,
+  "naam": "I7 niet gehalveerd",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 11,
+  "naam": "I8",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 12,
+  "naam": "onnodig gewisseld",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 13,
+  "naam": "verouderde eGFR",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 14,
+  "naam": "zichtbaar: nitrofurantoïne zonder G2",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 15,
+  "naam": "zichtbaar: V5 zonder O2",
+  "X": "spel",
+  "Y": "bron"
+ },
+ {
+  "paar": 16,
+  "naam": "brug",
+  "X": "bron",
+  "Y": "spel"
+ },
+ {
+  "paar": 17,
+  "naam": "titel",
+  "X": "bron",
+  "Y": "spel"
+ }
+]

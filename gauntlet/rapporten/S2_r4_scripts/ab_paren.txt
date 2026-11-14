@@ -1,0 +1,65 @@
+### Paar 1 — patiëntkaart regel 1
+X: "Mevrouw V., 72 jaar. Eerste cystitis: pijnlijke en frequente mictie sinds 2 dagen, geen koorts, nitriettest positief."
+Y: "Mevrouw V., 72 jaar. Eerste cystitis: pijnlijke en frequente mictie sinds 2 dagen, geen koorts, nitriettest positief."
+
+### Paar 2 — medicatieregel
+X: "Medicatie: lisinopril (hypertensie)."
+Y: "Medicatie: lisinopril (hypertensie)."
+
+### Paar 3 — labregel
+X: "Lab: eGFR 42, recent."
+Y: "Lab: eGFR 42, recent."
+
+### Paar 4 — risicogroepregel (spel: meta, niet zichtbaar voor student)
+X: "Geen risicogroep. De eGFR is ≥ 30 [NHG]. De leeftijd ligt bewust onder 75, de grens die de NHG noemt als factor bij verminderde weerstand [NHG]."
+Y: "Geen risicogroep. De eGFR is ≥ 30 [NHG]. De leeftijd ligt bewust onder 75, de grens die de NHG noemt als factor bij verminderde weerstand [NHG]."
+
+### Paar 5 — I1 vraag
+X: "Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?"
+Y: "Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?"
+
+### Paar 6 — I3 vraag
+X: "Je wacht af. Tot wanneer, en wat gebeurt er dan?"
+Y: "Je wacht af. Tot wanneer, en wat gebeurt er dan?"
+
+### Paar 7 — I4 vraag
+X: "Wat lost het tweede middel op dat het eerste niet oplost?"
+Y: "Wat lost het tweede middel op dat het eerste niet oplost?"
+
+### Paar 8 — O1 gespeeld vraag
+X: "Wat doe je bij welke uitslag anders?"
+Y: "Wat doe je bij welke uitslag anders?"
+
+### Paar 9 — reflectie terughoudend
+X: "Je schreef niets voor. Bij welke patiënt zou dat niet mogen?"
+Y: "Je schreef niets voor. Bij welke patiënt zou dat niet mogen?"
+
+### Paar 10 — reflectie direct
+X: "Het werkt. Was het nodig, en koos zíj ervoor?"
+Y: "Het werkt. Was het nodig, en koos zíj ervoor?"
+
+### Paar 11 — zichtbaar zonder N1
+X: "Mevrouw weet niet wanneer ze moet bellen."
+Y: "Mevrouw weet niet wanneer ze moet bellen."
+
+### Paar 12 — zichtbaar V1 zonder Ev1
+X: "Er is geen moment om alsnog te starten als de klachten aanhouden."
+Y: "Er is geen moment om alsnog te starten als de klachten aanhouden."
+
+### Paar 13 — statustekst af (casus E2 r190)
+X: "klachten nemen af."
+Y: "klachten nemen af."
+
+### Paar 14 — statustekst aan (casus E2 r189)
+X: "klachten houden aan."
+Y: "klachten houden aan."
+
+### Paar 15 — repertoire
+X: "G1, G2, O1, O2, V1, V2, V3, V4, V5, N1, N2, Ev1"
+Y: "G1, G2, O1, O2, V1, V2, V3, V4, V5, N1, N2, Ev1"
+
+### Paar 16 — bron I4
+X: "[G]"
+Y: "[G]"
+
+

@@ -1,0 +1,62 @@
+[
+ {
+  "l": 105,
+  "x": "< ",
+  "y": "<= ",
+  "regel": "for (var i = 0; i < klachten.length; i++) {"
+ },
+ {
+  "l": 137,
+  "x": "< ",
+  "y": "<= ",
+  "regel": "for (var i = 0; i < l.length; i++) if (l[i] && l[i].id === id) return l[i].dag;"
+ },
+ {
+  "l": 172,
+  "x": "indexOf(",
+  "y": "lastIndexOf(",
+  "regel": "if (K.kaart !== undefined && lijst(K.kaart).indexOf(regel.kaart) < 0) return false;"
+ },
+ {
+  "l": 174,
+  "x": "indexOf(",
+  "y": "lastIndexOf(",
+  "regel": "if (ctx.episode[K.kaartUit].indexOf(regel.kaart) < 0) return false;"
+ },
+ {
+  "l": 178,
+  "x": "indexOf(",
+  "y": "lastIndexOf(",
+  "regel": "var isStart = mids.indexOf(regel.kaart) >= 0 || (regel.kaart === rl.wissel && mids.indexOf(regel.doel) >= 0);"
+ },
+ {
+  "l": 178,
+  "x": "indexOf(",
+  "y": "lastIndexOf(",
+  "regel": "var isStart = mids.indexOf(regel.kaart) >= 0 || (regel.kaart === rl.wissel && mids.indexOf(regel.doel) >= 0);"
+ },
+ {
+  "l": 183,
+  "x": "indexOf(",
+  "y": "lastIndexOf(",
+  "regel": "if (K.optieNiet !== undefined && lijst(K.optieNiet).indexOf(regel.optie) >= 0) return false;"
+ },
+ {
+  "l": 231,
+  "x": "indexOf(",
+  "y": "lastIndexOf(",
+  "regel": "} else if (ab().indexOf(r.kaart) >= 0) {"
+ },
+ {
+  "l": 264,
+  "x": "&&",
+  "y": "||",
+  "regel": "if (tegen !== null && heeft(def.zet, tegen)) lijst(def.zet[tegen]).forEach(function (x) { delete uit[x]; });"
+ },
+ {
+  "l": 544,
+  "x": "indexOf(",
+  "y": "lastIndexOf(",
+  "regel": "inToestand: function (p, ctx) { return lijst(ctx.toestanden).indexOf(p.t) >= 0; },"
+ }
+]

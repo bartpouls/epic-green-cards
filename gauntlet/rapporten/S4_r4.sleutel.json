@@ -1,0 +1,142 @@
+{
+ "P1": {
+  "naam": "patiëntkaart kop+klachten",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P2": {
+  "naam": "patiëntkaart medicatie",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P3": {
+  "naam": "patiëntkaart lab (zonder risicogroepzin)",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "P4": {
+  "naam": "onthulling G3",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P5": {
+  "naam": "banner A",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "P6": {
+  "naam": "banner B",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "P7": {
+  "naam": "banner C",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "P8": {
+  "naam": "klachtenstatus af",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "P9": {
+  "naam": "vraag I1",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P10": {
+  "naam": "vraag I4",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "P11": {
+  "naam": "vraag I5",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P12": {
+  "naam": "vraag I6 geen kweek",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P13": {
+  "naam": "vraag I6 afwachten",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "P14": {
+  "naam": "vraag I7 geen kalium",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P15": {
+  "naam": "vraag I7 niet gehalveerd",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "P16": {
+  "naam": "vraag I8",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P17": {
+  "naam": "vraag I9",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "P18": {
+  "naam": "vraag I10",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P19": {
+  "naam": "vraag I11",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P20": {
+  "naam": "vraag I12",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "P21": {
+  "naam": "vraag I13",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P22": {
+  "naam": "vraag I14",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "P23": {
+  "naam": "vraag I15",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P24": {
+  "naam": "vraag I16",
+  "X": "spel",
+  "Y": "bron"
+ },
+ "P25": {
+  "naam": "extra Automatische herstart",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P26": {
+  "naam": "extra cipro-dosis",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P27": {
+  "naam": "reflectievraag Profiel ciprofloxacine",
+  "X": "bron",
+  "Y": "spel"
+ },
+ "P28": {
+  "naam": "profielnaam Kweekgestuurd",
+  "X": "spel",
+  "Y": "bron"
+ }
+}
