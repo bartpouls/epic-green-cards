@@ -1,5 +1,5 @@
 // Speelt alle drie de episodes via de ECHTE interface (index.html in Chromium, alleen klikken): per episode één foutroute en één geldige route,
-// daarna het leesbaar overzicht, pauzeren/hervatten (in episode 3) en de export. Gebruik: node gauntlet/tools/speel-iteratie1.js [--screenshots=<map>]
+// daarna een door sepsis verloren episode 3, het leesbaar overzicht, pauzeren/hervatten (in episode 3) en de export. Gebruik: node gauntlet/tools/speel-iteratie1.js [--screenshots=<map>]
 // Exitcode 1 bij een mislukte controle of een fout in de pagina.
 const path = require("path"), fs = require("fs");
 const root = path.resolve(__dirname, "../..");
@@ -82,6 +82,12 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
     check("E1 foutroute (afwachten zonder opvolgmoment): één vraag, geen profiel", /Nog niet veilig genoeg/.test(u.kop) && /Je wacht af/.test(u.vraag) && !u.profiel, JSON.stringify(u));
     check("E1 foutroute: de gespeelde kaarten staan in de lijst, ook die zonder nadeel", (await page.locator("[data-downside]").allTextContents()).some(t => /Alarmsignalen/.test(t)) && (await page.locator('[data-downside]:has-text("Afwachtend")').count()) === 1);
     check("E1 foutroute: 'Opnieuw' en 'Terug naar start' zijn er", await page.locator("#btn-opnieuw").count() === 1 && await page.locator("#btn-terug").count() === 1);
+    // Besluit 8 (14 november 2026): eerst de gevolgen bij de patiënt, daarna één hint van de opleider.
+    check("E1 foutroute: onder 'Wat er met mevrouw V. gebeurde' staat de gevolgzin uit de casus", norm(await page.textContent("#gevolgen-kop")) === "Wat er met mevrouw V. gebeurde" && u.gevolg === "Er is geen moment om alsnog te starten als de klachten aanhouden." && (await page.locator("[data-gevolg]").count()) === 1, JSON.stringify(u));
+    check("E1 foutroute: daarna 'Hint van je opleider' met de ongewijzigde vraag, onder de gevolgen; de oude aansporing is weg",
+      norm(await page.textContent("#hint-kop")) === "Hint van je opleider" && u.vraag === "Je wacht af. Tot wanneer, en wat gebeurt er dan?" && (await page.locator("#socratisch").count()) === 1 &&
+      await page.evaluate(() => !!(document.getElementById("gevolgen").compareDocumentPosition(document.getElementById("hint")) & Node.DOCUMENT_POSITION_FOLLOWING)) &&
+      !/Denk hier even over na/.test(await page.textContent("main")));
     await foto(page, "e1-fout");
     await page.click("#btn-opnieuw"); await page.waitForSelector("#dagtelling");
     check("E1 na 'Opnieuw': schoon spel", (await page.locator("[data-gespeeld]").count()) === 0 && (await dag(page)) === 1);
@@ -90,6 +96,7 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
     u = await uitslag(page);
     check("E1 geldige route: poort gehaald, profiel Terughoudend", /Veiligheid gehaald/.test(u.kop) && u.profiel === "Terughoudend", JSON.stringify(u));
     check("E1 geldige route: 'Volgende episode' is er", await page.locator("#btn-volgende-episode").count() === 1);
+    check("E1 geldige route: de reflectievraag staat onder 'Van je opleider'; geen gevolgen en geen hint", norm(await page.textContent("#opleider-kop")) === "Van je opleider" && (await page.locator("#opleider #reflectie").count()) === 1 && (await page.locator("#gevolgen").count()) === 0 && (await page.locator("#hint").count()) === 0);
     await foto(page, "e1-gehaald");
     await page.click("#btn-volgende-episode"); await page.waitForSelector("#dagtelling");
 
@@ -139,9 +146,22 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
     check("E3 geldige route: geen 'Volgende episode' na de laatste episode", await page.locator("#btn-volgende-episode").count() === 0 && await page.locator("#btn-terug").count() === 1);
     await foto(page, "e3-gehaald");
 
+    /* ---------------- Episode 3: verloren door sepsis (besluit 5, 14 november 2026) ---------------- */
+    await page.click("#btn-nogmaals"); await page.waitForSelector("#dagtelling");
+    for (let i = 0; i < 7; i++) await page.click("#btn-volgende-dag");
+    check("E3 zonder antibioticum: op dag 8 loopt de episode nog", (await dag(page)) === 8 && (await page.locator("#uitslag-kop").count()) === 0);
+    await page.click("#btn-volgende-dag");
+    await page.waitForSelector("#uitslag-kop");
+    u = await uitslag(page);
+    check("E3 sepsis: de episode eindigt direct en is verloren (concepttekst), met de bestaande sepsis-melding", /Episode verloren/.test(u.kop) &&
+      norm(await page.textContent("#eindtekst")) === "De casus is geëscaleerd. Mevrouw V. heeft sepsis en wordt met spoed verwezen. Deze episode is verloren." &&
+      norm(await page.textContent('.uitslag [data-gebeurtenis="S"]')) === "Sepsis: de patiënt is ernstig ziek.", JSON.stringify(u));
+    check("E3 sepsis: geen score, geen profiel, geen 'Volgende episode'; wel 'Opnieuw'", (await page.locator("[data-score]").count()) === 0 && !u.profiel && (await page.locator("#btn-volgende-episode").count()) === 0 && (await page.locator("#btn-opnieuw").count()) === 1);
+    await foto(page, "e3-sepsis");
+
     /* ---------------- overzicht en export ---------------- */
     await page.click("#btn-overzicht"); await page.waitForSelector(".overzicht");
-    check("leesbaar overzicht: per poging een tabel per dag in woorden", (await page.locator("[data-poging]").count()) === 6 && /Dosis aanpassen → Amoxicilline\/clavulaanzuur \(875\/125 mg 2 dd\)/.test(await page.textContent(".overzicht")));
+    check("leesbaar overzicht: per poging een tabel per dag in woorden", (await page.locator("[data-poging]").count()) === 7 && /Uitkomst: Episode verloren\./.test(await page.textContent(".overzicht")) && /Dosis aanpassen → Amoxicilline\/clavulaanzuur \(875\/125 mg 2 dd\)/.test(await page.textContent(".overzicht")));
     await foto(page, "overzicht");
     await page.click("#btn-overzicht-terug");
     await page.click("#btn-export");
@@ -151,8 +171,9 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
     if (csvDl && jsonDl) {
       const csv = fs.readFileSync(await csvDl.path(), "utf8"), js = JSON.parse(fs.readFileSync(await jsonDl.path(), "utf8"));
       const regels = csv.replace(/^﻿/, "").split("\r\n").filter(Boolean);
-      check("export CSV: BOM, puntkomma, kopregel en één regel per poging", csv.charCodeAt(0) === 0xFEFF && regels[0].startsWith("pseudoniem;episode;poging;eerste poging;testmodus;casusversie;speltijdstip;tijdlijn") && js.length === 6);
-      check("export JSON: eerste poging per episode, volledige tijdlijn, casusversie 1.2", js.filter(p => p.eerstePoging).length === 3 && js.every(p => p.casusVersie === "1.2" && Array.isArray(p.tijdlijn)));
+      check("export CSV: BOM, puntkomma, kopregel en één regel per poging", csv.charCodeAt(0) === 0xFEFF && regels[0].startsWith("pseudoniem;episode;poging;eerste poging;testmodus;casusversie;speltijdstip;tijdlijn") && js.length === 7);
+      check("export JSON: eerste poging per episode, volledige tijdlijn, casusversie 1.3", js.filter(p => p.eerstePoging).length === 3 && js.every(p => p.casusVersie === "1.3" && Array.isArray(p.tijdlijn)));
+      check("export: de afloop staat erin (laatste kolom 'afloop'; de sepsis-poging is 'verloren')", regels[0].endsWith(";afloop") && regels[regels.length - 1].endsWith(";verloren") && js[js.length - 1].afloop === "verloren" && js.filter(p => p.afloop === "gehaald").length === 3);
       check("export CSV: tijdlijn in woorden", /Dag 1: Recente labwaarden opvragen/.test(csv) && /Dag \d+: Antibioticum wisselen → Amoxicilline\/clavulaanzuur/.test(csv));
     }
   } catch (e) {

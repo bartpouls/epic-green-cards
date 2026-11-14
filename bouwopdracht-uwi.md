@@ -1,7 +1,7 @@
 # Bouwopdracht — Epic green cards, prototype tutorialcasus UWI
 
 Voor: Claude Code (web). Opdrachtgever: Bart Pouls (Radboudumc). Versie 1.0, 11 oktober 2026.
-Meelezen: `casus-uwi.md` (versie 1.1). Dat bestand is de **enige bron van klinische inhoud**.
+Meelezen: `casus-uwi.md` (versie 1.3; de besluiten van Bart van 14 november 2026 zijn in 6.1, 6.3 en 6.5 verwerkt). Dat bestand is de **enige bron van klinische inhoud**.
 
 ---
 
@@ -103,7 +103,8 @@ Hieronder staat de structuur. De inhoud komt uit `casus-uwi.md`.
 6. De speler drukt op "Episode afronden", of de laatste dag is voorbij.
 7. Evaluatie:
    - Eerst klappen de downsides om van de gespeelde kaarten en van de weggelaten kaarten.
-   - **Poort geschonden:** toon één Socratische vraag: die van de geschonden invariant met de laagste `ernst`-waarde. Geen score, geen antwoord. Knop "Opnieuw" start de episode opnieuw.
+   - **Poort geschonden:** toon eerst wat er met de patiënt gebeurde (de zinnen uit "Wat er zichtbaar wordt als een kaart ontbreekt" van alle geschonden invarianten die zo'n zin hebben), daarna één hint van de opleider: de vraag van de geschonden invariant met de laagste `ernst`-waarde (besluit Bart, 14 november 2026). Geen score, geen antwoord. Knop "Opnieuw" start de episode opnieuw.
+   - **Sepsis:** de episode eindigt direct en is verloren: geen score, geen profiel, de volgende episode gaat niet open; herkansing mogelijk (besluit Bart, 14 november 2026).
    - **Poort gehaald:** score per as, voorschrijfprofiel en één reflectievraag. De volgende episode gaat open.
 
 ### 4.2 Regeltaal (predicaten)
@@ -150,12 +151,12 @@ Hieronder staan kaartnamen en codes naast elkaar (codes zie bibliotheek in `casu
 | I12 | 1 | Cotrimoxazol (V9) gespeeld | E3 |
 | I5 | 2 | Nitrofurantoïne (V3) gestart, direct of via Antibioticum wisselen (B1), terwijl `waar(eGFR) < 30` | E2, E3 |
 | I10 | 2 | In de toestand weefselinvasie: Nitrofurantoïne (V3) of Fosfomycine (V4) nog actief aan het eind van de beurt na gebeurtenis A | E3 |
-| I15 | 2 | Na gebeurtenis B niet alle vier binnen 2 beurten: Medicatie tijdelijk stoppen (B3) op spironolacton, Dosis aanpassen (V6) op lisinopril met "halveren", Drinkadvies geven (N3), Opvolgmoment afspreken (Ev1) | E3 |
-| I9 | 3 | Vóór het einde ontbreekt Kalium bepalen (O2) of Overleggen met de voorschrijver (Ev2) op spironolacton, óf Medicatie hervatten (B5) op spironolacton is gespeeld zonder eerdere Ev2 op spironolacton | E3 |
+| I15 | 2 | Na gebeurtenis B niet alle drie binnen 2 beurten: Medicatie tijdelijk stoppen (B3) op spironolacton, Dosis aanpassen (V6) op lisinopril met "halveren", Drinkadvies geven (N3); óf geen Opvolgmoment afspreken (Ev1) op de dag van B tot en met drie dagen daarna (casus: "monitoring binnen 1–3 dagen"; besluit Bart, 14 november 2026) | E3 |
+| I9 | 3 | Vóór het einde ontbreken Kalium bepalen (O2) én Overleggen met de voorschrijver (Ev2) op spironolacton allebei (een van beide volstaat; besluit Bart, 14 november 2026), óf Medicatie hervatten (B5) op spironolacton is gespeeld zonder eerdere Ev2 op spironolacton | E3 |
 | I16 | 3 | Na A geen Opvolgmoment afspreken (Ev1) binnen 2 beurten, óf status "geen verbetering na 48 uur" zonder Verwijzen (Ev3) | E3 |
 | I14 | 3 | Ciprofloxacine (V7) actief terwijl calcium actief is, zonder Innametijden aanpassen (B4) of Medicatie tijdelijk stoppen (B3) op calcium, in dezelfde of de volgende beurt | E3 |
 | I13 | 3 | Amoxicilline/clavulaanzuur (V8) actief zonder Dosis aanpassen (V6) naar "875/125 mg 2 dd" in dezelfde beurt, bij `waar(eGFR) < 30` | E3 |
-| I7 | 3 | Trimethoprim (V5) als 7-daagse kuur (risicogroep) zonder Kalium bepalen (O2) op dag 2–4 na de start, óf zonder Dosis aanpassen (V6) met "halveren" vanaf dag 3 na de start | E2, E3 |
+| I7 | 3 | Trimethoprim (V5) als 7-daagse kuur (risicogroep) zonder Kalium bepalen (O2) op kuurdag 2–4, óf zonder Dosis aanpassen (V6) met "halveren" vanaf kuurdag 4. De startdag is kuurdag 1 (besluit Bart, 14 november 2026) | E2, E3 |
 | I6 | 4 | In de risicogroep: eerste antibioticumkaart vóór Urinekweek inzetten (O1), óf Afwachtend beleid (V1) of Uitgesteld recept (V2) gespeeld | E2, E3 |
 | I11 | 4 | Na A een nieuw antibioticum (via B1 of een nieuwe V-kaart) zonder Urinekweek inzetten (O1) tussen A en de wissel | E3 |
 | I8 | 4 | Na gebeurtenis C (kweekuitslag): het actieve antibioticum is resistent en de klachten houden aan, maar er is niet gewisseld (B1) of gestopt (B2) binnen 2 beurten | E2, E3 |
@@ -163,7 +164,7 @@ Hieronder staan kaartnamen en codes naast elkaar (codes zie bibliotheek in `casu
 | I3 | 5 | Afwachtend beleid (V1) zonder Opvolgmoment afspreken (Ev1) | E1 |
 | I4 | 5 | Op enig moment meer dan één antibioticum tegelijk actief | E1–E3 |
 
-De ernst-volgorde is een voorstel van Claude. De opdrachtgever heeft hem nog niet bevestigd (`TODO`): bouw hem zo, maar houd hem instelbaar in de data.
+De ernst-volgorde was een voorstel van Claude. Bart is ermee akkoord (14 november 2026). Hij blijft instelbaar in de data.
 
 ### 6.2 Opties van V6 "Dosis aanpassen", per doel
 In elke lijst staat de goede optie. De andere opties zijn bewuste afleiders.
@@ -182,10 +183,12 @@ Afleiders en werkzaamheidstabel zijn door Bart gevalideerd (11 oktober 2026).
 |---|---|---|
 | E1 | V3, V4, V5 | — |
 | E2 | V4 | V3 (geen bactericide concentratie bij eGFR < 30), V5 (resistent) |
-| E3 cystitis | V4 | V3, V5 (resistent volgens de eerdere kweek) |
+| E3 cystitis | V4; V8; V7 alleen met B4 of B3(calcium) (besluit Bart, 14 november 2026) | V3, V5 (resistent volgens de eerdere kweek), V7 zonder scheiding van calcium |
 | E3 weefselinvasie | V8; V7 alleen met B4 of B3(calcium) | V3, V4 (onvoldoende concentratie in het weefsel), V10 (resistent), V7 zonder scheiding van calcium |
 
 V9 is wel werkzaam, maar I12 schendt altijd de poort.
+
+V7 en V8 zijn bij cystitis wel werkzaam, maar staan daar buiten de richtlijn: dat kost duurzaamheid (zie 6.5). De andere regels (I13, I14 enzovoort) blijven onverkort gelden.
 
 **Status "geen verbetering na 48 uur":** na A is binnen 2 beurten geen werkzaam antibioticum actief.
 
@@ -207,7 +210,7 @@ V9 is wel werkzaam, maar I12 schendt altijd de poort.
     - Kweekgestuurd, smal (V4 zonder wissel)
     - Bijgestuurd (V5, daarna B1)
 - **E3**
-  - Duurzaamheid: route V8 = 3, of V7 met de-escalatie naar V8 na C = 3, V7 zonder de-escalatie = 2.
+  - Duurzaamheid: route V8 = 3, of V7 met de-escalatie naar V8 na C = 3, V7 zonder de-escalatie = 2. Wie V7 of V8 start terwijl de toestand nog cystitis is (nog geen weefselinvasie), schrijft buiten de richtlijn voor: −1 (ondergrens 1). Bij een gehaalde poort verschijnt dan de opmerking "Dit middel staat in de richtlijn niet bij een blaasontsteking." (concepttekst, ter goedkeuring door Bart).
   - Doelmatigheid: 3 als G3 vóór de eerste V-kaart komt, anders 2.
   - Profielen:
     - Kweekgestuurd (V8)

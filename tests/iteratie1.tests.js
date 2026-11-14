@@ -1,4 +1,5 @@
-/* Tests voor iteratie 1 (12 oktober 2026): het nieuwe gedrag met de ECHTE instellingen van de casus (versie 1.2):
+/* Tests voor iteratie 1 (12 oktober 2026): het nieuwe gedrag met de ECHTE instellingen van de casus (sinds versie 1.2;
+   bijgewerkt voor versie 1.3, de besluiten van Bart van 14 november 2026: sepsis beëindigt de episode, alle gevolgzinnen vrijgegeven):
    één keer per doel, kweekuitslag op tijd, escalatie bij aanhoudende klachten, afronden pas na gebeurtenissen,
    kaliumregel trimethoprim, gevolgzin en "nog n andere regels", gespeelde kaarten in het evaluatiescherm, opslagmelding.
    De oudere regel- en routetests draaien op Test.oudeRegels() (zie testlib.js). */
@@ -120,14 +121,16 @@
     T.is(s.klachten[5].reeks, 0, "na de stap begint de teller opnieuw");
     dagen(s, 2); T.is(s.klachten[7].status, "geenVerbetering48", "de 48-uursregel geldt ook na escalatie");
   });
-  T.registreer(G, "escalatie: bij weefselinvasie en opnieuw vier volle dagen aanhoudende klachten volgt sepsis (S); daarna geen verdere stap", function () {
+  T.registreer(G, "escalatie: bij weefselinvasie en opnieuw vier volle dagen aanhoudende klachten volgt sepsis (S); daarmee eindigt de episode direct (casus 1.3)", function () {
     var s = nieuw("E3"); dagen(s, 4);
     T.is(geb(s, "A").dag, 5);
-    dagen(s, 3); T.is(geb(s, "S"), undefined, "dag 8: nog niet"); T.is(s.klachten[8].reeks, 3);
+    dagen(s, 3); T.is(geb(s, "S"), undefined, "dag 8: nog niet"); T.is(s.klachten[8].reeks, 3); T.is(s.afgerond, false);
     dagen(s, 1);
     T.is(geb(s, "S").dag, 9); T.waar(s.toestanden.indexOf("sepsis") >= 0);
-    dagen(s, 3); T.is(s.klachten[12].reeks, 0, "geen stap meer over");
+    T.is(s.klachten[9].reeks, 0, "geen stap meer over");
     T.is(s.gebeurtenissen.filter(function (x) { return x.id === "S"; }).length, 1);
+    T.is(s.afgerond, true, "sepsis beëindigt de episode"); T.is(s.dag, 9);
+    T.gooit(function () { g.Engine.volgendeDag(s); }, "na sepsis is er geen volgende dag");
   });
   T.registreer(G, "escalatie: een werkzaam middel na weefselinvasie (V8 + dosis) stopt de teller en voorkomt sepsis", function () {
     var s = nieuw("E3"); dagen(s, 4); speel(s, "O1"); speel(s, "V8"); speel(s, "V6", "V8", "875/125 mg 2 dd"); dagen(s, 1);
@@ -161,7 +164,7 @@
   T.registreer(G, "escalatie: A komt ook nog op de vaste trigger (4e en 7e kaart); komt A al eerder, dan niet twee keer", function () {
     var s = nieuw("E3"); speel(s, "G1"); speel(s, "G2"); speel(s, "G3"); dagen(s, 1); speel(s, "N1"); dagen(s, 1);
     T.is(geb(s, "A").dag, 3, "vaste trigger: A na de 4e kaart (dag 2), zichtbaar op dag 3");
-    dagen(s, 5); T.is(s.gebeurtenissen.filter(function (x) { return x.id === "A"; }).length, 1, "A maar één keer");
+    dagen(s, 3); T.is(s.gebeurtenissen.filter(function (x) { return x.id === "A"; }).length, 1, "A maar één keer");   // tot dag 6: op dag 7 zou sepsis de episode beëindigen
     var t = nieuw("E3"); dagen(t, 4);
     T.is(geb(t, "A").dag, 5);
     speel(t, "G1"); speel(t, "G2"); speel(t, "G3"); dagen(t, 1); speel(t, "N1"); speel(t, "O2"); speel(t, "N3");
@@ -184,7 +187,7 @@
     var u = g.Engine.rondAf(s); T.is(u.poortGehaald, true, "na de uitslag mag het wel");
   });
   T.registreer(G, "afronden: E3 kan niet af zolang A en B nog niet zijn geweest, behalve op de laatste dag", function () {
-    var s = nieuw("E3"); speel(s, "N1");
+    var s = nieuw("E3"); speel(s, "N1"); speel(s, "V4");   // een werkzaam middel: zonder zou sepsis de episode op dag 9 beëindigen (casus 1.3)
     T.gooit(function () { g.Engine.rondAf(s); }, "A en B komen nog (kaartaantal)");
     dagen(s, 13); T.is(s.dag, 14); T.is(s.dagenVoorbij, false, "de laatste dag is bereikt, maar niet 'voorbij'");
     var u = g.Engine.rondAf(s); T.is(typeof u.poortGehaald, "boolean");
@@ -214,7 +217,7 @@
   });
 
   /* ---------- 7 en 8. gevolgzin en 'nog n andere regels' ---------- */
-  T.registreer(G, "gevolgzin: bij I14 (ciprofloxacine zonder calciumscheiding) staat de gevolgzin bij de vraag; bij een zin die verklapt wat je miste (E1 I1) niet", function () {
+  T.registreer(G, "gevolgzin: bij I14 (ciprofloxacine zonder calciumscheiding) staat de gevolgzin bij de uitkomst; sinds casus 1.3 ook de zin van E1 I1", function () {
     var s = nieuw("E3"); speel(s, "O1"); speel(s, "V7"); speel(s, "N1");
     dagen(s, 1); speel(s, "G3"); dagen(s, 4);
     var u = afronden(s);
@@ -222,15 +225,19 @@
     var e1 = nieuw("E1"); speel(e1, "V4");
     var u1 = afronden(e1);
     T.is(u1.vraag.indexOf("Mevrouw staat buiten") === 0, true);
-    T.is(u1.gevolg, null, "E1 I1: de zin verklapt wat je miste, nog niet vrijgegeven (TODO_BART)");
+    T.waar(u.gevolgen.some(function (x) { return x.invariant === "I14" && x.tekst === "Na 48 uur geen verbetering."; }), "I14-zin in gevolgen");
+    T.is(u1.gevolg, "Mevrouw weet niet wanneer ze moet bellen.", "E1 I1: vrijgegeven door Bart op 14 november 2026");
   });
-  T.registreer(G, "gevolgzin: elke niet-vrijgegeven zin staat als TODO_BART op de lijst voor Bart; vrijgegeven zinnen noemen alleen een gevolg", function () {
+  T.registreer(G, "gevolgzin: alle zeven zinnen uit 'wat er zichtbaar wordt' zijn vrijgegeven (besluit Bart, 14 november 2026) en staan letterlijk bij 'zichtbaar als een kaart ontbreekt'", function () {
     var zinnen = casus().gevolgzinnen, vrij = zinnen.filter(function (z) { return z.vrijgegeven; });
-    T.waar(zinnen.length >= 7, "alle zinnen uit 'wat er zichtbaar wordt' staan erin");
-    T.gelijk(vrij.map(function (z) { return z.invariant; }).sort(), ["I14", "I15"]);
+    T.is(zinnen.length, 7, "alle zinnen uit 'wat er zichtbaar wordt' staan erin");
+    T.gelijk(vrij.map(function (z) { return z.episode + " " + z.invariant; }), ["E1 I1", "E1 I3", "E2 I5", "E2 I7", "E3 I9", "E3 I14", "E3 I15"]);
+    zinnen.forEach(function (z) {
+      T.waar(ep(z.episode).zichtbaarAlsOntbreekt.some(function (x) { return x.tekst === z.tekst; }), "zin komt letterlijk uit de casus (" + z.episode + " " + z.invariant + ")");
+      T.waar(ep(z.episode).invarianten.some(function (i) { return i.id === z.invariant; }), "de regel bestaat in die episode");
+    });
     var todo = casus().todoBart.filter(function (t) { return t.id === "TODO_BART-G1"; })[0];
-    T.waar(!!todo, "TODO_BART-G1");
-    zinnen.filter(function (z) { return !z.vrijgegeven; }).forEach(function (z) { T.waar(todo.vraag.indexOf(z.tekst) >= 0, "TODO noemt: " + z.tekst); });
+    T.waar(!!todo && /14 november 2026/.test(todo.besluit), "TODO_BART-G1 is beslist");
   });
   T.registreer(G, "twee schendingen: 'Nog 1 andere veiligheidsregel niet gehaald.' zonder te zeggen welke; bij 3 schendingen 'regels'; bij één niets", function () {
     T.is(g.UI.anderenZin({ geschonden: [{ id: "I1" }] }), null);
@@ -322,7 +329,7 @@
       var u = afronden(s);
       L.bewaarUitSpel(s, u, "Anna", { testmodus: false });
       var kop = csvRijen(L.exportCSV())[0].join(";");
-      T.is(kop, "pseudoniem;episode;poging;eerste poging;testmodus;casusversie;speltijdstip;tijdlijn;gebeurtenissen;onthulde gegevens;poort gehaald;geschonden regels;getoonde vraag;score duurzaamheid;score doelmatigheid;profiel;reflectievraag;labwaarden vóór voorschrijfkaart;eerdere kweken vóór eerste keuze;dagen zonder actie;aantal dagen;aantal kaarten");
+      T.is(kop, "pseudoniem;episode;poging;eerste poging;testmodus;casusversie;speltijdstip;tijdlijn;gebeurtenissen;onthulde gegevens;poort gehaald;geschonden regels;getoonde vraag;score duurzaamheid;score doelmatigheid;profiel;reflectievraag;labwaarden vóór voorschrijfkaart;eerdere kweken vóór eerste keuze;dagen zonder actie;aantal dagen;aantal kaarten;afloop");   // 'afloop' is erbij sinds casus 1.3 (achteraan, bestaande kolommen ongewijzigd)
       var r = csvRijen(L.exportCSV())[1];
       T.is(r[0], "Anna"); T.is(r[1], "E2"); T.is(r[2], "1"); T.is(r[3], "ja"); T.is(r[4], "nee"); T.is(r[5], casus().versie);
       T.is(r[7], "Dag 1: Urinekweek inzetten; Dag 1: Recente labwaarden opvragen; Dag 1: Trimethoprim; Dag 2: Alarmsignalen bespreken; Dag 5: Antibioticum wisselen → Fosfomycine");
@@ -333,6 +340,7 @@
       T.waar(r[12].indexOf("kalium") >= 0, "getoonde vraag");
       T.is(r[17], "ja", "G2 is voor V5 gespeeld"); T.is(r[18], "", "geen kweekmaat in episode 2");
       T.is(r[19], "2", "dagen zonder actie (dag 3 en 4)");
+      T.is(r[22], "niet gehaald", "afloop in woorden");
     });
   });
   T.registreer(G, "export: de afgeleide maten (labwaarden vóór de voorschrijfkaart, eerdere kweken vóór de eerste keuze, dagen zonder actie) en testmodus", function () {

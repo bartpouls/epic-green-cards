@@ -77,7 +77,9 @@
     var mijn = recordsVan(alleRecords, pseudoniem).filter(function (r) { return !r.testmodus; });
     return lijst(casus.episodes).map(function (ep, i) {
       var gehaald = mijn.some(function (r) {
-        return r.episodeId === ep.id && (r.casusId == null || r.casusId === casus.id) && Array.isArray(r.geschonden) && r.geschonden.length === 0;
+        // Een verloren episode (bv. door sepsis) is nooit gehaald, ook niet als er geen veiligheidsregel is geschonden.
+        return r.episodeId === ep.id && (r.casusId == null || r.casusId === casus.id) && Array.isArray(r.geschonden) && r.geschonden.length === 0 &&
+          r.poortGehaald !== false && r.afloop !== "verloren";
       });
       return {
         id: ep.id, nummer: i + 1, titel: "Episode " + (i + 1),
@@ -276,19 +278,38 @@
     return uit;
   }
 
-  // Weergavemodel van het evaluatiescherm. Bij een schending: ÉÉN vraag, geen score, geen profiel, geen extra vragen.
+  // Kop boven de gevolgen bij de patiënt. De naam komt uit de data (de naam van de patiëntkaart); midden in de zin begint de
+  // aanspreekvorm met een kleine letter (een hoofdletter aan het begin wordt een kleine letter).
+  function gevolgenKop(ep) {
+    var z = (ep && ep.patient && ep.patient.zichtbaar) || {}, naam = typeof z.naam === "string" && z.naam !== "" ? z.naam : null;
+    return "Wat er met " + (naam ? naam.charAt(0).toLowerCase() + naam.slice(1) : "de patiënt") + " gebeurde";
+  }
+
+  // Weergavemodel van het evaluatiescherm (besluit Bart, 14 november 2026: de gevolgen bij de patiënt zijn leidend, daarna één hint).
+  // Bij een schending: eerst `gevolgen` (de gevolgzinnen van ALLE geschonden regels die er een hebben), dan `hint` (ÉÉN tekst: de vraag van
+  // de ernstigste geschonden regel, ongewijzigd), geen score, geen profiel, geen extra vragen. `vraag` en `gevolg` blijven bestaan
+  // (vraag = hint; gevolg = de eerste gevolgzin). Is de episode verloren (afloop "verloren"), dan staat de tekst daarvan in `eindTekst`.
   function evaluatieModel(uitkomst) {
     var u = uitkomst || {};
     var downsides = lijst(u.downsides).map(function (d) { return { label: d.label, tekst: d.tekst, soort: d.soort }; });
+    var verloren = u.afloop === "verloren";
     if (!u.poortGehaald) {
-      return { gehaald: false, downsides: downsides, vraag: u.vraag || null, gevolg: u.gevolg || null, anderen: anderenZin(u), scores: [], profiel: null, extraVragen: [], zichtbaar: [] };
+      var gevolgen = Array.isArray(u.gevolgen)
+        ? u.gevolgen.map(function (x) { return typeof x === "string" ? x : x && x.tekst; }).filter(function (t) { return typeof t === "string" && t !== ""; })
+        : (u.gevolg ? [u.gevolg] : []);
+      return {
+        gehaald: false, verloren: verloren, eindTekst: verloren && isObj(u.einde) ? (u.einde.tekst || null) : null,
+        eindGebeurtenis: verloren && isObj(u.einde) ? (u.einde.gebeurtenis || null) : null,
+        downsides: downsides, vraag: u.vraag || null, hint: u.vraag || null, gevolg: gevolgen.length ? gevolgen[0] : null, gevolgen: gevolgen,
+        anderen: anderenZin(u), scores: [], profiel: null, extraVragen: [], zichtbaar: []
+      };
     }
     var scores = [];
     if (isObj(u.score)) Object.keys(u.score).forEach(function (as) {
       if (typeof u.score[as] === "number") scores.push({ as: as, naam: hoofdletter(as), waarde: u.score[as] });
     });
     return {
-      gehaald: true, downsides: downsides, vraag: null, gevolg: null, anderen: null, scores: scores,
+      gehaald: true, verloren: false, eindTekst: null, eindGebeurtenis: null, downsides: downsides, vraag: null, hint: null, gevolg: null, gevolgen: [], anderen: null, scores: scores,
       profiel: isObj(u.profiel) ? { naam: u.profiel.naam, reflectievraag: u.profiel.reflectievraag || null } : null,
       extraVragen: lijst(u.extraVragen).map(function (x) { return typeof x === "string" ? x : x.vraag; }),
       zichtbaar: lijst(u.zichtbaar).map(function (x) { return typeof x === "string" ? x : x.tekst; })
@@ -311,7 +332,7 @@
         });
       }
       var gehaald = typeof r.poortGehaald === "boolean" ? r.poortGehaald : lijst(r.geschonden).length === 0;
-      var uitkomst = gehaald
+      var uitkomst = r.afloop === "verloren" ? "Episode verloren." : gehaald
         ? "Veiligheid gehaald" + (r.profiel && r.profiel.naam ? ". Profiel: " + r.profiel.naam : "") +
           (r.score ? ". Duurzaamheid " + r.score.duurzaamheid + " van " + SCHAAL + ", doelmatigheid " + r.score.doelmatigheid + " van " + SCHAAL : "") + "."
         : "Nog niet veilig genoeg.";
@@ -688,6 +709,8 @@
   function volgendeDag() {
     try { g.Engine.volgendeDag(app.spel); app.melding = null; app.downloadFout = false; }
     catch (e) { app.melding = (e && e.message) || "Dat lukte niet."; app.downloadFout = true; }
+    // Een gebeurtenis kan de episode direct beëindigen (staat in de data, bv. sepsis): dan volgt meteen de beoordeling.
+    if (app.spel && app.spel.afgerond) { rondAf(); return; }
     app.onthuld = null; app.bevestigAfronden = false;
     app.fokus = "dag-kop";
     render();
@@ -981,12 +1004,21 @@
     }
     var kern, eps = lijst(app.casus.episodes), volgendeEp = eps[episodeNummer(app.casus, app.ep)] || null;
     if (!m.gehaald) {
-      kern = h("section", { klasse: "kaartvlak uitslag niet", "aria-labelledby": "uitslag-kop" },
-        h("h2", { id: "uitslag-kop" }, "Nog niet veilig genoeg"),
-        h("p", { klasse: "vraag", id: "socratisch" }, m.vraag),
-        m.gevolg ? h("p", { klasse: "gevolg", id: "gevolg" }, m.gevolg) : null,
+      // Volgorde (besluit Bart, 14 november 2026): eerst wat er met de patiënt gebeurde, dan één hint van de opleider.
+      var eindBanner = m.verloren && m.eindGebeurtenis ? gebeurtenisTekst(app.ep, m.eindGebeurtenis) : "";
+      kern = h("section", { klasse: "kaartvlak uitslag niet" + (m.verloren ? " verloren" : ""), "aria-labelledby": "uitslag-kop" },
+        h("h2", { id: "uitslag-kop" }, m.verloren ? "Episode verloren" : "Nog niet veilig genoeg"),
+        eindBanner ? h("p", { klasse: "banner", "data-gebeurtenis": m.eindGebeurtenis }, eindBanner) : null,
+        m.eindTekst ? h("p", { klasse: "eindtekst", id: "eindtekst" }, m.eindTekst) : null,
+        m.gevolgen.length ? h("div", { klasse: "gevolgen", id: "gevolgen" },
+          h("h3", { id: "gevolgen-kop" }, gevolgenKop(app.ep)),
+          h("ul", { "aria-labelledby": "gevolgen-kop" }, m.gevolgen.map(function (t, i) {
+            return h("li", { klasse: "gevolg", "data-gevolg": "ja", id: i === 0 ? "gevolg" : null }, t);
+          }))) : null,
+        m.hint ? h("div", { klasse: "hint", id: "hint" },
+          h("h3", { id: "hint-kop" }, "Hint van je opleider"),
+          h("p", { klasse: "vraag", id: "socratisch" }, m.hint)) : null,
         m.anderen ? h("p", { klasse: "uitleg", id: "anderen" }, m.anderen) : null,
-        h("p", { klasse: "uitleg" }, "Denk hier even over na en probeer de episode opnieuw."),
         h("p", { klasse: "dlgknoppen" },
           fokusMarkeer(knop("Opnieuw", { id: "btn-opnieuw", klasse: "knop hoofd" }, function () { startEpisode(app.ep.id); }), "btn-opnieuw"),
           knop("Terug naar start", { id: "btn-terug", klasse: "knop rand" }, function () { naarScherm("kies"); })));
@@ -1001,10 +1033,12 @@
         })) : null,
         m.profiel ? h("div", { klasse: "profiel" },
           h("h3", null, "Jouw voorschrijfprofiel"),
-          h("p", { klasse: "profielnaam", id: "profiel" }, m.profiel.naam),
-          m.profiel.reflectievraag ? h("p", { klasse: "vraag", id: "reflectie" }, m.profiel.reflectievraag) : null) : null,
-        m.extraVragen.length ? h("div", { klasse: "extra" }, h("h3", null, "Om over na te denken"),
-          h("ul", null, m.extraVragen.map(function (v) { return h("li", { "data-extra": "ja" }, v); }))) : null,
+          h("p", { klasse: "profielnaam", id: "profiel" }, m.profiel.naam)) : null,
+        // Reflectievraag en extra feedback staan samen onder één kop.
+        (m.profiel && m.profiel.reflectievraag) || m.extraVragen.length ? h("div", { klasse: "extra", id: "opleider" },
+          h("h3", { id: "opleider-kop" }, "Van je opleider"),
+          m.profiel && m.profiel.reflectievraag ? h("p", { klasse: "vraag", id: "reflectie" }, m.profiel.reflectievraag) : null,
+          m.extraVragen.length ? h("ul", null, m.extraVragen.map(function (v) { return h("li", { "data-extra": "ja" }, v); })) : null) : null,
         m.zichtbaar.length ? h("div", { klasse: "zichtbaar" }, h("h3", null, "Wat je niet zag"),
           h("ul", null, m.zichtbaar.map(function (v) { return h("li", { "data-zichtbaar": "ja" }, v); }))) : null,
         h("p", { klasse: "dlgknoppen" },
@@ -1049,11 +1083,13 @@
     isDoelkaart: isDoelkaart, optiesVoor: optiesVoor, regelTitel: regelTitel, naSpelenTekst: naSpelenTekst,
     dagenModel: dagenModel, patientVelden: patientVelden, evaluatieModel: evaluatieModel, raadpleegModel: raadpleegModel,
     aanhoudendTekst: aanhoudendTekst, overzichtModel: overzichtModel, opslagMelding: opslagMelding, actieDots: actieDots, doelLabel: doelLabel,
-    nadeelTekst: nadeelTekst, anderenZin: anderenZin, effectVoor: effectVoor, enigDoel: enigDoel, rondleiding: function () { return RONDLEIDING.slice(); }, gespeeldeKaarten: gespeeldeKaarten,
+    nadeelTekst: nadeelTekst, anderenZin: anderenZin, gevolgenKop: gevolgenKop, effectVoor: effectVoor, enigDoel: enigDoel, rondleiding: function () { return RONDLEIDING.slice(); }, gespeeldeKaarten: gespeeldeKaarten,
     _opslag: undefined,                               // alleen voor tests
     _rng: null,                                       // alleen voor tests: vaste toevalsbron voor de volgorde van opties
     _toestand: function () { return app; }            // alleen voor tests
   };
+  // Alleen voor de tests (niet opsombaar): de volledige broncode van deze module, voor de controle dat hier geen casustekst staat.
+  Object.defineProperty(UI, "_bron", { enumerable: false, value: uiModule.toString() });
   g.UI = UI;
 
   if (typeof document !== "undefined" && document && document.getElementById) {

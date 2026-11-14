@@ -21,6 +21,10 @@
  *    bewuste regel in die allowlist.
  *  - ATOMAIR: elke muterende functie (speelKaart, raadpleeg, volgendeDag, rondAf) werkt via atomisch(): gaat er iets mis
  *    (kapotte data, kapot predicaat, gooiende Evaluatie), dan is de state daarna precies zoals hij was (momentopname + herstel).
+ *  - EINDE DOOR EEN GEBEURTENIS (besluit Bart, 14 november 2026): heeft een gebeurtenis in de data een veld `einde` (bv. sepsis), dan
+ *    eindigt de episode direct op de dag waarop die gebeurtenis verschijnt: Engine.volgendeDag zet state.afgerond = true en
+ *    state.uitkomst (de beoordeling van Evaluatie, die de afloop bepaalt). Engine.volgendeDag geeft nog steeds de state terug;
+ *    Engine.rondAf geeft daarna de al bepaalde uitkomst. Welke gebeurtenis dat is en wat de afloop heet, staat alleen in de data.
  *  - Engine._bron is de volledige broncode van deze module (voor de casuslogica-scan in de tests).
  */
 (function engineModule(g) {
@@ -429,6 +433,11 @@
       state.dag = nieuw;
       state.actiesOver = ep.knoppen.actiesPerBeurt;
       state.klachten[nieuw] = berekenKlachten(state, ep, nieuw);
+      // Een gebeurtenis met `einde` in de data beëindigt de episode direct: de beoordeling volgt meteen (atomisch met deze dag).
+      var eindigt = state.gebeurtenissen.some(function (x) {
+        return x.dag === nieuw && (ep.gebeurtenissen || []).some(function (e) { return e.id === x.id && !!e.einde; });
+      });
+      if (eindigt) sluitAf(state);
       return state;
     });
   }
@@ -437,9 +446,17 @@
 
   function eindeBereikt(state) { return !!(state.afgerond || state.dagenVoorbij); }
 
+  // Sluit de episode af en legt de beoordeling vast (gedeeld door rondAf en het einde door een gebeurtenis).
+  function sluitAf(state) {
+    if (!g.Evaluatie || typeof g.Evaluatie.beoordeel !== "function") throw new Error("De beoordeling (Evaluatie) is niet geladen.");
+    state.afgerond = true;
+    state.uitkomst = g.Evaluatie.beoordeel(casusVan(state), state.episodeId, state);   // gooit die: alles (ook wat beoordeel muteerde) wordt teruggezet
+    return state.uitkomst;
+  }
+
   function rondAf(state) {
     if (state.afgerond) return state.uitkomst;
-    var casus = casusVan(state), ep = episodeVan(state);
+    var ep = episodeVan(state);
     return atomisch(state, function () {
       if (state.afrondenPasNaGebeurtenissen && !state.dagenVoorbij && state.dag < state.aantalDagen) {
         // Een gebeurtenis op tijd telt alleen mee als de kaart die haar aankondigt is gespeeld; die op kaartaantal telt altijd mee.
@@ -450,10 +467,7 @@
         });
         if (open) throw new Error("Je kunt deze episode pas afronden nadat de gebeurtenissen zich hebben voorgedaan.");
       }
-      if (!g.Evaluatie || typeof g.Evaluatie.beoordeel !== "function") throw new Error("De beoordeling (Evaluatie) is niet geladen.");
-      state.afgerond = true;
-      state.uitkomst = g.Evaluatie.beoordeel(casus, state.episodeId, state);   // gooit die: alles (ook wat beoordeel muteerde) wordt teruggezet
-      return state.uitkomst;
+      return sluitAf(state);
     });
   }
 

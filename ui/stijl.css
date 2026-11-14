@@ -186,3 +186,7 @@ p.fout:empty { display: none; }
 .tabelwrap { overflow-x: auto; }
 .overzicht table { width: 100%; border-collapse: collapse; }
 .overzicht th, .overzicht td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid #ccd; vertical-align: top; }
+/* Beoordelingsscherm (besluit 14 november 2026): gevolgen bij de patiënt, hint van de opleider en de tekst bij een verloren episode. */
+.gevolgen > * + *, .hint > * + *, .extra > * + * { margin-top: 6px; }
+.gevolgen ul { display: grid; gap: 4px; }
+.eindtekst { font-weight: 600; }

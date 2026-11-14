@@ -526,6 +526,7 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
           el('p', null, [el('span', { 'class': 'nr' }, t.id), el('span', { 'class': 'zacht' }, ' · plek: '), plekTxt(t.plek)]),
           el('p', null, [el('b', null, 'Vraag: '), t.vraag]),
           el('p', null, [el('b', null, 'Gekozen lezing: '), t.gekozenLezing]),
+          el('p', { 'class': 'besluit' }, t.besluit ? [el('b', null, 'Besluit: '), t.besluit] : [el('span', { 'class': 'zacht' }, 'Nog niet beslist.')]),
           markering
         ]));
       });

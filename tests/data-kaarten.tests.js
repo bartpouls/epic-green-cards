@@ -87,7 +87,7 @@
   Test.registreer(G, "K0 CASUSSEN is een array met één casus; id en versie uit de casuskop", function () {
     Test.waar(Array.isArray(window.CASUSSEN) && window.CASUSSEN.length === 1, "één casus verwacht");
     Test.is(casus().id, "uwi-eerstelijn");
-    Test.is(casus().versie, "1.2");
+    Test.is(casus().versie, "1.3");   // casus-uwi.md versie 1.3 (besluiten Bart, 14 november 2026)
     Test.is(casus().titel, REF_TITEL, "titel");
     Test.waar(Array.isArray(casus().episodes), "episodes is een array (door de episodebestanden aangevuld)");
     Test.waar(Array.isArray(casus().todoBart), "todoBart is een array");

@@ -324,7 +324,7 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
       ],
       "patientkaart": [
         "Mevrouw V., 79 jaar (1 jaar na episode 2). Cystitis, geen koorts.",
-        "Medicatie: lisinopril, spironolacton (hypertensie), calcium/colecalciferol.",
+        "Medicatie: lisinopril, spironolacton, calcium/colecalciferol.",
         "Wie spironolacton heeft gestart en waarom, staat er bewust niet op. Het leerpunt: als de nierfunctie daalt, kijk je niet alleen naar wat je nu voorschrijft, maar naar alles wat de patiënt al gebruikt. In de praktijk wordt dat vaak gemist.",
         "Lab: eGFR 28, recent. Risicogroep [NHG].",
         "Verborgen achter G3: de kweek uit episode 2, met trimethoprim resistent. Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG]."
@@ -453,7 +453,7 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
       },
       "volgorde": null,
       "score": [
-        "Duurzaamheid: de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op.",
+        "Duurzaamheid: de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op. Wie ciprofloxacine of amoxicilline/clavulaanzuur start terwijl de toestand nog cystitis is (nog geen weefselinvasie), schrijft buiten de richtlijn voor en verliest 1 punt duurzaamheid (ondergrens 1).",
         "Doelmatigheid: G3 gebruiken vóór de eerste keuze levert punten op."
       ],
       "zichtbaarAlsOntbreekt": [

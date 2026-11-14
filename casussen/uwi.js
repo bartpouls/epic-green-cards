@@ -1,12 +1,12 @@
 /* casussen/uwi.js — samengevoegd uit uwi.js (kop + kaarten), uwi-e1.js, uwi-e2.js en uwi-e3.js. Alleen data, geen logica.
-   Bron: casus-uwi.md (v1.2). Gemaakt met gauntlet/tools/voeg-samen.js; de losse bestanden zijn daarna vervallen. */
+   Bron: casus-uwi.md (v1.3). Gemaakt met gauntlet/tools/voeg-samen.js; de losse bestanden zijn daarna vervallen. */
 /* ===== uwi.js ===== */
 // Casus UWI in de eerste lijn: kaartenbibliotheek (stuk S1). Alleen data, geen logica.
-// Bron: casus-uwi.md v1.2, sectie 3. Episodes worden aangevuld door uwi-e1.js, uwi-e2.js en uwi-e3.js.
+// Bron: casus-uwi.md v1.3, sectie 3. Episodes worden aangevuld door uwi-e1.js, uwi-e2.js en uwi-e3.js.
 window.CASUSSEN = [
 {
  "id": "uwi-eerstelijn",
- "versie": "1.2",
+ "versie": "1.3",
  "limiet": 1,
  "regelnamen": [
   {
@@ -534,7 +534,7 @@ window.CASUSSEN = [
         "kaart": "Ev1"
        },
        "naGebeurtenis": "B",
-       "n": 2
+       "n": 4
       }
      }
     }
@@ -771,11 +771,13 @@ window.CASUSSEN = [
   }
  ],
  "gevolgzinnen": [
-  { "episode": "E1", "invariant": "I1", "tekst": "Mevrouw weet niet wanneer ze moet bellen.", "vrijgegeven": false },
-  { "episode": "E1", "invariant": "I3", "tekst": "Er is geen moment om alsnog te starten als de klachten aanhouden.", "vrijgegeven": false },
-  { "episode": "E2", "invariant": "I5", "tekst": "De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.", "vrijgegeven": false },
-  { "episode": "E2", "invariant": "I7", "tekst": "De kaliumspiegel is onbekend.", "vrijgegeven": false },
-  { "episode": "E3", "invariant": "I9", "tekst": "Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.", "vrijgegeven": false },
+  { "episode": "E1", "invariant": "I1", "tekst": "Mevrouw weet niet wanneer ze moet bellen.", "vrijgegeven": true },
+  { "episode": "E1", "invariant": "I3", "tekst": "Er is geen moment om alsnog te starten als de klachten aanhouden.", "vrijgegeven": true },
+  { "episode": "E2", "invariant": "I5", "tekst": "De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.", "vrijgegeven": true },
+  { "episode": "E2", "invariant": "I7", "tekst": "De kaliumspiegel is onbekend.", "vrijgegeven": true,
+    "als": { "p": "nietGespeeld", "kaart": "O2" } },
+  { "episode": "E3", "invariant": "I9", "tekst": "Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.", "vrijgegeven": true,
+    "als": { "p": "en", "args": [ { "p": "nietGespeeld", "K": { "kaart": "O2" } }, { "p": "nietGespeeld", "K": { "kaart": "Ev2", "doel": "spironolacton" } } ] } },
   { "episode": "E3", "invariant": "I14", "tekst": "Na 48 uur geen verbetering.", "vrijgegeven": true },
   { "episode": "E3", "invariant": "I15", "tekst": "De nierfunctie daalt verder en het kalium stijgt.", "vrijgegeven": true }
  ],
@@ -1819,8 +1821,9 @@ window.CASUSSEN = [
   {
    "id": "TODO_BART-G1",
    "vraag": "Bij een geschonden veiligheidsregel tonen we naast de vraag de zin uit 'Wat er zichtbaar wordt als een kaart ontbreekt'. Sommige zinnen verklappen wat de speler miste. Mogen deze zinnen toch getoond worden? - E1 I1: \"Mevrouw weet niet wanneer ze moet bellen.\" (noemt direct de ontbrekende informatie (alarmsignalen))\n- E1 I3: \"Er is geen moment om alsnog te starten als de klachten aanhouden.\" (noemt direct de ontbrekende kaart (opvolgmoment))\n- E2 I5: \"De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.\" (noemt het getal dat de speler had kunnen opvragen (nierfunctie 29) en de reden waarom het middel afvalt)\n- E2 I7: \"De kaliumspiegel is onbekend.\" (noemt direct de ontbrekende kaart (kalium bepalen))\n- E3 I9: \"Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.\" (noemt direct wat de speler miste (kalium en overleg over spironolacton))",
-   "gekozenLezing": "Deze zinnen worden voorlopig NIET getoond (vrijgegeven: false in casus.gevolgzinnen). Wel getoond worden de zinnen die alleen een gevolg bij de patiënt noemen: E3 I14 (Na 48 uur geen verbetering.) en E3 I15 (De nierfunctie daalt verder en het kalium stijgt.).",
-   "plek": "casus.gevolgzinnen"
+   "gekozenLezing": "Alle zeven zinnen zijn vrijgegeven (vrijgegeven: true in casus.gevolgzinnen). Bij een niet-gehaalde poort staan onder 'Wat er met mevrouw V. gebeurde' de zinnen van alle geschonden regels die zo'n zin hebben; daarna volgt onder 'Hint van je opleider' de vraag van de ernstigste geschonden regel, ongewijzigd. Een zin geldt alleen in de episode waarin de casus hem noemt. Twee zinnen hebben een voorwaarde, zodat ze niet verschijnen als ze niet waar zijn: 'De kaliumspiegel is onbekend.' alleen als Kalium bepalen niet is gespeeld; 'Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.' alleen als Kalium bepalen én Overleggen met de voorschrijver (over spironolacton) allebei ontbreken. Regels zonder zin in de casus krijgen geen zin.",
+   "plek": "casus.gevolgzinnen",
+   "besluit": "Beslist door Bart op 14 november 2026: de gevolgen bij de patiënt zijn leidend en worden allemaal getoond, daarna volgt één collegiale hint van de opleider."
   },
   {
    "id": "TODO_BART-N1",
@@ -1831,8 +1834,9 @@ window.CASUSSEN = [
   {
    "id": "TODO_BART-N4",
    "vraag": "Sepsis is een concept: de melding 'Sepsis: de patiënt is ernstig ziek.' is niet uit de casus. Wat moet er in het spel gebeuren bij sepsis: alleen de melding, moet de episode eindigen, of moet Verwijzen dan de enige geldige reactie zijn? En welke klinische tekst hoort erbij?",
-   "gekozenLezing": "Alleen een melding en de toestand 'sepsis'; er is nog geen nieuwe veiligheidsregel en de episode gaat door.",
-   "plek": "E3.gebeurtenissen.S"
+   "gekozenLezing": "Bij sepsis eindigt de episode direct, aan het begin van de dag waarop de melding verschijnt. De uitkomst is 'verloren': geen score, geen profiel, de volgende episode gaat niet open, en de speler kan de episode opnieuw spelen. De melding 'Sepsis: de patiënt is ernstig ziek.' blijft staan. De uitkomst staat in de export in de kolom 'afloop'. De klinische tekst bij sepsis blijft een open punt; de concepttekst op het beoordelingsscherm staat als aparte vraag bij episode 3.",
+   "plek": "E3.gebeurtenissen.S",
+   "besluit": "Beslist door Bart op 14 november 2026: bij sepsis eindigt de episode direct en is ze verloren (geen score, geen profiel, de volgende episode gaat niet open, herkansing mogelijk)."
   },
   {
    "id": "TODO_BART-N2",
@@ -2461,7 +2465,8 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E2-18",
     vraag: "De ernst-volgorde van de invarianten (1 = ernstigst) is een voorstel van Claude en niet door Bart bevestigd: I5 = 2, I7 = 3, I6 en I8 = 4, I1 en I4 = 5. Klopt die volgorde?",
     gekozenLezing: "Ernst zoals in de vraag genoemd: I5 = 2; I7 = 3; I6 en I8 = 4; I1 en I4 = 5. Instelbaar in de data. Bij gelijke ernst verschijnt de vraag die in de data het eerst staat.",
-    plek: "E2.invarianten[].ernst"
+    plek: "E2.invarianten[].ernst",
+    besluit: "Beslist door Bart op 14 november 2026: akkoord met deze ernstvolgorde."
   },
   {
     id: "TODO_BART-E2-19",
@@ -2479,7 +2484,8 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E2-2",
     vraag: "De casus zegt bij I7: 'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3', en in de geldige route 'V5 + O2 (dag 2–4) + V6 (na dag 3)'. Er staat niet 'na V5'. Lezing A (gekozen): dag 1 van de kuur is de dag waarop trimethoprim start; O2 is op tijd op dag 2 t/m 4 van de kuur, dus op verschil 1 t/m 3 dagen na de startdag (V5 op dag 1: O2 op dag 2–4), en V6 halveren op dag 4 of later, dus op verschil vanaf 3. Lezing B: 'dag 2–4' is het verschil in dagen na de startdag, dus O2 op verschil 2 t/m 4 (V5 op dag 1: O2 op dag 3–5). Bij lezing B is de route 'V5 op dag 1, O2 op dag 2' te vroeg en dus fout. Welke lezing bedoel je?",
     gekozenLezing: "Lezing A: verschil in dagen ten opzichte van de dag waarop trimethoprim start (die dag zelf = 0): O2 op verschil 1 t/m 3 (V5 op dag 1: dag 2–4, de route uit de casus is dus speelbaar), V6 halveren op verschil vanaf 3 (dag 4 of later; vgl. de feedbackvraag 'Dag 4. Hoeveel trimethoprim klaren haar nieren nog?'). Start van trimethoprim = V5 gespeeld, of B1 (wisselen) naar V5. Lezing B staat in de vraag.",
-    plek: "E2.invarianten.I7"
+    plek: "E2.invarianten.I7",
+    besluit: "Beslist door Bart op 14 november 2026: lezing A is bevestigd. De startdag is dag 1 van de kuur; kalium op kuurdag 2 t/m 4, halveren vanaf kuurdag 4."
   },
   {
     id: "TODO_BART-E2-3",
@@ -2550,13 +2556,13 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E2-16",
     vraag: "Vroeg afronden vóór de kweekuitslag (gebeurtenis C) ontloopt I8: de uitslag is dan nog niet gemeld, dus het resistente middel telt niet als doorgelopen. Moet afronden pas kunnen nadat C geweest is (instelling 'afronden pas na de gebeurtenissen')?",
-    gekozenLezing: "De data blokkeert niets: I8 geldt alleen als C geweest is. De spelinstelling 'afronden pas na de gebeurtenissen' staat standaard uit (de speler mag vrij afronden, ook vóór C) en kan door de ontwikkelaar aan worden gezet; dan is I8 niet meer te ontlopen. Let op: C komt alleen als O1 gespeeld is.",
+    gekozenLezing: "Sinds casus 1.2 staat de instelling 'afronden pas na de gebeurtenissen' aan in alle episodes. Is Urinekweek inzetten gespeeld, dan kan de speler pas afronden nadat de kweekuitslag (C) binnen is; I8 is dan niet meer te ontlopen. Is Urinekweek inzetten niet gespeeld, dan komt er geen kweekuitslag en geldt I8 niet; de speler kan dan pas op de laatste dag afronden en schendt I6 (geen kweek vooraf) zodra er een antibioticum is gestart.",
     plek: "E2.invarianten.I8"
   },
   {
     id: "TODO_BART-E2-17",
     vraag: "I7 bij een middel dat al vóór dag 3 is vervangen (V5, dan B1 naar V4, O2 en V6 halveren op het al gestopte V5): de casus zegt 'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3'. Geldt I7 nog als trimethoprim niet 7 dagen loopt?",
-    gekozenLezing: "Strengste lezing: I7 geldt zodra V5 gestart is (ook als het middel later wordt vervangen), tenzij O2 en V6 halveren op tijd zijn gespeeld.",
+    gekozenLezing: "Sinds casus 1.2 geldt I7 alleen bij de 7-daagse kuur, dus zolang trimethoprim nog loopt. De kaliumcontrole (kuurdag 2 t/m 4) is alleen vereist als trimethoprim aan het einde van kuurdag 3 nog actief is; het halveren (vanaf kuurdag 4) alleen als het aan het einde van kuurdag 4 nog actief is. Wie trimethoprim op kuurdag 3 of eerder vervangt of stopt, krijgt geen schending, ook zonder kaliumcontrole en zonder halveren. Wie op kuurdag 4 vervangt of stopt, heeft wel de kaliumcontrole nodig, maar hoeft niet te halveren.",
     plek: "E2.invarianten.I7"
   },
   {
@@ -2599,7 +2605,7 @@ window.CASUSSEN[0].episodes.push({
       leeftijd: 79,
       klachten: "Cystitis, geen koorts.",
       medicatie: ["lisinopril", "spironolacton", "calcium/colecalciferol"],
-      medicatieTekst: "lisinopril, spironolacton (hypertensie), calcium/colecalciferol.",
+      medicatieTekst: "lisinopril, spironolacton, calcium/colecalciferol.",
       lab: { eGFR: 28, datum: "recent" },
       labTekst: "eGFR 28, recent."
     },
@@ -2609,7 +2615,7 @@ window.CASUSSEN[0].episodes.push({
       { id: "spironolacton", label: "spironolacton" },
       { id: "calcium", label: "calcium/colecalciferol" }
     ],
-    casusMedicatieregel: "lisinopril, spironolacton (hypertensie), calcium/colecalciferol.",
+    casusMedicatieregel: "lisinopril, spironolacton, calcium/colecalciferol.",
     meta: {
       risicogroep: "Risicogroep [NHG].",
       toelichting: "Wie spironolacton heeft gestart en waarom, staat er bewust niet op. Het leerpunt: als de nierfunctie daalt, kijk je niet alleen naar wat je nu voorschrijft, maar naar alles wat de patiënt al gebruikt. In de praktijk wordt dat vaak gemist.",
@@ -2680,7 +2686,14 @@ window.CASUSSEN[0].episodes.push({
       titel: "Sepsis",
       trigger: { type: "opTeller" },
       toestand: "sepsis",
-      tekst: "Sepsis: de patiënt is ernstig ziek."
+      tekst: "Sepsis: de patiënt is ernstig ziek.",
+      // Besluit Bart, 14 november 2026: bij sepsis eindigt de episode direct en is ze verloren. De tekst is een concept ter goedkeuring.
+      einde: {
+        uitkomst: "verloren",
+        concept: true,
+        tekst: "De casus is geëscaleerd. Mevrouw V. heeft sepsis en wordt met spoed verwezen. Deze episode is verloren.",
+        TODO_BART: "Concepttekst ter goedkeuring: bij sepsis toont het beoordelingsscherm 'De casus is geëscaleerd. Mevrouw V. heeft sepsis en wordt met spoed verwezen. Deze episode is verloren.' De melding op de tijdlijn blijft 'Sepsis: de patiënt is ernstig ziek.' Beide teksten staan niet in de casus. Keur je ze goed, of welke klinische tekst hoort bij sepsis?"
+      }
     },
     {
       id: "C",
@@ -2701,7 +2714,35 @@ window.CASUSSEN[0].episodes.push({
     }
   ],
   werkzaamheid: {
-    cystitis: { werkzaam: [{ kaart: "V4" }, { kaart: "V9" }], nietWerkzaam: [{ kaart: "V3" }, { kaart: "V5" }] },
+    // Besluit Bart, 14 november 2026: V8 is ook bij cystitis werkzaam; V7 ook, onder dezelfde voorwaarde als bij weefselinvasie.
+    cystitis: {
+      werkzaam: [
+        { kaart: "V4" },
+        { kaart: "V9" },
+        { kaart: "V8" },
+        {
+          kaart: "V7",
+          als: {
+            p: "of",
+            args: [{ p: "gespeeld", K: { kaart: "B4" } }, { p: "gespeeld", K: { kaart: "B3", doel: "calcium" } }]
+          }
+        }
+      ],
+      nietWerkzaam: [
+        { kaart: "V3" },
+        { kaart: "V5" },
+        {
+          kaart: "V7",
+          als: {
+            p: "niet",
+            arg: {
+              p: "of",
+              args: [{ p: "gespeeld", K: { kaart: "B4" } }, { p: "gespeeld", K: { kaart: "B3", doel: "calcium" } }]
+            }
+          }
+        }
+      ]
+    },
     weefselinvasie: {
       werkzaam: [
         { kaart: "V8" },
@@ -3083,7 +3124,8 @@ window.CASUSSEN[0].episodes.push({
               n: 2
             },
             { p: "binnenBeurten", K: { kaart: "N3" }, naGebeurtenis: "B", n: 2 },
-            { p: "binnenBeurten", K: { kaart: "Ev1" }, naGebeurtenis: "B", n: 2 }
+            // Besluit Bart, 14 november 2026: het opvolgmoment mag op de dag van B tot en met drie dagen daarna (n: 4 = vier dagen).
+            { p: "binnenBeurten", K: { kaart: "Ev1" }, naGebeurtenis: "B", n: 4 }
           ]
         }
       },
@@ -3115,7 +3157,7 @@ window.CASUSSEN[0].episodes.push({
   score: {
     TODO_BART: "Feedback 'O1 gespeeld' en 'Onnodig gewisseld' (en de duurzaamheidsregel 'wisselen terwijl het middel werkt') staan alleen bij episode 1 en 2; I1 en I4–I8 blijven in episode 3 gelden. Geldt dat ook voor deze feedback en deze score in episode 3?",
     duurzaamheid: {
-      casusTekst: "de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op.",
+      casusTekst: "de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op. Wie ciprofloxacine of amoxicilline/clavulaanzuur start terwijl de toestand nog cystitis is (nog geen weefselinvasie), schrijft buiten de richtlijn voor en verliest 1 punt duurzaamheid (ondergrens 1).",
       regels: [
         {
           als: { p: "en", args: [{ p: "gestart", middel: "V8" }, { p: "niet", arg: { p: "gestart", middel: "V7" } }] },
@@ -3128,8 +3170,11 @@ window.CASUSSEN[0].episodes.push({
           },
           punten: 3
         },
-        { als: { p: "gestart", middel: "V7" }, punten: 2 }
+        { als: { p: "gestart", middel: "V7" }, punten: 2 },
+        // Besluit Bart, 14 november 2026: V7 of V8 starten terwijl de toestand nog cystitis is (vóór de dag van A) is buiten de richtlijn: −1, ondergrens 1.
+        { als: { p: "gespeeld", K: { start: ["V7", "V8"], voorGebeurtenis: "A" } }, delta: -1 }
       ],
+      min: 1,
       TODO_BART: "Profielen en score in episode 3: wat gebeurt er bij routes zonder ciprofloxacine of amoxicilline/clavulaanzuur (bijvoorbeeld alleen fosfomycine of verwijzen), en welk profiel hoort bij ciprofloxacine met de-escalatie naar amoxicilline/clavulaanzuur?"
     },
     doelmatigheid: {
@@ -3190,6 +3235,15 @@ window.CASUSSEN[0].episodes.push({
       meta: { toelichting: "voor ciprofloxacine bij eGFR 10–30 geeft de NHG de normale keerdosis eenmaal per 24 uur [NHG]. Het Kompas past de dosis pas aan bij een klaring ≤ 15 [Kompas]. Beide zijn verdedigbaar; het wordt een feedbackmoment." },
       wanneer: "alleenBijGehaaldePoort",
       TODO_BART: "Feedbackvragen 'Automatische herstart' en 'Ciprofloxacine-dosis (bronconflict)': de casus noemt geen trigger en niet of ze ook bij een poortschending verschijnen."
+    },
+    {
+      // Besluit Bart, 14 november 2026. Geen vraag maar een opmerking (soort); de tekst is een concept ter goedkeuring.
+      trigger: { p: "gespeeld", K: { start: ["V7", "V8"], voorGebeurtenis: "A" } },
+      vraag: "Dit middel staat in de richtlijn niet bij een blaasontsteking.",
+      soort: "opmerking",
+      concept: true,
+      wanneer: "alleenBijGehaaldePoort",
+      TODO_BART: "Concepttekst ter goedkeuring: wie ciprofloxacine of amoxicilline/clavulaanzuur start terwijl de toestand nog cystitis is en de poort haalt, ziet de opmerking 'Dit middel staat in de richtlijn niet bij een blaasontsteking.' Die zin staat niet in de casus. Keur je hem goed of pas je hem aan?"
     }
   ],
   zichtbaarAlsOntbreekt: [
@@ -3271,7 +3325,8 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-1",
     vraag: "I9: de casus zegt 'geen O2 én geen Ev2' (schending alleen als beide ontbreken); bouwopdracht 6.1 zegt 'O2 of Ev2 ontbreekt'. Welke lezing geldt?",
     gekozenLezing: "Casus-lezing: I9 is geschonden als eGFR < 30 en zowel O2 als Ev2 op spironolacton ontbreken, of als B5 op spironolacton gespeeld is zonder eerdere Ev2 op spironolacton. Ev2 op lisinopril telt niet mee.",
-    plek: "E3.invarianten.I9"
+    plek: "E3.invarianten.I9",
+    besluit: "Beslist door Bart op 14 november 2026: bevestigd; een van beide (kalium bepalen of overleggen met de voorschrijver) volstaat, zolang er maar verantwoordelijkheid wordt genomen."
   },
   {
     id: "TODO_BART-E3-2",
@@ -3312,14 +3367,16 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-8",
     vraag: "Patiëntkaart: de casusregel luidt 'spironolacton (hypertensie)', terwijl de regel eronder zegt dat wie spironolacton startte en waarom bewust niet op de kaart staat. Mag de reden (hypertensie) zichtbaar zijn?",
-    gekozenLezing: "Meest letterlijke lezing: de casusregel staat verbatim op de patiëntkaart ('lisinopril, spironolacton (hypertensie), calcium/colecalciferol.'), dus mét '(hypertensie)'. Wie spironolacton startte en wanneer staat er niet (de medicatielijst noemt alleen de namen). Alternatief (didactische lezing): '(hypertensie)' weglaten zodat ook de reden niet zichtbaar is. Vraag aan Bart: welke van de twee?",
-    plek: "E3.patient.zichtbaar.medicatieTekst; E3.patient.casusMedicatieregel"
+    gekozenLezing: "De casusregel (versie 1.3) staat letterlijk op de patiëntkaart: 'lisinopril, spironolacton, calcium/colecalciferol.', zonder '(hypertensie)'. Wie spironolacton startte, wanneer en waarom staat er niet. In episode 1 blijft 'lisinopril (hypertensie).' staan.",
+    plek: "E3.patient.zichtbaar.medicatieTekst; E3.patient.casusMedicatieregel",
+    besluit: "Beslist door Bart op 14 november 2026: '(hypertensie)' achter spironolacton verdwijnt van de patiëntkaart van episode 3; in episode 1 blijft 'lisinopril (hypertensie)' staan."
   },
   {
     id: "TODO_BART-E3-9",
     vraag: "Werkzaamheid in episode 3 (bouwopdracht 6.3): niet genoemd zijn V7 en V8 bij cystitis en V5 bij weefselinvasie; V9 is 'wel werkzaam'.",
-    gekozenLezing: "Alleen wat in 6.3 staat is werkzaam (cystitis: V4; weefselinvasie: V8, en V7 alleen met B4 of B3 op calcium), plus V9 in beide toestanden; al het andere geldt als niet werkzaam. De toestand uitdroging heeft geen eigen tabel (cystitis of weefselinvasie geldt).",
-    plek: "E3.werkzaamheid"
+    gekozenLezing: "Werkzaam bij cystitis: V4, V8, en V7 alleen met B4 of B3 op calcium. Werkzaam bij weefselinvasie: V8, en V7 alleen met B4 of B3 op calcium. V9 is in beide toestanden werkzaam (maar schendt altijd I12); al het andere geldt als niet werkzaam (ook V5 bij weefselinvasie en V10 bij cystitis). De toestand uitdroging heeft geen eigen tabel (cystitis of weefselinvasie geldt). Wie V7 of V8 start terwijl de toestand nog cystitis is, verliest 1 punt duurzaamheid (ondergrens 1); de andere regels (I13, I14 enzovoort) blijven gelden.",
+    plek: "E3.werkzaamheid; E3.score.duurzaamheid",
+    besluit: "Beslist door Bart op 14 november 2026: amoxicilline/clavulaanzuur en ciprofloxacine (met calcium gescheiden of gestopt) zijn ook bij cystitis werkzaam; wie ze bij cystitis start, schrijft buiten de richtlijn voor en verliest 1 punt duurzaamheid."
   },
   {
     id: "TODO_BART-E3-10",
@@ -3355,7 +3412,8 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-15",
     vraag: "De ernst-volgorde van de invarianten is een voorstel van Claude (bouwopdracht 6.1) en niet door Bart bevestigd.",
     gekozenLezing: "Ernst overgenomen uit bouwopdracht 6.1: I12=1; I5, I10, I15=2; I7, I9, I13, I14, I16=3; I6, I8, I11=4; I1, I4=5. Instelbaar in de data.",
-    plek: "E3.invarianten[].ernst (markering op I4)"
+    plek: "E3.invarianten[].ernst (markering op I4)",
+    besluit: "Beslist door Bart op 14 november 2026: akkoord met deze ernstvolgorde."
   },
   {
     id: "TODO_BART-E3-16",
@@ -3379,7 +3437,8 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-19",
     vraag: "I7 in episode 3: wat betekent 'dag 2–4 na de start' en 'vanaf dag 3 na de start'?",
     gekozenLezing: "Lezing A (identiek aan episode 2): cursusdag = verschil in dagen t.o.v. de dag van de start van trimethoprim plus 1 (het anker zelf is verschil 0, cursusdag 1). Dus O2 op verschil 1 t/m 3 (cursusdag 2–4; casusroute V5 dag 1, O2 dag 2 slaagt) en V6 halveren op verschil 3 of meer (cursusdag 4 of later, vgl. feedback \"Dag 4.\"). Alternatief (lezing B, bouwopdracht 6.1: O2 op dag 2 t/m 4 na de start van V5): O2 op verschil 2 t/m 4, dan faalt de casusroute V5 dag 1, O2 dag 2.",
-    plek: "E3.invarianten.I7"
+    plek: "E3.invarianten.I7",
+    besluit: "Beslist door Bart op 14 november 2026: lezing A is bevestigd. De startdag is dag 1 van de kuur; kalium op kuurdag 2 t/m 4, halveren vanaf kuurdag 4."
   },
   {
     id: "TODO_BART-E3-20",
@@ -3408,8 +3467,9 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-24",
     vraag: "I15: de casus zegt bij I15 en bij Ev1 'monitoring binnen 1–3 dagen'; bouwopdracht 6.1 schrijft voor dat alle vier de sick day-maatregelen, dus ook Ev1, binnen 2 beurten na B komen. Welke lezing geldt?",
-    gekozenLezing: "Casus is de bron, maar de strengere lezing wordt aangehouden: alle vier de maatregelen (B3 op spironolacton, V6 halveren op lisinopril, N3, Ev1) binnen 2 beurten na B, dus op de dag van B of de dag erna (bouwopdracht 6.1). Alternatief (casus-lezing 'binnen 1–3 dagen'): Ev1 mag tot en met drie dagen na B (dB+3); dan geeft Ev1 op dB+2 of dB+3 nu ten onrechte I15. Vraag aan Bart: welke van de twee?",
-    plek: "E3.invarianten.I15 (Ev1-onderdeel); casus sectie 6 regels I15 en Ev1"
+    gekozenLezing: "Casus-lezing: Opvolgmoment afspreken (Ev1) mag op de dag van gebeurtenis B tot en met drie dagen daarna (dB t/m dB+3). De andere drie maatregelen (B3 op spironolacton, V6 halveren op lisinopril, N3) blijven binnen 2 beurten na B, dus op de dag van B of de dag erna.",
+    plek: "E3.invarianten.I15 (Ev1-onderdeel); casus sectie 6 regels I15 en Ev1",
+    besluit: "Beslist door Bart op 14 november 2026: het opvolgmoment mag op de dag van gebeurtenis B tot en met drie dagen daarna; de andere drie maatregelen blijven binnen 2 beurten."
   },
   {
     id: "TODO_BART-E3-25",
@@ -3422,6 +3482,19 @@ window.CASUSSEN[0].todoBart.push(
     vraag: "Mag de student de risicogroepmelding zien? De casus zet bij de patiëntkaart (bij het lab) de zin 'Risicogroep [NHG].' Die zin vertelt vooraf dat deze patiënt in de risicogroep valt. Mag hij bij de patiëntkaart getoond worden, of alleen in het overzicht voor de docent?",
     gekozenLezing: "Nee: de student ziet de risicogroepmelding niet. De zin staat in de data onder patient.meta.risicogroep (voor Bart en het overzicht); de student ziet alleen de kop, de klachten, de medicatie en het lab ('eGFR 28, recent.'). Alternatief: de zin wel bij de patiëntkaart tonen.",
     plek: "E3.patient.meta.risicogroep"
+  },
+  {
+    id: "TODO_BART-E3-27",
+    vraag: "Concepttekst ter goedkeuring: wie ciprofloxacine of amoxicilline/clavulaanzuur start terwijl de toestand nog cystitis is en de poort haalt, ziet de opmerking 'Dit middel staat in de richtlijn niet bij een blaasontsteking.' Die zin staat niet in de casus. Keur je hem goed of pas je hem aan?",
+    gekozenLezing: "De concepttekst staat letterlijk in de data en verschijnt alleen bij een gehaalde poort, onder 'Van je opleider'. 'Nog cystitis' betekent: gestart op een dag vóór de dag waarop de melding weefselinvasie verschijnt. De aftrek is eenmalig 1 punt, ook als beide middelen bij cystitis zijn gestart.",
+    plek: "E3.feedbackExtra; E3.score.duurzaamheid"
+
+  },
+  {
+    id: "TODO_BART-E3-28",
+    vraag: "Concepttekst ter goedkeuring: bij sepsis toont het beoordelingsscherm 'De casus is geëscaleerd. Mevrouw V. heeft sepsis en wordt met spoed verwezen. Deze episode is verloren.' De melding op de tijdlijn blijft 'Sepsis: de patiënt is ernstig ziek.' Beide teksten staan niet in de casus. Keur je ze goed, of welke klinische tekst hoort bij sepsis?",
+    gekozenLezing: "De concepttekst staat letterlijk in de data (gebeurtenis sepsis) en verschijnt bovenaan het beoordelingsscherm als de episode door sepsis is verloren, onder de melding 'Sepsis: de patiënt is ernstig ziek.'",
+    plek: "E3.gebeurtenissen.S.einde"
   }
 );
 }

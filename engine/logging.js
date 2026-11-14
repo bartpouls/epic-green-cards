@@ -2,7 +2,10 @@
 //
 // Per poging wordt bewaard (bouwopdracht 5, contract 6):
 //   { pseudoniem, casusId, episodeId, pogingnummer, eerstePoging, tijdlijn, onthuld,
-//     geschonden: [ids], score, profiel, tijdstempel }
+//     geschonden: [ids], score, profiel, tijdstempel, afloop, eindTekst }
+// - afloop (besluit Bart, 14 november 2026): "gehaald", "nietGehaald" of "verloren" (de episode eindigde door een gebeurtenis, bv.
+//   sepsis); eindTekst is de tekst die daarbij is getoond. De waarden komen uit de uitkomst van Evaluatie. In de CSV staat de afloop
+//   in woorden in een nieuwe, laatste kolom "afloop"; de bestaande kolommen zijn ongewijzigd. Oude records zonder afloop: lege cel.
 // - pogingnummer en eerstePoging worden HIER bepaald (niet door de aanroeper): het pogingnummer is het aantal
 //   al bewaarde pogingen van dezelfde pseudoniem + casus + episode, plus 1. Alleen pogingnummer 1 is de
 //   "eerste poging". Pseudoniem, casus en episode worden daarvoor genormaliseerd vergeleken (hoofdletters,
@@ -37,7 +40,8 @@
   var KOLOMMEN = ["pseudoniem", "episode", "poging", "eerste poging", "testmodus", "casusversie", "speltijdstip",
     "tijdlijn", "gebeurtenissen", "onthulde gegevens", "poort gehaald", "geschonden regels", "getoonde vraag",
     "score duurzaamheid", "score doelmatigheid", "profiel", "reflectievraag",
-    "labwaarden vóór voorschrijfkaart", "eerdere kweken vóór eerste keuze", "dagen zonder actie", "aantal dagen", "aantal kaarten"];
+    "labwaarden vóór voorschrijfkaart", "eerdere kweken vóór eerste keuze", "dagen zonder actie", "aantal dagen", "aantal kaarten", "afloop"];
+  var AFLOOP_TEKST = { gehaald: "gehaald", nietGehaald: "niet gehaald", verloren: "verloren" };
 
   var geheugen = [];
   var laatsteSchrijfOk = true;
@@ -135,7 +139,9 @@
       }),
       score: kopie(poging.score),
       profiel: kopie(poging.profiel),
-      tijdstempel: poging.tijdstempel || new Date().toISOString()
+      tijdstempel: poging.tijdstempel || new Date().toISOString(),
+      afloop: typeof poging.afloop === "string" && poging.afloop !== "" ? poging.afloop : null,
+      eindTekst: typeof poging.eindTekst === "string" && poging.eindTekst !== "" ? poging.eindTekst : null
     };
     lijst.push(rec);
     geheugen = kopie(lijst);
@@ -158,10 +164,13 @@
   }
   function verrijk(state, uitkomst) {
     var uit = { casusVersie: null, tijdlijnTekst: "", gebeurtenissen: [], onthuldTekst: "", poortGehaald: null, geschondenDetail: [],
-      vraag: null, reflectievraag: null, afgeleid: {}, dagen: null };
+      vraag: null, reflectievraag: null, afgeleid: {}, dagen: null, afloop: null, eindTekst: null };
     try {
       if (uitkomst && typeof uitkomst.poortGehaald === "boolean") uit.poortGehaald = uitkomst.poortGehaald;
       uit.vraag = (uitkomst && uitkomst.vraag) || null;
+      if (uitkomst && typeof uitkomst.afloop === "string") uit.afloop = uitkomst.afloop;
+      else if (typeof uit.poortGehaald === "boolean") uit.afloop = uit.poortGehaald ? "gehaald" : "nietGehaald";
+      uit.eindTekst = (uitkomst && uitkomst.einde && typeof uitkomst.einde.tekst === "string" && uitkomst.einde.tekst) || null;
       uit.reflectievraag = (uitkomst && uitkomst.profiel && uitkomst.profiel.reflectievraag) || null;
       uit.geschondenDetail = ((uitkomst && uitkomst.geschonden) || []).map(function (x) {
         return { id: x.id, naam: x.naam || null, onderdelen: Array.isArray(x.onderdelen) ? x.onderdelen.slice() : [] };
@@ -203,7 +212,7 @@
     return {
       casusVersie: extra.casusVersie, tijdlijnTekst: extra.tijdlijnTekst, gebeurtenissen: extra.gebeurtenissen, onthuldTekst: extra.onthuldTekst,
       poortGehaald: extra.poortGehaald, geschondenDetail: extra.geschondenDetail, vraag: extra.vraag, reflectievraag: extra.reflectievraag,
-      afgeleid: extra.afgeleid, dagen: extra.dagen,
+      afgeleid: extra.afgeleid, dagen: extra.dagen, afloop: extra.afloop, eindTekst: extra.eindTekst,
       pseudoniem: pseudoniem,
       casusId: state.casusId,
       episodeId: state.episodeId,
@@ -303,7 +312,8 @@
         celTekst(af.kweekenVoorKeuze),
         (typeof af.dagenZonderActie === "number" ? String(af.dagenZonderActie) : ""),
         (typeof p.dagen === "number" ? String(p.dagen) : ""),
-        String(tl.length)
+        String(tl.length),
+        celTekst(typeof p.afloop === "string" ? (AFLOOP_TEKST[p.afloop] || p.afloop) : "")
       ].join(SCHEIDER));
     });
     return BOM + regels.join("\r\n") + "\r\n";

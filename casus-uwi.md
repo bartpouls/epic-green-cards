@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Casus-id | `uwi-eerstelijn` |
-| Versie | 1.2 — 12 oktober 2026 — bron: Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
+| Versie | 1.3 — 14 november 2026 — bron: besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
 | Functie | Tutorialcasus: leert het spel én de signatuurvaardigheid |
 | Signatuurvaardigheid | Veranderende context: empirisch starten → bijsturen op de kweek → nierfunctie en comedicatie |
 | Klinische validatie | Voorschrijven en wat daarna komt: Bart Pouls (gevalideerd). Diagnostiek en klinische context: nog voorleggen aan een huisarts |
@@ -241,7 +241,7 @@ Alles uit episode 1, plus V6, B1 en B2.
 
 ### Patiëntkaart
 - **Mevrouw V., 79 jaar** (1 jaar na episode 2). Cystitis, geen koorts.
-- **Medicatie:** lisinopril, spironolacton (hypertensie), calcium/colecalciferol.
+- **Medicatie:** lisinopril, spironolacton, calcium/colecalciferol.
   - Wie spironolacton heeft gestart en waarom, staat er bewust niet op. Het leerpunt: als de nierfunctie daalt, kijk je niet alleen naar wat je nu voorschrijft, maar naar alles wat de patiënt al gebruikt. In de praktijk wordt dat vaak gemist.
 - **Lab:** eGFR 28, recent. Risicogroep [NHG].
 - **Verborgen achter G3:** de kweek uit episode 2, met trimethoprim resistent. Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG].
@@ -296,7 +296,7 @@ De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.
 | I16 | Geen contact binnen 48 uur, of geen verwijzing als ze dan niet beter is | Met A | NHG |
 
 ### Score
-- **Duurzaamheid:** de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op.
+- **Duurzaamheid:** de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op. Wie ciprofloxacine of amoxicilline/clavulaanzuur start terwijl de toestand nog cystitis is (nog geen weefselinvasie), schrijft buiten de richtlijn voor en verliest 1 punt duurzaamheid (ondergrens 1).
 - **Doelmatigheid:** G3 gebruiken vóór de eerste keuze levert punten op.
 
 ### Wat er zichtbaar wordt als een kaart ontbreekt
@@ -324,7 +324,8 @@ De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.
 ## 7. Spelregels die de casus veronderstelt
 
 **Poort en score:**
-- Veiligheid is een poort. Bij een schending geeft het spel geen score, toont de downside en stelt één Socratische vraag over de ernstigste schending. Daarna volgt een herkansing.
+- Veiligheid is een poort. Bij een schending geeft het spel geen score en toont de downside. De gevolgen bij de patiënt zijn leidend: eerst komen de zinnen uit "Wat er zichtbaar wordt als een kaart ontbreekt" van alle geschonden regels die zo'n zin hebben, daarna één hint van de opleider: de Socratische vraag over de ernstigste schending, als collegiale hint. Daarna volgt een herkansing.
+- Bij sepsis eindigt de episode direct. De uitkomst is "verloren": geen score, geen profiel, de volgende episode gaat niet open, en een herkansing is mogelijk.
 - Wie de poort haalt, ziet de score per as, het voorschrijfprofiel en één reflectievraag.
 - Score-assen:
   - **Duurzaamheid:** geen antibioticum, of de kortste en smalste effectieve behandeling; niet onnodig wisselen; de-escaleren na de kweek.
@@ -360,3 +361,18 @@ Bron: Bart, speltest 12 oktober 2026.
 - **Uitgesteld recept (V2):** doelkaart; de speler kiest het middel dat de patiënt thuis start.
 - **Uitleg (N2):** koppelt aan het actieve middel.
 - **Afronden:** niet toegestaan zolang er nog gebeurtenissen aankomen of de dagen niet om zijn.
+
+---
+
+## 10. Wijzigingen in versie 1.3
+
+Bron: besluiten Bart, 14 november 2026.
+
+- **Kaliumregel trimethoprim (I7):** bevestigd. De startdag is dag 1 van de kuur. Kaliumcontrole telt op kuurdag 2 t/m 4; halveren vanaf kuurdag 4.
+- **Lisinopril + spironolacton bij eGFR < 30 (I9):** bevestigd. Een van beide volstaat, zolang er verantwoordelijkheid wordt genomen: O2 (kalium bepalen) óf Ev2 (overleggen met de voorschrijver, over spironolacton). Pas een schending als beide ontbreken, of bij B5 op spironolacton zonder eerst Ev2.
+- **Monitoring na de sick day (I15):** Ev1 (opvolgmoment afspreken) mag op de dag van gebeurtenis B tot en met drie dagen daarna ("monitoring binnen 1–3 dagen"). Spironolacton stoppen, lisinopril halveren en het drinkadvies blijven: op de dag van B of de dag erna.
+- **Werkzaamheid bij cystitis in episode 3:** amoxicilline/clavulaanzuur is ook bij cystitis werkzaam. Ciprofloxacine ook, onder dezelfde voorwaarde als bij weefselinvasie (gescheiden van calcium met B4, of calcium gestopt met B3). De andere regels (I13, I14 enzovoort) blijven onverkort gelden. Wie een van deze twee middelen start terwijl de toestand nog cystitis is, schrijft buiten de richtlijn voor en verliest 1 punt duurzaamheid (ondergrens 1); zie de score in sectie 6.
+- **Sepsis:** bij sepsis eindigt de episode direct. De uitkomst is "verloren": geen score, geen profiel, de volgende episode gaat niet open, en een herkansing is mogelijk. De klinische tekst bij sepsis is nog een open punt.
+- **Ernstvolgorde van de invarianten:** akkoord.
+- **Patiëntkaart episode 3:** "(hypertensie)" achter spironolacton is vervallen. In episode 1 blijft "lisinopril (hypertensie)" staan.
+- **Terugkoppeling bij een schending:** de gevolgen bij de patiënt zijn leidend. Eerst de zinnen uit "Wat er zichtbaar wordt als een kaart ontbreekt" van alle geschonden regels die zo'n zin hebben, daarna één collegiale hint van de opleider: de vraag bij de ernstigste schending, ongewijzigd. Regels zonder zo'n zin krijgen er nog een van Bart.

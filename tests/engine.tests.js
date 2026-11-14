@@ -133,7 +133,7 @@
   ];
   var TOEGESTANE_EIGENSCHAPPEN = [
     // contract- en state-velden
-    "AB", "CASUSSEN", "aan", "dagen", "escalatie", "doelEvent", "stappen", "nummer", "reeks", "aankondiging", "Engine", "Evaluatie", "Predicaten", "_casus", "_opties", "aantalDagen", "actief", "actiesOver", "actiesPerBeurt", "afgerond",
+    "AB", "CASUSSEN", "aan", "dagen", "einde", "escalatie", "doelEvent", "stappen", "nummer", "reeks", "aankondiging", "Engine", "Evaluatie", "Predicaten", "_casus", "_opties", "aantalDagen", "actief", "actiesOver", "actiesPerBeurt", "afgerond",
     "afrondenPasNaGebeurtenissen", "alleenAlsGespeeld", "als", "antibiotica", "beoordeel", "bronnen", "casusId", "dag", "dagenVoorbij", "doel", "doelen",
     "doelkaart", "episodeId", "episodes", "evalueer", "gebeurtenissen", "geschonden", "gevoelig", "groep", "groepen", "id", "kaart", "kaarten",
     "klachten", "knoppen", "label", "limiet", "maakContext", "naVolg", "onthuld", "onthult", "optie", "opties", "patient", "poortGehaald", "raadplegen",
@@ -1152,8 +1152,11 @@
     var e = ep(c, "E3");
     var sleutels = Object.keys(e.werkzaamheid).filter(function (k) { return k !== "statusTeksten" && k.indexOf("TODO_BART") !== 0; });
     T.waar(sleutels.length >= 2, "twee toestanden met werkzaamheid in E3");
+    // Casus 1.3 (besluit Bart, 14 november 2026): V8 is ook bij cystitis werkzaam. V10 heeft bij cystitis geen entry en is dus niet werkzaam.
     var s = spel(c, "E3"); iedereen(s, ["V8", "|"]);
-    T.is(s.klachten[2].status, "aan", "V8 in cystitis (geen entry) is nog niet werkzaam");
+    T.is(s.klachten[2].status, "af", "V8 is ook bij cystitis werkzaam");
+    var t = spel(c, "E3"); iedereen(t, ["V10", "|"]);
+    T.is(t.klachten[2].status, "aan", "V10 in cystitis (geen entry) is niet werkzaam");
   });
 
   echt("E3: hele reis speelt door met de echte regeltaal zonder uitzondering (willekeurige zetten, vaste rng)", function (c) {
