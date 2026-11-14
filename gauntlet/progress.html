@@ -116,7 +116,7 @@
     document.head.appendChild(s);
   }
   function todoLijst() {
-    var c = window.CASUSSEN && window.CASUSSEN[0], gr = window.TODO_BART_GROEPEN || [], todo = (c && c.todoBart) || [], html = '';
+    var c = window.CASUSSEN && window.CASUSSEN[0], gr = window.TODO_BART_GROEPEN || [], todo = ((c && c.todoBart) || []).concat.apply((c && c.todoBart) || [], ((c && c.episodes) || []).map(function (e) { return e.todoBart || []; })), html = '';
     if (!c) { $('todo').innerHTML = '<div class="empty">casussen/uwi.js niet gevonden.</div>'; return; }
     gr.forEach(function (g) {
       var items = g.vast ? g.vast : (g.ids || []).map(function (id) {
@@ -128,7 +128,7 @@
     });
     var gelijst = {}; gr.forEach(function (g) { (g.ids || []).forEach(function (i) { gelijst[i] = true; }); });
     var rest = todo.filter(function (t) { return !gelijst[t.id]; });
-    html += '<p class="sub">Daarnaast staan er nog ' + rest.length + ' kleinere vragen in de data (<code>casus.todoBart</code>); ze zijn zichtbaar in <code>tools/overzicht.html</code>.</p>';
+    html += '<p class="sub">Bij de overige ' + rest.length + ' vragen blijft de gekozen lezing staan. Ze zijn zichtbaar in <code>tools/overzicht.html</code>.</p>';
     $('todo').innerHTML = html;
   }
   function laadTodo() {
