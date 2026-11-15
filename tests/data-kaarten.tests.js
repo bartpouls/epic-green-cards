@@ -265,13 +265,15 @@
   // Sleutelverzamelingen: geen stray velden (bv. "aanbevolen": true) op kop, kaarten, doelen, opties of raadplegen.
   Test.registreer(G, "K0 exacte sleutelverzamelingen: kop, kaarten, doelen, opties en raadplegen hebben geen onbekende velden", function () {
     function sleutels(o) { return Object.keys(o).sort(); }
-    Test.gelijk(sleutels(casus()), ["bronnen","episodes","gevolgzinnen","id","kaarten","limiet","maten","raadplegen","referentie","regelnamen","rollen","titel","todoBart","versie"], "casuskop");
+    // "markeringen" (eindcontrole PR 1, F7): de markering [G] uit de casuskop, zodat de weergave bronmarkeringen generiek kan weglaten.
+    Test.gelijk(sleutels(casus()), ["bronnen","episodes","gevolgzinnen","id","kaarten","limiet","markeringen","maten","raadplegen","referentie","regelnamen","rollen","titel","todoBart","versie"], "casuskop");
     var basis = ["bron","categorie","doelen","doelkaart","downside","effect","id","label","opties","vanafEpisode"];
     casus().kaarten.forEach(function (k) {
       var verwacht = basis.slice();
       verwacht.push("smaak");
       if (["V3","V4","V5","V7","V8","V9","V10"].indexOf(k.id) >= 0) verwacht.push("dosering", "uitleg");
       if (k.id === "N2") verwacht.push("uitlegVanDoel");
+      if (k.id === "G1") verwacht.push("toontMedicatie");   // eindcontrole PR 1, F5: G1 toont na het spelen de medicatielijst van de patiënt
       if (REF_TODO_PLEKKEN["kaarten." + k.id]) verwacht.push("TODO_BART");
       if (k.id === "O1" || k.id === "Ev1") verwacht.push("limiet");
       Test.gelijk(sleutels(k), verwacht.sort(), k.id + " sleutels");

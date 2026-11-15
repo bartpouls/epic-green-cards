@@ -85,6 +85,8 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
     await page.fill("#pseudoniem", "playtest"); await page.click("#btn-start");
     await page.waitForSelector("[data-start]");
     check("episodes: E2 en E3 zijn vergrendeld voor de eerste poging", await page.locator('[data-start="E2"]').isDisabled() && await page.locator('[data-start="E3"]').isDisabled());
+    // Eindcontrole PR 1, F8: zonder ?docent in de adresregel is er geen testmodus (en geen vinkje).
+    check("episodes: zonder ?docent geen vinkje 'Testmodus'", (await page.locator("#testmodus").count()) === 0 && !/Testmodus/.test(await page.textContent("main")));
 
     /* ---------------- Episode 1 ---------------- */
     await metEpisode(page, "E1");
@@ -163,7 +165,8 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
     await rondAf(page);
     u = await uitslag(page);
     check("E3 geldige route: poort gehaald, profiel Kweekgestuurd", /Veiligheid gehaald/.test(u.kop) && u.profiel === "Kweekgestuurd", JSON.stringify(u));
-    check("E3 geldige route: dagen zonder actie zijn zichtbaar", /Dagen zonder actie: \d+ van \d+/.test(u.lege || ""));
+    // Eindcontrole PR 1, F6: "Dagen zonder actie" staat niet meer op het beoordelingsscherm (wel in de export).
+    check("E3 geldige route: geen 'Dagen zonder actie' op het beoordelingsscherm", !u.lege && !/Dagen zonder actie/.test(await page.textContent("main")));
     check("E3 geldige route: geen 'Volgende episode' na de laatste episode", await page.locator("#btn-volgende-episode").count() === 0 && await page.locator("#btn-terug").count() === 1);
     await foto(page, "e3-gehaald");
 
@@ -197,6 +200,15 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
       check("export: de afloop staat erin (laatste kolom 'afloop'; de sepsis-poging is 'verloren')", regels[0].endsWith(";afloop") && regels[regels.length - 1].endsWith(";verloren") && js[js.length - 1].afloop === "verloren" && js.filter(p => p.afloop === "gehaald").length === 3);
       check("export CSV: tijdlijn in woorden", /Dag 1: Recente labwaarden opvragen/.test(csv) && /Dag \d+: Antibioticum wisselen → Amoxicilline\/clavulaanzuur/.test(csv));
     }
+    /* ---------------- testmodus alleen met ?docent (eindcontrole PR 1, F8) ---------------- */
+    const docent = await ctx.newPage();
+    docent.on("console", m => { if (m.type() === "error") problemen.push("console (docent): " + m.text()); });
+    docent.on("pageerror", e => problemen.push("pagina (docent): " + e.message));
+    await docent.goto(URL + "?docent");
+    await docent.fill("#pseudoniem", "docenttest"); await docent.click("#btn-start");
+    await docent.waitForSelector("[data-start]");
+    check("episodes: met ?docent staat het vinkje 'Testmodus' er wel", (await docent.locator("#testmodus").count()) === 1);
+    await docent.close();
   } catch (e) {
     rood++; console.log("SCRIPTFOUT " + (e && e.message || e));
     await foto(page, "scriptfout").catch(() => {});

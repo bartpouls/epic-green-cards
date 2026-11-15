@@ -170,6 +170,17 @@ p.fout:empty { display: none; }
 .klachtlijst li.huidig { background: var(--papier-2); font-weight: 600; }
 .klachtlijst .dagnr { color: var(--zacht); font-variant-numeric: tabular-nums; }
 .klachtwaarschuwing { display: block; color: #6b4300; font-weight: 600; }
+.klachtlijst .klachttekst.leeg { color: var(--zacht); }
+/* Medicatie: actuele status per aangepast middel, onder de medicatieregel */
+.medstatus { display: block; margin-top: 4px; }
+.medregel { display: block; padding: 2px 8px; border-left: 4px solid var(--accent); background: var(--papier-2); border-radius: 4px; margin-top: 3px; font-weight: 600; }
+.medlabel { font-weight: 400; }
+/* Gebeurtenissen sinds de start */
+.sindsstart { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--papier-lijn); }
+.sindsstart h3 { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--zacht); margin-bottom: 6px; }
+.sindsstart ul { list-style: none; padding: 0; display: grid; gap: 4px; font-size: .9rem; }
+.sindsstart li { display: grid; grid-template-columns: 3.6em 1fr; gap: 6px; padding: 2px 6px; border-radius: 4px; background: #fbefe0; }
+.sindsstart .dagnr { color: var(--zacht); font-variant-numeric: tabular-nums; }
 
 /* ---------- vandaag ---------- */
 .vandaag { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start; }

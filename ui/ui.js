@@ -3,8 +3,13 @@
  * Regels voor deze laag:
  *  - Alle klinische tekst komt uit de data (casus-object) of uit de uitkomst van Evaluatie; hier staan alleen korte
  *    bedieningsteksten (knoppen, uitleg). Geen middelnamen, kaart-id's of klinische drempels.
- *  - Voor het spelen toont een kaart ALLEEN categorie (de kop waaronder hij staat) en label. Effect, downside en bron
- *    komen nooit in de pagina vóór het spelen; downsides pas in het evaluatiescherm.
+ *  - Voor het spelen toont een kaart ALLEEN categorie (de kop waaronder hij staat) en label, op de hand én in het kaartvenster.
+ *    Effect, dosering, smaakregel, doelenlijst, downside en bron komen nooit in de pagina vóór het spelen (D2/D3: niets verklapt
+ *    vooraf wat goed is). Het effect (wat de kaart onthult) verschijnt pas na het spelen, op de tijdlijn; downsides pas in het
+ *    evaluatiescherm. De smaakregels (concept, niet gekeurd) worden nergens getoond.
+ *  - Bronmarkeringen tussen vierkante haken ([G] en de codes uit casus.bronnen) en een episodecode vooraan ("E1: ") worden in alle
+ *    getoonde tekst weggelaten (zie schoneTekst); de data blijft letterlijk. Het docentenoverzicht (tools/overzicht.html) toont ze wel.
+ *  - De testmodus is alleen te kiezen als de pagina met ?docent in de adresregel is geopend.
  *  - De patiëntkaart toont alleen state.zichtbaar (kop, klachten, medicatie, lab, eerdere gegevens). Nooit `meta`, `waar`
  *    of TODO_BART.
  *  - Predicaten worden niet zelf gelezen: toegestane doelen komen via Predicaten.evalueer (zelfde regel als de engine).
@@ -20,7 +25,7 @@
   // Bedieningsrondleiding aan het begin van de eerste episode (concepttekst voor Bart, geen klinische inhoud).
   var RONDLEIDING = [
     { titel: "De patiëntkaart", tekst: "Links zie je de patiënt. Sommige gegevens zie je pas nadat je een kaart hebt gespeeld." },
-    { titel: "Je kaarten", tekst: "In het midden liggen je kaarten, per soort. Klik op een kaart om hem eerst te lezen." },
+    { titel: "Je kaarten", tekst: "In het midden liggen je kaarten, per soort. Klik op een kaart om hem te openen." },
     { titel: "De knop Speel", tekst: "Pas met de knop Speel in het kaartvenster speel je de kaart. Sommige kaarten vragen daarna om een keuze." },
     { titel: "Acties en dagen", tekst: "Elke dag heb je een aantal acties. Een kaart spelen kost een actie. Een gespeelde kaart komt rechts op de tijdlijn. Met Volgende dag ga je een dag verder." },
     { titel: "Een poging", tekst: "Aan het eind van de episode krijg je een beoordeling. Eén keer een episode spelen is een poging; je mag opnieuw proberen." }
@@ -32,7 +37,7 @@
     ["medicatieTekst", "Medicatie"],
     ["labTekst", "Lab"],
     ["eerdereUWI", "Eerdere UWI"],
-    ["eerdereKweek", "Eerdere kweek"]
+    ["eerdereKweek", null]                            // het kopje staat in de data (bedieningslabel bij de onthulling)
   ];
 
   /* ====================================================================== */
@@ -173,12 +178,17 @@
     return typeof t === "string" && t !== "" ? t : null;
   }
 
-  // Tekst na het spelen: de onthulling (als de kaart iets onthulde), bij een kaart met uitlegVanDoel de uitleg van het gekozen middel,
+  // Tekst na het spelen: de onthulling (als de kaart iets onthulde), bij een kaart die de medicatielijst toont (toontMedicatie in de data)
+  // die lijst zoals hij was toen de kaart gespeeld werd, bij een kaart met uitlegVanDoel de uitleg van het gekozen middel,
   // anders effect[episode] ?? effect.alle, anders niets.
   function naSpelenTekst(casus, ep, state, kaartId, doel) {
     var onthuld = lijst(state.onthuld).filter(function (o) { return o.kaart === kaartId; }).map(function (o) { return o.tekst; });
     if (onthuld.length) return { soort: "onthuld", tekst: onthuld.join(" ") };
     var k = kaartVan(casus, kaartId);
+    if (k && k.toontMedicatie) {
+      var ml = medicatieLijstTekst(casus, ep, state, kaartId);
+      if (ml) return { soort: "onthuld", tekst: ml };
+    }
     if (k && k.uitlegVanDoel && doel) {
       var dk = kaartVan(casus, doel);
       if (dk && typeof dk.uitleg === "string" && dk.uitleg !== "") return { soort: "effect", tekst: dk.uitleg };
@@ -207,13 +217,100 @@
     return { id: id, tekst: tekst, titel: titel && tekst.indexOf(titel) !== 0 ? titel : null };
   }
 
-  // "Klachten houden aan: dag 1, 2, 3." als de escalatie aan staat en de klachten aanhouden; anders null. De tekst staat in de data.
+  // "Klachten houden aan: dag 3, 4, 5." als de escalatie aan staat en de klachten aanhouden; anders null. De tekst staat in de data.
+  // De getallen zijn de echte dagen waarop de klachten aanhielden: de `reeks` volle dagen vóór de dag van kl (zo telt de engine).
   function aanhoudendTekst(ep, kl) {
     var ec = ep && ep.escalatie, n = kl && kl.reeks;
     if (!ec || !ec.aan || !ec.waarschuwing || !(n > 0)) return null;
-    var dagen = [];
-    for (var i = 1; i <= n; i++) dagen.push(i);
+    var dagen = [], d = kl && typeof kl.dag === "number" ? kl.dag : n + 1;
+    for (var i = d - n; i < d; i++) dagen.push(i);
     return ec.waarschuwing + " " + dagen.join(", ") + ".";
+  }
+
+  function statusTekstenVan(ep) { return (ep && (ep.statusTeksten || (ep.werkzaamheid && ep.werkzaamheid.statusTeksten))) || {}; }
+
+  // Klachten per dag op de patiëntkaart: precies één regel per verstreken dag (dag 1 tot en met de huidige), nieuwste bovenaan.
+  // Tekst: de klachtenstatus uit de data; zonder status maar met aanhoudende klachten (escalatie) de statustekst voor "houden aan" uit de
+  // data; anders null (de weergave toont dan een streepje). Geen extra waarschuwingsregels.
+  function klachtenPerDag(ep, state) {
+    var uit = [], aan = statusTekstenVan(ep).aan;
+    for (var d = 1; d <= state.dag; d++) {
+      var kl = lijst(state.klachten)[d], tekst = kl && kl.tekst ? kl.tekst : null;
+      if (!tekst && kl && kl.reeks > 0 && typeof aan === "string" && aan !== "") tekst = aan;
+      uit.push({ dag: d, huidig: d === state.dag, tekst: tekst });
+    }
+    return uit.reverse();
+  }
+
+  // Gebeurtenissen sinds de start (oudste eerst), met de tekst uit de data: voor de patiëntkaart onder "Nieuw sinds de start".
+  function gebeurtenissenSindsStart(ep, state) {
+    return lijst(state.gebeurtenissen).slice().sort(function (a, b) { return a.dag - b.dag; }).map(function (x) {
+      return { id: x.id, dag: x.dag, tekst: gebeurtenisTekst(ep, x.id) };
+    }).filter(function (x) { return x.tekst; });
+  }
+
+  /* ---------- medicatie: actuele status per middel (alleen lezen) ---------- */
+  // Per middel van de patiënt (ep.patient.medicatie): de status na de kaarten die op dat middel zijn gespeeld. Gepauzeerd komt uit de
+  // regeltaal (Predicaten, predicaat medicatieActief op de speltoestand); de gekozen aanpassing is de optietekst uit de data; "hervat" en
+  // "gepauzeerd" zijn bedieningswoorden. De rollen (pauzeer, hervat) staan in de data. Met opKaart: de stand op het moment dat die
+  // kaart (voor het eerst) gespeeld werd.
+  function medicatieStatus(casus, ep, state, opKaart) {
+    var rl = isObj(casus && casus.rollen) ? casus.rollen : {}, meds = lijst(ep && ep.patient && ep.patient.medicatie);
+    var rijen = lijst(state && state.tijdlijn).slice().sort(function (a, b) { return a.volg - b.volg; }), grens = null, ctx = null;
+    if (opKaart) rijen.forEach(function (r) { if (grens === null && r.kaart === opKaart) grens = r.volg; });
+    if (grens !== null) rijen = rijen.filter(function (r) { return r.volg <= grens; });
+    return meds.map(function (m) {
+      var eigen = rijen.filter(function (r) { return r.doel === m.id; }), dosis = null, hervat = false, gepauzeerd = false;
+      eigen.forEach(function (r) {
+        if (r.optie) dosis = r.optie;
+        if (r.kaart === rl.pauzeer) hervat = false;
+        if (r.kaart === rl.hervat) hervat = true;
+      });
+      if (eigen.some(function (r) { return r.kaart === rl.pauzeer; })) {
+        ctx = ctx || g.Predicaten.maakContext(casus, ep, state);
+        var pred = { p: "medicatieActief", id: m.id };
+        if (grens !== null) pred.op = { naKaart: { kaart: opKaart } };
+        gepauzeerd = !g.Predicaten.evalueer(pred, ctx);
+      }
+      var delen = [];
+      if (dosis) delen.push(dosis);
+      if (gepauzeerd) delen.push("gepauzeerd");
+      else if (hervat) delen.push("hervat");
+      return { id: m.id, label: m.label, status: delen.length ? delen.join(", ") : null };
+    });
+  }
+
+  // De medicatielijst als één regel ("Medicatie: a, b (gepauzeerd), c."), of null als de patiënt geen medicatie in de data heeft.
+  function medicatieLijstTekst(casus, ep, state, opKaart) {
+    var st = medicatieStatus(casus, ep, state, opKaart);
+    if (!st.length) return null;
+    return "Medicatie: " + st.map(function (m) { return m.label + (m.status ? " (" + m.status + ")" : ""); }).join(", ") + ".";
+  }
+
+  /* ---------- getoonde tekst zonder bronmarkeringen ---------- */
+  // Codes tussen vierkante haken die als bronmarkering dienen: de sleutels van casus.bronnen en casus.markeringen (uit de data).
+  // Een episodecode vooraan ("E1: ") komt uit de episode-id's van de casus. De data zelf blijft letterlijk.
+  var schoonCache = { casus: null, bron: null, ep: null };
+  function schoonRegex(casus) {
+    if (schoonCache.casus === casus && schoonCache.aantal === lijst(casus && casus.episodes).length) return schoonCache;
+    function esc(x) { return String(x).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+    var codes = [];
+    [casus && casus.bronnen, casus && casus.markeringen].forEach(function (o) { if (isObj(o)) Object.keys(o).forEach(function (c) { if (c) codes.push(esc(c)); }); });
+    var eps = lijst(casus && casus.episodes).map(function (e) { return e && e.id ? esc(e.id) : null; }).filter(Boolean);
+    var code = "(?:" + codes.join("|") + ")";
+    schoonCache = {
+      casus: casus, aantal: lijst(casus && casus.episodes).length,
+      bron: codes.length ? new RegExp("\\s*\\[\\s*" + code + "(?:\\s*,\\s*" + code + ")*\\s*\\]", "g") : null,
+      ep: eps.length ? new RegExp("^\\s*(?:" + eps.join("|") + "):\\s+") : null
+    };
+    return schoonCache;
+  }
+  function schoneTekst(casus, tekst) {
+    if (typeof tekst !== "string" || !casus) return tekst;
+    var r = schoonRegex(casus), t = tekst;
+    if (r.bron) t = t.replace(r.bron, "");
+    if (r.ep) t = t.replace(r.ep, "");
+    return t;
   }
 
   // Tijdlijn: voor elke dag tot en met de huidige: banners, klachtenstatus, gespeelde kaarten en raadplegingen.
@@ -238,12 +335,24 @@
   }
 
   // Wat de patiëntkaart nu toont: alleen state.zichtbaar, in vaste volgorde; `nieuw` als het veld door een kaart is onthuld of aangepast.
+  // Het kopje van een veld: vast (bediening) of, bij een veld dat een kaart onthult, het `kopje` uit de data bij die onthulling.
+  function kopjeVan(ep, sleutel, vast) {
+    if (vast) return vast;
+    var l = lijst(ep && ep.patient && ep.patient.verborgen);
+    for (var i = 0; i < l.length; i++) {
+      var v = l[i], kp = v && v.kopje;
+      if (!kp || (v.sleutel !== sleutel && !(isObj(v.zichtbaar) && Object.prototype.hasOwnProperty.call(v.zichtbaar, sleutel)))) continue;
+      if (typeof kp === "string") return kp;
+      if (isObj(kp) && typeof kp.tekst === "string") return kp.tekst;
+    }
+    return null;
+  }
   function patientVelden(ep, state) {
     var z = state.zichtbaar || {}, start = (ep.patient && ep.patient.zichtbaar) || {}, uit = [];
     DOELVELDEN.forEach(function (v) {
       var tekst = z[v[0]];
       if (typeof tekst !== "string" || tekst === "") return;
-      uit.push({ sleutel: v[0], kopje: v[1], tekst: tekst, nieuw: start[v[0]] !== tekst });
+      uit.push({ sleutel: v[0], kopje: kopjeVan(ep, v[0], v[1]), tekst: tekst, nieuw: start[v[0]] !== tekst });
     });
     return uit;
   }
@@ -369,7 +478,8 @@
     if (kind === null || kind === undefined || kind === false) return;
     if (Array.isArray(kind)) { kind.forEach(function (k) { voeg(el, k); }); return; }
     if (typeof kind === "object") { el.appendChild(kind); return; }
-    el.appendChild(doc.createTextNode(String(kind)));
+    // Alle getoonde tekst zonder bronmarkeringen en zonder episodecode vooraan (de data blijft letterlijk).
+    el.appendChild(doc.createTextNode(schoneTekst(app && app.casus, String(kind))));
   }
   function h(tag, attrs) {
     var el = doc.createElement(tag);
@@ -434,6 +544,11 @@
   }
   function wisSpel() {
     try { var o = lokaleOpslag(); if (o && typeof o.removeItem === "function") o.removeItem(SPEL_SLEUTEL); } catch (e) { /* niets te wissen */ }
+  }
+
+  // De testmodus (voor de docent) is alleen te kiezen als de pagina met ?docent in de adresregel is geopend (werkt ook via file://).
+  function docentModus() {
+    try { var l = g.location; return !!l && /[?&]docent(?:[=&]|$)/.test(String(l.search || "")); } catch (e) { return false; }
   }
 
   function nieuweApp() {
@@ -627,6 +742,7 @@
   function kiesScherm() {
     var records = [];
     try { records = g.Logging.alle(); } catch (e) { records = []; }
+    if (!docentModus()) app.testmodus = false;   // zonder ?docent geen testmodus (een hervat testspel houdt zijn eigen markering)
     var overzicht = episodeOverzicht(app.casus, app.pseudoniem, records, app.testmodus);
     var bewaard = leesSpel(app.pseudoniem);
     return h("main", { klasse: "smal" },
@@ -642,9 +758,9 @@
         h("p", { klasse: "dlgknoppen" },
           knop("Hervat", { id: "btn-hervat", klasse: "knop hoofd" }, function () { hervatSpel(bewaard); }),
           knop("Verwijder opgeslagen casus", { id: "btn-wis-opgeslagen", klasse: "knop rand" }, function () { wisSpel(); app.melding = "De opgeslagen casus is verwijderd."; app.downloadFout = false; render(); }))) : null,
-      h("p", { klasse: "testmodus-kies" },
+      docentModus() ? h("p", { klasse: "testmodus-kies" },
         h("label", null, h("input", { type: "checkbox", id: "testmodus", checked: app.testmodus ? true : null, klik: function () { app.testmodus = !app.testmodus; app.fokus = "testmodus"; render(); } }),
-          " Testmodus (voor Bart): alle episodes staan open; pogingen tellen niet mee als meting.")),
+          " Testmodus (voor Bart): alle episodes staan open; pogingen tellen niet mee als meting.")) : null,
       app.testmodus ? h("p", { klasse: "waarschuwing", id: "testmodus-melding", role: "status" }, "TESTMODUS: deze pogingen worden in de export gemarkeerd en tellen niet mee als meting.") : null,
       h("ul", { klasse: "episodes" }, overzicht.map(function (o) {
         var status = !o.open ? "Vergrendeld: haal eerst " + o.vorige.toLowerCase() + "." : (o.gehaald ? "Gehaald." : "Nog niet gehaald.");
@@ -723,8 +839,9 @@
     else {
       app.melding = null; app.downloadFout = false;
       app.onthuld = lijst(r.onthuld).map(function (o) { return o.tekst; });
-      app.wijziging = veldWijzigingen(voor, patientVelden(app.ep, app.spel));
       var k = kaartVan(app.casus, kaartId);
+      if (k && k.toontMedicatie) { var ml = medicatieLijstTekst(app.casus, app.ep, app.spel, kaartId); if (ml) app.onthuld.push(ml); }
+      app.wijziging = veldWijzigingen(voor, patientVelden(app.ep, app.spel));
       app.vlucht = { kaart: kaartId, van: van, label: k ? k.label : "", klasse: k ? "cat-" + slug(k.categorie) : "" };
     }
     app.fokus = "kaart-" + kaartId;
@@ -763,7 +880,7 @@
     try { doelen = toegestaneDoelen(app.casus, app.ep, app.spel, kaartId); }
     catch (e) { app.melding = (e && e.message) || "Dat lukte niet."; app.downloadFout = true; render(); return; }
     if (!doelen.length) {
-      app.melding = "Deze kaart kan nu nergens op worden gespeeld.";
+      app.melding = "Deze kaart kun je nu niet spelen: er is geen middel waar hij bij past.";
       app.downloadFout = true; app.onthuld = null; app.fokus = "kaart-" + kaartId; render(); return;
     }
     app.dialoog = { type: "doel", kaartId: kaartId, doelen: doelen, stap: 1, doel: null, opties: [] };
@@ -888,26 +1005,51 @@
             oud ? h("del", { klasse: "oudewaarde" }, h("span", { klasse: "verborgen" }, "eerder: "), oud) : null,
             oud ? " " : null,
             h("span", { klasse: "waarde" }, v.tekst),
-            v.nieuw ? h("span", { klasse: "nieuwlabel" }, " Nieuw") : null);
+            v.nieuw ? h("span", { klasse: "nieuwlabel" }, " Nieuw") : null,
+            v.sleutel === "medicatieTekst" ? medicatieStatusView() : null);
         }),
+        nieuwSindsStartView(),
         klachtenView())
     );
   }
 
-  // Klachtenstatus per dag (tekst uit de data), nieuwste dag bovenaan.
+  // Onder de medicatieregel: per middel dat door een kaart is aangepast, gepauzeerd of hervat, de actuele status.
+  function medicatieStatusView() {
+    var st = [];
+    try { st = medicatieStatus(app.casus, app.ep, app.spel).filter(function (m) { return m.status; }); } catch (e) { st = []; }
+    if (!st.length) return null;
+    return h("span", { klasse: "medstatus", id: "medstatus" }, st.map(function (m) {
+      return h("span", { klasse: "medregel", "data-middel": m.id }, h("span", { klasse: "medlabel" }, m.label + ": "), m.status);
+    }));
+  }
+
+  // Wat er sinds de start is gebeurd (gebeurtenissen, tekst uit de data). De oorspronkelijke klachtenregel blijft staan.
+  function nieuwSindsStartView() {
+    var l = gebeurtenissenSindsStart(app.ep, app.spel);
+    if (!l.length) return null;
+    return h("div", { klasse: "sindsstart", id: "sinds-start" },
+      h("h3", { id: "sinds-start-kop" }, "Nieuw sinds de start"),
+      h("ul", { "aria-labelledby": "sinds-start-kop" }, l.map(function (x) {
+        return h("li", { "data-sinds": x.id }, h("span", { klasse: "dagnr" }, "Dag " + x.dag), h("span", { klasse: "klachttekst" }, x.tekst));
+      })));
+  }
+
+  // Klachtenstatus per dag (tekst uit de data): één regel per verstreken dag, nieuwste dag bovenaan. Pas vanaf dag 2 (op dag 1 is er
+  // alleen de klachtenregel van de patiëntkaart).
   function klachtenView() {
-    var dagen = dagenModel(app.casus, app.ep, app.spel).filter(function (d) { return d.status || d.waarschuwing; }).reverse();
-    if (!dagen.length) return null;
+    var dagen = klachtenPerDag(app.ep, app.spel);
+    if (dagen.length < 2) return null;
     return h("div", { klasse: "klachtendagen", id: "klachtendagen" },
       h("h3", { id: "klachten-kop" }, "Klachten per dag"),
       h("ol", { klasse: "klachtlijst", "aria-labelledby": "klachten-kop" }, dagen.map(function (d) {
         return h("li", { klasse: d.huidig ? "huidig" : null, "data-klachtdag": d.dag },
           h("span", { klasse: "dagnr" }, "Dag " + d.dag),
-          h("span", { klasse: "klachttekst" }, d.status || "", d.waarschuwing ? h("span", { klasse: "klachtwaarschuwing" }, d.waarschuwing) : null));
+          d.tekst ? h("span", { klasse: "klachttekst" }, d.tekst)
+            : h("span", { klasse: "klachttekst leeg" }, h("span", { "aria-hidden": "true" }, "—"), h("span", { klasse: "verborgen" }, "geen melding")));
       })));
   }
 
-  // De hand: per categorie (volgorde van de bibliotheek = de voorschrijfcyclus) een rij speelkaarten. Op de kaart alleen label en dosering.
+  // De hand: per categorie (volgorde van de bibliotheek = de voorschrijfcyclus) een rij speelkaarten. Op de kaart alleen het label.
   function kaartenView() {
     return h("section", { klasse: "kaarten hand", "aria-label": "Kaarten" },
       kaartenPerCategorie(app.casus, app.ep).map(function (grp) {
@@ -915,9 +1057,7 @@
         return h("div", { klasse: "categorie " + grp.klasse, role: "group", "aria-labelledby": kid },
           h("h3", { id: kid, klasse: "handkop" }, grp.categorie),
           h("div", { klasse: "kaartrij" }, grp.kaarten.map(function (k) {
-            var data = kaartVan(app.casus, k.id);
-            return fokusMarkeer(knop([h("span", { klasse: "kaartnaam" }, k.label),
-              data && data.dosering ? h("span", { klasse: "dosering" }, data.dosering) : null],
+            return fokusMarkeer(knop([h("span", { klasse: "kaartnaam" }, k.label)],
               { klasse: "kaart", "data-kaart": k.id, "aria-label": k.label + " lezen" },
               function () { openKaart(k.id); }), "kaart-" + k.id);
           }))
@@ -1097,19 +1237,14 @@
           knop("Overslaan", { klasse: "knop rand", id: "btn-rondleiding-over" }, rondleidingKlaar))
       ];
     } else if (d.type === "kaart") {
-      var kd = kaartVan(app.casus, d.kaartId), sp = app.spel, eff = effectVoor(kd, app.ep.id), doelenNu = null;
+      // Vóór het spelen alleen categorie (band) en label (titel), plus de bediening. Geen effect, dosering, smaakregel of doelenlijst:
+      // wat de kaart doet of onthult, zie je pas na het spelen (op de tijdlijn). Kan een kaart nergens bij, dan hoor je dat bij Speel.
+      var kd = kaartVan(app.casus, d.kaartId), sp = app.spel;
       titel = kd.label;
       klasse += " grotekaart cat-" + slug(kd.categorie);
       kop = h("p", { klasse: "kaartband" }, kd.categorie);
-      if (isDoelkaart(app.casus, app.ep, d.kaartId)) {
-        try { doelenNu = toegestaneDoelen(app.casus, app.ep, sp, d.kaartId); } catch (e) { doelenNu = []; }
-      }
-      var reden = g.Engine.eindeBereikt(sp) ? "De laatste dag is voorbij." : (sp.actiesOver < 1 ? "Je hebt vandaag geen acties meer." : (doelenNu && !doelenNu.length ? "Deze kaart kan nu nergens op worden gespeeld." : null));
+      var reden = g.Engine.eindeBereikt(sp) ? "De laatste dag is voorbij." : (sp.actiesOver < 1 ? "Je hebt vandaag geen acties meer." : null);
       inhoud = [
-        kd.smaak ? h("p", { klasse: "smaak", id: "kaart-smaak" }, kd.smaak) : null,
-        kd.dosering ? h("p", { klasse: "kaartdosering", id: "kaart-dosering" }, h("strong", null, "Dosering en duur: "), kd.dosering) : null,
-        eff && !(kd.dosering && eff.indexOf(kd.dosering) >= 0) ? h("p", { klasse: "kaarteffect", id: "kaart-effect" }, eff) : null,
-        doelenNu ? h("p", { klasse: "uitleg", id: "kaart-doelen" }, doelenNu.length ? "Nu te gebruiken bij: " + doelenNu.map(function (x) { return x.label; }).join(", ") + "." : "Op dit moment is er nergens iets om deze kaart op te gebruiken.") : null,
         reden ? h("p", { klasse: "uitleg", id: "kaart-reden" }, reden) : null,
         h("p", { klasse: "dlgknoppen" },
           fokusMarkeer(knop("Speel", { klasse: "knop hoofd", id: "btn-speel", disabled: reden ? true : null }, function () { var id = d.kaartId; app.dialoog = null; klikKaart(id); }), "dlg-eerste"),
@@ -1128,7 +1263,7 @@
       klasse += " grotekaart cat-" + slug(kaart.categorie);
       kop = h("p", { klasse: "kaartband" }, kaart.categorie);
       if (d.stap === 1) {
-        titel = kaart.label + ": kies een doel";
+        titel = kaart.label + ": kies een middel";
         inhoud = [h("div", { klasse: "keuzes" }, d.doelen.map(function (x, i) {
           var b = knop(x.label, { klasse: "keuze", "data-doel": x.id }, function () { kiesDoel(x); });
           return i === 0 ? fokusMarkeer(b, "dlg-eerste") : b;
@@ -1159,12 +1294,6 @@
   }
 
   /* ---------- eind ---------- */
-
-  function legeDagenTekst() {
-    var n = 0, van = app.spel ? app.spel.dag : 0;
-    try { n = g.Engine.legeDagen(app.spel); } catch (e) { n = 0; }
-    return n + " van " + van + ".";
-  }
 
   // Een kaart op tafel bij de beoordeling: voorkant (categorie en label) en achterkant (categorie, label en nadeel uit de uitkomst).
   function tafelKaart(item, nadeel, stijl, alOm) {
@@ -1274,7 +1403,7 @@
     }
 
     var hoofd = h("main", { klasse: "smal eind " + (anim ? "animeert" : "direct") });
-    var overslaan = anim ? knop("Animatie overslaan", { id: "btn-overslaan", klasse: "knop rand overslaan", style: v(t) }, function () {
+    var overslaan = anim ? knop("Alles direct tonen", { id: "btn-overslaan", klasse: "knop rand overslaan", style: v(t) }, function () {
       hoofd.className = hoofd.className.replace(/\banimeert\b/, "direct");
       try { var b = hoofd.querySelector(".verslag .dlgknoppen button"); if (b) b.focus(); } catch (e) { /* geen focus */ }
     }) : null;
@@ -1285,7 +1414,6 @@
       h("section", { klasse: "uitslag " + (m.gehaald ? "goed" : "niet") + (m.verloren ? " verloren" : ""), "aria-labelledby": "uitslag-kop" },
         escalatie, tafel, verslag),
       h("div", { klasse: "onthul eindvoet", style: v(t) },
-        h("p", { klasse: "uitleg", id: "legedagen" }, "Dagen zonder actie: " + legeDagenTekst()),
         meldingView(),
         app.testmodus ? h("p", { klasse: "waarschuwing", id: "testmodus-melding" }, "Testmodus: deze poging telt niet mee als meting.") : null,
         h("p", { klasse: "onderknoppen" }, exportKnop(), " ", overzichtKnop("eind")))
@@ -1314,7 +1442,8 @@
     episodeOverzicht: episodeOverzicht, kaartenPerCategorie: kaartenPerCategorie, toegestaneDoelen: toegestaneDoelen,
     isDoelkaart: isDoelkaart, optiesVoor: optiesVoor, regelTitel: regelTitel, naSpelenTekst: naSpelenTekst,
     dagenModel: dagenModel, patientVelden: patientVelden, evaluatieModel: evaluatieModel, raadpleegModel: raadpleegModel,
-    aanhoudendTekst: aanhoudendTekst, overzichtModel: overzichtModel, opslagMelding: opslagMelding, actieDots: actieDots, doelLabel: doelLabel,
+    aanhoudendTekst: aanhoudendTekst, klachtenPerDag: klachtenPerDag, gebeurtenissenSindsStart: gebeurtenissenSindsStart,
+    medicatieStatus: medicatieStatus, medicatieLijstTekst: medicatieLijstTekst, schoneTekst: schoneTekst, docentModus: docentModus, overzichtModel: overzichtModel, opslagMelding: opslagMelding, actieDots: actieDots, doelLabel: doelLabel,
     nadeelTekst: nadeelTekst, anderenZin: anderenZin, gevolgenKop: gevolgenKop, effectVoor: effectVoor, enigDoel: enigDoel, rondleiding: function () { return RONDLEIDING.slice(); }, gespeeldeKaarten: gespeeldeKaarten,
     _opslag: undefined,                               // alleen voor tests
     _rng: null,                                       // alleen voor tests: vaste toevalsbron voor de volgorde van opties

@@ -791,6 +791,9 @@ window.CASUSSEN = [
   "Kompas": "Farmacotherapeutisch Kompas, preparaatteksten spironolacton en ciprofloxacine",
   "KNMP": "KNMP medisch-farmaceutische beslisregel 7025-4 \"Kalium controle na 3 dagen\""
  },
+ "markeringen": {
+  "G": "berust niet op een van deze bronnen (uit geheugen of ontwerpkeuze), wel door Bart geaccepteerd"
+ },
  "raadplegen": {
   "titel": "Richtlijn raadplegen",
   "bronnen": [
@@ -808,6 +811,7 @@ window.CASUSSEN = [
    "label": "Medicatieoverzicht nalopen",
    "vanafEpisode": 1,
    "smaak": "Een blik in het dossier.",
+   "toontMedicatie": true,
    "doelkaart": false,
    "opties": null,
    "doelen": null,
@@ -2627,6 +2631,8 @@ window.CASUSSEN[0].episodes.push({
       {
         kaart: "G3",
         sleutel: "eerdereKweek",
+        // Bedieningslabel (concept, niet uit de casus): het kopje van dit veld op de patiëntkaart.
+        kopje: { tekst: "Eerdere kweek", bediening: true, concept: true },
         onthult: "de kweek uit episode 2, met trimethoprim resistent.",
         zichtbaar: { eerdereKweek: "de kweek uit episode 2, met trimethoprim resistent." },
         meta: { toelichting: "Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG]." }
