@@ -63,6 +63,20 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
   // De uitleg bij de start van een episode en de rondleiding sluiten vanzelf, zoals een speler op Begin en Overslaan klikt.
   await page.addLocatorHandler(page.locator("#btn-begin"), async () => { await page.locator("#btn-begin").click(); });
   await page.addLocatorHandler(page.locator("#btn-rondleiding-over"), async () => { await page.locator("#btn-rondleiding-over").click(); });
+  // Kaarttafel: een gebeurtenis onderbreekt de beurt en de overgang naar episode 2 en 3 heeft een tussenscherm; de speler klikt Verder.
+  // Wat er te zien was wordt bewaard voor de controles hieronder.
+  const erkend = [], sprongen = [];
+  await page.addLocatorHandler(page.locator("#btn-gebeurtenis-verder"), async () => {
+    const ids = await page.locator(".dialoog [data-erkennen]").evaluateAll(els => els.map(e => e.getAttribute("data-erkennen")));
+    const dagNu = parseInt(await page.getAttribute("#dagtelling", "data-dag"), 10);
+    const vrij = await page.evaluate(() => { try { document.querySelector('[data-kaart]').click(); return !!document.querySelector('#btn-speel'); } catch (e) { return true; } });
+    ids.forEach(id => erkend.push({ id, dag: dagNu, vrij }));
+    await page.locator("#btn-gebeurtenis-verder").click();
+  });
+  await page.addLocatorHandler(page.locator("#btn-tijdsprong-verder"), async () => {
+    sprongen.push(norm(await page.textContent("#tijdsprong-kop")) + " | " + norm(await page.textContent("#tijdsprong")));
+    await page.locator("#btn-tijdsprong-verder").click();
+  });
   try {
     await page.goto(URL);
     // 9: pseudoniem afdwingen
@@ -103,11 +117,15 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
     /* ---------------- Episode 2 ---------------- */
     check("E2: gestart via 'Volgende episode'", /Episode 2/.test(await page.textContent(".balkinfo")));
     await speelPlan(page, ["G2", "O1", "V3", "|", "N1"]);
+    check("E2: eerst het tussenscherm met de kopregel van de nieuwe patiëntkaart (alleen zichtbare gegevens)", sprongen.length === 1 &&
+      sprongen[0].startsWith("Mevrouw V., 78 jaar (6 jaar na episode 1). |") && sprongen[0].indexOf("29") < 0 && /Mevrouw V\., 72 jaar\./.test(sprongen[0]), JSON.stringify(sprongen));
     check("E2: 'Uitslag verwacht op dag 4.' staat in beeld na het inzetten van de kweek", /Uitslag verwacht op dag 4/.test(await page.textContent("#verwacht")));
     await page.click("#btn-afronden"); await page.click("#btn-afronden-ja").catch(() => {});
     check("E2: afronden vóór de kweekuitslag lukt niet (melding)", await page.locator("#melding").count() === 1 && /gebeurtenissen/.test(await page.textContent("#melding")));
     await speelPlan(page, ["|", "|"]);
     check("E2: de kweekuitslag staat op dag 4", /resistent/.test(await page.textContent('.vandaag [data-gebeurtenis="C"]')) && (await dag(page)) === 4);
+    await page.hover("#dagtelling");   // een volgende handeling: de onderbreking moet eerst erkend worden
+    check("E2: de kweekuitslag onderbrak de beurt (kaart op tafel, eerst Verder; een kaart openen kon niet)", erkend.length === 1 && erkend[0].id === "C" && erkend[0].dag === 4 && erkend[0].vrij === false, JSON.stringify(erkend));
     await rondAf(page);
     u = await uitslag(page);
     check("E2 foutroute (nitrofurantoïne bij eGFR 29): één vraag over de nierfunctie", /Nog niet veilig genoeg/.test(u.kop) && /nitrofurantoïne/.test(u.vraag), JSON.stringify(u));
@@ -122,8 +140,11 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
 
     /* ---------------- Episode 3 ---------------- */
     check("E3: gestart", /Episode 3/.test(await page.textContent(".balkinfo")));
+    await page.hover("#dagtelling");   // een handeling op het spelscherm: het tussenscherm moet eerst weg
+    check("E3: tussenscherm met de kopregel van episode 3", sprongen.length === 2 && sprongen[1].startsWith("Mevrouw V., 79 jaar (1 jaar na episode 2). |"), JSON.stringify(sprongen));
     await speelPlan(page, ["G3", "O1", "V9", "|", "N1", "O2", "Ev2>spironolacton", "|", "Ev1", "|", "|"]);
     check("E3: weefselinvasie (A) en uitdroging (B) kwamen, de uitslag op dag 4", (await dag(page)) === 5);
+    check("E3: A, B en de kweekuitslag onderbraken elk de beurt en zijn met Verder erkend", ["A", "B", "C"].every(id => erkend.some(x => x.id === id && x.vrij === false)), JSON.stringify(erkend));
     await rondAf(page);
     u = await uitslag(page);
     check("E3 foutroute (cotrimoxazol): één vraag (ernstigste) en 'Nog 1 andere veiligheidsregel niet gehaald.'", /Nog niet veilig genoeg/.test(u.kop) && /Cotrimoxazol/.test(u.vraag) && /^Nog \d+ andere veiligheidsregel/.test(u.anderen || ""), JSON.stringify(u));

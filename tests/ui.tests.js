@@ -341,7 +341,9 @@
     klik(metId(root, "btn-start"));
   }
   // De uitleg bij de start en (episode 1) de rondleiding zijn dialogen: sluiten zoals een speler dat doet.
+  // Kaarttafel: bij episode 2 en 3 komt daarvoor eerst het tussenscherm (tijdsprong), dat de speler met Verder sluit.
   function sluitStart(root) {
+    if (metId(root, "btn-tijdsprong-verder")) klik(metId(root, "btn-tijdsprong-verder"));
     if (metId(root, "btn-begin")) klik(metId(root, "btn-begin"));
     if (metId(root, "btn-rondleiding-over")) klik(metId(root, "btn-rondleiding-over"));
   }
@@ -677,5 +679,136 @@
       klik(metId(root, "btn-terug")); klik(metId(root, "testmodus"));
       T.is(metAttr(root, "data-start", "E3").getAttribute("disabled"), "", "een testpoging ontgrendelt niets");
     });
+  });
+
+  /* ---------- kaarttafel: omklappen, onderbrekingen, tussenscherm, levende patiëntkaart ---------- */
+  function volgorde(root) { return alle(root, function () { return true; }); }
+  function voor(root, a, b) { var l = volgorde(root); return l.indexOf(a) >= 0 && l.indexOf(a) < l.indexOf(b); }
+  function nadelenVan(k) { return (k.downside && typeof k.downside === "object" ? Object.keys(k.downside).map(function (s) { return k.downside[s]; }) : [k.downside]).filter(function (t) { return typeof t === "string" && t.length >= 6 && t !== "Kost een actie"; }); }
+  function opslagMet(records) { var o = nepOpslag(); o.setItem("egc.logging.v1", JSON.stringify(records)); return o; }
+
+  test("kaarttafel: de downside van een gespeelde kaart staat nergens in beeld vóór de beoordeling (hand, kaartvenster, tijdlijn); daarna wel, op de achterkant", function () {
+    metNepDom(function (root) {
+      begin(root, "anna"); startEp(root, "E1");
+      ["V1", "N1"].forEach(function (k) { speelKlik(root, k); });
+      klik(metAttr(root, "data-kaart", "V1"));   // kaartvenster van een gespeelde kaart
+      var tekst = tekstVan(root), v1 = casus().kaarten.filter(function (k) { return k.id === "V1"; })[0];
+      casus().kaarten.forEach(function (k) { nadelenVan(k).forEach(function (t) { T.waar(tekst.indexOf(t) < 0, "nadeel van " + k.id + " in beeld vóór de beoordeling"); }); });
+      T.is(alle(root, function (e) { return e.getAttribute("data-downside") !== null; }).length, 0, "geen omgeklapte kaarten tijdens het spel");
+      klik(metId(root, "btn-sluit-kaart"));
+      afronden(root);
+      var kaartV1 = metAttr(root, "data-downside", v1.label);
+      T.waar(kaartV1, "de gespeelde kaart ligt op tafel");
+      var achter = vind(kaartV1, function (e) { return /(^| )tk-achter( |$)/.test(e.className); });
+      T.waar(achter && tekstVan(achter).indexOf(nadelenVan(v1)[0]) >= 0, "het nadeel staat op de achterkant");
+      var voorkant = vind(kaartV1, function (e) { return /(^| )tk-voor( |$)/.test(e.className); });
+      T.waar(voorkant && tekstVan(voorkant).indexOf(nadelenVan(v1)[0]) < 0 && voorkant.getAttribute("aria-hidden") === "true", "de voorkant toont alleen categorie en label");
+    });
+  });
+
+  test("kaarttafel: volgorde van de beoordeling: eerst de omgeklapte kaarten, dan de gevolgen, dan de hint; animatie alleen bij het eerste beeld en over te slaan", function () {
+    metNepDom(function (root) {
+      begin(root, "anna"); startEp(root, "E1");
+      speelKlik(root, "V1"); speelKlik(root, "N1"); afronden(root);
+      var kaart = vind(root, function (e) { return e.getAttribute("data-downside") !== null; });
+      T.waar(voor(root, kaart, metId(root, "gevolgen")) && voor(root, metId(root, "gevolgen"), metId(root, "hint")), "kaarten, gevolgen, hint");
+      var hoofd = vind(root, function (e) { return e.tagName === "MAIN"; });
+      T.waar(/(^| )animeert( |$)/.test(hoofd.className), "het eerste beeld speelt de animatie");
+      T.waar(!!metId(root, "btn-overslaan"), "knop 'Animatie overslaan'");
+      klik(metId(root, "btn-overslaan"));
+      T.waar(/(^| )direct( |$)/.test(hoofd.className) && !/animeert/.test(hoofd.className), "overslaan zet alles in de eindstand");
+      klik(metId(root, "btn-export"));   // opnieuw tekenen: geen tweede keer animatie
+      hoofd = vind(root, function (e) { return e.tagName === "MAIN"; });
+      T.waar(/(^| )direct( |$)/.test(hoofd.className) && !metId(root, "btn-overslaan"), "na opnieuw tekenen geen animatie meer");
+      // gehaald: kaarten vóór score, profiel en opleider
+      opnieuw(root); ["V1", "N1", "Ev1"].forEach(function (k) { speelKlik(root, k); }); afronden(root);
+      kaart = vind(root, function (e) { return e.getAttribute("data-downside") !== null; });
+      T.waar(voor(root, kaart, metId(root, "uitslag-kop")) && voor(root, metId(root, "uitslag-kop"), metId(root, "profiel")) && voor(root, metId(root, "profiel"), metId(root, "opleider")), "kaarten, score, profiel, opleider");
+    });
+  });
+
+  test("kaarttafel: bij een verloren episode komt de escalatie vóór de omgeklapte kaarten", function () {
+    metNepDom(function (root) {
+      begin(root, "anna"); klik(metId(root, "testmodus")); startEp(root, "E3");
+      speelKlik(root, "N1");
+      for (var i = 0; i < 12 && metId(root, "btn-volgende-dag"); i++) {
+        if (metId(root, "btn-gebeurtenis-verder")) klik(metId(root, "btn-gebeurtenis-verder"));
+        klik(metId(root, "btn-volgende-dag"));
+      }
+      T.waar(/Episode verloren/.test(tekstVan(metId(root, "uitslag-kop"))), "verloren door sepsis");
+      var kaart = vind(root, function (e) { return e.getAttribute("data-downside") !== null; });
+      T.waar(kaart && voor(root, metId(root, "eindtekst"), kaart) && voor(root, kaart, metId(root, "hint")), "escalatie, kaarten, hint");
+    });
+  });
+
+  test("kaarttafel: een gebeurtenis onderbreekt de beurt; kaarten en knoppen doen niets tot Verder; daarna staat ze op de tijdlijn", function () {
+    metNepDom(function (root) {
+      begin(root, "anna"); startEp(root, "E2");
+      ["G2", "O1", "V4"].forEach(function (k) { speelKlik(root, k); });
+      klik(metId(root, "btn-volgende-dag")); klik(metId(root, "btn-volgende-dag"));
+      T.waar(!metId(root, "btn-gebeurtenis-verder"), "nog geen gebeurtenis op dag 3");
+      klik(metId(root, "btn-volgende-dag"));
+      var dlg = vind(root, function (e) { return e.getAttribute("role") === "alertdialog"; });
+      T.waar(dlg, "de gebeurtenis komt als dialoog op tafel");
+      var gb = metAttr(dlg, "data-erkennen", "C"), c = ep("E2").gebeurtenissen.filter(function (x) { return x.id === "C"; })[0];
+      T.waar(gb && tekstVan(gb).indexOf(c.tekst) >= 0 && tekstVan(gb).indexOf(c.titel) >= 0, "tekst en titel uit de data");
+      klik(metAttr(root, "data-kaart", "N1"));
+      T.waar(!metId(root, "btn-speel") && !!metId(root, "btn-gebeurtenis-verder"), "een kaart openen kan pas na Verder");
+      klik(metId(root, "btn-volgende-dag"));
+      T.is(metId(root, "dagtelling").getAttribute("data-dag"), "4", "Volgende dag doet niets tijdens de onderbreking");
+      klik(vind(root, function (e) { return /(^| )scherm( |$)/.test(e.className); }));   // klik naast de kaart sluit niet
+      T.waar(!!metId(root, "btn-gebeurtenis-verder"), "naast de kaart klikken erkent niet");
+      klik(metId(root, "btn-gebeurtenis-verder"));
+      T.waar(!vind(root, function (e) { return e.getAttribute("role") === "alertdialog"; }), "na Verder is de onderbreking weg");
+      var dag4 = vind(root, function (e) { return e.getAttribute("data-dag") === "4" && /(^| )dag( |$)/.test(e.className); });
+      T.waar(dag4 && metAttr(dag4, "data-gebeurtenis", "C"), "de gebeurtenis blijft zichtbaar op de tijdlijn");
+      speelKlik(root, "N1");
+      T.is(alle(root, function (e) { return e.getAttribute("data-gespeeld") === "N1"; }).length, 1, "daarna speel je gewoon door");
+    }, opslagMet([rec("anna", "E1", [])]));
+  });
+
+  test("kaarttafel: het tussenscherm naar episode 2 en 3 toont alleen de kopregels van de patiëntkaarten (zichtbare gegevens), niet bij Opnieuw", function () {
+    metNepDom(function (root) {
+      begin(root, "anna");
+      [["E2", "E1"], ["E3", "E2"]].forEach(function (p) {
+        klik(metAttr(root, "data-start", p[0]));
+        var sprong = metId(root, "tijdsprong");
+        T.waar(sprong, "tussenscherm voor " + p[0]);
+        var tekst = tekstVan(sprong), nieuwKop = ep(p[0]).patient.zichtbaar.kop, oudKop = ep(p[1]).patient.zichtbaar.kop;
+        T.is(tekstVan(metId(root, "tijdsprong-kop")), nieuwKop, "kopregel uit de data");
+        T.is(tekst, "Episode " + p[1].slice(1) + oudKop + "Patiëntkaart" + nieuwKop, "niets anders dan de twee kopregels");
+        ep(p[0]).patient.verborgen.forEach(function (v) { T.waar(tekst.indexOf(v.onthult) < 0, "verborgen gegeven niet in het tussenscherm"); });
+        T.waar(!/TODO_BART|risicogroep/i.test(tekst), "geen meta of TODO");
+        T.waar(!metId(root, "btn-begin"), "de uitleg bij de start komt pas na Verder");
+        klik(metId(root, "btn-tijdsprong-verder"));
+        T.waar(!!metId(root, "btn-begin"), "daarna de gewone uitleg");
+        klik(metId(root, "btn-begin"));
+        klik(metId(root, "btn-stop")); klik(metId(root, "btn-stop-ja"));
+      });
+      klik(metAttr(root, "data-start", "E2")); sluitStart(root);
+      speelKlik(root, "N1"); afronden(root); opnieuw(root);
+      T.waar(!metId(root, "tijdsprong"), "geen tussenscherm bij Opnieuw");
+    }, opslagMet([rec("anna", "E1", []), rec("anna", "E2", [])]));
+  });
+
+  test("kaarttafel: na een onthulling staat de oude waarde kort doorgestreept naast de nieuwe; bij de volgende handeling is ze weg", function () {
+    metNepDom(function (root) {
+      begin(root, "anna"); startEp(root, "E2");
+      var veld = metAttr(root, "data-veld", "labTekst");
+      T.waar(!vind(veld, function (e) { return e.tagName === "DEL"; }), "vooraf niets doorgestreept");
+      speelKlik(root, "G2");
+      veld = metAttr(root, "data-veld", "labTekst");
+      var del = vind(veld, function (e) { return e.tagName === "DEL"; });
+      T.waar(del && tekstVan(del).indexOf(ep("E2").patient.zichtbaar.labTekst) >= 0, "oude waarde doorgestreept");
+      T.waar(/(^| )veranderd( |$)/.test(veld.className), "het veld licht op");
+      T.waar(tekstVan(veld).indexOf(ep("E2").patient.verborgen[0].zichtbaar.labTekst) >= 0, "nieuwe waarde staat erbij");
+      klik(metAttr(root, "data-kaart", "N1")); klik(metId(root, "btn-sluit-kaart"));
+      veld = metAttr(root, "data-veld", "labTekst");
+      T.waar(!vind(veld, function (e) { return e.tagName === "DEL"; }) && !/veranderd/.test(veld.className), "bij de volgende handeling weg");
+      // klachtenstatus per dag op de patiëntkaart
+      speelKlik(root, "O1"); speelKlik(root, "V4"); klik(metId(root, "btn-volgende-dag"));
+      var kl = metId(root, "klachtendagen");
+      T.waar(kl && metAttr(kl, "data-klachtdag", "2") && tekstVan(kl).indexOf(ep("E2").statusTeksten.af) >= 0, "klachtenstatus van dag 2 op de patiëntkaart");
+    }, opslagMet([rec("anna", "E1", [])]));
   });
 })(typeof window !== "undefined" ? window : globalThis);

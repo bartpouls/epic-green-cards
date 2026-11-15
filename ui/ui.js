@@ -20,9 +20,9 @@
   // Bedieningsrondleiding aan het begin van de eerste episode (concepttekst voor Bart, geen klinische inhoud).
   var RONDLEIDING = [
     { titel: "De patiëntkaart", tekst: "Links zie je de patiënt. Sommige gegevens zie je pas nadat je een kaart hebt gespeeld." },
-    { titel: "Je kaarten", tekst: "Onder de patiënt liggen je kaarten, per soort. Klik op een kaart om hem eerst te lezen." },
+    { titel: "Je kaarten", tekst: "In het midden liggen je kaarten, per soort. Klik op een kaart om hem eerst te lezen." },
     { titel: "De knop Speel", tekst: "Pas met de knop Speel in het kaartvenster speel je de kaart. Sommige kaarten vragen daarna om een keuze." },
-    { titel: "Acties en dagen", tekst: "Elke dag heb je een aantal acties. Een kaart spelen kost een actie. Met Volgende dag ga je een dag verder." },
+    { titel: "Acties en dagen", tekst: "Elke dag heb je een aantal acties. Een kaart spelen kost een actie. Een gespeelde kaart komt rechts op de tijdlijn. Met Volgende dag ga je een dag verder." },
     { titel: "Een poging", tekst: "Aan het eind van de episode krijg je een beoordeling. Eén keer een episode spelen is een poging; je mag opnieuw proberen." }
   ];
   var RONDLEIDING_SLEUTEL = "egc.rondleiding.gezien";
@@ -197,6 +197,14 @@
     var l = lijst(ep.gebeurtenissen);
     for (var i = 0; i < l.length; i++) if (l[i].id === id) return l[i].tekst;
     return "";
+  }
+
+  // Een gebeurtenis als kaart: de tekst uit de data, en de titel uit de data alleen als de tekst er niet al mee begint.
+  function gebeurtenisModel(ep, id) {
+    var l = lijst(ep && ep.gebeurtenissen), def = null;
+    for (var i = 0; i < l.length; i++) if (l[i].id === id) def = l[i];
+    var tekst = def && typeof def.tekst === "string" ? def.tekst : "", titel = def && typeof def.titel === "string" ? def.titel : "";
+    return { id: id, tekst: tekst, titel: titel && tekst.indexOf(titel) !== 0 ? titel : null };
   }
 
   // "Klachten houden aan: dag 1, 2, 3." als de escalatie aan staat en de klachten aanhouden; anders null. De tekst staat in de data.
@@ -433,7 +441,8 @@
       scherm: "start", pseudoniem: opslagBeschikbaarSessie("lees", PSEUDONIEM_SLEUTEL) || "", fout: null,
       casus: (g.CASUSSEN && g.CASUSSEN[0]) || null, ep: null, spel: null, uitkomst: null,
       melding: null, onthuld: null, dialoog: null, bevestigAfronden: false, fokus: null, downloadFout: false, geschiedenis: [],
-      testmodus: false, rondleidingGezien: false
+      testmodus: false, rondleidingGezien: false,
+      wijziging: null, eindAnimatie: false, vlucht: null   // alleen weergave: veranderde velden, omklappen, kaart naar de tijdlijn
     };
   }
 
@@ -468,6 +477,56 @@
     else { while (root.firstChild) root.removeChild(root.firstChild); root.appendChild(wrap); }
     var doel = (vorig && fokusKandidaten[vorig]) || fokusKandidaten.kop;
     if (doel && typeof doel.focus === "function") { try { doel.focus(); } catch (e) { /* geen focus mogelijk */ } }
+    var vlucht = app.vlucht;
+    app.vlucht = null;
+    if (vlucht) vliegNaarTijdlijn(vlucht);
+  }
+
+  /* ---------- beweging (alleen weergave; zonder beweging is alles direct in de eindstand) ---------- */
+
+  function geenBeweging() {
+    try { return !!(g.matchMedia && g.matchMedia("(prefers-reduced-motion: reduce)").matches); } catch (e) { return false; }
+  }
+  function zoekIn(sel) {
+    try { return root && typeof root.querySelector === "function" ? root.querySelector(sel) : null; } catch (e) { return null; }
+  }
+  function zoekAlleIn(sel) {
+    try { return root && typeof root.querySelectorAll === "function" ? Array.prototype.slice.call(root.querySelectorAll(sel)) : []; } catch (e) { return []; }
+  }
+  function attrSel(naam, waarde) { return "[" + naam + "=\"" + String(waarde).replace(/["\\]/g, "\\$&") + "\"]"; }
+  // Plek van een kaart in de hand vlak voor het spelen (of null zonder echte DOM).
+  function plekVanKaart(kaartId) {
+    var el = zoekIn(".hand " + attrSel("data-kaart", kaartId));
+    try { return el && el.getBoundingClientRect ? el.getBoundingClientRect() : null; } catch (e) { return null; }
+  }
+  // Een kopie van de gespeelde kaart beweegt van de hand naar de dag op de tijdlijn; daar licht de kaart kort op.
+  function vliegNaarTijdlijn(v) {
+    try {
+      var doelen = zoekAlleIn(".tijdlijn .dag.huidig " + attrSel("data-gespeeld", v.kaart));
+      var doel = doelen[doelen.length - 1];
+      if (!doel || !v.van || !doc.body || geenBeweging()) return;
+      if (typeof doel.scrollIntoView === "function") doel.scrollIntoView({ block: "nearest" });
+      var naar = doel.getBoundingClientRect(), van = v.van;
+      if (!naar.width || !van.width) return;
+      doel.classList.add("aankomst");
+      var spook = doc.createElement("div");
+      spook.className = "spookkaart " + v.klasse;
+      spook.setAttribute("aria-hidden", "true");
+      spook.textContent = v.label;
+      var st = spook.style;
+      st.left = van.left + "px"; st.top = van.top + "px"; st.width = van.width + "px"; st.height = van.height + "px";
+      doc.body.appendChild(spook);
+      var weg = function () { if (spook.parentNode) spook.parentNode.removeChild(spook); };
+      if (typeof spook.animate !== "function") { weg(); return; }
+      var dx = naar.left - van.left, dy = naar.top - van.top, sx = naar.width / van.width, sy = naar.height / van.height;
+      var a = spook.animate([
+        { transform: "translate(0, 0) scale(1)", opacity: 1 },
+        { transform: "translate(" + dx + "px, " + (dy - 24) + "px) scale(" + sx + ", " + sy + ")", opacity: 0.9, offset: 0.7 },
+        { transform: "translate(" + dx + "px, " + dy + "px) scale(" + sx + ", " + sy + ")", opacity: 0 }
+      ], { duration: 480, easing: "cubic-bezier(.25,.7,.3,1)" });
+      a.onfinish = weg; a.oncancel = weg;
+      g.setTimeout(weg, 900);
+    } catch (e) { /* alleen versiering */ }
   }
 
   function foutScherm(tekst) {
@@ -593,7 +652,7 @@
         return h("li", { klasse: "kaartvlak episode" + (o.open ? "" : " dicht"), "data-episode": o.id },
           h("div", null, h("h2", null, o.titel), h("p", { klasse: "uitleg" }, status)),
           knop(o.gehaald ? "Opnieuw spelen" : "Start", { klasse: "knop hoofd", "data-start": o.id, disabled: !o.open ? true : null, "aria-label": o.titel + (o.gehaald ? " opnieuw spelen" : " starten") },
-            function () { startEpisode(o.id); }));
+            function () { startEpisode(o.id, true); }));
       })),
       h("p", null, exportKnop(), " ", overzichtKnop("kies"))
     );
@@ -632,15 +691,19 @@
     render();
   }
 
-  function startEpisode(epId) {
+  // metSprong: de overgang naar een latere episode krijgt eerst een tussenscherm (dezelfde patiënt, later); niet bij Opnieuw.
+  function startEpisode(epId, metSprong) {
     if (!pseudoniemControle(app.pseudoniem).ok) { naarScherm("start"); app.fout = pseudoniemControle(app.pseudoniem).fout; render(); return; }
     var ep = lijst(app.casus.episodes).filter(function (e) { return e.id === epId; })[0];
     try {
       app.spel = g.Engine.nieuwSpel(app.casus, epId);
       app.ep = ep;
       app.uitkomst = null;
+      app.wijziging = null;
       naarScherm("spel");
-      if (ep.startUitleg) { app.dialoog = { type: "start", tekst: ep.startUitleg }; app.fokus = "dlg-eerste"; render(); }
+      var nr = episodeNummer(app.casus, ep), vorige = nr > 1 ? lijst(app.casus.episodes)[nr - 2] : null;
+      if (metSprong && vorige) { app.dialoog = { type: "tijdsprong", vorige: vorige }; app.fokus = "dlg-eerste"; render(); }
+      else if (ep.startUitleg) { app.dialoog = { type: "start", tekst: ep.startUitleg }; app.fokus = "dlg-eerste"; render(); }
     } catch (e) {
       app.melding = (e && e.message) || "De episode kon niet starten.";
       app.downloadFout = true;
@@ -651,21 +714,42 @@
   /* ---------- spel ---------- */
 
   function speelDirect(kaartId, opts) {
-    var r;
+    var r, voor = patientVelden(app.ep, app.spel), van = plekVanKaart(kaartId);
     try { r = g.Engine.speelKaart(app.spel, kaartId, opts || {}); }
     catch (e) { r = { ok: false, fout: (e && e.message) || "Dat lukte niet." }; }
     app.dialoog = null;
+    app.wijziging = null;
     if (!r.ok) { app.melding = r.fout; app.onthuld = null; app.downloadFout = true; }
     else {
       app.melding = null; app.downloadFout = false;
       app.onthuld = lijst(r.onthuld).map(function (o) { return o.tekst; });
+      app.wijziging = veldWijzigingen(voor, patientVelden(app.ep, app.spel));
+      var k = kaartVan(app.casus, kaartId);
+      app.vlucht = { kaart: kaartId, van: van, label: k ? k.label : "", klasse: k ? "cat-" + slug(k.categorie) : "" };
     }
     app.fokus = "kaart-" + kaartId;
     render();
   }
 
+  // Welke velden van de patiëntkaart door een kaart veranderden: { sleutel: oude tekst (of null als het veld nieuw is) }, of null.
+  function veldWijzigingen(voor, na) {
+    var oud = {}, uit = {}, n = 0;
+    lijst(voor).forEach(function (v) { oud[v.sleutel] = v.tekst; });
+    lijst(na).forEach(function (v) {
+      if (oud[v.sleutel] === v.tekst) return;
+      uit[v.sleutel] = Object.prototype.hasOwnProperty.call(oud, v.sleutel) ? oud[v.sleutel] : null;
+      n++;
+    });
+    return n ? uit : null;
+  }
+
   // Klik op een kaart: eerst lezen (kaartvenster). Pas de knop Speel speelt de kaart.
+  // Een gebeurtenis of het tussenscherm onderbreekt het spel: tot de speler Verder kiest, doen kaarten en knoppen niets.
+  function onderbroken() { return !!(app.dialoog && (app.dialoog.type === "gebeurtenis" || app.dialoog.type === "tijdsprong")); }
+
   function openKaart(kaartId) {
+    if (onderbroken()) return;
+    app.wijziging = null;
     app.bevestigAfronden = false;
     app.dialoog = { type: "kaart", kaartId: kaartId };
     app.fokus = "dlg-eerste";
@@ -698,6 +782,8 @@
 
   function raadpleeg() {
     var r;
+    if (onderbroken()) return;
+    app.wijziging = null;
     try { r = g.Engine.raadpleeg(app.spel); } catch (e) { r = { ok: false, fout: (e && e.message) || "Dat lukte niet." }; }
     if (!r.ok) { app.melding = r.fout; app.downloadFout = true; app.fokus = "btn-raadplegen"; render(); return; }
     app.melding = null; app.onthuld = null; app.downloadFout = false;
@@ -707,20 +793,36 @@
   }
 
   function volgendeDag() {
+    if (onderbroken()) return;
+    var al = app.spel ? lijst(app.spel.gebeurtenissen).length : 0;
+    app.wijziging = null;
     try { g.Engine.volgendeDag(app.spel); app.melding = null; app.downloadFout = false; }
     catch (e) { app.melding = (e && e.message) || "Dat lukte niet."; app.downloadFout = true; }
     // Een gebeurtenis kan de episode direct beëindigen (staat in de data, bv. sepsis): dan volgt meteen de beoordeling.
     if (app.spel && app.spel.afgerond) { rondAf(); return; }
     app.onthuld = null; app.bevestigAfronden = false;
+    // Nieuwe gebeurtenissen onderbreken de beurt: ze komen als kaart op tafel en de speler erkent ze met Verder.
+    var nieuw = lijst(app.spel && app.spel.gebeurtenissen).slice(al).filter(function (x) { return x.dag === app.spel.dag; });
+    if (nieuw.length) {
+      app.dialoog = { type: "gebeurtenis", dag: app.spel.dag, items: nieuw.map(function (x) { return gebeurtenisModel(app.ep, x.id); }) };
+      app.fokus = "dlg-eerste";
+    } else app.fokus = "dag-kop";
+    render();
+  }
+
+  function erkenGebeurtenis() {
+    app.dialoog = null;
     app.fokus = "dag-kop";
     render();
   }
 
   function rondAf() {
     var uitkomst;
+    if (onderbroken()) return;
     try { uitkomst = g.Engine.rondAf(app.spel); }
     catch (e) { app.melding = (e && e.message) || "Afronden lukte niet."; app.downloadFout = true; app.bevestigAfronden = false; render(); return; }
     app.uitkomst = uitkomst;
+    app.eindAnimatie = true;   // het omklappen speelt één keer, bij het eerste beeld van de beoordeling
     wisSpel();   // een afgerond spel hoeft niet meer hervat te worden
     app.opslagFout = null;
     try { g.Logging.bewaarUitSpel(app.spel, uitkomst, app.pseudoniem, { testmodus: app.testmodus }); }
@@ -747,45 +849,71 @@
         )
       ),
       h("div", { klasse: "balkknoppen" },
-        fokusMarkeer(knop("Richtlijn raadplegen" + (kost > 0 ? " (kost " + kost + (kost === 1 ? " actie" : " acties") + ")" : ""),
-          { id: "btn-raadplegen", klasse: "knop rand", disabled: klaar ? true : null }, raadpleeg), "btn-raadplegen"),
-        laatste ? h("span", { klasse: "uitleg laatstedag", id: "laatste-dag" }, "Dit is de laatste dag.")
-          : knop("Volgende dag", { id: "btn-volgende-dag", klasse: "knop rand" }, volgendeDag),
-        app.bevestigAfronden && !laatste
-          ? h("span", { klasse: "bevestig", role: "group", "aria-label": "Afronden bevestigen" },
-              h("span", null, "Afronden?"),
-              fokusMarkeer(knop("Ja, afronden", { id: "btn-afronden-ja", klasse: "knop hoofd" }, rondAf), "btn-afronden-ja"),
-              knop("Nee, verder spelen", { id: "btn-afronden-nee", klasse: "knop rand" }, function () { app.bevestigAfronden = false; app.fokus = "btn-afronden"; render(); }))
-          : fokusMarkeer(knop("Episode afronden", { id: "btn-afronden", klasse: "knop hoofd" }, function () {
-              if (laatste) { rondAf(); return; }   // op de laatste dag kan er niets meer: meteen afronden, zonder "verder spelen"
-              app.bevestigAfronden = true; app.fokus = "btn-afronden-ja"; render();
-            }), "btn-afronden"),
-        exportKnop(),
-        knop("Pauzeer en sla op", { id: "btn-pauzeer", klasse: "knop rand" }, pauzeer),
-        knop("Stop deze casus", { id: "btn-stop", klasse: "knop rand" }, function () { app.dialoog = { type: "stop" }; app.fokus = "dlg-eerste"; render(); })
+        h("span", { klasse: "balkgroep" },
+          fokusMarkeer(knop("Richtlijn raadplegen" + (kost > 0 ? " (kost " + kost + (kost === 1 ? " actie" : " acties") + ")" : ""),
+            { id: "btn-raadplegen", klasse: "knop rand", disabled: klaar ? true : null }, raadpleeg), "btn-raadplegen"),
+          laatste ? h("span", { klasse: "uitleg laatstedag", id: "laatste-dag" }, "Dit is de laatste dag.")
+            : fokusMarkeer(knop("Volgende dag", { id: "btn-volgende-dag", klasse: "knop rand" }, volgendeDag), "btn-volgende-dag"),
+          app.bevestigAfronden && !laatste
+            ? h("span", { klasse: "bevestig", role: "group", "aria-label": "Afronden bevestigen" },
+                h("span", null, "Afronden?"),
+                fokusMarkeer(knop("Ja, afronden", { id: "btn-afronden-ja", klasse: "knop hoofd" }, rondAf), "btn-afronden-ja"),
+                knop("Nee, verder spelen", { id: "btn-afronden-nee", klasse: "knop rand" }, function () { app.bevestigAfronden = false; app.fokus = "btn-afronden"; render(); }))
+            : fokusMarkeer(knop("Episode afronden", { id: "btn-afronden", klasse: "knop hoofd" }, function () {
+                if (laatste) { rondAf(); return; }   // op de laatste dag kan er niets meer: meteen afronden, zonder "verder spelen"
+                app.bevestigAfronden = true; app.fokus = "btn-afronden-ja"; render();
+              }), "btn-afronden"))
       )
     );
   }
 
+  // Bijzaken (export, pauzeren, stoppen): onder de patiëntkaart, buiten de hoofdbalk.
+  function bijzaakView() {
+    return h("div", { klasse: "bijzaak", role: "group", "aria-label": "Opslaan en stoppen" },
+      exportKnop(),
+      knop("Pauzeer en sla op", { id: "btn-pauzeer", klasse: "knop rand" }, pauzeer),
+      knop("Stop deze casus", { id: "btn-stop", klasse: "knop rand" }, function () { app.dialoog = { type: "stop" }; app.fokus = "dlg-eerste"; render(); }));
+  }
+
+  // De patiëntkaart: alleen state.zichtbaar. Verandert een veld door een kaart, dan staat de oude waarde kort doorgestreept naast de nieuwe.
   function patientView() {
-    var velden = patientVelden(app.ep, app.spel);
+    var velden = patientVelden(app.ep, app.spel), w = app.wijziging || {};
     return h("section", { klasse: "kaartvlak patient", "aria-labelledby": "patient-kop" },
-      h("h2", { id: "patient-kop", klasse: "klein" }, "Patiëntkaart"),
-      velden.map(function (v) {
-        return h("p", { klasse: "veld" + (v.sleutel === "kop" ? " patientkop" : "") + (v.nieuw ? " nieuw" : ""), "data-veld": v.sleutel },
-          v.kopje ? h("span", { klasse: "kopje" }, v.kopje + ": ") : null, v.tekst,
-          v.nieuw ? h("span", { klasse: "nieuwlabel" }, " Nieuw") : null);
-      })
+      h("h2", { id: "patient-kop", klasse: "klein kaartband" }, "Patiëntkaart"),
+      h("div", { klasse: "patientinhoud" },
+        velden.map(function (v) {
+          var veranderd = Object.prototype.hasOwnProperty.call(w, v.sleutel), oud = veranderd ? w[v.sleutel] : null;
+          return h("p", { klasse: "veld" + (v.sleutel === "kop" ? " patientkop" : "") + (v.nieuw ? " nieuw" : "") + (veranderd ? " veranderd" : ""), "data-veld": v.sleutel },
+            v.kopje ? h("span", { klasse: "kopje" }, v.kopje + ": ") : null,
+            oud ? h("del", { klasse: "oudewaarde" }, h("span", { klasse: "verborgen" }, "eerder: "), oud) : null,
+            oud ? " " : null,
+            h("span", { klasse: "waarde" }, v.tekst),
+            v.nieuw ? h("span", { klasse: "nieuwlabel" }, " Nieuw") : null);
+        }),
+        klachtenView())
     );
   }
 
+  // Klachtenstatus per dag (tekst uit de data), nieuwste dag bovenaan.
+  function klachtenView() {
+    var dagen = dagenModel(app.casus, app.ep, app.spel).filter(function (d) { return d.status || d.waarschuwing; }).reverse();
+    if (!dagen.length) return null;
+    return h("div", { klasse: "klachtendagen", id: "klachtendagen" },
+      h("h3", { id: "klachten-kop" }, "Klachten per dag"),
+      h("ol", { klasse: "klachtlijst", "aria-labelledby": "klachten-kop" }, dagen.map(function (d) {
+        return h("li", { klasse: d.huidig ? "huidig" : null, "data-klachtdag": d.dag },
+          h("span", { klasse: "dagnr" }, "Dag " + d.dag),
+          h("span", { klasse: "klachttekst" }, d.status || "", d.waarschuwing ? h("span", { klasse: "klachtwaarschuwing" }, d.waarschuwing) : null));
+      })));
+  }
+
+  // De hand: per categorie (volgorde van de bibliotheek = de voorschrijfcyclus) een rij speelkaarten. Op de kaart alleen label en dosering.
   function kaartenView() {
-    var st = app.spel;
-    return h("section", { klasse: "kaarten", "aria-label": "Kaarten" },
+    return h("section", { klasse: "kaarten hand", "aria-label": "Kaarten" },
       kaartenPerCategorie(app.casus, app.ep).map(function (grp) {
         var kid = "cat-" + slug(grp.categorie);
         return h("div", { klasse: "categorie " + grp.klasse, role: "group", "aria-labelledby": kid },
-          h("h3", { id: kid }, grp.categorie),
+          h("h3", { id: kid, klasse: "handkop" }, grp.categorie),
           h("div", { klasse: "kaartrij" }, grp.kaarten.map(function (k) {
             var data = kaartVan(app.casus, k.id);
             return fokusMarkeer(knop([h("span", { klasse: "kaartnaam" }, k.label),
@@ -807,36 +935,43 @@
     return h("p", { klasse: "info", id: "verwacht", role: "status" }, regels.map(function (v) { return v.tekst + " op dag " + v.dag + "."; }).join(" "));
   }
 
+  // Een gebeurtenis als kaart op tafel. Het element met data-gebeurtenis bevat alleen de tekst uit de data.
+  function gebeurtenisKaart(ep, id, extraKlasse, dag) {
+    var gm = gebeurtenisModel(ep, id);
+    return h("div", { klasse: "gebeurteniskaart" + (extraKlasse ? " " + extraKlasse : "") },
+      h("p", { klasse: "gb-band" }, "Gebeurtenis" + (dag ? " · dag " + dag : "")),
+      gm.titel ? h("p", { klasse: "gb-titel" }, gm.titel) : null,
+      h("p", { klasse: "banner" + (extraKlasse === "klein" ? " klein" : ""), role: extraKlasse === "nu" ? "status" : null, "data-gebeurtenis": id }, gm.tekst));
+  }
+
   function nieuwVandaagView() {
     var st = app.spel, dagen = dagenModel(app.casus, app.ep, st), nu = dagen[dagen.length - 1];
     var heeft = nu.banners.length || nu.status;
     return h("div", { klasse: "vandaag", "aria-live": "polite" },
-      fokusMarkeer(h("h2", { id: "dag-kop", tabindex: "-1" }, "Dag " + st.dag), "dag-kop"),
-      nu.banners.map(function (b) {
-        return h("p", { klasse: "banner", role: "status", "data-gebeurtenis": b.id }, b.tekst);
-      }),
-      nu.status ? h("p", { klasse: "klachtenstatus", "data-status": "ja" }, h("span", { klasse: "kopje" }, "Patiënt: "), nu.status) : null,
-      nu.waarschuwing ? h("p", { klasse: "waarschuwing", role: "status", id: "aanhoudend" }, nu.waarschuwing,
-        app.ep.escalatie && app.ep.escalatie.uitleg ? " " + app.ep.escalatie.uitleg : null) : null,
-      verwachtView(),
-      !heeft ? h("p", { klasse: "uitleg" }, "Kies een kaart om te spelen.") : null
+      h("div", { klasse: "dagmerk" }, fokusMarkeer(h("h2", { id: "dag-kop", tabindex: "-1" }, "Dag " + st.dag), "dag-kop")),
+      h("div", { klasse: "vandaaginhoud" },
+        nu.banners.map(function (b) { return gebeurtenisKaart(app.ep, b.id, "nu"); }),
+        nu.status ? h("p", { klasse: "klachtenstatus", "data-status": "ja" }, h("span", { klasse: "kopje" }, "Patiënt: "), nu.status) : null,
+        nu.waarschuwing ? h("p", { klasse: "waarschuwing", role: "status", id: "aanhoudend" }, nu.waarschuwing,
+          app.ep.escalatie && app.ep.escalatie.uitleg ? " " + app.ep.escalatie.uitleg : null) : null,
+        verwachtView(),
+        !heeft ? h("p", { klasse: "uitleg" }, "Kies een kaart om te spelen.") : null)
     );
   }
 
   function tijdlijnView() {
     var dagen = dagenModel(app.casus, app.ep, app.spel).slice().reverse();
-    return h("section", { klasse: "kaartvlak tijdlijn", "aria-labelledby": "tijdlijn-kop" },
+    return h("section", { klasse: "tijdlijn", "aria-labelledby": "tijdlijn-kop" },
       h("h2", { id: "tijdlijn-kop", klasse: "klein" }, "Tijdlijn"),
       h("p", { klasse: "uitleg" }, "Nieuwste dag bovenaan."),
       dagen.map(function (d) {
         return h("div", { klasse: "dag" + (d.huidig ? " huidig" : ""), "data-dag": d.dag },
           h("h3", null, "Dag " + d.dag),
-          d.banners.map(function (b) { return h("p", { klasse: "banner klein", "data-gebeurtenis": b.id }, b.tekst); }),
-          d.status ? h("p", { klasse: "klachtenstatus klein" }, h("span", { klasse: "kopje" }, "Patiënt: "), d.status) : null,
-          d.waarschuwing ? h("p", { klasse: "waarschuwing klein" }, d.waarschuwing) : null,
+          d.banners.map(function (b) { return gebeurtenisKaart(app.ep, b.id, "klein"); }),
           d.kaarten.length || d.raadplegingen ? h("ol", { klasse: "gespeeld" },
             d.kaarten.map(function (k) {
-              return h("li", { "data-gespeeld": k.kaart },
+              var data = kaartVan(app.casus, k.kaart);
+              return h("li", { "data-gespeeld": k.kaart, klasse: "minikaart" + (data ? " cat-" + slug(data.categorie) : "") },
                 h("span", { klasse: "titel" }, k.titel),
                 k.na && k.na.soort === "onthuld" ? h("span", { klasse: "onthulling" }, k.na.tekst) : null,
                 k.na && k.na.soort === "effect"
@@ -854,14 +989,15 @@
     return h("div", { klasse: "spel" },
       actiebalk(),
       h("div", { klasse: "raster" },
-        h("aside", { klasse: "links" }, patientView()),
+        h("aside", { klasse: "links" }, patientView(), bijzaakView()),
         h("main", { klasse: "midden" },
-          opslagBalk(),
-          nieuwVandaagView(),
-          app.onthuld && app.onthuld.length ? h("div", { klasse: "onthulbalk", role: "status", id: "onthuld" },
-            h("strong", null, "Nieuw gegeven: "), app.onthuld.join(" ")) : null,
-          app.melding ? h("p", { klasse: app.downloadFout ? "fout" : "info", role: "alert", id: "melding" }, app.melding) : null,
-          g.Engine.eindeBereikt(st) ? h("p", { klasse: "info" }, "De laatste dag is voorbij. Rond de episode af.") : null,
+          h("div", { klasse: "middenkop" },
+            opslagBalk(),
+            nieuwVandaagView(),
+            app.onthuld && app.onthuld.length ? h("div", { klasse: "onthulbalk", role: "status", id: "onthuld" },
+              h("strong", null, "Nieuw gegeven: "), app.onthuld.join(" ")) : null,
+            app.melding ? h("p", { klasse: app.downloadFout ? "fout" : "info", role: "alert", id: "melding" }, app.melding) : null,
+            g.Engine.eindeBereikt(st) ? h("p", { klasse: "info" }, "De laatste dag is voorbij. Rond de episode af.") : null),
           kaartenView()
         ),
         h("aside", { klasse: "rechts" }, tijdlijnView())
@@ -887,24 +1023,60 @@
     app.dialoog = null; app.fokus = "dag-kop";
     render();
   }
+  // Na het tussenscherm: de gewone uitleg bij de start van de episode.
+  function naTijdsprong() {
+    if (app.ep && app.ep.startUitleg) { app.dialoog = { type: "start", tekst: app.ep.startUitleg }; app.fokus = "dlg-eerste"; render(); return; }
+    beginEpisode();
+  }
 
   function sluitDialoog() {
     var d = app.dialoog;
     if (d && d.type === "start") { beginEpisode(); return; }
     if (d && d.type === "rondleiding") { rondleidingKlaar(); return; }
+    if (d && (d.type === "gebeurtenis" || d.type === "tijdsprong")) return;   // alleen met Verder
     app.dialoog = null;
     app.fokus = d && d.kaartId ? "kaart-" + d.kaartId : "btn-raadplegen";
     render();
   }
 
   function dialoogView() {
-    var d = app.dialoog, titel, inhoud;
+    var d = app.dialoog, titel, inhoud, klasse = "dialoog", schermKlasse = "scherm", kop = null;
     if (d.type === "start") {
       titel = "Episode " + episodeNummer(app.casus, app.ep);
       inhoud = [
         h("p", null, "Deze episode duurt " + app.spel.aantalDagen + " dagen. Elke dag kun je een aantal kaarten spelen."),
         h("p", { id: "start-uitleg" }, d.tekst),
         fokusMarkeer(knop("Begin", { klasse: "knop hoofd", id: "btn-begin" }, beginEpisode), "dlg-eerste")
+      ];
+    } else if (d.type === "tijdsprong") {
+      // Tussenscherm: alleen de kopregels van de patiëntkaarten (zichtbare gegevens), de oude en de nieuwe.
+      var oudKop = (d.vorige.patient && d.vorige.patient.zichtbaar && d.vorige.patient.zichtbaar.kop) || "";
+      var nieuwKop = (app.ep.patient && app.ep.patient.zichtbaar && app.ep.patient.zichtbaar.kop) || "";
+      klasse += " sprongdlg"; schermKlasse += " sprong";
+      titel = "Episode " + episodeNummer(app.casus, app.ep);
+      inhoud = [
+        h("div", { klasse: "sprongtafel", id: "tijdsprong" },
+          h("div", { klasse: "sprongkaart oud", "aria-hidden": "true" },
+            h("p", { klasse: "kaartband" }, "Episode " + episodeNummer(app.casus, d.vorige)),
+            h("p", { klasse: "sprongkop" }, oudKop)),
+          h("div", { klasse: "sprongpijl", "aria-hidden": "true" },
+            h("span", { klasse: "sprongpunt" }), h("span", { klasse: "sprongpunt" }), h("span", { klasse: "sprongpunt" })),
+          h("div", { klasse: "sprongkaart nieuw" },
+            h("p", { klasse: "kaartband" }, "Patiëntkaart"),
+            h("p", { klasse: "sprongkop", id: "tijdsprong-kop" }, nieuwKop))),
+        h("p", { klasse: "dlgknoppen sprongknop" }, fokusMarkeer(knop("Verder", { klasse: "knop hoofd", id: "btn-tijdsprong-verder" }, naTijdsprong), "dlg-eerste"))
+      ];
+    } else if (d.type === "gebeurtenis") {
+      klasse += " gebeurtenisdlg"; schermKlasse += " onderbreking";
+      titel = "Dag " + d.dag;
+      inhoud = [
+        h("div", { klasse: "gebeurtenisstapel" }, d.items.map(function (it, i) {
+          return h("div", { klasse: "gebeurteniskaart groot", "data-erkennen": it.id, style: "--i:" + i },
+            h("p", { klasse: "gb-band" }, "Gebeurtenis"),
+            it.titel ? h("p", { klasse: "gb-titel" }, it.titel) : null,
+            h("p", { klasse: "gb-tekst" }, it.tekst));
+        })),
+        h("p", { klasse: "dlgknoppen" }, fokusMarkeer(knop("Verder", { klasse: "knop hoofd", id: "btn-gebeurtenis-verder" }, erkenGebeurtenis), "dlg-eerste"))
       ];
     } else if (d.type === "stop") {
       titel = "Deze casus stoppen?";
@@ -927,6 +1099,8 @@
     } else if (d.type === "kaart") {
       var kd = kaartVan(app.casus, d.kaartId), sp = app.spel, eff = effectVoor(kd, app.ep.id), doelenNu = null;
       titel = kd.label;
+      klasse += " grotekaart cat-" + slug(kd.categorie);
+      kop = h("p", { klasse: "kaartband" }, kd.categorie);
       if (isDoelkaart(app.casus, app.ep, d.kaartId)) {
         try { doelenNu = toegestaneDoelen(app.casus, app.ep, sp, d.kaartId); } catch (e) { doelenNu = []; }
       }
@@ -951,6 +1125,8 @@
       ];
     } else {
       var kaart = kaartVan(app.casus, d.kaartId);
+      klasse += " grotekaart cat-" + slug(kaart.categorie);
+      kop = h("p", { klasse: "kaartband" }, kaart.categorie);
       if (d.stap === 1) {
         titel = kaart.label + ": kies een doel";
         inhoud = [h("div", { klasse: "keuzes" }, d.doelen.map(function (x, i) {
@@ -967,19 +1143,19 @@
       inhoud.push(h("p", { klasse: "dlgknoppen" }, knop("Annuleren", { klasse: "knop rand", id: "btn-annuleer" }, sluitDialoog)));
     }
     var dlg = h("div", {
-      klasse: "dialoog", role: "dialog", "aria-modal": "true", "aria-labelledby": "dlg-titel",
+      klasse: klasse, role: d.type === "gebeurtenis" ? "alertdialog" : "dialog", "aria-modal": "true", "aria-labelledby": "dlg-titel",
       toets: function (e) {
         if (e.key === "Escape") { sluitDialoog(); return; }
         if (e.key === "Tab" && typeof dlg.querySelectorAll === "function") {
-          var f = dlg.querySelectorAll("button:not([disabled])");
+          var f = dlg.querySelectorAll("button:not([disabled]), summary");
           if (!f.length) return;
           var eerste = f[0], laatste = f[f.length - 1];
           if (e.shiftKey && doc.activeElement === eerste) { e.preventDefault(); laatste.focus(); }
           else if (!e.shiftKey && doc.activeElement === laatste) { e.preventDefault(); eerste.focus(); }
         }
       }
-    }, h("h2", { id: "dlg-titel" }, titel), inhoud);
-    return h("div", { klasse: "scherm", klik: function (e) { if (e.target === e.currentTarget) sluitDialoog(); } }, dlg);
+    }, kop, h("h2", { id: "dlg-titel" }, titel), inhoud);
+    return h("div", { klasse: schermKlasse, klik: function (e) { if (e.target === e.currentTarget) sluitDialoog(); } }, dlg);
   }
 
   /* ---------- eind ---------- */
@@ -990,75 +1166,131 @@
     return n + " van " + van + ".";
   }
 
+  // Een kaart op tafel bij de beoordeling: voorkant (categorie en label) en achterkant (categorie, label en nadeel uit de uitkomst).
+  function tafelKaart(item, nadeel, stijl, alOm) {
+    var data = kaartVan(app.casus, item.kaart), cat = data ? data.categorie : "", tekst = nadeelTekst(nadeel);
+    return h("li", { klasse: "tafelkaart" + (cat ? " cat-" + slug(cat) : "") + (alOm ? " weggelaten" : ""), "data-downside": item.label, style: stijl },
+      h("div", { klasse: "tk-binnen" },
+        alOm ? null : h("div", { klasse: "tk-voor", "aria-hidden": "true" },
+          h("p", { klasse: "kaartband" }, cat), h("p", { klasse: "tk-label" }, item.label)),
+        h("div", { klasse: "tk-achter" },
+          h("p", { klasse: "kaartband" }, cat),
+          h("strong", { klasse: "tk-label" }, item.label),
+          tekst ? h("span", { klasse: "tk-nadeel" }, tekst) : h("span", { klasse: "tk-geen", "aria-hidden": "true" }, "—"))));
+  }
+
+  // Beoordeling: de gespeelde kaarten liggen open en klappen één voor één om naar hun nadeel. Daarna wat er met de patiënt gebeurde en
+  // pas dan de hint (of bij een gehaalde poort score, profiel en de opleider). Bij een verloren episode eerst de escalatie.
+  // De volgorde staat in de DOM; de animatie (CSS, met vertraging per stap) speelt alleen bij het eerste beeld en is over te slaan.
   function eindScherm() {
     var m = evaluatieModel(app.uitkomst), epNr = episodeNummer(app.casus, app.ep);
     var gespeeld = gespeeldeKaarten(app.casus, app.uitkomst, app.spel && app.spel.tijdlijn);
-    var weg = m.downsides.filter(function (d) { return d.soort === "weggelaten"; });
-    function downsideLijst(kop, items) {
-      if (!items.length) return null;
-      return h("div", { klasse: "dsgroep" }, h("h3", null, kop),
-        h("ul", { klasse: "omgeklapt" }, items.map(function (d) {
-          var tekst = nadeelTekst(d.tekst !== undefined ? d.tekst : d.nadeel);
-          return h("li", { "data-downside": d.label }, h("strong", null, d.label), tekst ? h("span", null, tekst) : null);
-        })));
+    var weg = lijst(app.uitkomst && app.uitkomst.downsides).filter(function (d) { return d && d.soort === "weggelaten"; });
+    var anim = !!app.eindAnimatie && !geenBeweging();
+    app.eindAnimatie = false;
+    var t = 0;
+    function v(ms) { return "--v:" + Math.round(ms) + "ms"; }
+    var eps = lijst(app.casus.episodes), volgendeEp = eps[epNr] || null;
+
+    var escalatie = null;
+    if (m.verloren) {
+      escalatie = h("div", { klasse: "escalatie" },
+        h("h2", { id: "uitslag-kop", klasse: "onthul", style: v(0) }, "Episode verloren"),
+        m.eindGebeurtenis ? h("div", { klasse: "onthul", style: v(250) }, gebeurtenisKaart(app.ep, m.eindGebeurtenis, "eind")) : null,
+        m.eindTekst ? h("p", { klasse: "eindtekst onthul", id: "eindtekst", style: v(700) }, m.eindTekst) : null);
+      t = 2000;
     }
-    var kern, eps = lijst(app.casus.episodes), volgendeEp = eps[episodeNummer(app.casus, app.ep)] || null;
+
+    var tTafel = t, stap = gespeeld.length ? Math.max(160, Math.min(380, 4200 / gespeeld.length)) : 0;
+    t += 1000;   // eerst even de voorkanten op tafel
+    var tafel = null;
+    if (gespeeld.length || weg.length) {
+      var gesp = gespeeld.map(function (x, i) { return tafelKaart(x, x.nadeel, v(tTafel) + ";--f:" + Math.round(t + i * stap) + "ms", false); });
+      t += gespeeld.length ? (gespeeld.length - 1) * stap + 520 + 300 : 0;
+      var tWeg = t;
+      if (weg.length) t += 650;
+      tafel = h("section", { klasse: "tafelsectie", "aria-labelledby": "ds-kop" },
+        h("h2", { id: "ds-kop", klasse: "onthul", style: v(tTafel) }, "Wat je keuzes kosten"),
+        gespeeld.length ? h("div", { klasse: "dsgroep" },
+          h("h3", { klasse: "onthul", style: v(tTafel) }, "Gespeelde kaarten"),
+          h("ul", { klasse: "omgeklapt tafel" }, gesp)) : null,
+        weg.length ? h("div", { klasse: "dsgroep onthul", style: v(tWeg) },
+          h("h3", null, "Niet gespeelde kaarten"),
+          h("ul", { klasse: "omgeklapt tafel" }, weg.map(function (d) {
+            return tafelKaart({ kaart: d.kaart, label: d.label }, d.tekst, "", true);
+          }))) : null);
+    }
+
+    var knoppen, verslag;
     if (!m.gehaald) {
       // Volgorde (besluit Bart, 14 november 2026): eerst wat er met de patiënt gebeurde, dan één hint van de opleider.
-      var eindBanner = m.verloren && m.eindGebeurtenis ? gebeurtenisTekst(app.ep, m.eindGebeurtenis) : "";
-      kern = h("section", { klasse: "kaartvlak uitslag niet" + (m.verloren ? " verloren" : ""), "aria-labelledby": "uitslag-kop" },
-        h("h2", { id: "uitslag-kop" }, m.verloren ? "Episode verloren" : "Nog niet veilig genoeg"),
-        eindBanner ? h("p", { klasse: "banner", "data-gebeurtenis": m.eindGebeurtenis }, eindBanner) : null,
-        m.eindTekst ? h("p", { klasse: "eindtekst", id: "eindtekst" }, m.eindTekst) : null,
-        m.gevolgen.length ? h("div", { klasse: "gevolgen", id: "gevolgen" },
+      var tGevolg = t;
+      t += m.gevolgen.length ? 1500 : 500;
+      var tHint = t;
+      t += m.hint ? 900 : 0;
+      knoppen = h("p", { klasse: "dlgknoppen onthul", style: v(t) },
+        fokusMarkeer(knop("Opnieuw", { id: "btn-opnieuw", klasse: "knop hoofd" }, function () { startEpisode(app.ep.id); }), "btn-opnieuw"),
+        knop("Terug naar start", { id: "btn-terug", klasse: "knop rand" }, function () { naarScherm("kies"); }));
+      verslag = h("div", { klasse: "verslag onthul", style: v(m.verloren ? Math.max(0, tGevolg - 200) : tGevolg) },
+        m.verloren ? null : h("h2", { id: "uitslag-kop", klasse: "onthul", style: v(tGevolg) }, "Nog niet veilig genoeg"),
+        m.gevolgen.length ? h("div", { klasse: "gevolgen onthul", id: "gevolgen", style: v(tGevolg) },
           h("h3", { id: "gevolgen-kop" }, gevolgenKop(app.ep)),
-          h("ul", { "aria-labelledby": "gevolgen-kop" }, m.gevolgen.map(function (t, i) {
-            return h("li", { klasse: "gevolg", "data-gevolg": "ja", id: i === 0 ? "gevolg" : null }, t);
+          h("ul", { "aria-labelledby": "gevolgen-kop" }, m.gevolgen.map(function (tk, i) {
+            return h("li", { klasse: "gevolg", "data-gevolg": "ja", id: i === 0 ? "gevolg" : null }, tk);
           }))) : null,
-        m.hint ? h("div", { klasse: "hint", id: "hint" },
+        m.hint ? h("div", { klasse: "hint onthul", id: "hint", style: v(tHint) },
           h("h3", { id: "hint-kop" }, "Hint van je opleider"),
           h("p", { klasse: "vraag", id: "socratisch" }, m.hint)) : null,
-        m.anderen ? h("p", { klasse: "uitleg", id: "anderen" }, m.anderen) : null,
-        h("p", { klasse: "dlgknoppen" },
-          fokusMarkeer(knop("Opnieuw", { id: "btn-opnieuw", klasse: "knop hoofd" }, function () { startEpisode(app.ep.id); }), "btn-opnieuw"),
-          knop("Terug naar start", { id: "btn-terug", klasse: "knop rand" }, function () { naarScherm("kies"); })));
+        m.anderen ? h("p", { klasse: "uitleg onthul", id: "anderen", style: v(t) }, m.anderen) : null,
+        knoppen);
     } else {
-      kern = h("section", { klasse: "kaartvlak uitslag goed", "aria-labelledby": "uitslag-kop" },
-        h("h2", { id: "uitslag-kop" }, "Veiligheid gehaald"),
-        m.scores.length ? h("div", { klasse: "scores" }, m.scores.map(function (s) {
+      var tKop = t; t += 1100;
+      var tProfiel = t; if (m.profiel) t += 900;
+      var tOpleider = t; if ((m.profiel && m.profiel.reflectievraag) || m.extraVragen.length) t += 900;
+      var tZicht = t; if (m.zichtbaar.length) t += 600;
+      knoppen = h("p", { klasse: "dlgknoppen onthul", style: v(t) },
+        volgendeEp ? fokusMarkeer(knop("Volgende episode", { id: "btn-volgende-episode", klasse: "knop hoofd" }, function () { startEpisode(volgendeEp.id, true); }), "btn-volgende-episode") : null,
+        knop("Opnieuw", { id: "btn-nogmaals", klasse: "knop rand" }, function () { startEpisode(app.ep.id); }),
+        fokusMarkeer(knop("Terug naar start", { id: "btn-terug", klasse: "knop rand" }, function () { naarScherm("kies"); }), "btn-terug"));
+      verslag = h("div", { klasse: "verslag onthul", style: v(tKop) },
+        h("h2", { id: "uitslag-kop", klasse: "onthul", style: v(tKop) }, "Veiligheid gehaald"),
+        m.scores.length ? h("div", { klasse: "scores onthul", style: v(tKop + 300) }, m.scores.map(function (s) {
           var punten = [];
           for (var i = 1; i <= SCHAAL; i++) punten.push(h("span", { klasse: "dot" + (i <= s.waarde ? " aan" : ""), "aria-hidden": "true" }, i <= s.waarde ? "●" : "○"));
           return h("p", { klasse: "score", "data-score": s.as }, h("span", { klasse: "scorenaam" }, s.naam), " ", punten, " ",
             h("strong", null, s.waarde + " van " + SCHAAL));
         })) : null,
-        m.profiel ? h("div", { klasse: "profiel" },
+        m.profiel ? h("div", { klasse: "profiel onthul", style: v(tProfiel) },
           h("h3", null, "Jouw voorschrijfprofiel"),
           h("p", { klasse: "profielnaam", id: "profiel" }, m.profiel.naam)) : null,
         // Reflectievraag en extra feedback staan samen onder één kop.
-        (m.profiel && m.profiel.reflectievraag) || m.extraVragen.length ? h("div", { klasse: "extra", id: "opleider" },
+        (m.profiel && m.profiel.reflectievraag) || m.extraVragen.length ? h("div", { klasse: "extra onthul", id: "opleider", style: v(tOpleider) },
           h("h3", { id: "opleider-kop" }, "Van je opleider"),
           m.profiel && m.profiel.reflectievraag ? h("p", { klasse: "vraag", id: "reflectie" }, m.profiel.reflectievraag) : null,
-          m.extraVragen.length ? h("ul", null, m.extraVragen.map(function (v) { return h("li", { "data-extra": "ja" }, v); })) : null) : null,
-        m.zichtbaar.length ? h("div", { klasse: "zichtbaar" }, h("h3", null, "Wat je niet zag"),
-          h("ul", null, m.zichtbaar.map(function (v) { return h("li", { "data-zichtbaar": "ja" }, v); }))) : null,
-        h("p", { klasse: "dlgknoppen" },
-          volgendeEp ? fokusMarkeer(knop("Volgende episode", { id: "btn-volgende-episode", klasse: "knop hoofd" }, function () { startEpisode(volgendeEp.id); }), "btn-volgende-episode") : null,
-          knop("Opnieuw", { id: "btn-nogmaals", klasse: "knop rand" }, function () { startEpisode(app.ep.id); }),
-          fokusMarkeer(knop("Terug naar start", { id: "btn-terug", klasse: "knop rand" }, function () { naarScherm("kies"); }), "btn-terug")));
+          m.extraVragen.length ? h("ul", null, m.extraVragen.map(function (q) { return h("li", { "data-extra": "ja" }, q); })) : null) : null,
+        m.zichtbaar.length ? h("div", { klasse: "zichtbaar onthul", style: v(tZicht) }, h("h3", null, "Wat je niet zag"),
+          h("ul", null, m.zichtbaar.map(function (q) { return h("li", { "data-zichtbaar": "ja" }, q); }))) : null,
+        knoppen);
     }
-    return h("main", { klasse: "smal eind" },
-      fokusMarkeer(h("h1", { tabindex: "-1" }, "Beoordeling episode " + epNr), "kop"),
+
+    var hoofd = h("main", { klasse: "smal eind " + (anim ? "animeert" : "direct") });
+    var overslaan = anim ? knop("Animatie overslaan", { id: "btn-overslaan", klasse: "knop rand overslaan", style: v(t) }, function () {
+      hoofd.className = hoofd.className.replace(/\banimeert\b/, "direct");
+      try { var b = hoofd.querySelector(".verslag .dlgknoppen button"); if (b) b.focus(); } catch (e) { /* geen focus */ }
+    }) : null;
+    voeg(hoofd, [
+      h("div", { klasse: "eindkop" }, fokusMarkeer(h("h1", { tabindex: "-1" }, "Beoordeling episode " + epNr), "kop"), overslaan),
       opslagBalk(),
       app.opslagFout ? h("p", { klasse: "waarschuwing", role: "alert" }, app.opslagFout) : null,
-      gespeeld.length || weg.length ? h("section", { klasse: "kaartvlak downsides", "aria-labelledby": "ds-kop" },
-        h("h2", { id: "ds-kop" }, "Wat je keuzes kosten"),
-        downsideLijst("Gespeelde kaarten", gespeeld), downsideLijst("Niet gespeelde kaarten", weg)) : null,
-      kern,
-      h("p", { klasse: "uitleg", id: "legedagen" }, "Dagen zonder actie: " + legeDagenTekst()),
-      meldingView(),
-      app.testmodus ? h("p", { klasse: "waarschuwing", id: "testmodus-melding" }, "Testmodus: deze poging telt niet mee als meting.") : null,
-      h("p", { klasse: "onderknoppen" }, exportKnop(), " ", overzichtKnop("eind"))
-    );
+      h("section", { klasse: "uitslag " + (m.gehaald ? "goed" : "niet") + (m.verloren ? " verloren" : ""), "aria-labelledby": "uitslag-kop" },
+        escalatie, tafel, verslag),
+      h("div", { klasse: "onthul eindvoet", style: v(t) },
+        h("p", { klasse: "uitleg", id: "legedagen" }, "Dagen zonder actie: " + legeDagenTekst()),
+        meldingView(),
+        app.testmodus ? h("p", { klasse: "waarschuwing", id: "testmodus-melding" }, "Testmodus: deze poging telt niet mee als meting.") : null,
+        h("p", { klasse: "onderknoppen" }, exportKnop(), " ", overzichtKnop("eind")))
+    ]);
+    return hoofd;
   }
 
   /* ====================================================================== */
