@@ -773,13 +773,15 @@ window.CASUSSEN = [
  "gevolgzinnen": [
   { "episode": "E1", "invariant": "I1", "tekst": "Mevrouw weet niet wanneer ze moet bellen.", "vrijgegeven": true },
   { "episode": "E1", "invariant": "I3", "tekst": "Er is geen moment om alsnog te starten als de klachten aanhouden.", "vrijgegeven": true },
-  { "episode": "E2", "invariant": "I5", "tekst": "De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.", "vrijgegeven": true },
+  { "episode": "E2", "invariant": "I5", "tekst": "De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.", "vrijgegeven": true,
+  "als": { "p": "nietGespeeld", "kaart": "G2" } },
   { "episode": "E2", "invariant": "I7", "tekst": "De kaliumspiegel is onbekend.", "vrijgegeven": true,
     "als": { "p": "nietGespeeld", "kaart": "O2" } },
   { "episode": "E3", "invariant": "I9", "tekst": "Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.", "vrijgegeven": true,
     "als": { "p": "en", "args": [ { "p": "nietGespeeld", "K": { "kaart": "O2" } }, { "p": "nietGespeeld", "K": { "kaart": "Ev2", "doel": "spironolacton" } } ] } },
   { "episode": "E3", "invariant": "I14", "tekst": "Na 48 uur geen verbetering.", "vrijgegeven": true },
-  { "episode": "E3", "invariant": "I15", "tekst": "De nierfunctie daalt verder en het kalium stijgt.", "vrijgegeven": true }
+  { "episode": "E3", "invariant": "I15", "tekst": "De nierfunctie daalt verder en het kalium stijgt.", "vrijgegeven": true,
+  "als": { "p": "en", "args": [ { "p": "nietGespeeld", "K": { "kaart": "B3", "doel": "spironolacton" } }, { "p": "nietGespeeld", "K": { "kaart": "V6", "doel": "lisinopril", "optie": "halveren" } }, { "p": "nietGespeeld", "K": { "kaart": "N3" } }, { "p": "nietGespeeld", "K": { "kaart": "Ev1" } } ] } }
  ],
  "rollen": { "wissel": "B1", "stop": "B2", "pauzeer": "B3", "hervat": "B5", "uitgesteld": "V2" },
  "titel": "Casus UWI in de eerste lijn — tutorialcasus Epic green cards",

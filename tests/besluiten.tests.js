@@ -327,3 +327,17 @@
     T.waar(bron.indexOf('"Hint van je opleider"') > 0 && bron.indexOf('"Van je opleider"') > 0, "de koppen staan in de interface");
   });
 })(typeof window !== "undefined" ? window : globalThis);
+
+/* Eindcontrole PR 1 (F1, F2 casustrouw): de gevolgzinnen bij I5 (E2) en I15 (E3) volgen de casusvoorwaarde
+   ('Nitrofurantoïne zonder G2'; 'Geen sick day-maatregelen' = geen van de vier). */
+(function () {
+  var T = window.Test, G = "besluiten";
+  function zin(ep, inv) { return window.CASUSSEN[0].gevolgzinnen.filter(function (z) { return z.episode === ep && z.invariant === inv; })[0]; }
+  T.registreer(G, "gevolgzin I5 (E2) en I15 (E3) hebben een voorwaarde gelijk aan 'zichtbaar als een kaart ontbreekt'", function () {
+    var c = window.CASUSSEN[0];
+    var i5 = zin("E2", "I5"), i15 = zin("E3", "I15");
+    T.waar(i5 && i5.als && i5.als.p === "nietGespeeld" && i5.als.kaart === "G2", "I5: alleen zonder G2");
+    var z = c.episodes[2].zichtbaarAlsOntbreekt[0].trigger.args.slice(1);
+    T.waar(i15 && i15.als && JSON.stringify(i15.als.args) === JSON.stringify(z), "I15: alleen als geen van de vier maatregelen is gespeeld");
+  });
+})();
