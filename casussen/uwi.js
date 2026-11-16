@@ -6,7 +6,7 @@
 window.CASUSSEN = [
 {
  "id": "uwi-eerstelijn",
- "versie": "1.4",
+ "versie": "1.5",
  "limiet": 1,
  "regelnamen": [
   {
@@ -578,7 +578,11 @@ window.CASUSSEN = [
      }
     }
    ]
-  }
+  },
+  { "episode": "E2", "invariant": "I17", "naam": "Lisinopril verdubbelen" },
+  { "episode": "E2", "invariant": "I18", "naam": "Wisselen naar een resistent middel" },
+  { "episode": "E3", "invariant": "I17", "naam": "Lisinopril verdubbelen" },
+  { "episode": "E3", "invariant": "I18", "naam": "Wisselen naar een resistent middel" }
  ],
  "maten": [
   {
@@ -805,6 +809,13 @@ window.CASUSSEN = [
   {"episode": "E3", "invariant": "I13", "tekst": "Het clavulaanzuur stapelt bij deze nierfunctie.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De downside van V8: 'Bij eGFR < 30 stapelt clavulaanzuur'."},
   {"episode": "E3", "invariant": "I16", "tekst": "Er is binnen 48 uur geen contact geweest.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De regel I16: 'Geen contact binnen 48 uur, of geen verwijzing als ze dan niet beter is'.", "als": {"p": "niet", "arg": {"p": "binnenBeurten", "K": {"kaart": "Ev1"}, "naGebeurtenis": "A", "n": 2}}},
   {"episode": "E3", "invariant": "I16", "tekst": "Mevrouw is na 48 uur niet beter en is niet verwezen.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De regel I16: 'Geen contact binnen 48 uur, of geen verwijzing als ze dan niet beter is'.", "als": {"p": "en", "args": [{"p": "klachten", "waarde": "geenVerbetering48"}, {"p": "nietGespeeld", "K": {"kaart": "Ev3"}}]}}
+ ,
+  // Besluit Bart, 16 november 2026: lisinopril verdubbelen (I17) en wisselen naar een resistent middel (I18) zijn veiligheidsregels.
+  // De zinnen zijn een concept, overgenomen van een bestaande zin in de casus (afgeleidUit).
+  {"episode": "E2", "invariant": "I17", "tekst": "De nierfunctie daalt verder en het kalium stijgt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De zin bij 'Geen sick day-maatregelen' in episode 3."},
+  {"episode": "E3", "invariant": "I17", "tekst": "De nierfunctie daalt verder en het kalium stijgt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De zin bij 'Geen sick day-maatregelen' in episode 3."},
+  {"episode": "E2", "invariant": "I18", "tekst": "De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De zin bij I8 (sectie 11)."},
+  {"episode": "E3", "invariant": "I18", "tekst": "De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De zin bij I8 (sectie 11)."}
  ],
  // Besluit Bart, 15 november 2026: een route die de poort haalt maar bij geen profiel van de episode past, krijgt dit profiel.
  // Naam en reflectievraag zijn een concept ter goedkeuring.
@@ -1939,9 +1950,22 @@ window.CASUSSEN = [
   {
    "id": "TODO_BART-C5",
    "vraag": "De casusroute 'Rand van de kaart: na 48 uur geen verbetering → verwijzen' eindigt in het spel in sepsis: na het verwijzen loopt de episode door (afronden spoelt door tot dag 14), er is geen werkzaam antibioticum en vier volle dagen na de weefselinvasie volgt sepsis, dus de episode is verloren. Wat moet er na Verwijzen gebeuren: eindigt de episode daar, stopt de teller van de aanhoudende klachten, of blijft het zo?",
-   "gekozenLezing": "Niets veranderd: na Verwijzen loopt de episode door en gelden de gewone regels. Wie na het verwijzen alsnog een werkzaam antibioticum start, haalt de poort; wie dat niet doet, verliest de episode door sepsis. Er is geen regel verzonnen die de episode bij Verwijzen laat eindigen.",
-   "plek": "kaarten[Ev3]; E3.escalatie"
-  }
+   "gekozenLezing": "Na Verwijzen stopt de episode meteen, op dat moment. Daarna volgt de gewone beoordeling (poort, score, profiel) op de stand van dat moment, plus één zin of verwijzen terecht was. Terecht = de status 'Na 48 uur geen verbetering.' is vóór of op de dag van het verwijzen voorgekomen. Niet terecht kost (zoals al in de conceptlijst) 1 punt doelmatigheid, maar is geen veiligheidsregel.",
+   "plek": "kaarten[Ev3]; E3.escalatie",
+   "besluit": "Beslist door Bart op 16 november 2026: na Verwijzen stopt de episode, met een beoordeling of verwijzen terecht was."
+  },
+  { "id": "TODO_BART-C6", "vraag": "Concepttekst ter goedkeuring: lisinopril verdubbelen is sinds 16 november 2026 een veiligheidsregel (I17, episode 2 en 3). Als hint verschijnt 'Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?' en als gevolg bij de pati\u00ebnt 'De nierfunctie daalt verder en het kalium stijgt.' (dezelfde zin als bij de sick day in episode 3). Keur je deze teksten en de ernst (2, net zo ernstig als nitrofuranto\u00efne bij lage nierfunctie) goed of pas je ze aan?",
+   "gekozenLezing": "Schending zodra Dosis aanpassen op lisinopril met de optie 'verdubbelen' is gespeeld, op elk moment in episode 2 en 3. Hint en gevolgzin zijn een concept.",
+   "plek": "E2.invarianten.I17; E3.invarianten.I17; casus.gevolgzinnen" },
+  { "id": "TODO_BART-C7", "vraag": "Concepttekst ter goedkeuring: wisselen naar een middel waarvoor de bacterie resistent is, is sinds 16 november 2026 een veiligheidsregel (I18, episode 2 en 3). Als hint verschijnt 'Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?' en als gevolg bij de pati\u00ebnt 'De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.' (dezelfde zin als bij I8). Keur je deze teksten en de ernst (4, net zo ernstig als I8) goed of pas je ze aan?",
+   "gekozenLezing": "Schending als de speler wisselt naar een middel waarvan hij op dat moment kan weten dat de bacterie er resistent voor is: na de kweekuitslag (trimethoprim; in episode 3 ook amoxicilline), en in episode 3 ook na Eerdere kweekuitslagen opvragen (trimethoprim). Een wissel vóór die informatie is geen schending van deze regel; doorgaan met een resistent middel blijft onder I8 vallen. Hint en gevolgzin zijn een concept.",
+   "plek": "E2.invarianten.I18; E3.invarianten.I18; casus.gevolgzinnen" },
+  { "id": "TODO_BART-C8", "vraag": "Concepttekst ter goedkeuring: na Verwijzen stopt de episode (besluit 16 november 2026) en het beoordelingsscherm zegt of verwijzen terecht was. Terecht: 'Verwijzen was hier terecht: na 48 uur was er geen verbetering.' Niet terecht: 'Verwijzen was hier nog niet nodig: mevrouw was nog niet 48 uur zonder verbetering.' Keur je deze teksten goed of pas je ze aan?",
+   "gekozenLezing": "De twee zinnen staan letterlijk in de data (episode 3, einde na Verwijzen) en verschijnen op het beoordelingsscherm, ook als de poort niet gehaald is.",
+   "plek": "E3.eindeNaKaart" },
+  { "id": "TODO_BART-C9", "vraag": "Concepttekst ter goedkeuring: wie verwijst terwijl de termijn van een eis nog loopt, kan die eis niet meer halen. Voorstel: twee eisen vervallen bij verwijzen. (1) De sick day-maatregelen (I15) vervallen als Verwijzen valt op de dag van de uitdroging of de dag erna. (2) Contact binnen 48 uur (I16) en doorgaan met nitrofurantoïne of fosfomycine (I10) vervallen als Verwijzen valt op de dag van de weefselinvasie of de dag erna. Alle andere regels blijven gelden op de stand van het verwijzen. Zonder (1) kan wie terecht verwijst in de volgorde weefselinvasie-uitdroging de poort niet halen: 'Na 48 uur geen verbetering.' valt dan op dezelfde dag als de uitdroging. Akkoord, of anders?",
+   "gekozenLezing": "Zo gebouwd, als concept. Telt alleen als de episode door Verwijzen eindigde.",
+   "plek": "E3.eindeNaKaart[0].vervalt" }
  ],
  "episodes": []
 }
@@ -2362,6 +2386,33 @@ window.CASUSSEN[0].episodes.push({
       bron: "NHG; hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten",
       TODO_BART: "I8 (episode 2): casus zegt 'hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten'. Hoeveel beurten na de kweekuitslag (C) mag het resistente middel nog doorlopen, en vanaf wanneer 'houden de klachten aan'?",
       TODO_BART_vroegAfronden: "Vroeg afronden vóór de kweekuitslag (gebeurtenis C) ontloopt I8: de uitslag is dan nog niet gemeld, dus het resistente middel telt niet als doorgelopen. Moet afronden pas kunnen nadat C geweest is (instelling 'afronden pas na de gebeurtenissen')?"
+    },
+    {
+      // Besluit Bart, 16 november 2026: lisinopril verdubbelen is een veiligheidsregel (poort). Hint en ernst: concept.
+      id: "I17",
+      ernst: 2,
+      geldtIn: ["*"],
+      altijdFout: "Lisinopril verdubbelen",
+      geldtInTekst: "E2, E3",
+      predicaat: { p: "gespeeld", kaart: "V6", doel: "lisinopril", optie: "verdubbelen" },
+      vraag: "Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?",
+      concept: true,
+      bron: "Bart (besluit 16 november 2026)",
+      TODO_BART: "Concepttekst ter goedkeuring: lisinopril verdubbelen is sinds 16 november 2026 een veiligheidsregel (I17, episode 2 en 3). Als hint verschijnt 'Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?' en als gevolg bij de pati\u00ebnt 'De nierfunctie daalt verder en het kalium stijgt.' (dezelfde zin als bij de sick day in episode 3). Keur je deze teksten en de ernst (2, net zo ernstig als nitrofuranto\u00efne bij lage nierfunctie) goed of pas je ze aan?"
+    },
+    {
+      // Besluit Bart, 16 november 2026: wisselen naar een middel waarvoor de bacterie resistent is, is een veiligheidsregel (poort).
+      // Telt vanaf het moment dat de speler de resistentie kan kennen (kweekuitslag). Hint en ernst: concept.
+      id: "I18",
+      ernst: 4,
+      geldtIn: ["*"],
+      altijdFout: "Wisselen naar een middel waarvoor de bacterie resistent is",
+      geldtInTekst: "E2, E3",
+      predicaat: { p: "gespeeld", kaart: "B1", doel: "V5", naGebeurtenis: "C" },
+      vraag: "Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?",
+      concept: true,
+      bron: "Bart (besluit 16 november 2026)",
+      TODO_BART: "Concepttekst ter goedkeuring: wisselen naar een middel waarvoor de bacterie resistent is, is sinds 16 november 2026 een veiligheidsregel (I18, episode 2 en 3). Als hint verschijnt 'Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?' en als gevolg bij de pati\u00ebnt 'De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.' (dezelfde zin als bij I8). Keur je deze teksten en de ernst (4, net zo ernstig als I8) goed of pas je ze aan?"
     }
   ],
   score: {
@@ -2804,6 +2855,25 @@ window.CASUSSEN[0].episodes.push({
       tekst: "Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne.",
       zet: { resistent: ["V5", "V10"], gevoelig: ["V8", "V7", "V4", "V3"] },
       TODO_BART: "Een tweede kweekuitslag in episode 3 (nieuwe O1 na weefselinvasie): voorlopig komt er een tweede kweekuitslag, 3 dagen na de nieuwe kweek, met dezelfde bacterie en dezelfde gevoeligheden. Kan de gevoeligheid bij weefselinvasie afwijken? (Vraag voor de huisarts.) De 3 dagen zijn Barts keuze; de oorspronkelijke 2–4 dagen berusten op geen van de genoemde bronnen [G] en zijn niet geverifieerd."
+    }
+  ],
+  // Besluit Bart, 16 november 2026: na Verwijzen stopt de episode, met een beoordeling of verwijzen terecht was.
+  // Terecht = 'Na 48 uur geen verbetering.' is vóór of op de dag van het verwijzen voorgekomen. De zinnen zijn een concept.
+  eindeNaKaart: [
+    {
+      kaart: "Ev3",
+      terecht: { p: "klachten", waarde: "geenVerbetering48", op: { totEnMetKaart: { kaart: "Ev3" } } },
+      tekstTerecht: "Verwijzen was hier terecht: na 48 uur was er geen verbetering.",
+      tekstOnterecht: "Verwijzen was hier nog niet nodig: mevrouw was nog niet 48 uur zonder verbetering.",
+      // Concept: eisen waarvan de termijn nog liep, vervallen bij verwijzen binnen die termijn (de tweede lijn neemt het over).
+      vervalt: [
+        { invariant: "I15", als: { p: "binnenBeurten", K: { kaart: "Ev3" }, naGebeurtenis: "B", n: 2 } },
+        { invariant: "I16", als: { p: "binnenBeurten", K: { kaart: "Ev3" }, naGebeurtenis: "A", n: 2 } },
+        { invariant: "I10", als: { p: "binnenBeurten", K: { kaart: "Ev3" }, naGebeurtenis: "A", n: 2 } }
+      ],
+      TODO_BART_vervalt: "Concepttekst ter goedkeuring: wie verwijst terwijl de termijn van een eis nog loopt, kan die eis niet meer halen. Voorstel: twee eisen vervallen bij verwijzen. (1) De sick day-maatregelen (I15) vervallen als Verwijzen valt op de dag van de uitdroging of de dag erna. (2) Contact binnen 48 uur (I16) en doorgaan met nitrofurantoïne of fosfomycine (I10) vervallen als Verwijzen valt op de dag van de weefselinvasie of de dag erna. Alle andere regels blijven gelden op de stand van het verwijzen. Zonder (1) kan wie terecht verwijst in de volgorde weefselinvasie-uitdroging de poort niet halen: 'Na 48 uur geen verbetering.' valt dan op dezelfde dag als de uitdroging. Akkoord, of anders?",
+      concept: true,
+      TODO_BART: "Concepttekst ter goedkeuring: na Verwijzen stopt de episode (besluit 16 november 2026) en het beoordelingsscherm zegt of verwijzen terecht was. Terecht: 'Verwijzen was hier terecht: na 48 uur was er geen verbetering.' Niet terecht: 'Verwijzen was hier nog niet nodig: mevrouw was nog niet 48 uur zonder verbetering.' Keur je deze teksten goed of pas je ze aan?"
     }
   ],
   werkzaamheid: {
@@ -3255,6 +3325,40 @@ window.CASUSSEN[0].episodes.push({
       vraag: "Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?",
       bron: "NHG",
       TODO_BART: "Eisen 'binnen n beurten' (I15, I16, I10) bij vroeg afronden: telt een onvervulde eis als schending?"
+    },
+    {
+      // Besluit Bart, 16 november 2026: lisinopril verdubbelen is een veiligheidsregel (poort). Hint en ernst: concept.
+      id: "I17",
+      ernst: 2,
+      geldtIn: ["*"],
+      altijdFout: "Lisinopril verdubbelen",
+      geldtInTekst: "E2, E3",
+      predicaat: { p: "gespeeld", K: { kaart: "V6", doel: "lisinopril", optie: "verdubbelen" } },
+      vraag: "Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?",
+      concept: true,
+      bron: "Bart (besluit 16 november 2026)",
+      TODO_BART: "Concepttekst ter goedkeuring: lisinopril verdubbelen is sinds 16 november 2026 een veiligheidsregel (I17, episode 2 en 3). Als hint verschijnt 'Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?' en als gevolg bij de pati\u00ebnt 'De nierfunctie daalt verder en het kalium stijgt.' (dezelfde zin als bij de sick day in episode 3). Keur je deze teksten en de ernst (2, net zo ernstig als nitrofuranto\u00efne bij lage nierfunctie) goed of pas je ze aan?"
+    },
+    {
+      // Besluit Bart, 16 november 2026: wisselen naar een middel waarvoor de bacterie resistent is, is een veiligheidsregel (poort).
+      // Telt vanaf het moment dat de speler de resistentie kan kennen (kweekuitslag; voor trimethoprim ook de eerdere kweek via G3). Hint en ernst: concept.
+      id: "I18",
+      ernst: 4,
+      geldtIn: ["*"],
+      altijdFout: "Wisselen naar een middel waarvoor de bacterie resistent is",
+      geldtInTekst: "E2, E3",
+      predicaat: {
+        p: "of",
+        args: [
+          { p: "gespeeld", K: { kaart: "B1", doel: "V5", naGebeurtenis: "C" } },
+          { p: "gespeeld", K: { kaart: "B1", doel: "V10", naGebeurtenis: "C" } },
+          { p: "na", a: { kaart: "B1", doel: "V5" }, b: { kaart: "G3" } }
+        ]
+      },
+      vraag: "Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?",
+      concept: true,
+      bron: "Bart (besluit 16 november 2026)",
+      TODO_BART: "Concepttekst ter goedkeuring: wisselen naar een middel waarvoor de bacterie resistent is, is sinds 16 november 2026 een veiligheidsregel (I18, episode 2 en 3). Als hint verschijnt 'Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?' en als gevolg bij de pati\u00ebnt 'De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.' (dezelfde zin als bij I8). Keur je deze teksten en de ernst (4, net zo ernstig als I8) goed of pas je ze aan?"
     }
   ],
   score: {

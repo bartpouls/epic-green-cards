@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Casus-id | `uwi-eerstelijn` |
-| Versie | 1.4 — 15 november 2026 — bron: besluiten Bart, 15 november 2026 (zie sectie 11). Versie 1.3 (14 november 2026): bron besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
+| Versie | 1.5 — 16 november 2026 — bron: besluiten Bart, 16 november 2026 (zie sectie 12). Versie 1.4 (15 november 2026): bron besluiten Bart, 15 november 2026 (zie sectie 11). Versie 1.3 (14 november 2026): bron besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
 | Functie | Tutorialcasus: leert het spel én de signatuurvaardigheid |
 | Signatuurvaardigheid | Veranderende context: empirisch starten → bijsturen op de kweek → nierfunctie en comedicatie |
 | Klinische validatie | Voorschrijven en wat daarna komt: Bart Pouls (gevalideerd). Diagnostiek en klinische context: nog voorleggen aan een huisarts |
@@ -42,7 +42,7 @@ Beginnende voorschrijvers kiezen het eerstekeusmiddel uit het protocol, klikken 
 - **Tussen episodes** (maanden tot jaren, bij een recidief) verandert de **context**: meer comedicatie en een dalende chronische nierfunctie.
 - **Binnen een episode** (dagen) verandert de **ernst**, via gebeurtenissen. De volgorde is vrij.
 - **Klinische regels hangen aan de toestand, niet aan de route.**
-- **Verwijzen** is de rand van de kaart en kan vanuit elke toestand.
+- **Verwijzen** is de rand van de kaart en kan vanuit elke toestand. Na Verwijzen stopt de episode (sectie 12).
 
 ```
 Episode 1 (72 jr, context A)  →  Episode 2 (78 jr, context B)  →  Episode 3 (79 jr, context C)
@@ -57,9 +57,9 @@ Episode 1 (72 jr, context A)  →  Episode 2 (78 jr, context B)  →  Episode 3 
 | Toestand | Episode | Invarianten die hier gelden |
 |---|---|---|
 | E1 · cystitis | 1 | I1, I3, I4 |
-| E2 · cystitis | 2 | I1, I4, I5, I6, I7 |
-| E2 · cystitis + kweekuitslag | 2 | I1, I4, I5, I6, I7, I8 |
-| E3 · cystitis | 3 | I1, I4, I5, I6, I7, I9, I12, I13 |
+| E2 · cystitis | 2 | I1, I4, I5, I6, I7, I17, I18 |
+| E2 · cystitis + kweekuitslag | 2 | I1, I4, I5, I6, I7, I8, I17, I18 |
+| E3 · cystitis | 3 | I1, I4, I5, I6, I7, I9, I12, I13, I17, I18 |
 | E3 · weefselinvasie | 3 | Als E3 · cystitis, plus I10, I11, I14, I16 |
 | E3 · uitdroging | 3 | Als E3 · cystitis, plus I15 |
 | E3 · weefselinvasie + uitdroging | 3 | Alles hierboven |
@@ -202,6 +202,8 @@ Alles uit episode 1, plus V6, B1 en B2.
 | I6 | Een antibioticum starten zonder O1 vooraf, of afwachten (V1/V2) in de risicogroep | NHG |
 | I7 | Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3 | NHG, KNMP |
 | I8 | Bij aanhoudende klachten doorgaan met een middel waarvoor de bacterie resistent is | NHG; hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten |
+| I17 | Lisinopril verdubbelen | Bart (besluit 16 november 2026) |
+| I18 | Wisselen naar een middel waarvoor de bacterie resistent is (na de kweekuitslag; in episode 3 trimethoprim ook na G3) | Bart (besluit 16 november 2026) |
 
 **Volgorde:**
 - O1 vóór de eerste antibioticumkaart.
@@ -226,6 +228,8 @@ Alles uit episode 1, plus V6, B1 en B2.
 | I7, geen kalium | "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?" |
 | I7, niet gehalveerd | "Dag 4. Hoeveel trimethoprim klaren haar nieren nog?" |
 | I8 | "De kweek is binnen en de klachten blijven. Waar wacht je nog op?" |
+| I17 (concept, sectie 12) | "Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?" |
+| I18 (concept, sectie 12) | "Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?" |
 | Onnodig gewisseld | "Het werkte en de klachten namen af. Wat won je met wisselen?" |
 
 **Brug:** de kweek uit deze episode is het verborgen gegeven in episode 3 (G3).
@@ -283,7 +287,7 @@ De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.
 
 **Bronconflict, geen poort:** voor ciprofloxacine bij eGFR 10–30 geeft de NHG de normale keerdosis eenmaal per 24 uur [NHG]. Het Kompas past de dosis pas aan bij een klaring ≤ 15 [Kompas]. Beide zijn verdedigbaar; het wordt een feedbackmoment.
 
-### Invarianten (poort; I1, I4, I5, I6, I7 en I8 blijven gelden)
+### Invarianten (poort; I1, I4, I5, I6, I7, I8, I17 en I18 blijven gelden)
 | Id | Altijd fout | Geldt in | Bron |
 |---|---|---|---|
 | I9 | De combinatie lisinopril + spironolacton bij eGFR < 30 laten liggen (geen O2 én geen Ev2), of spironolacton na de sick day hervatten (B5) zonder eerst Ev2 | Alle toestanden van E3 | Bart; SIDRIK; herstart-nuance [G] |
@@ -433,3 +437,37 @@ Bij een gehaalde poort staat onder "Van je opleider" per getroffen regel één o
 De twee eerdere conceptteksten (de tekst bij sepsis en "Dit middel staat in de richtlijn niet bij een blaasontsteking.") blijven zoals ze zijn.
 
 **Nog open na deze besluiten:** de route "na 48 uur geen verbetering → Ev3 verwijzen" zonder werkzaam antibioticum eindigt in het spel in sepsis, omdat de episode na het verwijzen doorloopt tot dag 14. Wat er na Verwijzen moet gebeuren, is aan Bart.
+
+---
+
+## 12. Wijzigingen in versie 1.5
+
+Bron: besluiten Bart, 16 november 2026.
+
+- **Na Verwijzen stopt de episode.** De episode eindigt op het moment dat de speler Verwijzen (Ev3) speelt. Daarna volgt de gewone beoordeling (poort, score, profiel) op de stand van dat moment, met één zin of verwijzen terecht was. Terecht = de status "Na 48 uur geen verbetering." is vóór of op de dag van het verwijzen voorgekomen. Niet terecht verwijzen kost 1 punt doelmatigheid (regel c in sectie 11), maar is geen veiligheidsregel.
+- **Lisinopril verdubbelen (I17)** is een veiligheidsregel (poort) in episode 2 en 3.
+- **Wisselen naar een middel waarvoor de bacterie resistent is (I18)** is een veiligheidsregel (poort) in episode 2 en 3. De regel telt vanaf het moment dat de speler de resistentie kan kennen: na de kweekuitslag (trimethoprim; in episode 3 ook amoxicilline), en in episode 3 voor trimethoprim ook na G3 (de eerdere kweek). Doorgaan met een resistent middel blijft onder I8 vallen.
+
+| Id | Altijd fout | Geldt in | Ernst | Bron |
+|---|---|---|---|---|
+| I17 | Lisinopril verdubbelen | E2, E3 | 2 (concept) | Bart |
+| I18 | Wisselen naar een middel waarvoor de bacterie resistent is | E2, E3 | 4 (concept) | Bart |
+
+### Concept, ter goedkeuring door Bart
+
+**Hints (concept):**
+
+| Regel | Vraag |
+|---|---|
+| I17 | "Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?" |
+| I18 | "Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?" |
+
+**Gevolgzinnen (concept):** I17: "De nierfunctie daalt verder en het kalium stijgt." (de zin bij de sick day in episode 3). I18: "De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt." (de zin bij I8).
+
+**Oordeel na Verwijzen (concept):** terecht: "Verwijzen was hier terecht: na 48 uur was er geen verbetering." Niet terecht: "Verwijzen was hier nog niet nodig: mevrouw was nog niet 48 uur zonder verbetering."
+
+**Eisen die bij verwijzen vervallen (concept):** wie verwijst terwijl de termijn van een eis nog loopt, kan die eis niet meer halen. Daarom vervallen bij verwijzen:
+- de sick day-maatregelen (I15), als Verwijzen valt op de dag van de uitdroging (B) of de dag erna;
+- contact binnen 48 uur (I16) en doorgaan met nitrofurantoïne of fosfomycine (I10), als Verwijzen valt op de dag van de weefselinvasie (A) of de dag erna.
+
+Alle andere regels blijven gelden op de stand van het verwijzen. Zonder deze uitzondering kan wie terecht verwijst in de volgorde A–B de poort niet halen: "Na 48 uur geen verbetering." valt dan op dezelfde dag als de uitdroging.

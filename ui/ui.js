@@ -413,6 +413,8 @@
     var u = uitkomst || {};
     var downsides = lijst(u.downsides).map(function (d) { return { label: d.label, tekst: d.tekst, soort: d.soort }; });
     var verloren = u.afloop === "verloren";
+    // De episode eindigde door een kaart (bv. Verwijzen): de zin of dat terecht was, bij een gehaalde én een niet-gehaalde poort.
+    var naKaart = isObj(u.eindeNaKaart) && typeof u.eindeNaKaart.tekst === "string" ? u.eindeNaKaart.tekst : null;
     if (!u.poortGehaald) {
       var gevolgen = Array.isArray(u.gevolgen)
         ? u.gevolgen.map(function (x) { return typeof x === "string" ? x : x && x.tekst; }).filter(function (t) { return typeof t === "string" && t !== ""; })
@@ -421,7 +423,7 @@
         gehaald: false, verloren: verloren, eindTekst: verloren && isObj(u.einde) ? (u.einde.tekst || null) : null,
         eindGebeurtenis: verloren && isObj(u.einde) ? (u.einde.gebeurtenis || null) : null,
         downsides: downsides, vraag: u.vraag || null, hint: u.vraag || null, gevolg: gevolgen.length ? gevolgen[0] : null, gevolgen: gevolgen,
-        anderen: anderenZin(u), scores: [], zonderScore: [], profiel: null, extraVragen: [], zichtbaar: []
+        anderen: anderenZin(u), scores: [], zonderScore: [], profiel: null, extraVragen: [], zichtbaar: [], eindeNaKaart: naKaart
       };
     }
     var scores = [], zonderScore = [];
@@ -434,7 +436,8 @@
       zonderScore: zonderScore,
       profiel: isObj(u.profiel) ? { naam: u.profiel.naam, reflectievraag: u.profiel.reflectievraag || null } : null,
       extraVragen: lijst(u.extraVragen).map(function (x) { return typeof x === "string" ? x : x.vraag; }),
-      zichtbaar: lijst(u.zichtbaar).map(function (x) { return typeof x === "string" ? x : x.tekst; })
+      zichtbaar: lijst(u.zichtbaar).map(function (x) { return typeof x === "string" ? x : x.tekst; }),
+      eindeNaKaart: naKaart
     };
   }
 
@@ -856,6 +859,8 @@
       if (k && k.toontMedicatie) { var ml = medicatieLijstTekst(app.casus, app.ep, app.spel, kaartId); if (ml) app.onthuld.push(ml); }
       app.wijziging = veldWijzigingen(voor, patientVelden(app.ep, app.spel));
       app.vlucht = { kaart: kaartId, van: van, label: k ? k.label : "", klasse: k ? "cat-" + slug(k.categorie) : "" };
+      // Een kaart kan de episode beëindigen (staat in de data, bv. Verwijzen): dan volgt meteen de beoordeling.
+      if (app.spel && app.spel.afgerond) { app.dialoog = null; rondAf(); return; }
     }
     app.fokus = "kaart-" + kaartId;
     render();
@@ -1356,6 +1361,9 @@
       t = 2000;
     }
 
+    var naKaart = m.eindeNaKaart ? h("p", { klasse: "eindtekst onthul", id: "einde-na-kaart", style: v(t) }, m.eindeNaKaart) : null;
+    if (naKaart) t += 900;
+
     var tTafel = t, stap = gespeeld.length ? Math.max(160, Math.min(380, 4200 / gespeeld.length)) : 0;
     t += 1000;   // eerst even de voorkanten op tafel
     var tafel = null;
@@ -1441,7 +1449,7 @@
       opslagBalk(),
       app.opslagFout ? h("p", { klasse: "waarschuwing", role: "alert" }, app.opslagFout) : null,
       h("section", { klasse: "uitslag " + (m.gehaald ? "goed" : "niet") + (m.verloren ? " verloren" : ""), "aria-labelledby": "uitslag-kop" },
-        escalatie, tafel, verslag),
+        escalatie, naKaart, tafel, verslag),
       h("div", { klasse: "onthul eindvoet", style: v(t) },
         meldingView(),
         app.testmodus ? h("p", { klasse: "waarschuwing", id: "testmodus-melding" }, "Testmodus: deze poging telt niet mee als meting.") : null,

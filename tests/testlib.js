@@ -22,6 +22,7 @@
     var dagen = { E1: 5, E2: 7, E3: 7 };
     c.episodes.forEach(function (ep) {
       if (ep.escalatie) ep.escalatie.aan = false;
+      delete ep.eindeNaKaart;                        // casus 1.5: na Verwijzen stopt de episode (getoetst in tests/besluiten-1116.tests.js)
       ep.knoppen.aantalDagen = dagen[ep.id];
       ep.gebeurtenissen = ep.gebeurtenissen.filter(function (e) { return e.id !== "C2"; });
       ep.gebeurtenissen.forEach(function (e) {

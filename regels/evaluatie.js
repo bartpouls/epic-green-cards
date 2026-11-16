@@ -6,7 +6,7 @@
 
    API (contract 5):
      Evaluatie.beoordeel(casus, episodeId, state) -> { geschonden, poortGehaald, downsides, vraag, gevolg, gevolgen, score, profiel,
-                                                       extraVragen, zichtbaar, afloop, einde, aftrek }
+                                                       extraVragen, zichtbaar, afloop, einde, eindeNaKaart, aftrek }
        gevolgen: [ { invariant, tekst } ]  de gevolgzinnen van ALLE geschonden regels die er een hebben, ernstigste eerst (besluit Bart,
                                            14 november 2026); gevolg blijft de (eerste) zin van de ernstigste geschonden regel (of null).
                                            Een regel mag meer dan één zin hebben (elk met een eigen voorwaarde); ze komen in datavolgorde.
@@ -17,6 +17,10 @@
        afloop:   "gehaald" | "nietGehaald" | "verloren". "verloren" = de episode is beëindigd door een gebeurtenis met
                  einde: { uitkomst: "verloren", tekst } in de data; dan is poortGehaald false en zijn score en profiel null.
        einde:    null, of { gebeurtenis, uitkomst, tekst } van die gebeurtenis.
+       eindeNaKaart: null, of { kaart, terecht, tekst }: de episode eindigde doordat de speler een kaart uit episode.eindeNaKaart
+                 speelde (bv. Verwijzen, besluit Bart 16 november 2026). `terecht` = het predicaat `terecht` uit de data; `tekst` =
+                 tekstTerecht of tekstOnterecht. Poort, score en profiel worden gewoon bepaald op de stand op dat moment, behalve
+                 de invarianten onder eindeNaKaart[].vervalt ({ invariant, als }) waarvan `als` waar is: die tellen dan niet.
      Evaluatie.valideerCasus(casus)                -> controleert ALLE predicaten van ALLE episodes (Predicaten.valideer) en de vorm
                                                       van de regels eromheen; gooit een Error met alle fouten, geeft anders { episodes, predicaten }.
 
@@ -105,6 +109,10 @@
     lijst(ep.profielen).forEach(function (p, i) { voeg("profiel " + ((p && p.naam) || ("#" + (i + 1))) + ", als", p && p.als); });
     lijst(ep.feedbackExtra).forEach(function (f, i) { voeg("feedbackExtra[" + i + "], trigger", f && f.trigger); });
     lijst(ep.zichtbaarAlsOntbreekt).forEach(function (z, i) { voeg("zichtbaarAlsOntbreekt[" + i + "], trigger", z && z.trigger); });
+    lijst(ep.eindeNaKaart).forEach(function (e, i) {
+      voeg("eindeNaKaart[" + i + "], terecht", e && e.terecht);
+      lijst(e && e.vervalt).forEach(function (v, j) { voeg("eindeNaKaart[" + i + "], vervalt[" + j + "], als", v && v.als); });
+    });
     if (isObj(ep.werkzaamheid)) {
       Object.keys(ep.werkzaamheid).forEach(function (t) {
         var w = ep.werkzaamheid[t];
@@ -215,6 +223,16 @@
     lijst(ep.zichtbaarAlsOntbreekt).forEach(function (z, i) {
       if (!isObj(z) || !isTekst(z.tekst)) fout(plek + ", zichtbaarAlsOntbreekt[" + i + "]: mist 'tekst'.");
     });
+    lijst(ep.eindeNaKaart).forEach(function (e, i) {
+      var n = "Episode " + ep.id + ", eindeNaKaart[" + i + "]";
+      if (!isObj(e) || !isTekst(e.kaart) || !isTekst(e.tekstTerecht) || !isTekst(e.tekstOnterecht) || !isObj(e.terecht))
+        fout(n + ": moet { kaart, terecht, tekstTerecht, tekstOnterecht } zijn.");
+      if (lijst(ep.repertoire).indexOf(e.kaart) < 0) fout(n + ": de kaart '" + e.kaart + "' zit niet in het repertoire.");
+      lijst(e.vervalt).forEach(function (v, j) {
+        if (!isObj(v) || !isTekst(v.invariant) || !isObj(v.als)) fout(n + ", vervalt[" + j + "]: moet { invariant, als } zijn.");
+        if (!lijst(ep.invarianten).some(function (x) { return x && x.id === v.invariant; })) fout(n + ", vervalt[" + j + "]: onbekende invariant '" + v.invariant + "'.");
+      });
+    });
     lijst(ep.gebeurtenissen).forEach(function (e, i) {
       if (!isObj(e) || e.einde === undefined) return;
       var n = plek + ", gebeurtenis " + (e.id || ("#" + (i + 1)));
@@ -282,6 +300,29 @@
     return uit;
   }
   // Korte naam van een regel en de onderdelen (uit casus.regelnamen) die in deze poging niet gehaald zijn.
+  // De invarianten die vervallen omdat de episode eindigde door een kaart (eindeNaKaart[].vervalt: [ { invariant, als } ]).
+  function vervallenNaKaart(ep, ctx, plek) {
+    var uit = {};
+    lijst(ep.eindeNaKaart).forEach(function (e, i) {
+      if (!lijst(ctx.tijdlijn).some(function (r) { return r && r.kaart === e.kaart; })) return;
+      lijst(e.vervalt).forEach(function (v, j) {
+        if (metPlek(plek + ", eindeNaKaart[" + i + "], vervalt[" + j + "], als", function () { return P().evalueer(v.als, ctx); })) uit[v.invariant] = true;
+      });
+    });
+    return uit;
+  }
+  // Een kaart die de episode beëindigt (eindeNaKaart in de data) en die in deze poging is gespeeld: was dat terecht? Anders null.
+  function eindeNaKaartVan(ep, ctx, plek) {
+    var uit = null;
+    lijst(ep.eindeNaKaart).some(function (e, i) {
+      if (!lijst(ctx.tijdlijn).some(function (r) { return r && r.kaart === e.kaart; })) return false;
+      var terecht = !!metPlek(plek + ", eindeNaKaart[" + i + "], terecht", function () { return P().evalueer(e.terecht, ctx); });
+      uit = { kaart: e.kaart, terecht: terecht, tekst: terecht ? e.tekstTerecht : e.tekstOnterecht };
+      return true;
+    });
+    return uit;
+  }
+
   function regelNaam(casus, ep, inv, ctx, plek) {
     var l = lijst(casus.regelnamen);
     for (var i = 0; i < l.length; i++) {
@@ -328,9 +369,11 @@
     });
 
     // 1. Poort: alle geldende invarianten waarvan het schendingspredicaat waar is, op ernst (1 eerst), bij gelijke ernst in datavolgorde.
+    // Eindigde de episode door een kaart (eindeNaKaart) en staat een invariant daar onder `vervalt` met een ware `als`, dan telt die niet.
+    var vervallen = vervallenNaKaart(ep, ctx, plek);
     var geschonden = [];
     lijst(ep.invarianten).forEach(function (inv, idx) {
-      if (!geldt(inv, ctx)) return;
+      if (!geldt(inv, ctx) || heeft(vervallen, inv.id)) return;
       var n = plek + ", invariant " + inv.id;
       if (metPlek(n + ", predicaat", function () { return P().evalueer(inv.predicaat, ctx); })) {
         geschonden.push({ inv: inv, idx: idx, vraag: kiesVraag(inv, ctx, n) });
@@ -432,6 +475,7 @@
       zichtbaar: zichtbaar,
       afloop: einde ? einde.uitkomst : (poortGehaald ? "gehaald" : "nietGehaald"),
       einde: einde,
+      eindeNaKaart: eindeNaKaartVan(ep, ctx, plek),
       aftrek: aftrek
     };
   }

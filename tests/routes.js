@@ -41,7 +41,10 @@
     I13: "Clavulaanzuur bij een eGFR van 28. Waar blijft het?",
     I14: "Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?",
     I15: "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?",
-    I16: "Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?"
+    I16: "Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?",
+    // casus 1.5, sectie 12 (concept ter goedkeuring)
+    I17: "Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?",
+    I18: "Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?"
   };
   var EXTRA = {
     O1: "Wat doe je bij welke uitslag anders?",
@@ -211,6 +214,12 @@
   e2("E2-fout-I6-I8", "Gelijke ernst 4: I6 en I8; eerste in de data (I6)",
     ["G2", "V5", "O1", "|", "O2", "N1", "|", "|", "V6>V5>halveren", "=7"], fout(["I6", "I8"], VRAAG.I6geenKweek), "fout");
 
+  // Casus 1.5 (besluit Bart, 16 november 2026): lisinopril verdubbelen en wisselen naar een resistent middel zijn veiligheidsregels.
+  e2("E2-fout-I17", "Fosfomycine-route, plus lisinopril verdubbelen",
+    ["G2", "O1", "V4", "|", "N1", "N2>V4", "V6>lisinopril>verdubbelen", "|", "=7"], fout(["I17"], VRAAG.I17), "fout");
+  e2("E2-fout-I18", "Fosfomycine-route; na de kweekuitslag (dag 4) wisselen naar trimethoprim (resistent) en dezelfde dag terug",
+    ["G2", "O1", "V4", "|", "N1", "N2>V4", "|", "|", "B1>V5", "B1>V4", "|", "=7"], fout(["I18"], VRAAG.I18, [ZICHT.V5]), "fout");   // trimethoprim zonder O2: zichtbaar-zin
+
   /* =============== EPISODE 3: geldige routes (casus sectie 6) =============== */
   // De casusregel "Start bij cystitis: G3 -> O1 -> V4 + N1" is het begin van elke route hieronder. Als losse route bestaat hij sinds casus 1.4
   // niet meer: afronden spoelt door, dus weefselinvasie en uitdroging komen altijd (zie de foutroute E3-fout-niet-gereageerd).
@@ -245,11 +254,19 @@
     geldig("Richtlijn eerste keus", REFLECTIE.cipro, 2, 3, { extra: [EXTRA.cipro] }));
   // Geen profiel van de episode past: het restprofiel (casus 1.4, concept). De regels geven geen duurzaamheidsscore (null).
   // In het echte spel (met escalatie) eindigt deze route in sepsis: zie de open vraag over Verwijzen.
+  // Casus 1.5 (besluit Bart, 16 november 2026): na Verwijzen stopt de episode. De speler verwijst op de dag van 'Na 48 uur geen
+  // verbetering.' of de dag erna: A,B: dag 5 (= ook de dag van de uitdroging), verwijzen op dag 6 in plaats van het tweede opvolgmoment
+  // (de sick day-eisen vervallen, concept); B,A: A op dag 5, de status op dag 7, verwijzen op dag 7. Zo komt de route vóór sepsis uit.
   e3("E3-verwijzen", "Weefselinvasie: fosfomycine stoppen, geen werkzaam antibioticum, na 48 uur geen verbetering: Ev3",
-    [["B1>V8", "B2>V4"], [V6_V8, "G1"], { eind: ["Ev3"] }], geldig(REST.naam, REST.vraag, null, 3));
+    { "A,B": [["B1>V8", "B2>V4"], [V6_V8, "G1"], ["Ev1", "Ev3", 2], ["=7", []]], "B,A": [["B1>V8", "B2>V4"], [V6_V8, "G1"], { eind: ["Ev3"] }] },
+    geldig(REST.naam, REST.vraag, null, 3));
 
   /* =============== EPISODE 3: foutroutes (elk PRECIES een invariant) =============== */
   e3("E3-fout-I1", "Geen N1 (G1 als vulling)", [["N1", "G1"]], fout(["I1"], VRAAG.I1), "fout");
+  // Casus 1.5 (besluit Bart, 16 november 2026)
+  e3("E3-fout-I17", "Basisroute, plus aan het eind lisinopril verdubbelen", [{ eind: ["V6>lisinopril>verdubbelen"] }], fout(["I17"], VRAAG.I17), "fout");
+  e3("E3-fout-I18", "Basisroute; na de kweekuitslag wisselen naar trimethoprim (resistent, ook bekend via G3) en dezelfde dag terug",
+    [{ eind: ["B1>V5", "B1>V8", V6_V8] }], fout(["I18"], VRAAG.I18), "fout");
   e3plannen("E3-fout-I4", "Twee antibiotica tegelijk (V4 en V8) vóór de weefselinvasie; V4 daarna gestopt",
     {
       "A,B": ["G3", "O1", "V4", "|", "N1", "V8", V6_V8, "|", "B2>V4", "O2", "Ev2>spironolacton", "|", "Ev1",

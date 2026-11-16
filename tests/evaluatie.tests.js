@@ -86,8 +86,8 @@
     // Invarianten per episode uit de casus (sectie 4-6, tabel 'Invarianten' en toestandstabel); NIET uit de data afgeleid.
     var VEREIST = {
       E1: ["I1", "I3", "I4"],
-      E2: ["I1", "I4", "I5", "I6", "I7", "I8"],
-      E3: ["I1", "I4", "I5", "I6", "I7", "I8", "I9", "I10", "I11", "I12", "I13", "I14", "I15", "I16"]
+      E2: ["I1", "I4", "I5", "I6", "I7", "I8", "I17", "I18"],   // I17 en I18: casus 1.5, sectie 12
+      E3: ["I1", "I4", "I5", "I6", "I7", "I8", "I9", "I10", "I11", "I12", "I13", "I14", "I15", "I16", "I17", "I18"]
     };
     tr("dekking: elke invariant van elke episode heeft een foutroute die precies die invariant schendt", function () {
       var ontbreekt = [];
@@ -232,7 +232,7 @@
     T.is(typeof E().beoordeel, "function"); T.is(typeof E().valideerCasus, "function");
     var u = beoordeel(maakEp({ invarianten: [inv("A", 2)] }));
     // Sinds casus 1.3 (besluiten Bart, 14 november 2026) erbij: gevolgen (alle gevolgzinnen), afloop en einde (einde door een gebeurtenis).
-    T.gelijk(Object.keys(u).sort(), ["afloop", "aftrek", "downsides", "einde", "extraVragen", "geschonden", "gevolg", "gevolgen", "poortGehaald", "profiel", "score", "vraag", "zichtbaar"]);
+    T.gelijk(Object.keys(u).sort(), ["afloop", "aftrek", "downsides", "einde", "eindeNaKaart", "extraVragen", "geschonden", "gevolg", "gevolgen", "poortGehaald", "profiel", "score", "vraag", "zichtbaar"]);
     T.is(u.afloop, "nietGehaald"); T.is(u.einde, null); T.gelijk(u.gevolgen, []);
     T.gelijk(JSON.parse(js(u)), JSON.parse(js(u)));
     T.is(u.poortGehaald, false); T.is(u.vraag, "vraag A"); T.gelijk(u.geschonden, [{ id: "A", ernst: 2, vraag: "vraag A", naam: null, onderdelen: [] }]);

@@ -210,10 +210,20 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
       const csv = fs.readFileSync(await csvDl.path(), "utf8"), js = JSON.parse(fs.readFileSync(await jsonDl.path(), "utf8"));
       const regels = csv.replace(/^﻿/, "").split("\r\n").filter(Boolean);
       check("export CSV: BOM, puntkomma, kopregel en één regel per poging", csv.charCodeAt(0) === 0xFEFF && regels[0].startsWith("pseudoniem;episode;poging;eerste poging;testmodus;casusversie;speltijdstip;tijdlijn") && js.length === 7);
-      check("export JSON: eerste poging per episode, volledige tijdlijn, casusversie 1.4", js.filter(p => p.eerstePoging).length === 3 && js.every(p => p.casusVersie === "1.4" && Array.isArray(p.tijdlijn)));
+      check("export JSON: eerste poging per episode, volledige tijdlijn, casusversie 1.5", js.filter(p => p.eerstePoging).length === 3 && js.every(p => p.casusVersie === "1.5" && Array.isArray(p.tijdlijn)));
       check("export: de afloop staat erin (laatste kolom 'afloop'; de sepsis-poging is 'verloren')", regels[0].endsWith(";afloop") && regels[regels.length - 1].endsWith(";verloren") && js[js.length - 1].afloop === "verloren" && js.filter(p => p.afloop === "gehaald").length === 3);
       check("export CSV: tijdlijn in woorden", /Dag 1: Recente labwaarden opvragen/.test(csv) && /Dag \d+: Antibioticum wisselen → Amoxicilline\/clavulaanzuur/.test(csv));
     }
+    /* ---------------- Episode 3: na Verwijzen stopt de episode (besluit Bart, 16 november 2026; casus 1.5) ---------------- */
+    if (!(await page.locator('[data-start="E3"]').count())) { await page.click("#btn-terug").catch(() => {}); }
+    await metEpisode(page, "E3");
+    await speelPlan(page, ["G3", "O1", "V4", "|", "N1"]);
+    await page.click('[data-kaart="Ev3"]'); await page.waitForSelector("#btn-speel"); await page.click("#btn-speel");
+    await page.waitForSelector("#uitslag-kop");
+    check("E3 verwijzen: de episode stopt meteen (dag 2) en de beoordeling zegt dat verwijzen nog niet nodig was",
+      norm(await page.textContent("#einde-na-kaart")) === "Verwijzen was hier nog niet nodig: mevrouw was nog niet 48 uur zonder verbetering." &&
+      (await page.locator("#dagtelling").count()) === 0, norm(await page.textContent("main")).slice(0, 300));
+    await foto(page, "e3-verwezen");
     /* ---------------- testmodus alleen met ?docent (eindcontrole PR 1, F8) ---------------- */
     const docent = await ctx.newPage();
     docent.on("console", m => { if (m.type() === "error") problemen.push("console (docent): " + m.text()); });

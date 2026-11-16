@@ -154,7 +154,7 @@
 
   /* ---------- E2-3: invarianten ---------- */
   reg("E2-3 invarianten: ids en volgorde (I1, I4, I5, I6, I7, I8)", function (e) {
-    T.gelijk(e.invarianten.map(function (i) { return i.id; }), ["I1", "I4", "I5", "I6", "I7", "I8"]);
+    T.gelijk(e.invarianten.map(function (i) { return i.id; }), ["I1", "I4", "I5", "I6", "I7", "I8", "I17", "I18"]);
   });
   reg("E2-3 invarianten: ernst volgens bouwopdracht 6.1 en geldtIn volgens de toestandstabel", function (e) {
     var ernst = { I1: 5, I4: 5, I5: 2, I6: 4, I7: 3, I8: 4 };

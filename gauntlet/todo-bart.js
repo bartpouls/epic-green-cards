@@ -4,12 +4,15 @@
    Op 14 november 2026 heeft Bart tien vragen beslist, op 15 november 2026 nog zeven. Ze blijven in de data staan, elk met een veld
    `besluit`, en staan hier in de groepen "Beslist op ..." (beslist: true).
    Nieuw na 15 november 2026: vier concepten ter goedkeuring (een voorschot, afgeleid uit tekst die al in de casus staat; zie
-   casus-uwi.md sectie 11) en één nieuwe vraag. De regels zonder gevolgzin hebben nu allemaal een conceptzin (TODO_BART-C4). */
+   casus-uwi.md sectie 11) en één nieuwe vraag. De regels zonder gevolgzin hebben nu allemaal een conceptzin (TODO_BART-C4).
+   16 november 2026: de vraag over Verwijzen is beslist; drie nieuwe concepten ter goedkeuring (casus-uwi.md sectie 12). */
 window.TODO_BART_GROEPEN = [
   { titel: "1. Concepten ter goedkeuring (voorschot bij de besluiten van 15 november 2026; zie casus-uwi.md sectie 11)", ids: [
     "TODO_BART-C1", "TODO_BART-C2", "TODO_BART-C3", "TODO_BART-C4"
   ] },
-  { titel: "2. Nieuwe vraag na de besluiten van 15 november 2026", ids: ["TODO_BART-C5"] },
+  { titel: "2. Concepten ter goedkeuring (voorschot bij de besluiten van 16 november 2026; zie casus-uwi.md sectie 12)", ids: [
+    "TODO_BART-C6", "TODO_BART-C7", "TODO_BART-C8", "TODO_BART-C9"
+  ] },
   { titel: "3. Conceptteksten ter goedkeuring (na de besluiten van 14 november 2026)", ids: [
     "TODO_BART-E3-27", "TODO_BART-E3-28"
   ] },
@@ -20,6 +23,7 @@ window.TODO_BART_GROEPEN = [
   { titel: "6. Achterhaald door casus 1.2 (de vraag is niet meer actueel; de gekozen lezing beschrijft wat het spel nu doet)", ids: [
     "TODO_BART-E2-17"
   ] },
+  { titel: "Beslist op 16 november 2026", beslist: true, ids: ["TODO_BART-C5"] },
   { titel: "Beslist op 15 november 2026", beslist: true, ids: [
     "TODO_BART-N3", "TODO_BART-E2-16", "TODO_BART-E3-3", "TODO_BART-E2-10", "TODO_BART-E3-11", "TODO_BART-E3-21", "TODO_BART-R6"
   ] },

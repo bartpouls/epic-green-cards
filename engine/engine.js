@@ -326,7 +326,11 @@
     state.actiesOver -= 1;
     var onthuld = onthul(state, ep, kaartId);
     controleerGebeurtenissen(state, ep, regel.volg);
-    return { ok: true, regel: kopie(regel), onthuld: onthuld };
+    var uit = { ok: true, regel: kopie(regel), onthuld: onthuld };
+    // Een kaart met een einde in de data (episode.eindeNaKaart) beëindigt de episode direct: de beoordeling volgt meteen
+    // (besluit Bart, 16 november 2026: na Verwijzen stopt de episode). Welke kaart dat is, staat alleen in de data.
+    if (lijstVan(ep.eindeNaKaart).some(function (e) { return e && e.kaart === kaartId; })) { sluitAf(state); uit.einde = true; }
+    return uit;
   }
 
   function raadpleeg(state) {

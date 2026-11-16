@@ -86,6 +86,8 @@
       "| I6 | Een antibioticum starten zonder O1 vooraf, of afwachten (V1/V2) in de risicogroep | NHG |",
       "| I7 | Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3 | NHG, KNMP |",
       "| I8 | Bij aanhoudende klachten doorgaan met een middel waarvoor de bacterie resistent is | NHG; hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten |",
+      "| I17 | Lisinopril verdubbelen | Bart (besluit 16 november 2026) |",
+      "| I18 | Wisselen naar een middel waarvoor de bacterie resistent is (na de kweekuitslag; in episode 3 trimethoprim ook na G3) | Bart (besluit 16 november 2026) |",
       "**Volgorde:**",
       "- O1 vóór de eerste antibioticumkaart.",
       "- O2 ná V5.",
@@ -106,6 +108,8 @@
       "| I7, geen kalium | \"Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?\" |",
       "| I7, niet gehalveerd | \"Dag 4. Hoeveel trimethoprim klaren haar nieren nog?\" |",
       "| I8 | \"De kweek is binnen en de klachten blijven. Waar wacht je nog op?\" |",
+      "| I17 (concept, sectie 12) | \"Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?\" |",
+      "| I18 (concept, sectie 12) | \"Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?\" |",
       "| Onnodig gewisseld | \"Het werkte en de klachten namen af. Wat won je met wisselen?\" |",
       "**Brug:** de kweek uit deze episode is het verborgen gegeven in episode 3 (G3)."
     ],
@@ -152,7 +156,7 @@
       "| Amoxicilline/clavulaanzuur 875/125 mg 2 dd | Gehaald | Kweekgestuurd; scoort hoger. De keuze leunt op de eerdere kweek en vermijdt de risico's van ciprofloxacine bij ouderen [NHG]. |",
       "| Ciprofloxacine met calcium gescheiden of gestopt | Gehaald | Eerste keus volgens de richtlijn; eigen profiel |",
       "**Bronconflict, geen poort:** voor ciprofloxacine bij eGFR 10–30 geeft de NHG de normale keerdosis eenmaal per 24 uur [NHG]. Het Kompas past de dosis pas aan bij een klaring ≤ 15 [Kompas]. Beide zijn verdedigbaar; het wordt een feedbackmoment.",
-      "### Invarianten (poort; I1, I4, I5, I6, I7 en I8 blijven gelden)",
+      "### Invarianten (poort; I1, I4, I5, I6, I7, I8, I17 en I18 blijven gelden)",
       "| Id | Altijd fout | Geldt in | Bron |",
       "|---|---|---|---|",
       "| I9 | De combinatie lisinopril + spironolacton bij eGFR < 30 laten liggen (geen O2 én geen Ev2), of spironolacton na de sick day hervatten (B5) zonder eerst Ev2 | Alle toestanden van E3 | Bart; SIDRIK; herstart-nuance [G] |",
@@ -390,8 +394,8 @@
     var r = ref();
     T.is(r.E1.knoppen.length, 4); T.is(r.E1.geldigeRoutes.length, 5); T.is(Object.keys(r.E1.altijdFout).length, 3); T.is(r.E1.score.length, 2); T.is(r.E1.volgorde.length, 1);
     T.is(r.E1.patientkaart.length, 5); T.is(r.E1.zichtbaarAlsOntbreekt.length, 2); T.is(r.E1.feedbackTabel.length, 6);
-    T.is(r.E2.knoppen.length, 3); T.is(r.E2.geldigeRoutes.length, 2); T.is(Object.keys(r.E2.altijdFout).length, 4); T.is(r.E2.volgorde.length, 3); T.is(r.E2.score.length, 2);
-    T.is(r.E2.patientkaart.length, 5); T.is(r.E2.gebeurtenisUitleg.length, 7); T.is(r.E2.zichtbaarAlsOntbreekt.length, 2); T.is(r.E2.feedbackTabel.length, 8);
+    T.is(r.E2.knoppen.length, 3); T.is(r.E2.geldigeRoutes.length, 2); T.is(Object.keys(r.E2.altijdFout).length, 6); T.is(r.E2.volgorde.length, 3); T.is(r.E2.score.length, 2);
+    T.is(r.E2.patientkaart.length, 5); T.is(r.E2.gebeurtenisUitleg.length, 7); T.is(r.E2.zichtbaarAlsOntbreekt.length, 2); T.is(r.E2.feedbackTabel.length, 10);
     T.is(r.E3.knoppen.length, 3); T.is(r.E3.geldigeRoutes.length, 6); T.is(r.E3.routeBijWeefselinvasie.length, 2); T.is(Object.keys(r.E3.altijdFout).length, 8); T.is(r.E3.score.length, 2);
     T.is(r.E3.patientkaart.length, 5); T.is(r.E3.gebeurtenissenTabel.length, 3); T.is(r.E3.gebeurtenisUitleg.length, 1); T.is(r.E3.zichtbaarAlsOntbreekt.length, 3); T.is(r.E3.feedbackTabel.length, 11);
     T.gelijk(Object.keys(r.E3.altijdFout), ["I9", "I10", "I11", "I12", "I13", "I14", "I15", "I16"]);
@@ -456,7 +460,7 @@
   T.registreer(G, "ref-9 volgorde van sleutels: altijdFout in casusvolgorde (Id's en velden), rijsleutels, tabelkoppen, inspringing", function () {
     var r = ref();
     T.gelijk(Object.keys(r.E1.altijdFout), ["I1", "I3", "I4"], "E1 altijdFout");
-    T.gelijk(Object.keys(r.E2.altijdFout), ["I5", "I6", "I7", "I8"], "E2 altijdFout");
+    T.gelijk(Object.keys(r.E2.altijdFout), ["I5", "I6", "I7", "I8", "I17", "I18"], "E2 altijdFout");
     T.gelijk(Object.keys(r.E3.altijdFout), ["I9", "I10", "I11", "I12", "I13", "I14", "I15", "I16"], "E3 altijdFout");
     EPS.forEach(function (e) {
       Object.keys(r[e].altijdFout).forEach(function (id) {

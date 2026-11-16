@@ -11,6 +11,7 @@
      node tools/routezoeker.js --factor=2.5    eigen vermenigvuldiging van de zoekbudgetten
      node tools/routezoeker.js --episode=E3    alleen deze episode(s), komma-gescheiden
      node tools/routezoeker.js --casus=<id>    andere casus uit window.CASUSSEN (standaard de eerste)
+     node tools/routezoeker.js --acties=2      rekent door met 2 kaarten per dag (elke episode) in plaats van de waarde uit de data
      node tools/routezoeker.js --uit=pad.html  ander uitvoerbestand (de JSON komt ernaast)
 
    Uitvoer: tools/routezoeker-rapport.html (op zichzelf staand) en tools/routezoeker-rapport.json.
@@ -71,6 +72,13 @@ const CASUSSEN = globalThis.CASUSSEN || [];
 const CASUS_ID = arg("casus", null);
 const CASUS = CASUS_ID ? CASUSSEN.find((c) => c.id === CASUS_ID) : CASUSSEN[0];
 if (!CASUS) { console.error("Casus niet gevonden" + (CASUS_ID ? ": " + CASUS_ID : "") + "."); process.exit(2); }
+// --acties=N: rekent door met N kaarten per dag (in elke episode) in plaats van de waarde uit de data. Alleen voor deze zoektocht.
+const ACTIES = arg("acties", null);
+if (ACTIES !== null) {
+  const n = parseInt(ACTIES, 10);
+  if (!(n >= 1)) { console.error("--acties moet een geheel getal van 1 of meer zijn."); process.exit(2); }
+  (CASUS.episodes || []).forEach((e) => { if (e.knoppen) e.knoppen.actiesPerBeurt = n; });
+}
 
 /* ================= toeval ================= */
 function mulberry32(a) {

@@ -208,6 +208,14 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
         "I8": {
           "tekst": "Bij aanhoudende klachten doorgaan met een middel waarvoor de bacterie resistent is",
           "bron": "NHG; hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten"
+        },
+        "I17": {
+          "tekst": "Lisinopril verdubbelen",
+          "bron": "Bart (besluit 16 november 2026)"
+        },
+        "I18": {
+          "tekst": "Wisselen naar een middel waarvoor de bacterie resistent is (na de kweekuitslag; in episode 3 trimethoprim ook na G3)",
+          "bron": "Bart (besluit 16 november 2026)"
         }
       },
       "volgorde": [
@@ -251,6 +259,14 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
         {
           "trigger": "I8",
           "vraag": "\"De kweek is binnen en de klachten blijven. Waar wacht je nog op?\""
+        },
+        {
+          "trigger": "I17 (concept, sectie 12)",
+          "vraag": "\"Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?\""
+        },
+        {
+          "trigger": "I18 (concept, sectie 12)",
+          "vraag": "\"Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?\""
         },
         {
           "trigger": "Onnodig gewisseld",
@@ -551,7 +567,7 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
         "Geldige routes (kern)",
         "Route bij weefselinvasie",
         "Bronconflict, geen poort",
-        "Invarianten (poort; I1, I4, I5, I6, I7 en I8 blijven gelden)",
+        "Invarianten (poort; I1, I4, I5, I6, I7, I8, I17 en I18 blijven gelden)",
         "Score",
         "Wat er zichtbaar wordt als een kaart ontbreekt",
         "Feedback"

@@ -132,7 +132,7 @@
   ];
   var TOEGESTANE_EIGENSCHAPPEN = [
     // contract- en state-velden
-    "AB", "CASUSSEN", "aan", "dagen", "einde", "escalatie", "doelEvent", "stappen", "nummer", "reeks", "aankondiging", "Engine", "Evaluatie", "Predicaten", "_casus", "_opties", "aantalDagen", "actief", "actiesOver", "actiesPerBeurt", "afgerond",
+    "AB", "CASUSSEN", "aan", "dagen", "einde", "eindeNaKaart", "escalatie", "doelEvent", "stappen", "nummer", "reeks", "aankondiging", "Engine", "Evaluatie", "Predicaten", "_casus", "_opties", "aantalDagen", "actief", "actiesOver", "actiesPerBeurt", "afgerond",
     "doorgespoeld", "alleenAlsGespeeld", "als", "antibiotica", "beoordeel", "bronnen", "casusId", "dag", "dagenVoorbij", "doel", "doelen",
     "doelkaart", "episodeId", "episodes", "evalueer", "gebeurtenissen", "geschonden", "gevoelig", "groep", "groepen", "id", "kaart", "kaarten",
     "klachten", "knoppen", "label", "limiet", "maakContext", "naVolg", "onthuld", "onthult", "optie", "opties", "patient", "poortGehaald", "raadplegen",
@@ -1224,7 +1224,7 @@
         if (kaart.doelen && kaart.doelen.E3) { var d = kaart.doelen.E3[Math.floor(rnd() * kaart.doelen.E3.length)]; opts.doel = d.id; if (kaart.opties) opts.optie = (kaart.opties[d.id] || [{ tekst: "x" }])[0].tekst; }
         var r = g.Engine.speelKaart(s, k, opts);
         if (!r.ok) { T.is(JSON.stringify(s), voor, "state ongewijzigd bij geweigerde zet"); T.waar(typeof r.fout === "string"); }
-        if (s.actiesOver === 0 || rnd() < 0.2) g.Engine.volgendeDag(s);
+        if (!g.Engine.eindeBereikt(s) && (s.actiesOver === 0 || rnd() < 0.2)) g.Engine.volgendeDag(s);   // een kaart kan de episode beëindigen (casus 1.5)
         T.waar(s.actiesOver >= 0);
       }
     }
