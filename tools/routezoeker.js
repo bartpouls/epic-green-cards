@@ -19,8 +19,10 @@
    - Er staan GEEN kaart-id's, middelnamen, toestanden of drempels in dit script. Alles komt uit de casusdata (repertoire,
      doelen, opties, gebeurtenissen, invarianten, regelnamen, knoppen) en de uitkomst komt uit Engine.rondAf / Evaluatie.
      Of een kaart op een moment mag, beslist de engine (speelKaart weigert); de zoeker probeert alleen.
-   - Een route = per dag een lijst kaarten (kaart, doel, optie). Na de laatste kaart rondt de speler af zodra de engine dat
-     toestaat (anders een dag verder en opnieuw proberen). Variant "doorspelen" speelt eerst door tot de laatste dag.
+   - Een route = per dag een lijst kaarten (kaart, doel, optie). Na de laatste kaart rondt de speler af. Sinds casus 1.4 spoelt
+     afronden door tot de laatste dag: stopt de engine bij een gebeurtenis (Engine.rondAf geeft dan { gestopt: true }), dan
+     rondt de zoeker opnieuw af zonder te reageren, tot de engine de uitkomst geeft. Variant "doorspelen" loopt eerst met
+     Engine.volgendeDag naar de laatste dag; beide varianten geven nu dezelfde uitkomst.
    - De volgorde van gebeurtenissen in een groep (bv. A en B) stuurt de zoeker via de bestaande engine-optie rng: per
      volgorde worden de waarden berekend die de Fisher-Yates-trekking van de engine precies die volgorde laten kiezen.
      Daarna controleert de zoeker in de spelstand dat de engine echt die volgorde koos.
@@ -274,7 +276,8 @@ function speelNu(ep, volgorde, route, einde) {
         Engine.volgendeDag(state);
       }
     }
-    if (!uit) uit = state.uitkomst;
+    // Afronden spoelt door (casus 1.4): alleen de uitkomst van een echt afgeronde episode telt, niet het tussenbericht van een stop.
+    uit = state.afgerond ? (state.uitkomst || uit) : null;
     if (!uit) throw new Error("Geen uitkomst na afronden.");
     const afloop = afloopVan(state, uit);
     res.status = afloop ? afloop : uit.poortGehaald === true ? "geslaagd" : uit.poortGehaald === false ? "gezakt" : "onbekend";

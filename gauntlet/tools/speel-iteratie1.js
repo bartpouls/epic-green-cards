@@ -40,10 +40,14 @@ async function speelPlan(page, plan, haak) {
     if (plan[i] === "|") await page.click("#btn-volgende-dag"); else await speelKaart(page, plan[i]);
   }
 }
+// Afronden spoelt door (casus 1.4): stopt het doorspoelen bij een gebeurtenis, dan erkent de speler die (Verder) en rondt hij opnieuw af.
 async function rondAf(page) {
-  await page.click("#btn-afronden");
-  if (await page.locator("#btn-afronden-ja").count()) await page.click("#btn-afronden-ja");
-  await page.waitForSelector("#uitslag-kop");
+  for (let i = 0; i < 20; i++) {
+    await page.click("#btn-afronden");   // een onderbreking op tafel wordt eerst erkend (zie de handler voor Verder)
+    if (await page.locator("#btn-afronden-ja").count()) await page.click("#btn-afronden-ja");
+    if (await page.locator("#uitslag-kop").count()) return;
+  }
+  throw new Error("afronden leidde niet tot een beoordeling");
 }
 async function uitslag(page) {
   const t = async s => (await page.locator(s).count()) ? norm(await page.locator(s).first().textContent()) : null;
@@ -122,9 +126,16 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
     check("E2: eerst het tussenscherm met de kopregel van de nieuwe patiëntkaart (alleen zichtbare gegevens)", sprongen.length === 1 &&
       sprongen[0].startsWith("Mevrouw V., 78 jaar (6 jaar na episode 1). |") && sprongen[0].indexOf("29") < 0 && /Mevrouw V\., 72 jaar\./.test(sprongen[0]), JSON.stringify(sprongen));
     check("E2: 'Uitslag verwacht op dag 4.' staat in beeld na het inzetten van de kweek", /Uitslag verwacht op dag 4/.test(await page.textContent("#verwacht")));
-    await page.click("#btn-afronden"); await page.click("#btn-afronden-ja").catch(() => {});
-    check("E2: afronden vóór de kweekuitslag lukt niet (melding)", await page.locator("#melding").count() === 1 && /gebeurtenissen/.test(await page.textContent("#melding")));
-    await speelPlan(page, ["|", "|"]);
+    // Besluit 2 (15 november 2026): afronden mag altijd; het spel spoelt door en stopt op de dag van de kweekuitslag.
+    await page.click("#btn-afronden");
+    check("E2: de bevestiging zegt wat de knop doet", norm(await page.textContent("#afronden-uitleg")) === "De dagen lopen door tot dag 14 of tot er iets gebeurt. Afronden?");
+    await page.click("#btn-afronden-ja");
+    check("E2: afronden vóór de kweekuitslag spoelt door en stopt op dag 4: de uitslag ligt op tafel, met de reden van de stop; nog geen beoordeling",
+      (await page.locator('.dialoog [data-erkennen="C"]').count()) === 1 && /Het doorspoelen stopte op dag 4/.test(await page.textContent("#doorspoel-stop")) && (await page.locator("#uitslag-kop").count()) === 0);
+    await foto(page, "e2-doorspoelstop");
+    await page.hover("#dagtelling");   // een volgende handeling: de onderbreking wordt eerst erkend
+    check("E2: na Verder staat de reden van de stop nog in beeld en zijn dag 3 en 4 zonder kaarten",
+      /Het doorspoelen stopte op dag 4/.test(await page.textContent("#melding")) && /Doorgespoeld: geen kaarten gespeeld\./.test(await page.textContent('.tijdlijn [data-dag="3"]')) && (await page.locator('.tijdlijn [data-dag="4"] [data-gespeeld]').count()) === 0);
     check("E2: de kweekuitslag staat op dag 4", /resistent/.test(await page.textContent('.vandaag [data-gebeurtenis="C"]')) && (await dag(page)) === 4);
     await page.hover("#dagtelling");   // een volgende handeling: de onderbreking moet eerst erkend worden
     check("E2: de kweekuitslag onderbrak de beurt (kaart op tafel, eerst Verder; een kaart openen kon niet)", erkend.length === 1 && erkend[0].id === "C" && erkend[0].dag === 4 && erkend[0].vrij === false, JSON.stringify(erkend));
@@ -145,7 +156,9 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
     await page.hover("#dagtelling");   // een handeling op het spelscherm: het tussenscherm moet eerst weg
     check("E3: tussenscherm met de kopregel van episode 3", sprongen.length === 2 && sprongen[1].startsWith("Mevrouw V., 79 jaar (1 jaar na episode 2). |"), JSON.stringify(sprongen));
     await speelPlan(page, ["G3", "O1", "V9", "|", "N1", "O2", "Ev2>spironolacton", "|", "Ev1", "|", "|"]);
-    check("E3: weefselinvasie (A) en uitdroging (B) kwamen, de uitslag op dag 4", (await dag(page)) === 5);
+    await page.hover("#dagtelling");   // een volgende handeling: de onderbreking van dag 5 (uitdroging) wordt eerst erkend
+    check("E3: weefselinvasie (A, dag 3) en uitdroging (B, dag 5) kwamen op hun vaste dag, de uitslag op dag 4", (await dag(page)) === 5 &&
+      erkend.some(x => x.id === "A" && x.dag === 3) && erkend.some(x => x.id === "B" && x.dag === 5));
     check("E3: A, B en de kweekuitslag onderbraken elk de beurt en zijn met Verder erkend", ["A", "B", "C"].every(id => erkend.some(x => x.id === id && x.vrij === false)), JSON.stringify(erkend));
     await rondAf(page);
     u = await uitslag(page);
@@ -160,7 +173,8 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
     check("E3: hervatten brengt je terug op dezelfde dag met dezelfde kaarten", (await dag(page)) === 1 && (await page.locator("[data-gespeeld]").count()) === 3);
     await speelPlan(page, ["|", "N1", "O2", "Ev2>spironolacton", "|"]);
     check("E3: weefselinvasie als banner met de casustekst", /Weefselinvasie/.test(await page.textContent('.vandaag [data-gebeurtenis="A"]')));
-    await speelPlan(page, ["O1", "B1>V8", "V6>V8>875/125 mg 2 dd", "|", "Ev1", "B3>spironolacton", "V6>lisinopril>halveren", "|", "N3", "|", "|"]);
+    // Casus 1.4: de uitdroging komt op dag 5; de sick day-kaarten horen op die dag (of de dag erna).
+    await speelPlan(page, ["O1", "B1>V8", "V6>V8>875/125 mg 2 dd", "|", "Ev1", "|", "B3>spironolacton", "V6>lisinopril>halveren", "N3", "|", "Ev1", "|"]);
     check("E3: tweede uitslag (nieuwe kweek) 3 dagen later", (await dag(page)) === 7 && /resistent/.test(await page.textContent('.tijdlijn [data-gebeurtenis="C2"]')));
     await rondAf(page);
     u = await uitslag(page);
@@ -172,10 +186,10 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
 
     /* ---------------- Episode 3: verloren door sepsis (besluit 5, 14 november 2026) ---------------- */
     await page.click("#btn-nogmaals"); await page.waitForSelector("#dagtelling");
-    for (let i = 0; i < 7; i++) await page.click("#btn-volgende-dag");
-    check("E3 zonder antibioticum: op dag 8 loopt de episode nog", (await dag(page)) === 8 && (await page.locator("#uitslag-kop").count()) === 0);
-    await page.click("#btn-volgende-dag");
-    await page.waitForSelector("#uitslag-kop");
+    // Casus 1.4: weefselinvasie op dag 3 (vaste dag), dus sepsis na vier volle dagen aanhoudende klachten op dag 7.
+    for (let i = 0; i < 5; i++) await page.click("#btn-volgende-dag");
+    check("E3 zonder antibioticum: op dag 6 loopt de episode nog", (await dag(page)) === 6 && (await page.locator("#uitslag-kop").count()) === 0);
+    await rondAf(page);   // afronden spoelt door naar dag 7: sepsis beëindigt de episode
     u = await uitslag(page);
     check("E3 sepsis: de episode eindigt direct en is verloren (concepttekst), met de bestaande sepsis-melding", /Episode verloren/.test(u.kop) &&
       norm(await page.textContent("#eindtekst")) === "De casus is geëscaleerd. Mevrouw V. heeft sepsis en wordt met spoed verwezen. Deze episode is verloren." &&
@@ -196,7 +210,7 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
       const csv = fs.readFileSync(await csvDl.path(), "utf8"), js = JSON.parse(fs.readFileSync(await jsonDl.path(), "utf8"));
       const regels = csv.replace(/^﻿/, "").split("\r\n").filter(Boolean);
       check("export CSV: BOM, puntkomma, kopregel en één regel per poging", csv.charCodeAt(0) === 0xFEFF && regels[0].startsWith("pseudoniem;episode;poging;eerste poging;testmodus;casusversie;speltijdstip;tijdlijn") && js.length === 7);
-      check("export JSON: eerste poging per episode, volledige tijdlijn, casusversie 1.3", js.filter(p => p.eerstePoging).length === 3 && js.every(p => p.casusVersie === "1.3" && Array.isArray(p.tijdlijn)));
+      check("export JSON: eerste poging per episode, volledige tijdlijn, casusversie 1.4", js.filter(p => p.eerstePoging).length === 3 && js.every(p => p.casusVersie === "1.4" && Array.isArray(p.tijdlijn)));
       check("export: de afloop staat erin (laatste kolom 'afloop'; de sepsis-poging is 'verloren')", regels[0].endsWith(";afloop") && regels[regels.length - 1].endsWith(";verloren") && js[js.length - 1].afloop === "verloren" && js.filter(p => p.afloop === "gehaald").length === 3);
       check("export CSV: tijdlijn in woorden", /Dag 1: Recente labwaarden opvragen/.test(csv) && /Dag \d+: Antibioticum wisselen → Amoxicilline\/clavulaanzuur/.test(csv));
     }

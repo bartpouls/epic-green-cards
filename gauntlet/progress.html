@@ -46,7 +46,7 @@
 </head>
 <body>
 <main>
-  <div class="card warn" id="todocard"><h2>TODO_BART — wacht op Bart</h2><div class="sub">Eerst wat jouw beslissing vraagt; onderaan wat op 14 november 2026 is beslist. Vragen komen uit <code>casussen/uwi.js</code>.</div><div id="todo"></div></div>
+  <div class="card warn" id="todocard"><h2>TODO_BART — wacht op Bart</h2><div class="sub">Eerst wat jouw beslissing vraagt; onderaan wat op 14 en 15 november 2026 is beslist. Vragen komen uit <code>casussen/uwi.js</code>.</div><div id="todo"></div></div>
 
   <h1 id="goal">Gauntlet voortgang</h1>
   <div class="sub" id="meta">Wacht op gegevens uit progress.js …</div>
@@ -133,7 +133,11 @@
   }
   function laadTodo() {
     var a = document.createElement('script'); a.src = '../casussen/uwi.js';
-    a.onload = function () { var b = document.createElement('script'); b.src = 'todo-bart.js'; b.onload = todoLijst; document.head.appendChild(b); };
+    a.onload = function () {
+      function lijstLaden() { var b = document.createElement('script'); b.src = 'todo-bart.js'; b.onload = todoLijst; document.head.appendChild(b); }
+      // De vragen over de casusreferentie (TODO_BART-R...) staan in uwi-referentie.js; ontbreekt dat bestand, dan toont de lijst de rest.
+      var r = document.createElement('script'); r.src = '../casussen/uwi-referentie.js'; r.onload = lijstLaden; r.onerror = lijstLaden; document.head.appendChild(r);
+    };
     a.onerror = function () { $('todo').innerHTML = '<div class="empty">casussen/uwi.js niet gevonden.</div>'; };
     document.head.appendChild(a);
   }

@@ -903,7 +903,8 @@
         T.waar(!BRONCODE.test(tekstVan(root)), "geen bronmarkering in de onderbreking");
         verder(root);
       }
-      ["G1", "G3", "O2", "|", "N1", "O1", "N3", "|", "Ev1", "|"].forEach(function (k) { if (k === "|") dag(); else speelKlik(root, k); });
+      // Casus 1.4: weefselinvasie en uitdroging verschijnen op dag 3 en dag 5 (volgorde willekeurig); op dag 5 zijn beide geweest.
+      ["G1", "G3", "O2", "|", "N1", "O1", "N3", "|", "Ev1", "|", "|"].forEach(function (k) { if (k === "|") dag(); else speelKlik(root, k); });
       T.waar(gezien.indexOf("B") >= 0, "de uitdroging is verschenen: " + gezien.join());
       T.waar(!!metAttr(root, "data-sinds", "B") && !BRONCODE.test(tekstVan(root)), "uitdroging op tijdlijn en patiëntkaart, zonder bronmarkering");
     }, opslagMet([rec("anna", "E1", []), rec("anna", "E2", [])]));
@@ -948,11 +949,12 @@
   });
 
   test("PR1 F5: na een gebeurtenis staat die onder 'Nieuw sinds de start' op de patiëntkaart; de klachtenregel blijft; klachten per dag: één regel per verstreken dag", function () {
-    metNepDom(function (root) {
+    // Casus 1.4: uitdroging op dag 3, weefselinvasie op dag 5 (vaste willekeur: zo komt sepsis pas op dag 9, na het einde van deze test).
+    var oudRandom = Math.random; Math.random = function () { return 0.99; };
+    try { metNepDom(function (root) {
       begin(root, "anna"); startEp(root, "E3");
-      for (var i = 0; i < 4; i++) klik(metId(root, "btn-volgende-dag"));
+      for (var i = 0; i < 4; i++) { klik(metId(root, "btn-volgende-dag")); verder(root); }
       T.is(metId(root, "dagtelling").getAttribute("data-dag"), "5");
-      verder(root);
       var a = ep("E3").gebeurtenissen.filter(function (x) { return x.id === "A"; })[0];
       var sinds = metId(root, "sinds-start");
       T.waar(sinds && /Nieuw sinds de start/.test(tekstVan(sinds)) && tekstVan(metAttr(sinds, "data-sinds", "A")).indexOf(a.tekst) >= 0, "weefselinvasie op de patiëntkaart");
@@ -967,7 +969,7 @@
       T.waar(tekstVan(metAttr(kl, "data-klachtdag", "7")).indexOf(ep("E3").statusTeksten.geenVerbetering48) >= 0, "dag 7: status uit de data");
       // de waarschuwing midden in beeld noemt de echte dagen (na de stap begint de telling opnieuw)
       T.waar(/Klachten houden aan: dag 5, 6, 7\./.test(tekstVan(metId(root, "aanhoudend"))), "echte dagnummers: " + tekstVan(metId(root, "aanhoudend")));
-    }, opslagMet([rec("anna", "E1", []), rec("anna", "E2", [])]));
+    }, opslagMet([rec("anna", "E1", []), rec("anna", "E2", [])])); } finally { Math.random = oudRandom; }
     var s = nieuw("E3"); volgende(s, 2);
     T.gelijk(UI.klachtenPerDag(ep("E3"), s).map(function (d) { return d.dag; }), [3, 2, 1]);
   });

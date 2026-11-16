@@ -342,8 +342,11 @@
   });
   reg("E2-5 score doelmatigheid: 3 als G2 vóór de eerste voorschrijfkaart, anders 2", function (e) {
     var r = e.score.doelmatigheid.regels;
-    T.is(r.length, 2);
-    T.gelijk(r.map(function (x) { return x.punten; }), [3, 2]);
+    // Casus 1.4: na de twee punten-regels volgen de aftrekregels voor overbodige kaarten (concept); die toetst tests/besluiten-1115.tests.js.
+    T.is(r.length, 4);
+    T.gelijk(r.map(function (x) { return x.punten; }), [3, 2, undefined, undefined]);
+    T.gelijk(r.slice(2).map(function (x) { return [x.delta, x.concept, typeof x.naam, typeof x.afgeleidUit]; }), [[-1, true, "string", "string"], [-1, true, "string", "string"]]);
+    T.is(e.score.doelmatigheid.min, 1, "ondergrens 1");
     T.gelijk(r[1].als, { p: "waarheid", waarde: true });
     var tekst = s(r[0].als);
     T.waar(tekst.indexOf('"G2"') >= 0, "regel 1 gaat over G2");
@@ -448,7 +451,7 @@
     T.waar(e.ontwerpnoot === undefined && e.patient.ontwerpnoot === undefined, "ontwerpnoot is verzonnen tekst");
     T.gelijk(e.patient.meta, { medicatieNoot: "afleider, bereidt episode 3 voor" });
     e.patient.verborgen.forEach(function (v) { T.waar(v.toelichting === undefined, "toelichting hoort onder meta"); });
-    T.gelijk(Object.keys(e).sort(), ["afrondenPasNaGebeurtenissen", "antibiotica", "escalatie", "feedbackExtra", "gebeurtenissen", "id", "invarianten", "knoppen", "level", "meta", "patient", "profielen", "repertoire", "score", "startToestanden", "startUitleg", "statusTeksten", "titel", "werkzaamheid", "zichtbaarAlsOntbreekt"]);
+    T.gelijk(Object.keys(e).sort(), ["antibiotica", "escalatie", "feedbackExtra", "gebeurtenissen", "id", "invarianten", "knoppen", "level", "meta", "patient", "profielen", "repertoire", "score", "startToestanden", "startUitleg", "statusTeksten", "titel", "werkzaamheid", "zichtbaarAlsOntbreekt"]);
   });
   reg("S-TODO: de drie extra onduidelijkheden zijn gemeld (route zonder antibioticum, vroeg afronden vs I8, I7 bij vroege wissel) en de dag-lezing noemt beide lezingen", function (e) {
     var lijst = casus().todoBart.filter(function (t) { return /^TODO_BART-E2-/.test(t.id); });
@@ -610,7 +613,7 @@
     vereisEngine();
     var r = schending(route([[["G2"], ["O1"], ["V4"]], [["N1"], ["B1", "V3"]]]), e);
     T.gelijk(r.ids, ["I5"]);
-    T.is(r.vraag, "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?");
+    T.is(r.vraag, "Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?", "nog geen kweekuitslag gezien: de variant zonder 'Het lab zegt gevoelig.' (casus 1.4, concept)");
   });
   reg("E2-route (I7, anker via wissel): trimethoprim gestart via B1 naar V5 telt als start: O2 + V6 halveren op tijd slaagt", function (e) {
     vereisEngine();
@@ -634,7 +637,7 @@
     vereisEngine();
     var r = schending(route([dag1(["V3"]), [["N1"], ["V4"]]]), e);
     T.gelijk(r.ids, ["I5", "I4"]);
-    T.is(r.vraag, "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?");
+    T.is(r.vraag, "Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?", "nog geen kweekuitslag gezien: de variant (casus 1.4, concept)");
     T.gelijk(schending(route([dag1(["V4"]), [["N1"], ["V3"]]]), e).ids, ["I5", "I4"], "V3 als tweede middel");
   });
   reg("E2-route (I4, op enig moment): twee antibiotica tegelijk blijft een schending ook als er daarna één wordt gestopt", function (e) {
@@ -809,7 +812,7 @@
       "TODO_BART-E2-18": "E2.invarianten[].ernst", "TODO_BART-E2-19": "E2.invarianten[].weglaatDownside", "TODO_BART-E2-1": "E2.invarianten.I1",
       "TODO_BART-E2-2": "E2.invarianten.I7", "TODO_BART-E2-3": "E2.invarianten.I7.vraagVarianten", "TODO_BART-E2-4": "E2.invarianten.I6.vraagVarianten",
       "TODO_BART-E2-5": "E2.invarianten.I8", "TODO_BART-E2-6": "E2.gebeurtenissen.C", "TODO_BART-E2-7": "E2.patient.verborgen[G2]", "TODO_BART-E2-8": "E2.profielen",
-      "TODO_BART-E2-9": "E2.statusTeksten", "TODO_BART-E2-10": "E2.profielen", "TODO_BART-E2-11": "E2.score", "TODO_BART-E2-12": "E2.feedbackExtra",
+      "TODO_BART-E2-9": "E2.statusTeksten", "TODO_BART-E2-10": "E2.profielen; casus.restprofiel", "TODO_BART-E2-11": "E2.score", "TODO_BART-E2-12": "E2.feedbackExtra",
       "TODO_BART-E2-15": "E2.invarianten.I6", "TODO_BART-E2-16": "E2.invarianten.I8", "TODO_BART-E2-17": "E2.invarianten.I7", "TODO_BART-E2-14": "E2.zichtbaarAlsOntbreekt"
     };
     var mijn = casus().todoBart.filter(function (t) { return /^TODO_BART-E2-/.test(t.id); });

@@ -141,7 +141,9 @@
       profiel: kopie(poging.profiel),
       tijdstempel: poging.tijdstempel || new Date().toISOString(),
       afloop: typeof poging.afloop === "string" && poging.afloop !== "" ? poging.afloop : null,
-      eindTekst: typeof poging.eindTekst === "string" && poging.eindTekst !== "" ? poging.eindTekst : null
+      eindTekst: typeof poging.eindTekst === "string" && poging.eindTekst !== "" ? poging.eindTekst : null,
+      // Alleen in de JSON-export (de kolommen van de CSV zijn ongewijzigd): per keer doorspoelen { van, tot, gebeurtenissen }.
+      doorgespoeld: Array.isArray(poging.doorgespoeld) ? kopie(poging.doorgespoeld) : []
     };
     lijst.push(rec);
     geheugen = kopie(lijst);

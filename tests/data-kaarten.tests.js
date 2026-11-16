@@ -87,7 +87,7 @@
   Test.registreer(G, "K0 CASUSSEN is een array met één casus; id en versie uit de casuskop", function () {
     Test.waar(Array.isArray(window.CASUSSEN) && window.CASUSSEN.length === 1, "één casus verwacht");
     Test.is(casus().id, "uwi-eerstelijn");
-    Test.is(casus().versie, "1.3");   // casus-uwi.md versie 1.3 (besluiten Bart, 14 november 2026)
+    Test.is(casus().versie, "1.4");   // casus-uwi.md versie 1.4 (besluiten Bart, 15 november 2026)
     Test.is(casus().titel, REF_TITEL, "titel");
     Test.waar(Array.isArray(casus().episodes), "episodes is een array (door de episodebestanden aangevuld)");
     Test.waar(Array.isArray(casus().todoBart), "todoBart is een array");
@@ -266,7 +266,7 @@
   Test.registreer(G, "K0 exacte sleutelverzamelingen: kop, kaarten, doelen, opties en raadplegen hebben geen onbekende velden", function () {
     function sleutels(o) { return Object.keys(o).sort(); }
     // "markeringen" (eindcontrole PR 1, F7): de markering [G] uit de casuskop, zodat de weergave bronmarkeringen generiek kan weglaten.
-    Test.gelijk(sleutels(casus()), ["bronnen","episodes","gevolgzinnen","id","kaarten","limiet","markeringen","maten","raadplegen","referentie","regelnamen","rollen","titel","todoBart","versie"], "casuskop");
+    Test.gelijk(sleutels(casus()), ["bronnen","episodes","gevolgzinnen","id","kaarten","limiet","markeringen","maten","raadplegen","referentie","regelnamen","restprofiel","rollen","titel","todoBart","versie"], "casuskop");
     var basis = ["bron","categorie","doelen","doelkaart","downside","effect","id","label","opties","vanafEpisode"];
     casus().kaarten.forEach(function (k) {
       var verwacht = basis.slice();

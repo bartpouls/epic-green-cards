@@ -256,7 +256,7 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
   // Alleen vaste, niet-klinische namen. Alle andere veldnamen worden uit de sleutel in de data afgeleid.
   var VELDNAMEN = {
     raadplegenKost: 'Richtlijn raadplegen kost (acties)',
-    casusTekst: 'Zoals in de casus', afrondenPasNaGebeurtenissen: 'Afronden pas na de gebeurtenissen'
+    casusTekst: 'Zoals in de casus', afgeleidUit: 'Afgeleid uit', opmerkingBijAftrek: 'Opmerking bij aftrek', conceptRegels: 'Conceptregels'
   };
   function veldnaam(k) {
     if (VELDNAMEN[k]) return VELDNAMEN[k];
@@ -429,6 +429,7 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
         var wanneer = NU ? 'tot nu toe' : 'ooit tijdens de episode';
         if (p.op === 'laatste') wanneer = 'op de laatste dag';
         else if (p.op && p.op.dag != null) wanneer = 'op dag ' + p.op.dag;
+        else if (p.op && p.op.totEnMetKaart) wanneer = 'op een dag tot en met de dag waarop ' + kd(p.op.totEnMetKaart) + ' voor het eerst is gespeeld';
         else if (p.op && p.op.eindeBeurtNaGebeurtenis != null) wanneer = 'op de dag van ' + gebeurtenisLab(p.op.eindeBeurtNaGebeurtenis) + (p.op.offset ? ' ' + (p.op.offset > 0 ? '+' : '−') + Math.abs(p.op.offset) + ' dag(en)' : '');
         return tekst('Er geldt ' + statusTxt(p.waarde) + ', ' + wanneer);
       }
@@ -760,6 +761,9 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
     if (t.type === 'naKaart') s = 'na de ' + t.n + 'e gespeelde kaart';
     else if (t.type === 'naKaartVanKaart') s = t.n + ' gespeelde kaart(en) nadat ' + lab(t.kaart) + ' is gespeeld';
     else if (t.type === 'naAantalKaarten') s = 'na ' + t.n + ' gespeelde kaarten';
+    else if (t.type === 'opDag') s = 'aan het begin van dag ' + t.dag + ' (vaste dag; binnen een groep bepaalt het toeval welke gebeurtenis welke dag krijgt)';
+    else if (t.type === 'naDagenNaKaart') s = t.dagen + ' dag(en) nadat ' + lab(t.kaart) + (t.nummer ? ' voor de ' + t.nummer + 'e keer' : '') + ' is gespeeld, aan het begin van die dag';
+    else if (t.type === 'opTeller') s = 'als de klachten lang genoeg aanhouden (zie de escalatie)';
     else s = 'op een moment dat dit overzicht niet herkent';
     if (t.alleenAlsGespeeld) s += ', alleen als ' + lab(t.alleenAlsGespeeld) + ' gespeeld is';
     return s;

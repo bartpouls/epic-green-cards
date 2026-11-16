@@ -364,7 +364,7 @@
   // Exacte sleutelwhitelist: elk object in de episode heeft PRECIES de sleutels hieronder (TODO_BART* wordt apart gepind in S-TODO).
   // Een extra veld (bv. een hint voor de student) of een ontbrekend veld in welk object ook geeft rood.
   var SLEUTELS = {
-    "E1": ["id", "level", "startToestanden", "knoppen", "afrondenPasNaGebeurtenissen", "startUitleg", "escalatie", "antibiotica", "patient", "repertoire", "gebeurtenissen", "werkzaamheid", "statusTeksten", "invarianten", "score", "profielen", "feedbackExtra", "zichtbaarAlsOntbreekt"],
+    "E1": ["id", "level", "startToestanden", "knoppen", "startUitleg", "escalatie", "antibiotica", "patient", "repertoire", "gebeurtenissen", "werkzaamheid", "statusTeksten", "invarianten", "score", "profielen", "feedbackExtra", "zichtbaarAlsOntbreekt"],
     "E1.escalatie": ["aan"],
     "E1.knoppen": ["actiesPerBeurt", "aantalDagen", "raadplegenKost"],
     "E1.patient": ["zichtbaar", "waar", "medicatie", "verborgen", "meta"],

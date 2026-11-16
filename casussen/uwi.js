@@ -2446,10 +2446,10 @@ window.CASUSSEN[0].episodes.push({
           punten: 3
         },
         { als: { p: "waarheid", waarde: true }, punten: 2 },
-        { naam: "Kalium bepalen zonder trimethoprim", als: {"p": "en", "args": [{"p": "gespeeld", "K": {"kaart": "O2"}}, {"p": "niet", "arg": {"p": "gestart", "middel": "V5"}}]}, delta: -1,
+        { naam: "Kalium bepalen zonder trimethoprim", als: {"p": "en", "args": [{"p": "gespeeld", "kaart": "O2"}, {"p": "niet", "arg": {"p": "gestart", "middel": "V5"}}]}, delta: -1,
           kaarten: [{"kaart": "O2"}], concept: true,
           afgeleidUit: "De downside van O2: 'Alleen zinvol bij een indicatie; anders kost het doelmatigheid'." },
-        { naam: "Lisinopril aanpassen zonder uitdroging", als: {"p": "gespeeld", "K": {"kaart": "V6", "doel": "lisinopril"}}, delta: -1,
+        { naam: "Lisinopril aanpassen zonder uitdroging", als: {"p": "gespeeld", "kaart": "V6", "doel": "lisinopril"}, delta: -1,
           kaarten: [{"kaart": "V6", "doel": "lisinopril"}], concept: true,
           afgeleidUit: "Het effect van V6: 'ook lisinopril halveren bij sick day'; in episode 2 komt geen uitdroging voor." }
       ]
@@ -3458,7 +3458,7 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-3",
     vraag: "Vroeg afronden vóór gebeurtenis A, B of C (en dus ontlopen van I8, I10, I11, I15, I16)?",
-    gekozenLezing: "Sinds casus 1.4 mag afronden altijd, maar het spel loopt dan door tot de laatste dag (dag 14). Weefselinvasie en uitdroging verschijnen op dag 3 en dag 5 (volgorde per poging willekeurig) en een kweekuitslag 3 dagen na Urinekweek inzetten; bij elke gebeurtenis stopt het doorlopen, zodat de speler kan reageren. Het ontlopen van de invarianten na A, B of C (I8, I10, I11, I15, I16) door vroeg af te ronden is niet mogelijk.",
+    gekozenLezing: "Sinds casus 1.4 mag afronden altijd, maar het spel loopt dan door tot de laatste dag (dag 14). Weefselinvasie en uitdroging verschijnen op dag 3 en dag 5 (volgorde per poging willekeurig) en een kweekuitslag 3 dagen na Urinekweek inzetten; bij elke gebeurtenis stopt het doorlopen, zodat de speler kan reageren. Het ontlopen van de invarianten na A, B of C (I8, I10, I11, I15, I16) door vroeg te stoppen is niet mogelijk.",
     plek: "E3.gebeurtenissen A, B, C; E3.invarianten.I8, I10, I11, I15, I16",
     besluit: "Beslist door Bart op 15 november 2026: afronden mag altijd; het spel loopt dan dag voor dag door tot de laatste dag of tot er een gebeurtenis verschijnt."
   },

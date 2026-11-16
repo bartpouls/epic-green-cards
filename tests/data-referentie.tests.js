@@ -92,7 +92,7 @@
       "- De rest is vrij.",
       "### Score",
       "- **Duurzaamheid:** wisselen terwijl het middel werkt en de klachten afnemen, kost punten.",
-      "- **Doelmatigheid:** G2 spelen vóór de voorschrijfkaart levert punten op.",
+      "- **Doelmatigheid:** G2 spelen vóór de voorschrijfkaart levert punten op. Overbodige kaarten kosten elk 1 punt, met ondergrens 1 (lijst in sectie 11, concept).",
       "### Wat er zichtbaar wordt als een kaart ontbreekt",
       "- **Nitrofurantoïne zonder G2:** \"De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.\"",
       "- **V5 zonder O2:** \"De kaliumspiegel is onbekend.\"",
@@ -100,7 +100,7 @@
       "| Trigger | Vraag |",
       "|---|---|",
       "| Verouderde eGFR niet opgemerkt | \"Hoe oud was de eGFR waarop je besloot? Wat is er sindsdien met haar gebeurd?\" |",
-      "| I5 | \"Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?\" |",
+      "| I5, na een kweekuitslag (zonder kweekuitslag: de variant in sectie 11, concept) | \"Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?\" |",
       "| I6, geen kweek | \"Wat vertelt een kweek van urine die al antibioticum heeft gezien?\" |",
       "| I6, afwachten | \"Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?\" |",
       "| I7, geen kalium | \"Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?\" |",
@@ -126,8 +126,8 @@
       "### Gebeurtenissen",
       "| Id | Trigger | Inhoud |",
       "|---|---|---|",
-      "| A | Na kaart *n* (engine-parameter); volgorde met B willekeurig | Weefselinvasie: koorts 38,6 °C en flankpijn |",
-      "| B | Na kaart *m* (engine-parameter); volgorde met A willekeurig | Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK] |",
+      "| A | Aan het begin van dag 3 of dag 5 (engine-instelling); welke van A en B op dag 3 komt, is per poging willekeurig | Weefselinvasie: koorts 38,6 °C en flankpijn |",
+      "| B | Aan het begin van dag 3 of dag 5 (engine-instelling); de andere dag dan A | Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK] |",
       "| C | 3 dagen na O1 | Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne. |",
       "De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.",
       "### Geldige routes (kern)",
@@ -165,7 +165,7 @@
       "| I16 | Geen contact binnen 48 uur, of geen verwijzing als ze dan niet beter is | Met A | NHG |",
       "### Score",
       "- **Duurzaamheid:** de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op. Wie ciprofloxacine of amoxicilline/clavulaanzuur start terwijl de toestand nog cystitis is (nog geen weefselinvasie), schrijft buiten de richtlijn voor en verliest 1 punt duurzaamheid (ondergrens 1).",
-      "- **Doelmatigheid:** G3 gebruiken vóór de eerste keuze levert punten op.",
+      "- **Doelmatigheid:** G3 gebruiken vóór de eerste keuze levert punten op. Overbodige kaarten kosten elk 1 punt, met ondergrens 1 (lijst in sectie 11, concept).",
       "### Wat er zichtbaar wordt als een kaart ontbreekt",
       "- **Geen sick day-maatregelen:** \"De nierfunctie daalt verder en het kalium stijgt.\" Zonder getallen, zoals ook de KNMP-regel geen getallen geeft.",
       "- **Ciprofloxacine zonder B4/B3:** \"Na 48 uur geen verbetering.\"",
@@ -410,7 +410,8 @@
     var lijst = (c.todoBart || []).filter(function (t) { return TODO_IDS.indexOf(t.id) !== -1; });
     T.gelijk(lijst.map(function (t) { return t.id; }).sort(), TODO_IDS.slice().sort());
     lijst.forEach(function (t) {
-      T.gelijk(Object.keys(t).sort(), ["gekozenLezing", "id", "plek", "vraag"], t.id + " sleutels");
+      // Een beslist punt heeft daarnaast een veld `besluit` (R6: besluit Bart, 15 november 2026).
+      T.gelijk(Object.keys(t).filter(function (k) { return k !== "besluit"; }).sort(), ["gekozenLezing", "id", "plek", "vraag"], t.id + " sleutels");
       ["vraag", "gekozenLezing", "plek"].forEach(function (k) {
         T.waar(typeof t[k] === "string" && t[k].length > 40 || k === "plek" && t[k].length > 5, t.id + "." + k + " te kort");
         T.waar(!/contract|rapport|ronde|stuk|S11|gauntlet|criticus|bouwer|lead/i.test(t[k]), t.id + "." + k + " verwijst naar proces in plaats van de casus");

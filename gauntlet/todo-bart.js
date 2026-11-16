@@ -1,23 +1,27 @@
 /* Lijst met open vragen, bovenaan gauntlet/progress.html.
-   Indeling van 14 november 2026: van de 67 vragen in de data (casus.todoBart in casussen/uwi.js) staan hier alleen de vragen
+   Indeling van 15 november 2026: van de vragen in de data (casus.todoBart in casussen/uwi.js) staan hier alleen de vragen
    die bepalen wat in het spel goed of fout is. Bij alle andere blijft de gekozen lezing staan.
-   Op 14 november 2026 heeft Bart tien vragen beslist. Ze blijven in de data staan, elk met een veld `besluit`, en staan hier in de
-   groep "Beslist op 14 november 2026" (beslist: true). Nieuw zijn twee conceptteksten ter goedkeuring en de regels zonder gevolgzin. */
+   Op 14 november 2026 heeft Bart tien vragen beslist, op 15 november 2026 nog zeven. Ze blijven in de data staan, elk met een veld
+   `besluit`, en staan hier in de groepen "Beslist op ..." (beslist: true).
+   Nieuw na 15 november 2026: vier concepten ter goedkeuring (een voorschot, afgeleid uit tekst die al in de casus staat; zie
+   casus-uwi.md sectie 11) en één nieuwe vraag. De regels zonder gevolgzin hebben nu allemaal een conceptzin (TODO_BART-C4). */
 window.TODO_BART_GROEPEN = [
-  { titel: "1. Conceptteksten ter goedkeuring (nieuw na de besluiten van 14 november 2026)", ids: [
+  { titel: "1. Concepten ter goedkeuring (voorschot bij de besluiten van 15 november 2026; zie casus-uwi.md sectie 11)", ids: [
+    "TODO_BART-C1", "TODO_BART-C2", "TODO_BART-C3", "TODO_BART-C4"
+  ] },
+  { titel: "2. Nieuwe vraag na de besluiten van 15 november 2026", ids: ["TODO_BART-C5"] },
+  { titel: "3. Conceptteksten ter goedkeuring (na de besluiten van 14 november 2026)", ids: [
     "TODO_BART-E3-27", "TODO_BART-E3-28"
   ] },
-  { titel: "2. Veiligheidsregels zonder zin over wat er met de patiënt gebeurt (nog te schrijven; zonder zin toont het spel alleen de hint)", vast: [
-    { id: "Episode 1", vraag: "I4 Twee antibiotica tegelijk." },
-    { id: "Episode 2", vraag: "I1 Alarmsignalen ontbreken; I4 Twee antibiotica tegelijk; I6 Geen kweek vooraf of afwachten; I8 Resistent middel na de uitslag." },
-    { id: "Episode 3", vraag: "I1 Alarmsignalen ontbreken; I4 Twee antibiotica tegelijk; I5 Nitrofurantoïne bij lage nierfunctie; I6 Geen kweek vooraf of afwachten; I7 Trimethoprim: kalium en halveren; I8 Resistent middel na de uitslag; I10 Weefselinvasie: middel werkt niet in het weefsel; I11 Wisselen zonder nieuwe kweek; I12 Cotrimoxazol; I13 Amoxicilline/clavulaanzuur zonder aangepaste dosis; I16 Opvolgen en verwijzen na weefselinvasie." }
-  ] },
-  { titel: "3. Ontbrekende reflectievragen", ids: [
+  { titel: "4. Ontbrekende reflectievragen", ids: [
     "TODO_BART-E1-3", "TODO_BART-E2-8", "TODO_BART-E3-12"
   ] },
-  { titel: "4. Voor de huisarts", ids: ["TODO_BART-N1", "TODO_BART-E2-6", "TODO_BART-E3-4"] },
-  { titel: "5. Achterhaald door casus 1.2 (de vraag is niet meer actueel; de gekozen lezing beschrijft wat het spel nu doet)", ids: [
-    "TODO_BART-E2-16", "TODO_BART-E2-17"
+  { titel: "5. Voor de huisarts", ids: ["TODO_BART-N1", "TODO_BART-E2-6", "TODO_BART-E3-4"] },
+  { titel: "6. Achterhaald door casus 1.2 (de vraag is niet meer actueel; de gekozen lezing beschrijft wat het spel nu doet)", ids: [
+    "TODO_BART-E2-17"
+  ] },
+  { titel: "Beslist op 15 november 2026", beslist: true, ids: [
+    "TODO_BART-N3", "TODO_BART-E2-16", "TODO_BART-E3-3", "TODO_BART-E2-10", "TODO_BART-E3-11", "TODO_BART-E3-21", "TODO_BART-R6"
   ] },
   { titel: "Beslist op 14 november 2026", beslist: true, ids: [
     "TODO_BART-E2-2", "TODO_BART-E3-19", "TODO_BART-E3-1", "TODO_BART-E3-24", "TODO_BART-E3-9", "TODO_BART-N4",
