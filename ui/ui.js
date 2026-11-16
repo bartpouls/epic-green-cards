@@ -316,11 +316,14 @@
   // Tijdlijn: voor elke dag tot en met de huidige: banners, klachtenstatus, gespeelde kaarten en raadplegingen.
   function dagenModel(casus, ep, state) {
     var uit = [];
+    // Doorgespoeld (na 'Episode afronden'): de dagen na de dag van afronden tot en met de dag waarop het doorspoelen stopte of eindigde.
+    function doorgespoeld(d) { return lijst(state.doorgespoeld).some(function (x) { return x && d > x.van && d <= x.tot; }); }
     for (var d = 1; d <= state.dag; d++) {
       var kl = lijst(state.klachten)[d];
       uit.push({
         dag: d,
         huidig: d === state.dag,
+        doorgespoeld: doorgespoeld(d),
         banners: lijst(state.gebeurtenissen).filter(function (x) { return x.dag === d; })
           .map(function (x) { return { id: x.id, tekst: gebeurtenisTekst(ep, x.id) }; }),
         status: kl && kl.tekst ? kl.tekst : null,
@@ -418,15 +421,17 @@
         gehaald: false, verloren: verloren, eindTekst: verloren && isObj(u.einde) ? (u.einde.tekst || null) : null,
         eindGebeurtenis: verloren && isObj(u.einde) ? (u.einde.gebeurtenis || null) : null,
         downsides: downsides, vraag: u.vraag || null, hint: u.vraag || null, gevolg: gevolgen.length ? gevolgen[0] : null, gevolgen: gevolgen,
-        anderen: anderenZin(u), scores: [], profiel: null, extraVragen: [], zichtbaar: []
+        anderen: anderenZin(u), scores: [], zonderScore: [], profiel: null, extraVragen: [], zichtbaar: []
       };
     }
-    var scores = [];
+    var scores = [], zonderScore = [];
     if (isObj(u.score)) Object.keys(u.score).forEach(function (as) {
       if (typeof u.score[as] === "number") scores.push({ as: as, naam: hoofdletter(as), waarde: u.score[as] });
+      else zonderScore.push({ as: as, naam: hoofdletter(as) });   // de regels geven voor deze route geen waarde op deze as
     });
     return {
       gehaald: true, verloren: false, eindTekst: null, eindGebeurtenis: null, downsides: downsides, vraag: null, hint: null, gevolg: null, gevolgen: [], anderen: null, scores: scores,
+      zonderScore: zonderScore,
       profiel: isObj(u.profiel) ? { naam: u.profiel.naam, reflectievraag: u.profiel.reflectievraag || null } : null,
       extraVragen: lijst(u.extraVragen).map(function (x) { return typeof x === "string" ? x : x.vraag; }),
       zichtbaar: lijst(u.zichtbaar).map(function (x) { return typeof x === "string" ? x : x.tekst; })
@@ -434,6 +439,14 @@
   }
 
   // Leesbaar overzicht van de pogingen van één pseudoniem (nieuwste eerst): per poging een tabel per dag in woorden, de vraag en de uitkomst.
+  function scoreTekst(w) { return typeof w === "number" ? w + " van " + SCHAAL : "geen score"; }
+  // Uitleg bij de knop 'Episode afronden' en de melding als het doorspoelen stopt (bedieningstekst, geen klinische inhoud).
+  function afrondUitleg(state) {
+    return "De dagen lopen door tot dag " + state.aantalDagen + " of tot er iets gebeurt.";
+  }
+  function doorspoelStopTekst(stop) {
+    return "Het doorspoelen stopte op dag " + stop.dag + ", omdat er iets gebeurde. Reageer als je wilt en kies daarna opnieuw ‘Episode afronden’.";
+  }
   function overzichtModel(casus, records, pseudoniem) {
     return recordsVan(records, pseudoniem).slice().reverse().map(function (r) {
       var eps = lijst(casus && casus.episodes), ep = eps.filter(function (e) { return e.id === r.episodeId; })[0] || {};
@@ -451,7 +464,7 @@
       var gehaald = typeof r.poortGehaald === "boolean" ? r.poortGehaald : lijst(r.geschonden).length === 0;
       var uitkomst = r.afloop === "verloren" ? "Episode verloren." : gehaald
         ? "Veiligheid gehaald" + (r.profiel && r.profiel.naam ? ". Profiel: " + r.profiel.naam : "") +
-          (r.score ? ". Duurzaamheid " + r.score.duurzaamheid + " van " + SCHAAL + ", doelmatigheid " + r.score.doelmatigheid + " van " + SCHAAL : "") + "."
+          (r.score ? ". Duurzaamheid " + scoreTekst(r.score.duurzaamheid) + ", doelmatigheid " + scoreTekst(r.score.doelmatigheid) : "") + "."
         : "Nog niet veilig genoeg.";
       return {
         titel: "Episode " + (episodeNummer(casus, { id: r.episodeId }) || r.episodeId) + ", poging " + (r.pogingnummer || "?") + (r.testmodus ? " (testmodus)" : ""),
@@ -731,7 +744,7 @@
           h("li", null, "Je behandelt een patiënt door kaarten te spelen."),
           h("li", null, "Elke dag heb je een aantal acties. Een kaart spelen kost één actie."),
           h("li", null, "Met ‘Volgende dag’ ga je een dag verder. Dan kan er iets veranderen."),
-          h("li", null, "Met ‘Episode afronden’ krijg je de beoordeling. Lukt het niet, dan kun je het opnieuw proberen.")
+          h("li", null, "Met ‘Episode afronden’ lopen de dagen door tot de laatste dag of tot er iets gebeurt. Daarna krijg je de beoordeling. Lukt het niet, dan kun je het opnieuw proberen.")
         )
       )
     );
@@ -933,11 +946,23 @@
     render();
   }
 
+  // Afronden spoelt door (besluit Bart, 15 november 2026): de dagen lopen door tot de laatste dag. Verschijnt er onderweg een
+  // gebeurtenis, dan stopt het doorspoelen: de gebeurtenis komt op tafel, met de reden van de stop, en de speler rondt daarna opnieuw af.
   function rondAf() {
     var uitkomst;
     if (onderbroken()) return;
     try { uitkomst = g.Engine.rondAf(app.spel); }
     catch (e) { app.melding = (e && e.message) || "Afronden lukte niet."; app.downloadFout = true; app.bevestigAfronden = false; render(); return; }
+    if (app.spel && !app.spel.afgerond) {
+      var stop = uitkomst || {};
+      app.bevestigAfronden = false; app.onthuld = null; app.wijziging = null;
+      app.melding = doorspoelStopTekst({ dag: app.spel.dag }); app.downloadFout = false;
+      app.dialoog = { type: "gebeurtenis", dag: app.spel.dag, stop: app.melding,
+        items: lijst(stop.gebeurtenissen).map(function (id) { return gebeurtenisModel(app.ep, id); }) };
+      app.fokus = "dlg-eerste";
+      render(); return;
+    }
+    uitkomst = app.spel.uitkomst || uitkomst;
     app.uitkomst = uitkomst;
     app.eindAnimatie = true;   // het omklappen speelt één keer, bij het eerste beeld van de beoordeling
     wisSpel();   // een afgerond spel hoeft niet meer hervat te worden
@@ -973,7 +998,7 @@
             : fokusMarkeer(knop("Volgende dag", { id: "btn-volgende-dag", klasse: "knop rand" }, volgendeDag), "btn-volgende-dag"),
           app.bevestigAfronden && !laatste
             ? h("span", { klasse: "bevestig", role: "group", "aria-label": "Afronden bevestigen" },
-                h("span", null, "Afronden?"),
+                h("span", { id: "afronden-uitleg" }, afrondUitleg(st) + " Afronden?"),
                 fokusMarkeer(knop("Ja, afronden", { id: "btn-afronden-ja", klasse: "knop hoofd" }, rondAf), "btn-afronden-ja"),
                 knop("Nee, verder spelen", { id: "btn-afronden-nee", klasse: "knop rand" }, function () { app.bevestigAfronden = false; app.fokus = "btn-afronden"; render(); }))
             : fokusMarkeer(knop("Episode afronden", { id: "btn-afronden", klasse: "knop hoofd" }, function () {
@@ -1118,7 +1143,7 @@
                   ? h("details", null, h("summary", null, "Wat deed deze kaart?"), h("p", null, k.na.tekst)) : null);
             }),
             d.raadplegingen ? h("li", { klasse: "raadpleeglijn" }, "Richtlijn geraadpleegd" + (d.raadplegingen > 1 ? " (" + d.raadplegingen + "×)" : "")) : null
-          ) : h("p", { klasse: "uitleg leeg" }, "Nog geen kaarten gespeeld.")
+          ) : h("p", { klasse: "uitleg leeg" }, d.doorgespoeld && !d.huidig ? "Doorgespoeld: geen kaarten gespeeld." : "Nog geen kaarten gespeeld.")
         );
       })
     );
@@ -1210,6 +1235,7 @@
       klasse += " gebeurtenisdlg"; schermKlasse += " onderbreking";
       titel = "Dag " + d.dag;
       inhoud = [
+        d.stop ? h("p", { klasse: "info", id: "doorspoel-stop" }, d.stop) : null,
         h("div", { klasse: "gebeurtenisstapel" }, d.items.map(function (it, i) {
           return h("div", { klasse: "gebeurteniskaart groot", "data-erkennen": it.id, style: "--i:" + i },
             h("p", { klasse: "gb-band" }, "Gebeurtenis"),
@@ -1389,6 +1415,9 @@
           return h("p", { klasse: "score", "data-score": s.as }, h("span", { klasse: "scorenaam" }, s.naam), " ", punten, " ",
             h("strong", null, s.waarde + " van " + SCHAAL));
         })) : null,
+        m.zonderScore.length ? h("div", { klasse: "scores onthul", style: v(tKop + 300) }, m.zonderScore.map(function (s) {
+          return h("p", { klasse: "score geenscore", "data-geen-score": s.as }, h("span", { klasse: "scorenaam" }, s.naam), " geen score voor deze route");
+        })) : null,
         m.profiel ? h("div", { klasse: "profiel onthul", style: v(tProfiel) },
           h("h3", null, "Jouw voorschrijfprofiel"),
           h("p", { klasse: "profielnaam", id: "profiel" }, m.profiel.naam)) : null,
@@ -1444,6 +1473,7 @@
     dagenModel: dagenModel, patientVelden: patientVelden, evaluatieModel: evaluatieModel, raadpleegModel: raadpleegModel,
     aanhoudendTekst: aanhoudendTekst, klachtenPerDag: klachtenPerDag, gebeurtenissenSindsStart: gebeurtenissenSindsStart,
     medicatieStatus: medicatieStatus, medicatieLijstTekst: medicatieLijstTekst, schoneTekst: schoneTekst, docentModus: docentModus, overzichtModel: overzichtModel, opslagMelding: opslagMelding, actieDots: actieDots, doelLabel: doelLabel,
+    afrondUitleg: afrondUitleg, doorspoelStopTekst: doorspoelStopTekst,
     nadeelTekst: nadeelTekst, anderenZin: anderenZin, gevolgenKop: gevolgenKop, effectVoor: effectVoor, enigDoel: enigDoel, rondleiding: function () { return RONDLEIDING.slice(); }, gespeeldeKaarten: gespeeldeKaarten,
     _opslag: undefined,                               // alleen voor tests
     _rng: null,                                       // alleen voor tests: vaste toevalsbron voor de volgorde van opties

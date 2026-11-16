@@ -6,9 +6,14 @@
 
    API (contract 5):
      Evaluatie.beoordeel(casus, episodeId, state) -> { geschonden, poortGehaald, downsides, vraag, gevolg, gevolgen, score, profiel,
-                                                       extraVragen, zichtbaar, afloop, einde }
+                                                       extraVragen, zichtbaar, afloop, einde, aftrek }
        gevolgen: [ { invariant, tekst } ]  de gevolgzinnen van ALLE geschonden regels die er een hebben, ernstigste eerst (besluit Bart,
-                                           14 november 2026); gevolg blijft de zin van de ernstigste geschonden regel (of null).
+                                           14 november 2026); gevolg blijft de (eerste) zin van de ernstigste geschonden regel (of null).
+                                           Een regel mag meer dan één zin hebben (elk met een eigen voorwaarde); ze komen in datavolgorde.
+       profiel:  { naam, reflectievraag } van de eerste profielregel die past; past er geen en heeft de casus een `restprofiel`
+                 ({ naam, reflectievraag }), dan dat, met rest: true (besluit Bart, 15 november 2026). Zonder restprofiel: null.
+       aftrek:   [ { as, naam, delta, kaart, doel, tekst } ]  de delta-regels met `kaarten` die deze poging raakten (alleen bij een gehaalde
+                 poort); `tekst` is de opmerking die ook in extraVragen staat (soort "opmerking"), of null zonder opmerkingstekst in de data.
        afloop:   "gehaald" | "nietGehaald" | "verloren". "verloren" = de episode is beëindigd door een gebeurtenis met
                  einde: { uitkomst: "verloren", tekst } in de data; dan is poortGehaald false en zijn score en profiel null.
        einde:    null, of { gebeurtenis, uitkomst, tekst } van die gebeurtenis.
@@ -29,11 +34,15 @@
      - Score per as: start (optioneel), regels [ { als, punten } (eerste match wint, vervangt start) | { als, delta } | { perKeer: <teller>, delta } ].
        Daarna tellen alle delta-regels erbij op; het resultaat wordt geklemd op as.min..as.max (standaard 1..3). Zonder start en zonder
        matchende punten-regel is er geen score voor die as (null), net als zonder score-as in de data.
-     - Profiel: de eerste profielregel waarvan 'als' waar is; geen match = null (reflectievraag mag null zijn).
+     - Delta-regel met `kaarten` (lijst kaartverwijzingen K) op een as met `opmerkingBijAftrek` (tekst): raakt de regel bij een gehaalde
+       poort, dan komt er één opmerking in extraVragen: die tekst, een spatie en het label van de eerste gespeelde kaart die bij `kaarten`
+       past (met het doel tussen haakjes als de regel een doel heeft). Labels komen uit de data (kaarten, medicatie van de episode).
+     - Profiel: de eerste profielregel waarvan 'als' waar is; geen match = casus.restprofiel als dat er is, anders null
+       (reflectievraag mag null zijn).
      - feedbackExtra: { trigger, vraag, wanneer: "altijd" | "alleenBijGehaaldePoort", soort? }. zichtbaarAlsOntbreekt: { trigger, tekst } (altijd).
        'soort' (bv. "opmerking") gaat ongewijzigd mee in extraVragen, zodat de weergave een opmerking van een vraag kan onderscheiden.
      - gevolgzinnen (casus): { episode, invariant, tekst, vrijgegeven, als? }. Alleen een vrijgegeven zin telt; met 'als' alleen als dat
-       predicaat waar is (zodat een zin niet verschijnt wanneer hij in deze poging niet klopt).
+       predicaat waar is (zodat een zin niet verschijnt wanneer hij in deze poging niet klopt). Meer zinnen per regel mag.
      - Evaluatie.beoordeel verandert de spelstand niet. Sleutels die met TODO_BART beginnen zijn geen data en worden genegeerd. */
 (function evaluatieModule(g) {
   "use strict";
@@ -90,6 +99,7 @@
         var n = "score " + as + ", regel " + (i + 1);
         if (r.perKeer !== undefined) voeg(n + ", perKeer", r.perKeer);
         else voeg(n + ", als", r.als);
+        lijst(r.kaarten).forEach(function (K, j) { voeg(n + ", kaarten[" + j + "]", { p: "gespeeld", K: K }); });
       });
     });
     lijst(ep.profielen).forEach(function (p, i) { voeg("profiel " + ((p && p.naam) || ("#" + (i + 1))) + ", als", p && p.als); });
@@ -183,12 +193,20 @@
         } else if (punten === delta) fout(rn + ": een regel heeft 'als' met precies één van 'punten' of 'delta' (of 'perKeer' met 'delta').");
         else if (r.als === undefined) fout(rn + ": mist 'als'.");
         else if ((punten && !isGetal(r.punten)) || (delta && !isGetal(r.delta))) fout(rn + ": 'punten' en 'delta' moeten getallen zijn.");
+        if (r.kaarten !== undefined && (!ISARR(r.kaarten) || !r.kaarten.length || !r.kaarten.every(isObj))) fout(rn + ": 'kaarten' moet een niet-lege lijst kaartverwijzingen zijn.");
+        if (r.naam !== undefined && !isTekst(r.naam)) fout(rn + ": 'naam' moet tekst zijn.");
       });
+      if (a.opmerkingBijAftrek !== undefined && !isTekst(a.opmerkingBijAftrek)) fout(n + ": 'opmerkingBijAftrek' moet tekst zijn.");
     });
     lijst(ep.profielen).forEach(function (p, i) {
       if (!isObj(p) || !isTekst(p.naam)) fout(plek + ", profielen[" + i + "]: mist 'naam'.");
       if (p.reflectievraag !== undefined && p.reflectievraag !== null && typeof p.reflectievraag !== "string") fout(plek + ", profiel " + p.naam + ": 'reflectievraag' moet tekst of null zijn.");
     });
+    if (casus.restprofiel !== undefined && casus.restprofiel !== null) {
+      var rp = casus.restprofiel;
+      if (!isObj(rp) || !isTekst(rp.naam)) fout("Casus, restprofiel: mist 'naam'.");
+      if (rp.reflectievraag !== undefined && rp.reflectievraag !== null && typeof rp.reflectievraag !== "string") fout("Casus, restprofiel: 'reflectievraag' moet tekst of null zijn.");
+    }
     lijst(ep.feedbackExtra).forEach(function (f, i) {
       var n = plek + ", feedbackExtra[" + i + "]";
       if (!isObj(f) || !isTekst(f.vraag)) fout(n + ": mist 'vraag'.");
@@ -232,18 +250,25 @@
     }
     return fout("Kaart " + kaart.id + ": 'downside' moet tekst of een object per episode zijn.");
   }
-  // Gevolgzin bij een invariant: casus.gevolgzinnen = [ { episode, invariant, tekst, vrijgegeven, als? } ]. Alleen een vrijgegeven zin
-  // (vrijgegeven: true) wordt getoond, en met 'als' alleen wanneer dat predicaat in deze poging waar is.
-  function gevolgVan(casus, ep, inv, ctx, plek) {
-    var l = lijst(casus.gevolgzinnen);
+  // Gevolgzinnen bij een invariant: casus.gevolgzinnen = [ { episode, invariant, tekst, vrijgegeven, als? } ]. Alleen een vrijgegeven zin
+  // (vrijgegeven: true) wordt getoond, en met 'als' alleen wanneer dat predicaat in deze poging waar is. Geeft de teksten in datavolgorde.
+  function gevolgenVan(casus, ep, inv, ctx, plek) {
+    var l = lijst(casus.gevolgzinnen), uit = [];
     for (var i = 0; i < l.length; i++) {
       var z = l[i];
       if (!isObj(z) || z.episode !== ep.id || z.invariant !== inv.id) continue;
-      if (z.vrijgegeven !== true || !isTekst(z.tekst)) return null;
-      if (z.als !== undefined && !metPlek(plek + ", gevolgzinnen[" + i + "], als", function () { return P().evalueer(z.als, ctx); })) return null;
-      return z.tekst;
+      if (z.vrijgegeven !== true || !isTekst(z.tekst)) continue;
+      if (z.als !== undefined && !metPlek(plek + ", gevolgzinnen[" + i + "], als", (function (zin) { return function () { return P().evalueer(zin.als, ctx); }; })(z))) continue;
+      if (uit.indexOf(z.tekst) < 0) uit.push(z.tekst);
     }
-    return null;
+    return uit;
+  }
+  // Label van een kaart of van een middel van de patiënt (voor de opmerking bij een overbodige kaart); onbekend id: het id zelf.
+  function labelVan(casus, ep, id) {
+    var k = kaartVan(casus, id);
+    if (k && isTekst(k.label)) return k.label;
+    var m = lijst(ep.patient && ep.patient.medicatie).filter(function (x) { return isObj(x) && x.id === id; })[0];
+    return m && isTekst(m.label) ? m.label : String(id);
   }
   // Een gebeurtenis die de episode beëindigt (einde: { uitkomst, tekst } in de data) en die in deze poging is geweest; anders null.
   function eindeVan(ep, ctx) {
@@ -269,7 +294,7 @@
     }
     return { naam: null, onderdelen: [] };
   }
-  function berekenAs(as, naam, ctx, plek) {
+  function berekenAs(as, naam, ctx, plek, geraakt) {
     if (!isObj(as)) return null;
     var min = isGetal(as.min) ? as.min : SCHAAL_MIN, max = isGetal(as.max) ? as.max : SCHAAL_MAX;
     var waarde = isGetal(as.start) ? as.start : null, vast = false, regels = lijst(as.regels);
@@ -282,7 +307,10 @@
     regels.forEach(function (r, i) {
       var n = plek + ", score " + naam + ", regel " + (i + 1);
       if (r.perKeer !== undefined) delta += r.delta * metPlek(n + ", perKeer", function () { return P().tel(r.perKeer, ctx); });
-      else if (r.delta !== undefined && metPlek(n + ", als", function () { return P().evalueer(r.als, ctx); })) delta += r.delta;
+      else if (r.delta !== undefined && metPlek(n + ", als", function () { return P().evalueer(r.als, ctx); })) {
+        delta += r.delta;
+        if (geraakt && r.kaarten !== undefined) geraakt.push(r);
+      }
     });
     if (waarde === null) return null;
     return Math.max(min, Math.min(max, waarde + delta));
@@ -333,15 +361,30 @@
     });
 
     // 3. Score en profiel alleen bij een gehaalde poort.
-    var score = null, profiel = null;
+    var score = null, profiel = null, aftrek = [];
     if (poortGehaald) {
       score = {};
-      ASSEN.forEach(function (as) { score[as] = berekenAs(ep.score && ep.score[as], as, ctx, plek); });
+      ASSEN.forEach(function (as) {
+        var a = ep.score && ep.score[as], geraakt = [];
+        score[as] = berekenAs(a, as, ctx, plek, geraakt);
+        // Delta-regels met `kaarten` die raakten: welke kaart het was, en de opmerking van de as (als die er is).
+        geraakt.forEach(function (r) {
+          var regel = metPlek(plek + ", score " + as + ", kaarten", function () { return P().eersteRegel(r.kaarten, ctx); });
+          if (!regel) return;
+          var wat = labelVan(casus, ep, regel.kaart) + (regel.doel !== null ? " (" + labelVan(casus, ep, regel.doel) + ")" : "");
+          aftrek.push({ as: as, naam: r.naam || null, delta: r.delta, kaart: regel.kaart, doel: regel.doel,
+            tekst: isTekst(a.opmerkingBijAftrek) ? a.opmerkingBijAftrek + " " + wat : null });
+        });
+      });
       lijst(ep.profielen).some(function (p) {
         if (!metPlek(plek + ", profiel " + p.naam + ", als", function () { return P().evalueer(p.als, ctx); })) return false;
         profiel = { naam: p.naam, reflectievraag: p.reflectievraag === undefined ? null : p.reflectievraag };
         return true;
       });
+      // Restprofiel: de poort is gehaald maar geen enkel profiel van de episode past.
+      if (!profiel && isObj(casus.restprofiel)) {
+        profiel = { naam: casus.restprofiel.naam, reflectievraag: casus.restprofiel.reflectievraag === undefined ? null : casus.restprofiel.reflectievraag, rest: true };
+      }
     }
 
     // 4. Extra feedback en "zichtbaar als een kaart ontbreekt".
@@ -354,6 +397,9 @@
         extraVragen.push(item);
       }
     });
+    aftrek.forEach(function (x) {
+      if (x.tekst !== null && !extraVragen.some(function (q) { return q.vraag === x.tekst; })) extraVragen.push({ vraag: x.tekst, wanneer: "alleenBijGehaaldePoort", soort: "opmerking" });
+    });
     var zichtbaar = [];
     lijst(ep.zichtbaarAlsOntbreekt).forEach(function (z, i) {
       if (metPlek(plek + ", zichtbaarAlsOntbreekt[" + i + "], trigger", function () { return P().evalueer(z.trigger, ctx); })) zichtbaar.push({ tekst: z.tekst });
@@ -361,9 +407,13 @@
 
     // Gevolgzinnen van alle geschonden regels die er een hebben (ernstigste eerst; dezelfde zin maar één keer).
     var gevolgen = [];
-    geschonden.forEach(function (x) {
-      var t = gevolgVan(casus, ep, x.inv, ctx, plek);
-      if (t !== null && !gevolgen.some(function (gz) { return gz.tekst === t; })) gevolgen.push({ invariant: x.inv.id, tekst: t });
+    var eersteGevolg = null;
+    geschonden.forEach(function (x, nr) {
+      var zinnen = gevolgenVan(casus, ep, x.inv, ctx, plek);
+      if (nr === 0 && zinnen.length) eersteGevolg = zinnen[0];
+      zinnen.forEach(function (t) {
+        if (!gevolgen.some(function (gz) { return gz.tekst === t; })) gevolgen.push({ invariant: x.inv.id, tekst: t });
+      });
     });
 
     return {
@@ -374,14 +424,15 @@
       poortGehaald: poortGehaald,
       downsides: downsides,
       vraag: geschonden.length ? geschonden[0].vraag : null,
-      gevolg: geschonden.length ? gevolgVan(casus, ep, geschonden[0].inv, ctx, plek) : null,
+      gevolg: eersteGevolg,
       gevolgen: gevolgen,
       score: score,
       profiel: profiel,
       extraVragen: extraVragen,
       zichtbaar: zichtbaar,
       afloop: einde ? einde.uitkomst : (poortGehaald ? "gehaald" : "nietGehaald"),
-      einde: einde
+      einde: einde,
+      aftrek: aftrek
     };
   }
 

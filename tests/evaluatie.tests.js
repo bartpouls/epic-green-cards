@@ -110,11 +110,11 @@
       });
       T.waar(fouten.length === 0, fouten.join(" | "));
     });
-    tr("dekking: alle geldige routes uit de casus zijn aanwezig (E1 x5, E2 x2, E3 start/amox-clav/cipro B4/cipro B3/de-escalatie/sick day/verwijzen)", function () {
+    tr("dekking: alle geldige routes uit de casus zijn aanwezig (E1 x5, E2 x2, E3 amox-clav/cipro B4/cipro B3/de-escalatie/sick day/verwijzen)", function () {
       var nodig = [
         "E1-afwachten", "E1-uitgesteld", "E1-nitrofurantoine", "E1-fosfomycine", "E1-trimethoprim",
         "E2-fosfomycine", "E2-trimethoprim-bijgestuurd",
-        "E3-fosfomycine-start", "E3-amoxicilline-clavulaanzuur", "E3-ciprofloxacine-B4", "E3-ciprofloxacine-B3-calcium",
+        "E3-amoxicilline-clavulaanzuur", "E3-ciprofloxacine-B4", "E3-ciprofloxacine-B3-calcium",
         "E3-deescalatie-na-C", "E3-sickday-omgekeerde-volgorde", "E3-verwijzen"
       ];
       var aanwezig = {}; R.lijst.forEach(function (r) { if (r.soort === "geldig") aanwezig[r.id] = true; });
@@ -232,7 +232,7 @@
     T.is(typeof E().beoordeel, "function"); T.is(typeof E().valideerCasus, "function");
     var u = beoordeel(maakEp({ invarianten: [inv("A", 2)] }));
     // Sinds casus 1.3 (besluiten Bart, 14 november 2026) erbij: gevolgen (alle gevolgzinnen), afloop en einde (einde door een gebeurtenis).
-    T.gelijk(Object.keys(u).sort(), ["afloop", "downsides", "einde", "extraVragen", "geschonden", "gevolg", "gevolgen", "poortGehaald", "profiel", "score", "vraag", "zichtbaar"]);
+    T.gelijk(Object.keys(u).sort(), ["afloop", "aftrek", "downsides", "einde", "extraVragen", "geschonden", "gevolg", "gevolgen", "poortGehaald", "profiel", "score", "vraag", "zichtbaar"]);
     T.is(u.afloop, "nietGehaald"); T.is(u.einde, null); T.gelijk(u.gevolgen, []);
     T.gelijk(JSON.parse(js(u)), JSON.parse(js(u)));
     T.is(u.poortGehaald, false); T.is(u.vraag, "vraag A"); T.gelijk(u.geschonden, [{ id: "A", ernst: 2, vraag: "vraag A", naam: null, onderdelen: [] }]);
@@ -512,15 +512,15 @@
     kopie2.episodes[2].invarianten[7].predicaat = { p: "iets" };    // een invariant die in deze route niet geldt (geldtIn)
     gooitMet(function () { E().beoordeel(kopie2, "E3", state); }, /Onbekend predicaat/, "beoordeel kapotte invariant");
   });
-  t("echte casus: ontbrekende score-/profielregel (fosfomycine-start E3, verwijzen) geeft null en crasht niet", function () {
+  t("echte casus: ontbrekende score-/profielregel (verwijzen in E3) geeft geen duurzaamheidsscore (null), het restprofiel uit de data en crasht niet; zonder restprofiel in de data is het profiel null", function () {
     if (!R) throw new Error("tests/routes.js niet geladen");
-    ["E3-fosfomycine-start", "E3-verwijzen"].forEach(function (id) {
-      var route = R.lijst.filter(function (r) { return r.id === id; })[0];
-      R.volgordes.forEach(function (vg) {
-        var u = R.speel(route, vg).uitkomst;
-        T.is(u.poortGehaald, true, id); T.is(u.profiel, null, id + " profiel"); T.is(u.score.duurzaamheid, null, id + " duurzaamheid");
-        T.is(u.score.doelmatigheid, 3, id + " doelmatigheid");
-      });
+    var route = R.lijst.filter(function (r) { return r.id === "E3-verwijzen"; })[0];
+    R.volgordes.forEach(function (vg) {
+      var gespeeld = R.speel(route, vg), u = gespeeld.uitkomst;
+      T.is(u.poortGehaald, true); T.is(u.score.duurzaamheid, null, "duurzaamheid"); T.is(u.score.doelmatigheid, 3, "doelmatigheid");
+      T.gelijk(u.profiel, { naam: g.CASUSSEN[0].restprofiel.naam, reflectievraag: g.CASUSSEN[0].restprofiel.reflectievraag, rest: true });
+      var zonder = JSON.parse(js(g.Test.routeRegels())); delete zonder.restprofiel;
+      T.is(E().beoordeel(zonder, "E3", gespeeld.state).profiel, null, "zonder restprofiel in de data: geen profiel");
     });
   });
 

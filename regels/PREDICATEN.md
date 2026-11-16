@@ -77,7 +77,7 @@ Voor `actief`, `gestart`, `medicatieActief`, `aantalActieveAntibiotica` en `star
 | `waar` | `veld`, `op`, `waarde` | vergelijkt `ctx.waar[veld]` (de ware waarde). Operatoren `<`, `<=`, `>`, `>=`, `==` (ook `=`), `!=`; ordening alleen op getallen (anders fout). `==`, `=` en `!=` vergelijken strikt: `"5"` is niet gelijk aan `5` en `true` niet aan `1`. Onbekend veld: fout | `{p:"waar", veld:"w", op:"<", waarde:30}` |
 | `inToestand` | `t` | `t` staat in `ctx.toestanden` | `{p:"inToestand", t:"s1"}` |
 | `gebeurtenisGeweest` | `id` | gebeurtenis staat in `ctx.gebeurtenissen` | `{p:"gebeurtenisGeweest", id:"E"}` |
-| `klachten` | `waarde`, `op?` | `waarde` ∈ `"af"`, `"aan"`, `"geenVerbetering48"`. Zonder `op`: ooit tijdens de episode. `op:{dag:n}`: status op dag n (uit `ctx.status`). `op:{eindeBeurtNaGebeurtenis:id, offset:k}`: status op dag(gebeurtenis)+k. `op:"laatste"`: status op `ctx.laatsteDag` | `{p:"klachten", waarde:"aan", op:{dag:3}}` |
+| `klachten` | `waarde`, `op?` | `waarde` ∈ `"af"`, `"aan"`, `"geenVerbetering48"`. Zonder `op`: ooit tijdens de episode. `op:{dag:n}`: status op dag n (uit `ctx.status`). `op:{eindeBeurtNaGebeurtenis:id, offset:k}`: status op dag(gebeurtenis)+k. `op:"laatste"`: status op `ctx.laatsteDag`. `op:{totEnMetKaart:K}` *(uitbreiding)*: de status kwam voor op een dag t/m de dag van de eerste regel die K matcht (geen match: `false`) | `{p:"klachten", waarde:"aan", op:{dag:3}}` |
 | `en` / `of` | `args` (lijst) | alle / minstens één; lege `en` = waar, lege `of` = onwaar | `{p:"en", args:[P1, P2]}` |
 | `niet` | `arg` | ontkenning | `{p:"niet", arg:P1}` |
 | `alsDan` | `als`, `dan` | `niet(als) of dan` | `{p:"alsDan", als:P1, dan:P2}` |
@@ -108,6 +108,9 @@ Verder uitgebreid: de K-velden `kaartUit`, `start`, `naGebeurtenis`, `voorGebeur
 | `aantalActieveAntibiotica` | `op:"max"` | het maximum aantal gelijktijdig actieve antibiotica over de episode (gemeten na elke kaart) | `{t:"aantalActieveAntibiotica", op:"max"}` |
 
 Een onbekende teller of `op` is een fout.
+
+## Hulpfunctie `Predicaten.eersteRegel(Ks, ctx)`
+Geeft de eerste tijdlijnregel (laagste `volg`) die bij een van de kaartverwijzingen `Ks` (één K of een lijst) past, als `{volg, kaart, dag, doel, optie}`, of `null`. De evaluatie gebruikt dit om bij een scoreregel met `kaarten` te zeggen welke kaart de regel raakte. De verwijzingen worden gevalideerd als elk ander predicaat.
 
 ## Vaste afspraken
 - Een gebeurtenis-id komt normaal één keer voor; staat hij er toch twee keer in `ctx.gebeurtenissen`, dan telt de eerste (laagste index) voor `naGebeurtenis`, `binnenBeurten`, `eindeBeurtNaGebeurtenis` en `gebeurtenisGeweest`.

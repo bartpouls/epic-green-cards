@@ -354,11 +354,12 @@
   function valKlachtMoment(op, ctx) {
     if (op === "laatste") return;
     if (!isObj(op)) fout("Onbekend moment in 'op' bij 'klachten': " + JSON.stringify(op) + ".");
-    controleerVelden(op, ["dag", "eindeBeurtNaGebeurtenis", "offset"], "moment", "op");
-    var soorten = ["dag", "eindeBeurtNaGebeurtenis"].filter(function (v) { return op[v] !== undefined; });
+    controleerVelden(op, ["dag", "eindeBeurtNaGebeurtenis", "offset", "totEnMetKaart"], "moment", "op");
+    var soorten = ["dag", "eindeBeurtNaGebeurtenis", "totEnMetKaart"].filter(function (v) { return op[v] !== undefined; });
     if (soorten.length !== 1) fout("Onbekend moment in 'op' bij 'klachten': " + JSON.stringify(op) + ".");
     if (op.offset !== undefined && soorten[0] !== "eindeBeurtNaGebeurtenis") fout("'offset' hoort alleen bij 'eindeBeurtNaGebeurtenis'.");
     if (soorten[0] === "dag") valHeel(op.dag, "op.dag");
+    else if (soorten[0] === "totEnMetKaart") valK({ p: "op", K: op.totEnMetKaart }, "K", ctx);
     else { valGebeurtenis(ctx, op.eindeBeurtNaGebeurtenis, "eindeBeurtNaGebeurtenis"); valOffset(op); }
   }
   function valAantal(x, wat) { valHeel(x, wat); if (x < 0) fout("'" + wat + "' mag niet negatief zijn (kreeg " + x + ")."); }
@@ -563,6 +564,11 @@
     klachten: function (p, ctx) {
       if (p.op === undefined) return lijst(ctx.klachten).some(function (k) { return k && k.status === p.waarde; });
       if (p.op === "laatste") return ctx.status(ctx.laatsteDag) === p.waarde;
+      if (isObj(p.op) && p.op.totEnMetKaart !== undefined) {
+        // Uitbreiding: de status kwam voor op een dag t/m de dag van de eerste regel die K matcht. Geen match: onwaar.
+        var r = eerste(ctx, leesK({ p: "op", K: p.op.totEnMetKaart }, "K"));
+        return r !== null && lijst(ctx.klachten).some(function (k) { return k && k.status === p.waarde && k.dag <= r.dag; });
+      }
       var d = klachtDag(p.op, ctx);
       return d !== null && ctx.status(d) === p.waarde;
     },
@@ -590,6 +596,19 @@
     else valideerPred(pred, ctx);
   }
 
+  // De eerste tijdlijnregel (laagste volg) die bij een van de kaartverwijzingen past, of null. Voor de terugkoppeling: welke kaart
+  // een scoreregel raakte. Valideert de verwijzingen als elk ander predicaat.
+  function eersteRegel(Ks, ctx) {
+    if (!isCtx(ctx)) fout(GEEN_CTX);
+    var beste = null;
+    lijst(Ks).forEach(function (K) {
+      valK({ p: "gespeeld", K: K }, "K", ctx);
+      var r = eerste(ctx, leesK({ p: "gespeeld", K: K }, "K"));
+      if (r !== null && (beste === null || r.volg < beste.volg)) beste = r;
+    });
+    return beste === null ? null : { volg: beste.volg, kaart: beste.kaart, dag: beste.dag, doel: beste.doel === undefined ? null : beste.doel, optie: beste.optie === undefined ? null : beste.optie };
+  }
+
   g.Predicaten = {
     versie: "1.1",
     namen: KEYS(PRED),
@@ -597,6 +616,7 @@
     maakContext: maakContext,
     valideer: valideer,
     evalueer: evalueer,
-    tel: tel
+    tel: tel,
+    eersteRegel: eersteRegel
   };
 })(typeof window !== "undefined" ? window : globalThis);

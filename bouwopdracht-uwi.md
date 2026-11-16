@@ -1,7 +1,7 @@
 # Bouwopdracht — Epic green cards, prototype tutorialcasus UWI
 
 Voor: Claude Code (web). Opdrachtgever: Bart Pouls (Radboudumc). Versie 1.0, 11 oktober 2026.
-Meelezen: `casus-uwi.md` (versie 1.3; de besluiten van Bart van 14 november 2026 zijn in 6.1, 6.3 en 6.5 verwerkt). Dat bestand is de **enige bron van klinische inhoud**.
+Meelezen: `casus-uwi.md` (versie 1.4; de besluiten van Bart van 14 november 2026 zijn in 6.1, 6.3 en 6.5 verwerkt, die van 15 november 2026 in 4.1, 6.5 en 6.6). Dat bestand is de **enige bron van klinische inhoud**.
 
 ---
 
@@ -97,15 +97,15 @@ Hieronder staat de structuur. De inhoud komt uit `casus-uwi.md`.
 2. Elke beurt is één dag. De speler speelt maximaal `actiesPerBeurt` kaarten op de huidige dag.
    - Doelkaarten vragen om een doel. V6 vraagt bovendien om een optie.
    - Richtlijn raadplegen kost `raadplegenKost` acties.
-3. Gebeurtenissen worden getriggerd op het aantal gespeelde kaarten. Ze verschijnen aan het begin van de volgende dag als banner op de tijdlijn en veranderen de toestand.
+3. Gebeurtenissen verschijnen aan het begin van een dag als banner op de tijdlijn en veranderen de toestand: weefselinvasie (A) en uitdroging (B) op een vaste dag, de kweekuitslag een vast aantal dagen na de kweek (besluit Bart, 15 november 2026; zie 6.6).
 4. Een kaart die verborgen informatie onthult, toont die direct en werkt de zichtbare patiëntkaart bij.
 5. Klinische status per dag ("klachten nemen af / blijven / nemen toe; geen verbetering na 48 uur") volgt uit de tabel werkzaamheid (6.3) en het actieve antibioticum.
-6. De speler drukt op "Episode afronden", of de laatste dag is voorbij.
+6. De speler drukt op "Episode afronden". Dat mag altijd: het spel loopt dan dag voor dag door tot de laatste dag, alsof de speler telkens "Volgende dag" kiest zonder kaarten. Verschijnt onderweg een gebeurtenis, dan stopt het doorlopen op die dag; de speler kan reageren en rondt opnieuw af (besluit Bart, 15 november 2026).
 7. Evaluatie:
    - Eerst klappen de downsides om van de gespeelde kaarten en van de weggelaten kaarten.
    - **Poort geschonden:** toon eerst wat er met de patiënt gebeurde (de zinnen uit "Wat er zichtbaar wordt als een kaart ontbreekt" van alle geschonden invarianten die zo'n zin hebben), daarna één hint van de opleider: de vraag van de geschonden invariant met de laagste `ernst`-waarde (besluit Bart, 14 november 2026). Geen score, geen antwoord. Knop "Opnieuw" start de episode opnieuw.
    - **Sepsis:** de episode eindigt direct en is verloren: geen score, geen profiel, de volgende episode gaat niet open; herkansing mogelijk (besluit Bart, 14 november 2026).
-   - **Poort gehaald:** score per as, voorschrijfprofiel en één reflectievraag. De volgende episode gaat open.
+   - **Poort gehaald:** score per as, voorschrijfprofiel en één reflectievraag. Past de route bij geen profiel van de episode, dan is het profiel "Eigen route" (concepttekst, ter goedkeuring door Bart; besluit 15 november 2026). De volgende episode gaat open.
 
 ### 4.2 Regeltaal (predicaten)
 Bouw een kleine, generieke set predicaten over de tijdlijn. Zet geen casuslogica in de engine. Minimaal:
@@ -205,13 +205,13 @@ V7 en V8 zijn bij cystitis wel werkzaam, maar staan daar buiten de richtlijn: da
     - Direct behandelen (V3, V4 of V5)
 - **E2**
   - Duurzaamheid: begint op 3, −1 per onnodige wissel (B1 terwijl het antibioticum werkt).
-  - Doelmatigheid: 3 als G2 vóór de eerste V-kaart komt, anders 2.
+  - Doelmatigheid: 3 als G2 vóór de eerste V-kaart komt, anders 2. Overbodige kaarten kosten elk 1 punt, ondergrens 1 (besluit Bart, 15 november 2026; de lijst staat als concept in `casus-uwi.md` sectie 11).
   - Profielen:
     - Kweekgestuurd, smal (V4 zonder wissel)
     - Bijgestuurd (V5, daarna B1)
 - **E3**
   - Duurzaamheid: route V8 = 3, of V7 met de-escalatie naar V8 na C = 3, V7 zonder de-escalatie = 2. Wie V7 of V8 start terwijl de toestand nog cystitis is (nog geen weefselinvasie), schrijft buiten de richtlijn voor: −1 (ondergrens 1). Bij een gehaalde poort verschijnt dan de opmerking "Dit middel staat in de richtlijn niet bij een blaasontsteking." (concepttekst, ter goedkeuring door Bart).
-  - Doelmatigheid: 3 als G3 vóór de eerste V-kaart komt, anders 2.
+  - Doelmatigheid: 3 als G3 vóór de eerste V-kaart komt, anders 2. Overbodige kaarten kosten elk 1 punt, ondergrens 1 (besluit Bart, 15 november 2026; de lijst staat als concept in `casus-uwi.md` sectie 11).
   - Profielen:
     - Kweekgestuurd (V8)
     - Richtlijn eerste keus (V7)
@@ -221,9 +221,9 @@ V7 en V8 zijn bij cystitis wel werkzaam, maar staan daar buiten de richtlijn: da
 | | E1 | E2 | E3 |
 |---|---|---|---|
 | Acties per beurt | 3 | 3 | 3 |
-| Aantal dagen | 5 | 7 | 7 |
+| Aantal dagen | 14 | 14 | 14 |
 | Richtlijn raadplegen kost | 0 | 0 | 1 actie |
-| Gebeurtenissen | — | C: na de 4e gespeelde kaart, alleen als O1 gespeeld is | A en B: na de 4e en de 7e kaart, in willekeurige volgorde; C: 3 kaarten na O1 |
+| Gebeurtenissen | — | C: 3 dagen na O1 | A en B: aan het begin van dag 3 en dag 5, in willekeurige volgorde (besluit Bart, 15 november 2026); C: 3 dagen na O1 |
 
 Level 3 voelt "krap" doordat er meer moet gebeuren binnen hetzelfde budget, niet doordat het budget kleiner is. Bij 2 acties per beurt is I15 onhaalbaar.
 

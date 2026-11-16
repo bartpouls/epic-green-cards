@@ -1,12 +1,12 @@
 /* casussen/uwi.js — samengevoegd uit uwi.js (kop + kaarten), uwi-e1.js, uwi-e2.js en uwi-e3.js. Alleen data, geen logica.
-   Bron: casus-uwi.md (v1.3). Gemaakt met gauntlet/tools/voeg-samen.js; de losse bestanden zijn daarna vervallen. */
+   Bron: casus-uwi.md (v1.4). Gemaakt met gauntlet/tools/voeg-samen.js; de losse bestanden zijn daarna vervallen. */
 /* ===== uwi.js ===== */
 // Casus UWI in de eerste lijn: kaartenbibliotheek (stuk S1). Alleen data, geen logica.
-// Bron: casus-uwi.md v1.3, sectie 3. Episodes worden aangevuld door uwi-e1.js, uwi-e2.js en uwi-e3.js.
+// Bron: casus-uwi.md v1.4, sectie 3. Episodes worden aangevuld door uwi-e1.js, uwi-e2.js en uwi-e3.js.
 window.CASUSSEN = [
 {
  "id": "uwi-eerstelijn",
- "versie": "1.3",
+ "versie": "1.4",
  "limiet": 1,
  "regelnamen": [
   {
@@ -781,8 +781,39 @@ window.CASUSSEN = [
     "als": { "p": "en", "args": [ { "p": "nietGespeeld", "K": { "kaart": "O2" } }, { "p": "nietGespeeld", "K": { "kaart": "Ev2", "doel": "spironolacton" } } ] } },
   { "episode": "E3", "invariant": "I14", "tekst": "Na 48 uur geen verbetering.", "vrijgegeven": true },
   { "episode": "E3", "invariant": "I15", "tekst": "De nierfunctie daalt verder en het kalium stijgt.", "vrijgegeven": true,
-  "als": { "p": "en", "args": [ { "p": "nietGespeeld", "K": { "kaart": "B3", "doel": "spironolacton" } }, { "p": "nietGespeeld", "K": { "kaart": "V6", "doel": "lisinopril", "optie": "halveren" } }, { "p": "nietGespeeld", "K": { "kaart": "N3" } }, { "p": "nietGespeeld", "K": { "kaart": "Ev1" } } ] } }
+  "als": { "p": "en", "args": [ { "p": "nietGespeeld", "K": { "kaart": "B3", "doel": "spironolacton" } }, { "p": "nietGespeeld", "K": { "kaart": "V6", "doel": "lisinopril", "optie": "halveren" } }, { "p": "nietGespeeld", "K": { "kaart": "N3" } }, { "p": "nietGespeeld", "K": { "kaart": "Ev1" } } ] } },
+  // Besluit Bart, 15 november 2026: de regels die nog geen zin hadden, krijgen er een. Onderstaande zinnen zijn een voorschot (concept: true),
+  // afgeleid uit tekst die al in de casus staat (afgeleidUit), ter goedkeuring door Bart. Een zin met 'als' verschijnt alleen als hij waar is.
+  {"episode": "E2", "invariant": "I1", "tekst": "Mevrouw weet niet wanneer ze moet bellen.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De zin van episode 1 bij dezelfde regel (casus sectie 4, 'Zonder N1')."},
+  {"episode": "E3", "invariant": "I1", "tekst": "Mevrouw weet niet wanneer ze moet bellen.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De zin van episode 1 bij dezelfde regel (casus sectie 4, 'Zonder N1')."},
+  {"episode": "E1", "invariant": "I4", "tekst": "Mevrouw gebruikt twee antibiotica tegelijk.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De regel zelf (I4: 'Twee antibiotica tegelijk')."},
+  {"episode": "E2", "invariant": "I4", "tekst": "Mevrouw gebruikt twee antibiotica tegelijk.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De regel zelf (I4: 'Twee antibiotica tegelijk')."},
+  {"episode": "E3", "invariant": "I4", "tekst": "Mevrouw gebruikt twee antibiotica tegelijk.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De regel zelf (I4: 'Twee antibiotica tegelijk')."},
+  {"episode": "E3", "invariant": "I5", "tekst": "Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.", "vrijgegeven": true, "concept": true, "afgeleidUit": "Deel van de bestaande zin van episode 2 ('Nitrofurantoïne zonder G2')."},
+  {"episode": "E2", "invariant": "I6", "tekst": "Er is geen kweek van vóór de eerste dosis.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De patiëntkaart van episode 2: 'een antibioticum is nodig, met een kweek vóór de eerste dosis'.", "als": {"p": "of", "args": [{"p": "en", "args": [{"p": "gespeeld", "kaart": "V3"}, {"p": "niet", "arg": {"p": "voor", "a": {"kaart": "O1"}, "b": {"kaart": "V3"}}}]}, {"p": "en", "args": [{"p": "gespeeld", "kaart": "V4"}, {"p": "niet", "arg": {"p": "voor", "a": {"kaart": "O1"}, "b": {"kaart": "V4"}}}]}, {"p": "en", "args": [{"p": "gespeeld", "kaart": "V5"}, {"p": "niet", "arg": {"p": "voor", "a": {"kaart": "O1"}, "b": {"kaart": "V5"}}}]}]}},
+  {"episode": "E2", "invariant": "I6", "tekst": "Mevrouw krijgt geen antibioticum, terwijl ze in de risicogroep valt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De patiëntkaart van episode 2: 'een antibioticum is nodig, met een kweek vóór de eerste dosis'.", "als": {"p": "niet", "arg": {"p": "gestart", "middel": ["V3", "V4", "V5"]}}},
+  {"episode": "E3", "invariant": "I6", "tekst": "Er is geen kweek van vóór de eerste dosis.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De patiëntkaart van episode 2: 'een antibioticum is nodig, met een kweek vóór de eerste dosis'.", "als": {"p": "en", "args": [{"p": "gespeeld", "K": {"kaartUit": "antibiotica"}}, {"p": "niet", "arg": {"p": "en", "args": [{"p": "gespeeld", "K": {"kaart": "O1"}}, {"p": "voor", "a": {"kaart": "O1"}, "b": {"kaartUit": "antibiotica"}}]}}]}},
+  {"episode": "E3", "invariant": "I6", "tekst": "Mevrouw krijgt geen antibioticum, terwijl ze in de risicogroep valt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De patiëntkaart van episode 2: 'een antibioticum is nodig, met een kweek vóór de eerste dosis'.", "als": {"p": "niet", "arg": {"p": "gestart", "middel": ["V3", "V4", "V5", "V7", "V8", "V9", "V10"]}}},
+  {"episode": "E3", "invariant": "I7", "tekst": "De kaliumspiegel is onbekend.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De zin van episode 2 bij dezelfde regel (casus sectie 5, 'V5 zonder O2').", "als": {"p": "nietGespeeld", "K": {"kaart": "O2"}}},
+  {"episode": "E2", "invariant": "I7", "tekst": "De dosis trimethoprim is na dag 3 niet gehalveerd.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De downside van V5: 'Bij eGFR 10–30: na dag 3 halveren'.", "als": {"p": "en", "args": [{"p": "actiefNaDagen", "middel": "V5", "anker": {"start": "V5"}, "na": 3}, {"p": "niet", "arg": {"p": "opDagRelatief", "K": {"kaart": "V6", "doel": "V5", "optie": "halveren"}, "anker": {"start": "V5"}, "van": 3}}]}},
+  {"episode": "E3", "invariant": "I7", "tekst": "De dosis trimethoprim is na dag 3 niet gehalveerd.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De downside van V5: 'Bij eGFR 10–30: na dag 3 halveren'.", "als": {"p": "en", "args": [{"p": "actiefNaDagen", "middel": "V5", "anker": {"start": "V5"}, "na": 3}, {"p": "niet", "arg": {"p": "opDagRelatief", "K": {"kaart": "V6", "doel": "V5", "optie": "halveren"}, "anker": {"start": "V5"}, "van": 3}}]}},
+  {"episode": "E2", "invariant": "I8", "tekst": "De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De kweekuitslag ('resistent voor') en 'klachten houden aan'."},
+  {"episode": "E3", "invariant": "I8", "tekst": "De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De kweekuitslag ('resistent voor') en 'klachten houden aan'."},
+  {"episode": "E3", "invariant": "I10", "tekst": "Het antibioticum bereikt onvoldoende concentratie in het weefsel.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De regel I10: 'onvoldoende concentratie in het weefsel'."},
+  {"episode": "E3", "invariant": "I11", "tekst": "Er is geen nieuwe kweek van vóór de wissel.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De regel I11: 'wisselen zonder eerst een nieuwe kweek'."},
+  {"episode": "E3", "invariant": "I12", "tekst": "Mevrouw krijgt cotrimoxazol bij een ernstige nierfunctiestoornis en naast spironolacton: kans op ernstige hyperkaliëmie.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De downside van V9."},
+  {"episode": "E3", "invariant": "I13", "tekst": "Het clavulaanzuur stapelt bij deze nierfunctie.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De downside van V8: 'Bij eGFR < 30 stapelt clavulaanzuur'."},
+  {"episode": "E3", "invariant": "I16", "tekst": "Er is binnen 48 uur geen contact geweest.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De regel I16: 'Geen contact binnen 48 uur, of geen verwijzing als ze dan niet beter is'.", "als": {"p": "niet", "arg": {"p": "binnenBeurten", "K": {"kaart": "Ev1"}, "naGebeurtenis": "A", "n": 2}}},
+  {"episode": "E3", "invariant": "I16", "tekst": "Mevrouw is na 48 uur niet beter en is niet verwezen.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De regel I16: 'Geen contact binnen 48 uur, of geen verwijzing als ze dan niet beter is'.", "als": {"p": "en", "args": [{"p": "klachten", "waarde": "geenVerbetering48"}, {"p": "nietGespeeld", "K": {"kaart": "Ev3"}}]}}
  ],
+ // Besluit Bart, 15 november 2026: een route die de poort haalt maar bij geen profiel van de episode past, krijgt dit profiel.
+ // Naam en reflectievraag zijn een concept ter goedkeuring.
+ "restprofiel": {
+  "naam": "Eigen route",
+  "reflectievraag": "Je route past bij geen van de beschreven profielen. Wat was je plan?",
+  "concept": true,
+  "TODO_BART": "Concepttekst ter goedkeuring: een route die de poort haalt maar bij geen van de profielen van de episode past, krijgt het profiel 'Eigen route' met de reflectievraag 'Je route past bij geen van de beschreven profielen. Wat was je plan?' Keur je naam en vraag goed of pas je ze aan?"
+ },
  "rollen": { "wissel": "B1", "stop": "B2", "pauzeer": "B3", "hervat": "B5", "uitgesteld": "V2" },
  "titel": "Casus UWI in de eerste lijn — tutorialcasus Epic green cards",
  "bronnen": {
@@ -1834,7 +1865,7 @@ window.CASUSSEN = [
   {
    "id": "TODO_BART-N1",
    "vraag": "Aanhoudende klachten leiden tot weefselinvasie en daarna tot sepsis. Gekozen volgens Barts antwoord: vier volle dagen aanhoudende klachten (dus pas op dag 5) geven weefselinvasie; bij weefselinvasie en opnieuw vier volle dagen aanhoudende klachten volgt sepsis. Nog open voor een huisarts: (1) geldt dit ook in episode 2 (daar komt de kweekuitslag op dag 4)? (2) tellen de vier dagen vanaf de start van het middel of vanaf het begin van de klachten? De NHG-termijnen zijn niet gecheckt.",
-   "gekozenLezing": "Alleen in episode 3 aan (episode 1 en 2: uit). De teller telt de volle dagen op rij vanaf dag 1 waarop de klachten niet afnamen (ook als er niets is voorgeschreven); een werkzaam antibioticum stopt de teller. Na vier volle dagen volgt op dag 5 weefselinvasie (A), tenzij A al eerder kwam; daarna begint de teller opnieuw en volgt na nog eens vier volle dagen sepsis (S).",
+   "gekozenLezing": "Alleen in episode 3 aan (episode 1 en 2: uit). De teller telt de volle dagen op rij vanaf dag 1 waarop de klachten niet afnamen (ook als er niets is voorgeschreven); een werkzaam antibioticum stopt de teller. Na vier volle dagen volgt op dag 5 weefselinvasie (A), tenzij A al eerder kwam; daarna begint de teller opnieuw en volgt na nog eens vier volle dagen sepsis (S). Sinds casus 1.4 staat weefselinvasie zelf op dag 3 of dag 5 gepland; de eerste stap valt daardoor altijd samen met de geplande weefselinvasie of komt erna, en geeft nooit een tweede weefselinvasie. Sepsis volgt dus op dag 7 (weefselinvasie op dag 3) of dag 9 (weefselinvasie op dag 5) als de klachten blijven aanhouden.",
    "plek": "E1.escalatie; E2.escalatie; E3.escalatie"
   },
   {
@@ -1853,8 +1884,9 @@ window.CASUSSEN = [
   {
    "id": "TODO_BART-N3",
    "vraag": "Vroeg afronden: niet toegestaan zolang er nog gebeurtenissen aankomen of de dagen niet om zijn (instelling afrondenPasNaGebeurtenissen, nu aan in alle episodes). Een gebeurtenis op tijd (de kweekuitslag) telt alleen mee als Urinekweek inzetten is gespeeld. Heb je dit zo bedoeld?",
-   "gekozenLezing": "Aan in E1, E2 en E3. Wie geen kaart speelt die een gebeurtenis aankondigt, kan pas op de laatste dag afronden.",
-   "plek": "E1-E3.afrondenPasNaGebeurtenissen"
+   "gekozenLezing": "Sinds casus 1.4 mag 'Episode afronden' altijd. Het spel loopt dan automatisch door tot de laatste dag (dag 14), alsof de speler telkens 'Volgende dag' kiest zonder kaarten. Verschijnt onderweg een gebeurtenis, dan stopt het doorlopen op die dag: de speler kan reageren en moet opnieuw afronden. De oude instelling 'afronden pas na de gebeurtenissen' is vervallen.",
+   "plek": "Engine.rondAf (de instelling per episode is vervallen)",
+   "besluit": "Beslist door Bart op 15 november 2026: afronden mag altijd; het spel loopt dan dag voor dag door tot de laatste dag of tot er een gebeurtenis verschijnt."
   },
   {
    "id": "TODO_BART-N5",
@@ -1879,6 +1911,36 @@ window.CASUSSEN = [
    "vraag": "De casus noemt voor het raadplegen alleen \"een eigen naslagkaart met verwijzing naar de bronnen\", zonder te zeggen welke bronnen erop staan. Zijn de vier bronnen uit de casuskop (NHG, SIDRIK, Kompas, KNMP) de bedoelde keuze, en blijft de naslagkaart voor alle episodes hetzelfde?",
    "gekozenLezing": "Alle vier de bronnen uit de casuskop, in kopvolgorde, als verwijzing op casusniveau (casus.raadplegen), voor elke episode gelijk; geen richtlijntekst toegevoegd.",
    "plek": "raadplegen.bronnen"
+  },
+  {
+   "id": "TODO_BART-C1",
+   "vraag": "Concepttekst ter goedkeuring: wie nitrofurantoïne geeft bij een lage nierfunctie en in deze poging nog geen kweekuitslag heeft gezien, krijgt als hint 'Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?' (de vraag uit de casus zonder de eerste zin 'Het lab zegt gevoelig.'). Keur je deze variant goed of pas je hem aan?",
+   "gekozenLezing": "De variant staat letterlijk in de data als vraagvariant van I5 in episode 2 en 3 en verschijnt als de gebeurtenis kweekuitslag (C) in deze poging niet is geweest. Is de kweekuitslag wel geweest, dan blijft de vraag uit de casus: 'Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?' Afgeleid uit die vraag.",
+   "plek": "E2.invarianten.I5.vraagVarianten; E3.invarianten.I5.vraagVarianten"
+  },
+  {
+   "id": "TODO_BART-C2",
+   "vraag": "Conceptlijst ter goedkeuring: in episode 2 en 3 kost elke overbodige kaart 1 punt doelmatigheid (ondergrens 1), en bij een gehaalde poort staat onder 'Van je opleider' per regel de opmerking 'Deze kaart was hier niet nodig:' met het label van de kaart. De vijf regels: (a) Kalium bepalen in episode 2 zonder dat trimethoprim is gestart; (b) een tweede Urinekweek inzetten in episode 3 zonder weefselinvasie vóór die kweek; (c) Verwijzen zonder dat 'Na 48 uur geen verbetering.' eerder is voorgekomen; (d) Innametijden aanpassen, of Medicatie tijdelijk stoppen op calcium, zonder dat ciprofloxacine is gestart; (e) Dosis aanpassen of Medicatie tijdelijk stoppen op lisinopril vóór de dag van de uitdroging. Keur je de lijst en de opmerking goed, of pas je ze aan?",
+   "gekozenLezing": "De regels staan in de data als scoreregels met een leesbare naam, elk gemarkeerd als concept met de casuspassage waaruit hij is afgeleid. Per regel hooguit 1 punt en één opmerking, ook als de regel twee kaarten noemt; de opmerking noemt de eerst gespeelde kaart van die regel, met het doel tussen haakjes. Regel (e) geldt ook in episode 2 (daar komt geen uitdroging voor, dus elke aanpassing van lisinopril telt). Innametijden aanpassen kan in het spel alleen als ciprofloxacine is gestart, dus regel (d) raakt in de praktijk alleen Medicatie tijdelijk stoppen op calcium. De bestaande regels (G2 respectievelijk G3 vóór de eerste keuze) blijven; episode 1 is ongewijzigd.",
+   "plek": "E2.score.doelmatigheid; E3.score.doelmatigheid"
+  },
+  {
+   "id": "TODO_BART-C3",
+   "vraag": "Concepttekst ter goedkeuring: een route die de poort haalt maar bij geen van de profielen van de episode past, krijgt het profiel 'Eigen route' met de reflectievraag 'Je route past bij geen van de beschreven profielen. Wat was je plan?' Keur je naam en vraag goed of pas je ze aan?",
+   "gekozenLezing": "Naam en reflectievraag staan letterlijk in de data (casus.restprofiel) en gelden in alle episodes. In episode 1 past elke route die de poort haalt bij een profiel, dus daar komt het restprofiel niet voor.",
+   "plek": "casus.restprofiel"
+  },
+  {
+   "id": "TODO_BART-C4",
+   "vraag": "Conceptteksten ter goedkeuring: de veiligheidsregels die nog geen zin hadden over wat er met de patiënt gebeurt, hebben er nu een (voorschot, afgeleid uit tekst die al in de casus staat). De zinnen staan in casus-uwi.md sectie 11 en in de data bij casus.gevolgzinnen (elk gemarkeerd als concept, met de bron). Keur je ze goed of pas je ze aan?",
+   "gekozenLezing": "Alle zinnen zijn vrijgegeven en staan letterlijk in de data. Zinnen met een voorwaarde verschijnen alleen als ze in deze poging waar zijn (bijvoorbeeld 'Er is geen kweek van vóór de eerste dosis.' alleen als er een antibioticum is gestart zonder kweek vooraf). Een regel kan twee zinnen hebben (I6, I7, I16); ze verschijnen allebei als ze allebei waar zijn.",
+   "plek": "casus.gevolgzinnen"
+  },
+  {
+   "id": "TODO_BART-C5",
+   "vraag": "De casusroute 'Rand van de kaart: na 48 uur geen verbetering → verwijzen' eindigt in het spel in sepsis: na het verwijzen loopt de episode door (afronden spoelt door tot dag 14), er is geen werkzaam antibioticum en vier volle dagen na de weefselinvasie volgt sepsis, dus de episode is verloren. Wat moet er na Verwijzen gebeuren: eindigt de episode daar, stopt de teller van de aanhoudende klachten, of blijft het zo?",
+   "gekozenLezing": "Niets veranderd: na Verwijzen loopt de episode door en gelden de gewone regels. Wie na het verwijzen alsnog een werkzaam antibioticum start, haalt de poort; wie dat niet doet, verliest de episode door sepsis. Er is geen regel verzonnen die de episode bij Verwijzen laat eindigen.",
+   "plek": "kaarten[Ev3]; E3.escalatie"
   }
  ],
  "episodes": []
@@ -1893,7 +1955,6 @@ window.CASUSSEN[0].episodes.push({
   level: 1,
   startToestanden: ["cystitis"],
   knoppen: { actiesPerBeurt: 3, aantalDagen: 14, raadplegenKost: 0 },
-  afrondenPasNaGebeurtenissen: true,
   startUitleg: "Het doel: de klachten nemen zo snel mogelijk af. Houden ze aan, dan wordt het erger.",
   escalatie: { aan: false },
   antibiotica: ["V3", "V4", "V5"],
@@ -2043,7 +2104,6 @@ window.CASUSSEN[0].episodes.push({
   titel: "Episode 2 — level 2",
   startToestanden: ["cystitis"],
   knoppen: { actiesPerBeurt: 3, aantalDagen: 14, raadplegenKost: 0 },
-  afrondenPasNaGebeurtenissen: true,
   startUitleg: "Het doel: de klachten nemen zo snel mogelijk af. Houden ze aan, dan wordt het erger.",
   escalatie: { aan: false },
   antibiotica: ["V3", "V4", "V5"],
@@ -2136,6 +2196,16 @@ window.CASUSSEN[0].episodes.push({
         args: [{ p: "gestart", middel: "V3" }, { p: "waar", veld: "eGFR", op: "<", waarde: 30 }]
       },
       vraag: "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?",
+      // Besluit Bart, 15 november 2026: de vraag hierboven ("Het lab zegt gevoelig. ...") blijft alleen als de kweekuitslag in deze poging
+      // is geweest; anders deze variant (concept ter goedkeuring).
+      vraagVarianten: [
+        {
+          als: { p: "niet", arg: { p: "gebeurtenisGeweest", id: "C" } },
+          vraag: "Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?",
+          concept: true,
+          TODO_BART: "Concepttekst ter goedkeuring: wie nitrofurantoïne geeft bij een lage nierfunctie en in deze poging nog geen kweekuitslag heeft gezien, krijgt als hint 'Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?' (de vraag uit de casus zonder de eerste zin 'Het lab zegt gevoelig.'). Keur je deze variant goed of pas je hem aan?"
+        }
+      ],
       bron: "NHG",
       TODO_BART: "Terugkoppeling van weggelaten kaarten: de casus noemt niet welke weggelaten kaart welke downside toont."
     },
@@ -2301,6 +2371,12 @@ window.CASUSSEN[0].episodes.push({
       TODO_BART: "Score episode 2: telt alleen een wissel (B1) op een dag met klachtenstatus 'af' als 'onnodig wisselen', en telt 'de voorschrijfkaart' V1–V5 (niet V6)?"
     },
     doelmatigheid: {
+      // Besluit Bart, 15 november 2026: overbodige kaarten kosten doelmatigheid (1 punt per regel, ondergrens 1). De regels met `naam`
+      // hieronder en de opmerking zijn een voorschot (concept), afgeleid uit de casuspassage in afgeleidUit; ter goedkeuring door Bart.
+      min: 1,
+      opmerkingBijAftrek: "Deze kaart was hier niet nodig:",
+      conceptRegels: true,
+      TODO_BART_overbodig: "Conceptlijst ter goedkeuring: in episode 2 en 3 kost elke overbodige kaart 1 punt doelmatigheid (ondergrens 1), en bij een gehaalde poort staat onder 'Van je opleider' per regel de opmerking 'Deze kaart was hier niet nodig:' met het label van de kaart. De vijf regels: (a) Kalium bepalen in episode 2 zonder dat trimethoprim is gestart; (b) een tweede Urinekweek inzetten in episode 3 zonder weefselinvasie vóór die kweek; (c) Verwijzen zonder dat 'Na 48 uur geen verbetering.' eerder is voorgekomen; (d) Innametijden aanpassen, of Medicatie tijdelijk stoppen op calcium, zonder dat ciprofloxacine is gestart; (e) Dosis aanpassen of Medicatie tijdelijk stoppen op lisinopril vóór de dag van de uitdroging. Keur je de lijst en de opmerking goed, of pas je ze aan?",
       regels: [
         {
           als: {
@@ -2369,7 +2445,13 @@ window.CASUSSEN[0].episodes.push({
           },
           punten: 3
         },
-        { als: { p: "waarheid", waarde: true }, punten: 2 }
+        { als: { p: "waarheid", waarde: true }, punten: 2 },
+        { naam: "Kalium bepalen zonder trimethoprim", als: {"p": "en", "args": [{"p": "gespeeld", "K": {"kaart": "O2"}}, {"p": "niet", "arg": {"p": "gestart", "middel": "V5"}}]}, delta: -1,
+          kaarten: [{"kaart": "O2"}], concept: true,
+          afgeleidUit: "De downside van O2: 'Alleen zinvol bij een indicatie; anders kost het doelmatigheid'." },
+        { naam: "Lisinopril aanpassen zonder uitdroging", als: {"p": "gespeeld", "K": {"kaart": "V6", "doel": "lisinopril"}}, delta: -1,
+          kaarten: [{"kaart": "V6", "doel": "lisinopril"}], concept: true,
+          afgeleidUit: "Het effect van V6: 'ook lisinopril halveren bij sick day'; in episode 2 komt geen uitdroging voor." }
       ]
     }
   },
@@ -2538,8 +2620,9 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E2-10",
     vraag: "Een route die de poort haalt maar geen van beide profielen matcht (trimethoprim gevolgd door stoppen zonder wissel) heeft in de casus geen profiel.",
-    gekozenLezing: "Geen extra profiel verzonnen: de evaluatie levert dan geen profiel. Profiel 'Kweekgestuurd, smal' = V4 gespeeld en geen B1; 'Bijgestuurd' = V5, daarna B1.",
-    plek: "E2.profielen"
+    gekozenLezing: "Profiel 'Kweekgestuurd, smal' = V4 gespeeld en geen B1; 'Bijgestuurd' = V5, daarna B1. Past geen van beide, dan krijgt de route het restprofiel 'Eigen route' (casus.restprofiel).",
+    plek: "E2.profielen; casus.restprofiel",
+    besluit: "Beslist door Bart op 15 november 2026: een route die de poort haalt maar bij geen profiel past, krijgt het profiel 'Eigen route' (naam en reflectievraag zijn een concept ter goedkeuring)."
   },
   {
     id: "TODO_BART-E2-11",
@@ -2562,8 +2645,9 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E2-16",
     vraag: "Vroeg afronden vóór de kweekuitslag (gebeurtenis C) ontloopt I8: de uitslag is dan nog niet gemeld, dus het resistente middel telt niet als doorgelopen. Moet afronden pas kunnen nadat C geweest is (instelling 'afronden pas na de gebeurtenissen')?",
-    gekozenLezing: "Sinds casus 1.2 staat de instelling 'afronden pas na de gebeurtenissen' aan in alle episodes. Is Urinekweek inzetten gespeeld, dan kan de speler pas afronden nadat de kweekuitslag (C) binnen is; I8 is dan niet meer te ontlopen. Is Urinekweek inzetten niet gespeeld, dan komt er geen kweekuitslag en geldt I8 niet; de speler kan dan pas op de laatste dag afronden en schendt I6 (geen kweek vooraf) zodra er een antibioticum is gestart.",
-    plek: "E2.invarianten.I8"
+    gekozenLezing: "Sinds casus 1.4 mag afronden altijd, maar het spel loopt dan door tot de laatste dag. Is Urinekweek inzetten gespeeld, dan verschijnt de kweekuitslag (C) onderweg en stopt het doorlopen op die dag; I8 is niet te ontlopen. Is Urinekweek inzetten niet gespeeld, dan komt er geen kweekuitslag en geldt I8 niet.",
+    plek: "E2.invarianten.I8",
+    besluit: "Beslist door Bart op 15 november 2026: afronden mag altijd; het spel loopt dan dag voor dag door tot de laatste dag of tot er een gebeurtenis verschijnt."
   },
   {
     id: "TODO_BART-E2-17",
@@ -2595,7 +2679,6 @@ window.CASUSSEN[0].episodes.push({
     casusTekst: ["volledig repertoire (26 kaarten)", "acties per beurt krap", "2 gebeurtenissen in vrije volgorde, plus de kweekuitslag"],
     TODO_BART: "Acties per beurt in episode 3: de casus noemt 'krap', bouwopdracht 6.6 zegt 3 (zelfde als E1 en E2)."
   },
-  afrondenPasNaGebeurtenissen: true,
   startUitleg: "Het doel: de klachten nemen zo snel mogelijk af. Houden ze aan, dan wordt het erger.",
   escalatie: {
     aan: true,
@@ -2673,7 +2756,9 @@ window.CASUSSEN[0].episodes.push({
       id: "A",
       titel: "Weefselinvasie",
       groep: "AB",
-      trigger: { type: "naKaart", n: 4 },
+      // Besluit Bart, 15 november 2026: A en B verschijnen aan het begin van dag 3 en dag 5; welke van de twee op dag 3 komt, is per
+      // poging willekeurig (groep). De dagen zijn een engine-instelling, geen klinische regel.
+      trigger: { type: "opDag", dag: 3 },
       toestand: "weefselinvasie",
       zet: { statusNaBeurten: 2 },
       tekst: "Weefselinvasie: koorts 38,6 °C en flankpijn",
@@ -2684,7 +2769,7 @@ window.CASUSSEN[0].episodes.push({
       id: "B",
       titel: "Uitdroging",
       groep: "AB",
-      trigger: { type: "naKaart", n: 7 },
+      trigger: { type: "opDag", dag: 5 },
       toestand: "uitdroging",
       tekst: "Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK]",
       meta: { opmerking: "De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler." }
@@ -2819,6 +2904,16 @@ window.CASUSSEN[0].episodes.push({
       geldtInTekst: "E2, E3",
       predicaat: { p: "en", args: [{ p: "gestart", middel: "V3" }, { p: "waar", veld: "eGFR", op: "<", waarde: 30 }] },
       vraag: "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?",
+      // Besluit Bart, 15 november 2026: de vraag hierboven ("Het lab zegt gevoelig. ...") blijft alleen als de kweekuitslag in deze poging
+      // is geweest; anders deze variant (concept ter goedkeuring).
+      vraagVarianten: [
+        {
+          als: { p: "niet", arg: { p: "gebeurtenisGeweest", id: "C" } },
+          vraag: "Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?",
+          concept: true,
+          TODO_BART: "Concepttekst ter goedkeuring: wie nitrofurantoïne geeft bij een lage nierfunctie en in deze poging nog geen kweekuitslag heeft gezien, krijgt als hint 'Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?' (de vraag uit de casus zonder de eerste zin 'Het lab zegt gevoelig.'). Keur je deze variant goed of pas je hem aan?"
+        }
+      ],
       bron: "NHG",
       TODO_BART: "Terugkoppeling van weggelaten kaarten: de casus noemt niet welke weggelaten kaart welke downside toont."
     },
@@ -3186,7 +3281,13 @@ window.CASUSSEN[0].episodes.push({
       TODO_BART: "Profielen en score in episode 3: wat gebeurt er bij routes zonder ciprofloxacine of amoxicilline/clavulaanzuur (bijvoorbeeld alleen fosfomycine of verwijzen), en welk profiel hoort bij ciprofloxacine met de-escalatie naar amoxicilline/clavulaanzuur?"
     },
     doelmatigheid: {
-      casusTekst: "G3 gebruiken vóór de eerste keuze levert punten op.",
+      casusTekst: "G3 gebruiken vóór de eerste keuze levert punten op. Overbodige kaarten kosten elk 1 punt, met ondergrens 1 (lijst in sectie 11, concept).",
+      // Besluit Bart, 15 november 2026: overbodige kaarten kosten doelmatigheid (1 punt per regel, ondergrens 1). De regels met `naam`
+      // hieronder en de opmerking zijn een voorschot (concept), afgeleid uit de casuspassage in afgeleidUit; ter goedkeuring door Bart.
+      min: 1,
+      opmerkingBijAftrek: "Deze kaart was hier niet nodig:",
+      conceptRegels: true,
+      TODO_BART_overbodig: "Conceptlijst ter goedkeuring: in episode 2 en 3 kost elke overbodige kaart 1 punt doelmatigheid (ondergrens 1), en bij een gehaalde poort staat onder 'Van je opleider' per regel de opmerking 'Deze kaart was hier niet nodig:' met het label van de kaart. De vijf regels: (a) Kalium bepalen in episode 2 zonder dat trimethoprim is gestart; (b) een tweede Urinekweek inzetten in episode 3 zonder weefselinvasie vóór die kweek; (c) Verwijzen zonder dat 'Na 48 uur geen verbetering.' eerder is voorgekomen; (d) Innametijden aanpassen, of Medicatie tijdelijk stoppen op calcium, zonder dat ciprofloxacine is gestart; (e) Dosis aanpassen of Medicatie tijdelijk stoppen op lisinopril vóór de dag van de uitdroging. Keur je de lijst en de opmerking goed, of pas je ze aan?",
       TODO_BART: "Doelmatigheid 'G3 gebruiken vóór de eerste keuze': welke kaarten tellen als 'de eerste keuze'? Bouwopdracht 6.5 zegt 'de eerste V-kaart', de casus 'de eerste keuze'.",
       regels: [
         {
@@ -3211,7 +3312,19 @@ window.CASUSSEN[0].episodes.push({
           als: { p: "waarheid", waarde: true },
           punten: 2,
           TODO_BART: "Worden Ev3 ('Onnodig verwijzen kost doelmatigheid', kaartdownside) en 'geen overbodig onderzoek' (casus sectie 7) in episode 3 gescoord? De casus noemt voor episode 3 alleen 'G3 gebruiken vóór de eerste keuze'."
-        }
+        },
+        { naam: "Tweede urinekweek zonder weefselinvasie", als: {"p": "tel", "teller": {"t": "gespeeld", "K": {"kaart": "O1", "voorGebeurtenis": "A"}}, "op": ">=", "waarde": 2}, delta: -1,
+          kaarten: [{"kaart": "O1", "voorGebeurtenis": "A"}], concept: true,
+          afgeleidUit: "De geldige route 'Na A: nieuwe kweek (O1)'." },
+        { naam: "Verwijzen zonder 'na 48 uur geen verbetering'", als: {"p": "en", "args": [{"p": "gespeeld", "K": {"kaart": "Ev3"}}, {"p": "niet", "arg": {"p": "klachten", "waarde": "geenVerbetering48", "op": {"totEnMetKaart": {"kaart": "Ev3"}}}}]}, delta: -1,
+          kaarten: [{"kaart": "Ev3"}], concept: true,
+          afgeleidUit: "De downside van Ev3: 'Onnodig verwijzen kost doelmatigheid', en 'Rand van de kaart: na 48 uur geen verbetering → Ev3 verwijzen'." },
+        { naam: "Calcium scheiden of stoppen zonder ciprofloxacine", als: {"p": "en", "args": [{"p": "of", "args": [{"p": "gespeeld", "K": {"kaart": "B4"}}, {"p": "gespeeld", "K": {"kaart": "B3", "doel": "calcium"}}]}, {"p": "niet", "arg": {"p": "gestart", "middel": "V7"}}]}, delta: -1,
+          kaarten: [{"kaart": "B4"}, {"kaart": "B3", "doel": "calcium"}], concept: true,
+          afgeleidUit: "Het effect van B4 en de route 'ciprofloxacine met B4 (scheiden van calcium) of B3 (calcium tijdelijk stoppen)'." },
+        { naam: "Lisinopril aanpassen of stoppen vóór de uitdroging", als: {"p": "of", "args": [{"p": "gespeeld", "K": {"kaart": "V6", "doel": "lisinopril", "voorGebeurtenis": "B"}}, {"p": "gespeeld", "K": {"kaart": "B3", "doel": "lisinopril", "voorGebeurtenis": "B"}}]}, delta: -1,
+          kaarten: [{"kaart": "V6", "doel": "lisinopril", "voorGebeurtenis": "B"}, {"kaart": "B3", "doel": "lisinopril", "voorGebeurtenis": "B"}], concept: true,
+          afgeleidUit: "Het effect van V6: 'ook lisinopril halveren bij sick day', en de route 'Na B'." }
       ]
     }
   },
@@ -3345,8 +3458,9 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-3",
     vraag: "Vroeg afronden vóór gebeurtenis A, B of C (en dus ontlopen van I8, I10, I11, I15, I16)?",
-    gekozenLezing: "Vroeg afronden is niet toegestaan zolang er nog gebeurtenissen aankomen of de dagen niet om zijn (de instelling 'afronden pas na de gebeurtenissen' staat aan). Een gebeurtenis op kaartaantal (A en B) telt altijd mee; een kweekuitslag telt alleen mee als Urinekweek inzetten is gespeeld. Wie niets speelt dat een gebeurtenis in gang zet, kan pas op de laatste dag afronden. Het ontlopen van de invarianten na A, B of C (I8, I10, I11, I15, I16) is daarmee niet meer mogelijk. Alternatief: afronden weer vrij laten (de instelling uitzetten).",
-    plek: "E3.gebeurtenissen A, B, C; E3.invarianten.I8, I10, I11, I15, I16 (afronden pas na de gebeurtenissen is niet ingesteld)"
+    gekozenLezing: "Sinds casus 1.4 mag afronden altijd, maar het spel loopt dan door tot de laatste dag (dag 14). Weefselinvasie en uitdroging verschijnen op dag 3 en dag 5 (volgorde per poging willekeurig) en een kweekuitslag 3 dagen na Urinekweek inzetten; bij elke gebeurtenis stopt het doorlopen, zodat de speler kan reageren. Het ontlopen van de invarianten na A, B of C (I8, I10, I11, I15, I16) door vroeg af te ronden is niet mogelijk.",
+    plek: "E3.gebeurtenissen A, B, C; E3.invarianten.I8, I10, I11, I15, I16",
+    besluit: "Beslist door Bart op 15 november 2026: afronden mag altijd; het spel loopt dan dag voor dag door tot de laatste dag of tot er een gebeurtenis verschijnt."
   },
   {
     id: "TODO_BART-E3-4",
@@ -3395,8 +3509,9 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-11",
     vraag: "Profielen en score in episode 3: wat gebeurt er bij routes zonder ciprofloxacine of amoxicilline/clavulaanzuur (bijvoorbeeld alleen fosfomycine of verwijzen), en welk profiel hoort bij ciprofloxacine met de-escalatie naar amoxicilline/clavulaanzuur?",
-    gekozenLezing: "Geen profiel en geen duurzaamheidsregel voor routes zonder V7 of V8. Amoxicilline/clavulaanzuur gestart (ook na ciprofloxacine) = Kweekgestuurd; anders ciprofloxacine = Richtlijn eerste keus. Duurzaamheid: V8 zonder V7 = 3, V7 met wissel naar V8 na C = 3, V7 anders = 2.",
-    plek: "E3.profielen; E3.score.duurzaamheid"
+    gekozenLezing: "Amoxicilline/clavulaanzuur gestart (ook na ciprofloxacine) = Kweekgestuurd; anders ciprofloxacine = Richtlijn eerste keus; anders het restprofiel 'Eigen route' (casus.restprofiel). Duurzaamheid: V8 zonder V7 = 3, V7 met wissel naar V8 na C = 3, V7 anders = 2. Voor een route zonder V7 of V8 geeft geen enkele regel een duurzaamheidsscore: het beoordelingsscherm meldt dan bij Duurzaamheid 'geen score voor deze route' in plaats van een getal.",
+    plek: "E3.profielen; E3.score.duurzaamheid; casus.restprofiel",
+    besluit: "Beslist door Bart op 15 november 2026: een route die de poort haalt maar bij geen profiel past, krijgt het profiel 'Eigen route' (naam en reflectievraag zijn een concept ter goedkeuring); de scores blijven zoals de regels ze opleveren."
   },
   {
     id: "TODO_BART-E3-12",
@@ -3457,8 +3572,9 @@ window.CASUSSEN[0].todoBart.push(
   {
     id: "TODO_BART-E3-21",
     vraag: "Worden Ev3 ('Onnodig verwijzen kost doelmatigheid', kaartdownside) en 'geen overbodig onderzoek' (casus sectie 7) in episode 3 gescoord? De casus noemt voor episode 3 alleen 'G3 gebruiken vóór de eerste keuze'.",
-    gekozenLezing: "Nee: in episode 3 wordt alleen 'G3 vóór de eerste keuze' gescoord. Ev3 en overbodig onderzoek (extra O1 of O2) kosten geen punten, omdat de casus voor episode 3 geen aftrekregel of aantal noemt; dat zou klinische inhoud verzinnen. Het alternatief (aftrek per overbodige kaart of voor Ev3 zonder 48 uur geen verbetering, zoals de kaartdownside zegt) is aan Bart.",
-    plek: "E3.score.doelmatigheid.regels[1]"
+    gekozenLezing: "Ja, sinds casus 1.4: naast 'G3 vóór de eerste keuze' kost elk van deze situaties 1 punt doelmatigheid (ondergrens 1): een tweede Urinekweek inzetten zonder weefselinvasie vóór die kweek; Verwijzen zonder dat 'Na 48 uur geen verbetering.' eerder is voorgekomen; Innametijden aanpassen of Medicatie tijdelijk stoppen op calcium zonder dat ciprofloxacine is gestart; Dosis aanpassen of Medicatie tijdelijk stoppen op lisinopril vóór de dag van de uitdroging. Kalium bepalen kost in episode 3 geen punt (het hoort daar bij de geldige route).",
+    plek: "E3.score.doelmatigheid.regels",
+    besluit: "Beslist door Bart op 15 november 2026: overbodige kaarten kosten in episode 2 en 3 elk 1 punt doelmatigheid, met ondergrens 1 (de lijst met regels is een concept ter goedkeuring)."
   },
   {
     id: "TODO_BART-E3-22",

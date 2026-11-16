@@ -1,6 +1,7 @@
 /* Tests voor iteratie 1 (12 oktober 2026): het nieuwe gedrag met de ECHTE instellingen van de casus (sinds versie 1.2;
    bijgewerkt voor versie 1.3, de besluiten van Bart van 14 november 2026: sepsis beëindigt de episode, alle gevolgzinnen vrijgegeven):
-   één keer per doel, kweekuitslag op tijd, escalatie bij aanhoudende klachten, afronden pas na gebeurtenissen,
+   bijgewerkt voor versie 1.4, de besluiten van 15 november 2026: weefselinvasie en uitdroging op dag 3 en 5, afronden spoelt door):
+   één keer per doel, kweekuitslag op tijd, escalatie bij aanhoudende klachten, afronden,
    kaliumregel trimethoprim, gevolgzin en "nog n andere regels", gespeelde kaarten in het evaluatiescherm, opslagmelding.
    De oudere regel- en routetests draaien op Test.oudeRegels() (zie testlib.js). */
 (function (g) {
@@ -28,7 +29,7 @@
   T.registreer(G, "fout 1: E3 met fosfomycine, weefselinvasie A op dag 3: dag 5 geeft 'Na 48 uur geen verbetering' en zonder Ev1/Ev3 I16", function () {
     var s = nieuw("E3");
     speel(s, "G3"); speel(s, "O1"); speel(s, "V4"); dagen(s, 1);
-    speel(s, "N1"); dagen(s, 1);                       // 4e kaart: A komt op dag 3
+    speel(s, "N1"); dagen(s, 1);                       // rng 0: A komt op dag 3 (vaste dag, casus 1.4)
     T.is(geb(s, "A").dag, 3);
     dagen(s, 2);
     T.is(s.klachten[5].status, "geenVerbetering48");
@@ -100,29 +101,38 @@
   });
 
   /* ---------- 3. veertien dagen en escalatie ---------- */
-  T.registreer(G, "dagen: elke episode duurt 14 dagen en heeft de instellingen voor afronden en escalatie", function () {
+  T.registreer(G, "dagen: elke episode duurt 14 dagen en heeft de instelling voor escalatie; de instelling 'afronden pas na de gebeurtenissen' is vervallen (casus 1.4)", function () {
     casus().episodes.forEach(function (e) {
       T.is(e.knoppen.aantalDagen, 14, e.id + " dagen");
-      T.is(e.afrondenPasNaGebeurtenissen, true, e.id + " afronden pas na gebeurtenissen");
+      T.is("afrondenPasNaGebeurtenissen" in e, false, e.id + " de vervallen instelling staat niet meer in de data");
       T.waar(typeof e.startUitleg === "string" && e.startUitleg.length > 10, e.id + " startuitleg");
     });
     T.is(ep("E1").escalatie.aan, false); T.is(ep("E2").escalatie.aan, false); T.is(ep("E3").escalatie.aan, true);
     T.gelijk(ep("E3").escalatie.stappen, [{ doelEvent: "A", dagen: 4 }, { doelEvent: "S", dagen: 4 }]);
   });
-  T.registreer(G, "escalatie: E3 zonder antibioticum: waarschuwing dag 2 (dag 1), 3, 4; na vier volle dagen op dag 5 weefselinvasie (A)", function () {
-    var s = nieuw("E3");
+  // Casus 1.4: weefselinvasie (A) en uitdroging (B) staan op dag 3 en dag 5 gepland. rng 0: A op dag 3; rng 0,99: A op dag 5.
+  var LAAT = 0.99;
+  T.registreer(G, "escalatie: E3 zonder antibioticum, A gepland op dag 5: teller 1, 2, 3; op dag 5 één weefselinvasie (gepland én door de escalatie), daarna begint de teller opnieuw", function () {
+    var s = nieuw("E3", LAAT);
     T.is(s.klachten[1].reeks, 0);
     dagen(s, 1); T.is(s.klachten[2].reeks, 1);
-    dagen(s, 1); T.is(s.klachten[3].reeks, 2);
+    dagen(s, 1); T.is(s.klachten[3].reeks, 2); T.is(geb(s, "B").dag, 3, "uitdroging op dag 3");
     dagen(s, 1); T.is(s.klachten[4].reeks, 3);
     T.is(geb(s, "A"), undefined, "dag 4: nog geen weefselinvasie");
     dagen(s, 1);
     T.is(geb(s, "A").dag, 5); T.waar(s.toestanden.indexOf("weefselinvasie") >= 0);
+    T.is(s.gebeurtenissen.filter(function (x) { return x.id === "A"; }).length, 1, "één weefselinvasie, geen dubbele"); T.gelijk(s.wachtend, []);
     T.is(s.klachten[5].reeks, 0, "na de stap begint de teller opnieuw");
-    dagen(s, 2); T.is(s.klachten[7].status, "geenVerbetering48", "de 48-uursregel geldt ook na escalatie");
+    dagen(s, 2); T.is(s.klachten[7].status, "geenVerbetering48", "de 48-uursregel geldt ook dan");
   });
-  T.registreer(G, "escalatie: bij weefselinvasie en opnieuw vier volle dagen aanhoudende klachten volgt sepsis (S); daarmee eindigt de episode direct (casus 1.3)", function () {
-    var s = nieuw("E3"); dagen(s, 4);
+  T.registreer(G, "escalatie: E3 zonder antibioticum, A gepland op dag 3: de weefselinvasie komt op dag 3 (vóór de escalatie) en de teller begint dan opnieuw", function () {
+    var s = nieuw("E3");
+    dagen(s, 2); T.is(geb(s, "A").dag, 3); T.is(s.klachten[2].reeks, 1); T.is(s.klachten[3].reeks, 0);
+    dagen(s, 2); T.is(geb(s, "B").dag, 5); T.is(s.klachten[5].reeks, 2);
+    T.is(s.gebeurtenissen.filter(function (x) { return x.id === "A"; }).length, 1, "de escalatie geeft op dag 5 geen tweede weefselinvasie");
+  });
+  T.registreer(G, "escalatie: bij weefselinvasie en opnieuw vier volle dagen aanhoudende klachten volgt sepsis (S); daarmee eindigt de episode direct (casus 1.3). A op dag 5: sepsis op dag 9; A op dag 3: sepsis op dag 7", function () {
+    var s = nieuw("E3", LAAT); dagen(s, 4);
     T.is(geb(s, "A").dag, 5);
     dagen(s, 3); T.is(geb(s, "S"), undefined, "dag 8: nog niet"); T.is(s.klachten[8].reeks, 3); T.is(s.afgerond, false);
     dagen(s, 1);
@@ -131,44 +141,48 @@
     T.is(s.gebeurtenissen.filter(function (x) { return x.id === "S"; }).length, 1);
     T.is(s.afgerond, true, "sepsis beëindigt de episode"); T.is(s.dag, 9);
     T.gooit(function () { g.Engine.volgendeDag(s); }, "na sepsis is er geen volgende dag");
+    var v = nieuw("E3"); dagen(v, 5);
+    T.is(geb(v, "A").dag, 3); T.is(geb(v, "S"), undefined, "dag 6: nog niet"); T.is(v.klachten[6].reeks, 3);
+    dagen(v, 1); T.is(geb(v, "S").dag, 7); T.is(v.afgerond, true);
   });
   T.registreer(G, "escalatie: een werkzaam middel na weefselinvasie (V8 + dosis) stopt de teller en voorkomt sepsis", function () {
     var s = nieuw("E3"); dagen(s, 4); speel(s, "O1"); speel(s, "V8"); speel(s, "V6", "V8", "875/125 mg 2 dd"); dagen(s, 1);
     T.is(s.klachten[6].status, "af"); T.is(s.klachten[6].reeks, 0);
     dagen(s, 8); T.is(geb(s, "S"), undefined);
   });
-  T.registreer(G, "escalatie: sepsis blokkeert het afronden niet (alleen kaart- en tijdgebeurtenissen tellen)", function () {
-    function spel7() {   // 7 kaarten: A (4e) en B (7e) komen
-      var s = nieuw("E3"); speel(s, "G1"); speel(s, "G2"); speel(s, "G3"); dagen(s, 1);
-      speel(s, "N1"); speel(s, "O2"); speel(s, "N3"); dagen(s, 1); speel(s, "Ev1"); dagen(s, 1);
-      return s;
-    }
-    var s = spel7(); dagen(s, 1);
-    T.waar(!!geb(s, "A") && !!geb(s, "B") && !geb(s, "S"), "A en B geweest, sepsis nog niet");
-    T.is(g.Engine.rondAf(s).poortGehaald === undefined, false, "afronden kan: sepsis komt hoogstens nog");
+  T.registreer(G, "escalatie: wie afrondt zonder werkzaam middel, spoelt door tot sepsis: de episode is verloren", function () {
+    var s = nieuw("E3"); speel(s, "N1"); speel(s, "O2");
+    var r = g.Engine.rondAf(s); T.gelijk(r, { gestopt: true, van: 1, dag: 3, gebeurtenissen: ["A"] });
+    r = g.Engine.rondAf(s); T.gelijk(r, { gestopt: true, van: 3, dag: 5, gebeurtenissen: ["B"] });
+    var u = g.Engine.rondAf(s);
+    T.is(s.afgerond, true); T.is(s.dag, 7); T.is(u.afloop, "verloren"); T.is(u, s.uitkomst);
+    T.gelijk(s.doorgespoeld[2], { van: 5, tot: 7, gebeurtenissen: ["S"] });
   });
-  T.registreer(G, "escalatie: een werkzaam antibioticum (fosfomycine) stopt de teller; wie afwacht (V1) loopt wel naar de escalatie", function () {
-    var s = nieuw("E3"); speel(s, "V4"); dagen(s, 1);
+  T.registreer(G, "escalatie: een werkzaam antibioticum (fosfomycine) stopt de teller, maar niet de geplande weefselinvasie; wie afwacht (V1) of een niet-werkzaam middel geeft, houdt de teller aan", function () {
+    var s = nieuw("E3", LAAT); speel(s, "V4"); dagen(s, 1);
     T.is(s.klachten[2].status, "af"); T.is(s.klachten[2].reeks, 0);
-    dagen(s, 6); T.is(geb(s, "A"), undefined, "geen escalatie met een werkzaam middel");
-    var w = nieuw("E3"); speel(w, "V1"); dagen(w, 4);
-    T.is(geb(w, "A").dag, 5, "afwachten: escalatie op dag 5");
+    dagen(s, 2); T.is(s.klachten[4].reeks, 0, "de teller staat stil");
+    dagen(s, 1); T.is(geb(s, "A").dag, 5, "de weefselinvasie komt op de geplande dag, ook met een werkzaam middel");
+    T.is(s.gebeurtenissen.filter(function (x) { return x.id === "A"; }).length, 1);
+    var w = nieuw("E3", LAAT); speel(w, "V1"); dagen(w, 3);
+    T.is(w.klachten[4].reeks, 3, "afwachten: de teller loopt");
     // een niet-werkzaam middel (trimethoprim, resistent) stopt de teller niet
-    var t = nieuw("E3"); speel(t, "V5"); dagen(t, 4);
-    T.is(geb(t, "A").dag, 5, "trimethoprim werkt niet: escalatie");
+    var t = nieuw("E3", LAAT); speel(t, "V5"); dagen(t, 3);
+    T.is(t.klachten[4].status, "aan"); T.is(t.klachten[4].reeks, 3, "trimethoprim werkt niet: de teller loopt");
   });
-  T.registreer(G, "escalatie: een werkzaam middel op dag 3 voorkomt de escalatie (de klachten nemen af op dag 4)", function () {
-    var s = nieuw("E3"); dagen(s, 3); speel(s, "V4"); dagen(s, 1);
-    T.is(s.dag, 5); T.is(geb(s, "A"), undefined); T.is(s.klachten[5].status, "af");
-  });
-  T.registreer(G, "escalatie: A komt ook nog op de vaste trigger (4e en 7e kaart); komt A al eerder, dan niet twee keer", function () {
-    var s = nieuw("E3"); speel(s, "G1"); speel(s, "G2"); speel(s, "G3"); dagen(s, 1); speel(s, "N1"); dagen(s, 1);
-    T.is(geb(s, "A").dag, 3, "vaste trigger: A na de 4e kaart (dag 2), zichtbaar op dag 3");
-    dagen(s, 3); T.is(s.gebeurtenissen.filter(function (x) { return x.id === "A"; }).length, 1, "A maar één keer");   // tot dag 6: op dag 7 zou sepsis de episode beëindigen
-    var t = nieuw("E3"); dagen(t, 4);
-    T.is(geb(t, "A").dag, 5);
-    speel(t, "G1"); speel(t, "G2"); speel(t, "G3"); dagen(t, 1); speel(t, "N1"); speel(t, "O2"); speel(t, "N3");
-    dagen(t, 1); T.is(t.gebeurtenissen.filter(function (x) { return x.id === "A"; }).length, 1, "A niet nog een keer na de vaste trigger");
+  T.registreer(G, "vaste dagen: A en B komen op dag 3 en dag 5, zonder kaarten en met veel kaarten; rng bepaalt welke van de twee op dag 3 komt; elk één keer", function () {
+    function dagenVan(s) { return s.gebeurtenissen.filter(function (x) { return x.id === "A" || x.id === "B"; }).map(function (x) { return x.id + "@" + x.dag; }); }
+    var leeg = nieuw("E3"); dagen(leeg, 5);
+    T.gelijk(dagenVan(leeg), ["A@3", "B@5"], "rng 0, geen kaarten");
+    var om = nieuw("E3", LAAT); dagen(om, 5);
+    T.gelijk(dagenVan(om), ["B@3", "A@5"], "rng 0,99, geen kaarten");
+    T.gelijk(om.volgordeAB, ["B", "A"]); T.gelijk(leeg.volgordeAB, ["A", "B"]);
+    var vol = nieuw("E3"); speel(vol, "G1"); speel(vol, "G2"); speel(vol, "G3"); dagen(vol, 1); speel(vol, "N1"); speel(vol, "O2"); speel(vol, "N3");
+    T.gelijk(vol.wachtend, [], "zes kaarten: er staat niets in de wacht (geen trigger op kaartaantal meer)");
+    dagen(vol, 1); T.gelijk(dagenVan(vol), ["A@3"]); speel(vol, "Ev1"); dagen(vol, 2);
+    T.gelijk(dagenVan(vol), ["A@3", "B@5"], "met zeven kaarten: dezelfde dagen");
+    T.gelijk(ep("E3").gebeurtenissen.filter(function (e) { return e.groep === "AB"; }).map(function (e) { return e.trigger; }), [{ type: "opDag", dag: 3 }, { type: "opDag", dag: 5 }], "de dagen staan als instelling in de data");
+    T.gelijk(g.Engine.komend(nieuw("E3")), [], "A en B worden niet aangekondigd");
   });
   T.registreer(G, "escalatie: in episode 1 en 2 staat de escalatie uit: ook na 10 dagen zonder antibioticum geen weefselinvasie", function () {
     ["E1", "E2"].forEach(function (id) {
@@ -177,20 +191,22 @@
     });
   });
 
-  /* ---------- afronden pas na gebeurtenissen en dagen zonder actie ---------- */
-  T.registreer(G, "afronden: niet toegestaan zolang er een gebeurtenis aankomt (kweek ingezet, uitslag nog niet binnen); wel op de laatste dag en daarna", function () {
+  /* ---------- afronden spoelt door (casus 1.4) en dagen zonder actie ---------- */
+  T.registreer(G, "afronden: mag altijd; met een kweek onderweg stopt het doorspoelen op de dag van de uitslag, daarna loopt het door tot dag 14 en volgt de beoordeling", function () {
     var s = nieuw("E2"); speel(s, "G2"); speel(s, "O1"); speel(s, "V4"); dagen(s, 1); speel(s, "N1");
-    T.gooit(function () { g.Engine.rondAf(s); }, "uitslag komt nog");
-    T.is(s.afgerond, false, "state ongewijzigd");
-    dagen(s, 2);
+    var r = g.Engine.rondAf(s);
+    T.gelijk(r, { gestopt: true, van: 2, dag: 4, gebeurtenissen: ["C"] }); T.is(s.afgerond, false, "nog geen beoordeling");
     T.is(geb(s, "C").dag, 4);
-    var u = g.Engine.rondAf(s); T.is(u.poortGehaald, true, "na de uitslag mag het wel");
+    var u = g.Engine.rondAf(s); T.is(u.poortGehaald, true, "na de uitslag: door tot de laatste dag en de beoordeling");
+    T.is(s.dag, 14); T.is(s.afgerond, true);
+    T.gelijk(s.doorgespoeld, [{ van: 2, tot: 4, gebeurtenissen: ["C"] }, { van: 4, tot: 14, gebeurtenissen: [] }]);
+    T.is(g.Engine.legeDagen(s), 12, "de doorgespoelde dagen zijn dagen zonder kaarten");
   });
-  T.registreer(G, "afronden: E3 kan niet af zolang A en B nog niet zijn geweest, behalve op de laatste dag", function () {
-    var s = nieuw("E3"); speel(s, "N1"); speel(s, "V4");   // een werkzaam middel: zonder zou sepsis de episode op dag 9 beëindigen (casus 1.3)
-    T.gooit(function () { g.Engine.rondAf(s); }, "A en B komen nog (kaartaantal)");
-    dagen(s, 13); T.is(s.dag, 14); T.is(s.dagenVoorbij, false, "de laatste dag is bereikt, maar niet 'voorbij'");
-    var u = g.Engine.rondAf(s); T.is(typeof u.poortGehaald, "boolean");
+  T.registreer(G, "afronden: zonder gebeurtenis onderweg (episode 1) loopt het spel in één keer door tot dag 14; op de laatste dag volgt de beoordeling meteen", function () {
+    var s = nieuw("E1"); speel(s, "V1"); speel(s, "N1"); speel(s, "Ev1");
+    var u = g.Engine.rondAf(s); T.is(u.poortGehaald, true); T.is(s.dag, 14); T.gelijk(s.doorgespoeld, [{ van: 1, tot: 14, gebeurtenissen: [] }]);
+    var t = nieuw("E3"); speel(t, "O1"); speel(t, "V8"); speel(t, "V6", "V8", "875/125 mg 2 dd"); dagen(t, 13);   // werkzaam: geen sepsis T.is(t.dag, 14); T.is(t.dagenVoorbij, false, "de laatste dag is bereikt, maar niet 'voorbij'");
+    var v = g.Engine.rondAf(t); T.is(typeof v.poortGehaald, "boolean"); T.gelijk(t.doorgespoeld, []);
   });
   T.registreer(G, "dagen zonder actie: Engine.legeDagen telt de dagen zonder gespeelde kaart tot en met de huidige dag", function () {
     var s = nieuw("E1"); speel(s, "N1"); dagen(s, 3); speel(s, "V1");
@@ -228,13 +244,17 @@
     T.waar(u.gevolgen.some(function (x) { return x.invariant === "I14" && x.tekst === "Na 48 uur geen verbetering."; }), "I14-zin in gevolgen");
     T.is(u1.gevolg, "Mevrouw weet niet wanneer ze moet bellen.", "E1 I1: vrijgegeven door Bart op 14 november 2026");
   });
-  T.registreer(G, "gevolgzin: alle zeven zinnen uit 'wat er zichtbaar wordt' zijn vrijgegeven (besluit Bart, 14 november 2026) en staan letterlijk bij 'zichtbaar als een kaart ontbreekt'", function () {
-    var zinnen = casus().gevolgzinnen, vrij = zinnen.filter(function (z) { return z.vrijgegeven; });
-    T.is(zinnen.length, 7, "alle zinnen uit 'wat er zichtbaar wordt' staan erin");
-    T.gelijk(vrij.map(function (z) { return z.episode + " " + z.invariant; }), ["E1 I1", "E1 I3", "E2 I5", "E2 I7", "E3 I9", "E3 I14", "E3 I15"]);
-    zinnen.forEach(function (z) {
+  T.registreer(G, "gevolgzin: de zeven zinnen uit 'wat er zichtbaar wordt' zijn vrijgegeven (besluit Bart, 14 november 2026) en staan letterlijk bij 'zichtbaar als een kaart ontbreekt'; alle andere zinnen zijn concepten met een bron (casus 1.4)", function () {
+    var zinnen = casus().gevolgzinnen, casusZinnen = zinnen.filter(function (z) { return !z.concept; });
+    T.is(casusZinnen.length, 7, "alle zinnen uit 'wat er zichtbaar wordt' staan erin");
+    T.gelijk(casusZinnen.map(function (z) { return z.episode + " " + z.invariant; }), ["E1 I1", "E1 I3", "E2 I5", "E2 I7", "E3 I9", "E3 I14", "E3 I15"]);
+    casusZinnen.forEach(function (z) {
+      T.is(z.vrijgegeven, true);
       T.waar(ep(z.episode).zichtbaarAlsOntbreekt.some(function (x) { return x.tekst === z.tekst; }), "zin komt letterlijk uit de casus (" + z.episode + " " + z.invariant + ")");
+    });
+    zinnen.forEach(function (z) {
       T.waar(ep(z.episode).invarianten.some(function (i) { return i.id === z.invariant; }), "de regel bestaat in die episode");
+      if (z.concept) T.waar(z.concept === true && typeof z.afgeleidUit === "string" && z.afgeleidUit.length > 10, "concept met bron: " + z.tekst);
     });
     var todo = casus().todoBart.filter(function (t) { return t.id === "TODO_BART-G1"; })[0];
     T.waar(!!todo && /14 november 2026/.test(todo.besluit), "TODO_BART-G1 is beslist");

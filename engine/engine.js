@@ -13,8 +13,8 @@
  *    triggert een kaart die op de LAATSTE dag wordt gespeeld een gebeurtenis, dan verschijnt die gebeurtenis NIET: er komt immers geen
  *    volgende dag meer waarop de banner kan verschijnen. De gebeurtenis blijft in state.wachtend staan en komt nooit in
  *    state.gebeurtenissen; toestanden, sets en klachten veranderen niet (klachten krijgt geen extra dag). Gevolg: de invarianten die
- *    alleen gelden na die gebeurtenis (geldtIn: { gebeurtenis: ... }) gelden dan niet, en de speler kan een gebeurtenis ontlopen door de
- *    kaart die haar triggert tot de laatste dag uit te stellen (naast het vroeg afronden, TODO_BART-4). Vastgelegd in tests/engine.tests.js
+ *    alleen gelden na die gebeurtenis (geldtIn: { gebeurtenis: ... }) gelden dan niet, en de speler kan een gebeurtenis op kaartaantal
+ *    ontlopen door de kaart die haar triggert tot de laatste dag uit te stellen. Vastgelegd in tests/engine.tests.js
  *    (test "laatste dag: ..."). Wijzigt Bart dit (bv. de gebeurtenis alsnog tonen), dan is dat een bewuste wijziging van die test.
  *  - Bronscan (M6): tests/engine.tests.js scant Engine._bron op een ALLOWLIST (alleen vaste teksten, geen regex/sjabloon/getallen buiten 0 en 1,
  *    geen dynamische code, geen woorden uit de casusdata). Nieuwe tekst of een nieuwe eigenschapsnaam in deze module vraagt dus ook een
@@ -25,6 +25,16 @@
  *    eindigt de episode direct op de dag waarop die gebeurtenis verschijnt: Engine.volgendeDag zet state.afgerond = true en
  *    state.uitkomst (de beoordeling van Evaluatie, die de afloop bepaalt). Engine.volgendeDag geeft nog steeds de state terug;
  *    Engine.rondAf geeft daarna de al bepaalde uitkomst. Welke gebeurtenis dat is en wat de afloop heet, staat alleen in de data.
+ *  - GEBEURTENIS OP EEN VASTE DAG (besluit Bart, 15 november 2026): trigger { type: "opDag", dag } laat een gebeurtenis aan het begin van
+ *    die dag verschijnen, los van het aantal gespeelde kaarten. Binnen een groep worden de triggers (de dagen) per poging over de leden
+ *    verdeeld volgens de getrokken volgorde. Zet een stap van de escalatie dezelfde gebeurtenis op dezelfde dag in de wacht, dan komt ze
+ *    één keer (wie al in de wacht staat, wordt niet opnieuw gepland).
+ *  - AFRONDEN SPOELT DOOR (besluit Bart, 15 november 2026): Engine.rondAf mag altijd. Het spel loopt dag voor dag door (precies als
+ *    Engine.volgendeDag zonder kaarten) tot de laatste dag; dan volgt de beoordeling en geeft rondAf de uitkomst terug. Verschijnt onderweg
+ *    een gebeurtenis, dan stopt het doorspoelen op die dag en geeft rondAf { gestopt: true, van, dag, gebeurtenissen: [id's] } terug
+ *    (state.afgerond blijft false; de speler kan reageren en moet opnieuw afronden). Een gebeurtenis met `einde` beëindigt de episode
+ *    zoals bij volgendeDag; rondAf geeft dan die uitkomst. Elke keer doorspoelen staat in state.doorgespoeld als { van, tot, gebeurtenissen }.
+ *    De hele aanroep is atomair.
  *  - Engine._bron is de volledige broncode van deze module (voor de casuslogica-scan in de tests).
  */
 (function engineModule(g) {
@@ -107,7 +117,7 @@
       groepen: groepen,
       volgordeAB: (groepen.AB || []).slice(),
       klachten: [{ dag: 0, status: null, tekst: null }, { dag: 1, status: null, tekst: null }],
-      afrondenPasNaGebeurtenissen: !!(opties.afrondenPasNaGebeurtenissen != null ? opties.afrondenPasNaGebeurtenissen : ep.afrondenPasNaGebeurtenissen),
+      doorgespoeld: [],
       rng: rng,
       uitkomst: null
     };
@@ -120,11 +130,9 @@
 
   function herkansing(state, opties) {
     opties = opties || {};
-    // Zelfde spelregels als het vorige spel: alle eerder meegegeven opties (ook de opt-in afrondenPasNaGebeurtenissen) blijven gelden,
-    // tenzij hier expliciet anders is opgegeven. Een state zonder bewaarde opties (bv. een JSON-kopie) valt terug op de vlag in de state.
+    // Zelfde spelregels als het vorige spel: alle eerder meegegeven opties blijven gelden, tenzij hier expliciet anders is opgegeven.
     var o = {}, k;
     for (k in (state._opties || {})) o[k] = state._opties[k];
-    if (o.afrondenPasNaGebeurtenissen == null && state.afrondenPasNaGebeurtenissen != null) o.afrondenPasNaGebeurtenissen = state.afrondenPasNaGebeurtenissen;
     for (k in opties) o[k] = opties[k];
     if (o.rng == null && typeof state.rng === "function") o.rng = state.rng;
     return nieuwSpel(casusVan(state), state.episodeId, o);
@@ -176,10 +184,9 @@
     if (!e.groep) return e.trigger;
     var leden = (ep.gebeurtenissen || []).filter(function (x) { return x.groep === e.groep; });
     var triggers = leden.map(function (x, i) { return { t: x.trigger, i: i }; });
-    triggers.sort(function (a, b) {
-      var na = a.t && typeof a.t.n === "number" ? a.t.n : Infinity, nb = b.t && typeof b.t.n === "number" ? b.t.n : Infinity;
-      return na - nb || a.i - b.i;
-    });
+    // Vroegste trigger eerst: op kaartaantal (n) of op een vaste dag (dag).
+    function moment(t) { return t && typeof t.n === "number" ? t.n : (t && typeof t.dag === "number" ? t.dag : Infinity); }
+    triggers.sort(function (a, b) { return moment(a.t) - moment(b.t) || a.i - b.i; });
     var orde = (state.groepen && state.groepen[e.groep]) || [];
     var pos = orde.indexOf(e.id);
     return pos < 0 || !triggers[pos] ? e.trigger : triggers[pos].t;
@@ -212,7 +219,7 @@
 
   // Gebeurtenis op tijd: trigger { type: "naDagenNaKaart", kaart, dagen, nummer? }: `dagen` dagen nadat de kaart (de nummer-ste keer, standaard
   // de eerste) is gespeeld, aan het begin van die dag. Geeft de dag, of null als het niet (meer) kan komen.
-  function dagVanTrigger(state, t) {
+  function dagNaKaart(state, t) {
     if (!t || t.type !== "naDagenNaKaart") return null;
     var teller = 0;
     for (var i = 0; i < state.tijdlijn.length; i++) {
@@ -220,19 +227,25 @@
     }
     return null;
   }
+  // Gebeurtenis op een vaste dag: trigger { type: "opDag", dag }: aan het begin van die dag, los van de gespeelde kaarten.
+  function dagVanTrigger(state, t) {
+    if (t && t.type === "opDag") return typeof t.dag === "number" ? t.dag : null;
+    return dagNaKaart(state, t);
+  }
   function isBezig(state, id) {
     return state.gebeurtenissen.some(function (x) { return x.id === id; }) || state.wachtend.some(function (x) { return x.id === id; });
   }
   function controleerTijd(state, ep, nieuweDag) {
     (ep.gebeurtenissen || []).forEach(function (e) {
-      if (!isBezig(state, e.id) && dagVanTrigger(state, e.trigger) === nieuweDag) state.wachtend.push({ id: e.id, naVolg: state.tijdlijn.length });
+      if (!isBezig(state, e.id) && dagVanTrigger(state, triggerVan(state, ep, e)) === nieuweDag) state.wachtend.push({ id: e.id, naVolg: state.tijdlijn.length });
     });
   }
-  // Gebeurtenissen die nog op tijd komen: [{ id, dag, tekst }] (tekst = e.aankondiging uit de data), voor "uitslag verwacht op dag X".
+  // Gebeurtenissen die door een gespeelde kaart zijn aangekondigd en nog komen: [{ id, dag, tekst }] (tekst = e.aankondiging uit de
+  // data), voor "uitslag verwacht op dag X". Gebeurtenissen op een vaste dag horen hier niet bij: die kondigt het spel niet aan.
   function komend(state) {
     var ep = episodeVan(state), uit = [];
     (ep.gebeurtenissen || []).forEach(function (e) {
-      var dag = dagVanTrigger(state, e.trigger);
+      var dag = dagNaKaart(state, e.trigger);
       if (dag !== null && dag > state.dag && dag <= state.aantalDagen && !isBezig(state, e.id)) uit.push({ id: e.id, dag: dag, tekst: e.aankondiging || null });
     });
     return uit;
@@ -454,19 +467,23 @@
     return state.uitkomst;
   }
 
+  // Afronden spoelt door (zie de kop): dag voor dag tot de laatste dag, tenzij er onderweg een gebeurtenis verschijnt.
   function rondAf(state) {
     if (state.afgerond) return state.uitkomst;
-    var ep = episodeVan(state);
     return atomisch(state, function () {
-      if (state.afrondenPasNaGebeurtenissen && !state.dagenVoorbij && state.dag < state.aantalDagen) {
-        // Een gebeurtenis op tijd telt alleen mee als de kaart die haar aankondigt is gespeeld; die op kaartaantal telt altijd mee.
-        var open = (ep.gebeurtenissen || []).some(function (e) {
-          if (state.gebeurtenissen.some(function (x) { return x.id === e.id; })) return false;
-          if (e.trigger && e.trigger.type === "opTeller") return false;
-          return !(e.trigger && e.trigger.type === "naDagenNaKaart") || dagVanTrigger(state, e.trigger) !== null;
-        });
-        if (open) throw new Error("Je kunt deze episode pas afronden nadat de gebeurtenissen zich hebben voorgedaan.");
+      var van = state.dag;
+      if (!Array.isArray(state.doorgespoeld)) state.doorgespoeld = [];   // een spelstand van vóór deze regel (bv. hervat uit de opslag)
+      function nieuwVandaag() {
+        return state.gebeurtenissen.filter(function (x) { return x.dag === state.dag; }).map(function (x) { return x.id; });
       }
+      while (!state.dagenVoorbij && state.dag < state.aantalDagen) {
+        volgendeDag(state);
+        var nieuw = nieuwVandaag();
+        if (!state.afgerond && !nieuw.length) continue;
+        state.doorgespoeld.push({ van: van, tot: state.dag, gebeurtenissen: nieuw });
+        return state.afgerond ? state.uitkomst : { gestopt: true, van: van, dag: state.dag, gebeurtenissen: nieuw };
+      }
+      if (state.dag > van) state.doorgespoeld.push({ van: van, tot: state.dag, gebeurtenissen: [] });
       return sluitAf(state);
     });
   }

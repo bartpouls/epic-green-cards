@@ -164,7 +164,7 @@
   }
   function verrijk(state, uitkomst) {
     var uit = { casusVersie: null, tijdlijnTekst: "", gebeurtenissen: [], onthuldTekst: "", poortGehaald: null, geschondenDetail: [],
-      vraag: null, reflectievraag: null, afgeleid: {}, dagen: null, afloop: null, eindTekst: null };
+      vraag: null, reflectievraag: null, afgeleid: {}, dagen: null, afloop: null, eindTekst: null, doorgespoeld: [] };
     try {
       if (uitkomst && typeof uitkomst.poortGehaald === "boolean") uit.poortGehaald = uitkomst.poortGehaald;
       uit.vraag = (uitkomst && uitkomst.vraag) || null;
@@ -176,6 +176,11 @@
         return { id: x.id, naam: x.naam || null, onderdelen: Array.isArray(x.onderdelen) ? x.onderdelen.slice() : [] };
       });
       uit.dagen = typeof state.dag === "number" ? state.dag : null;
+      // Afronden spoelt door: de dagen na 'Episode afronden' zijn dagen zonder kaarten. Ze tellen mee in `dagen` en in
+      // afgeleid.dagenZonderActie; hier staat per keer doorspoelen van welke dag tot welke dag, en welke gebeurtenis het stopte.
+      uit.doorgespoeld = (Array.isArray(state.doorgespoeld) ? state.doorgespoeld : []).map(function (x) {
+        return { van: x.van, tot: x.tot, gebeurtenissen: Array.isArray(x.gebeurtenissen) ? x.gebeurtenissen.slice() : [] };
+      });
       var c = casusVan(state);
       if (!c) return uit;
       uit.casusVersie = c.versie || null;
@@ -212,7 +217,7 @@
     return {
       casusVersie: extra.casusVersie, tijdlijnTekst: extra.tijdlijnTekst, gebeurtenissen: extra.gebeurtenissen, onthuldTekst: extra.onthuldTekst,
       poortGehaald: extra.poortGehaald, geschondenDetail: extra.geschondenDetail, vraag: extra.vraag, reflectievraag: extra.reflectievraag,
-      afgeleid: extra.afgeleid, dagen: extra.dagen, afloop: extra.afloop, eindTekst: extra.eindTekst,
+      afgeleid: extra.afgeleid, dagen: extra.dagen, afloop: extra.afloop, eindTekst: extra.eindTekst, doorgespoeld: extra.doorgespoeld,
       pseudoniem: pseudoniem,
       casusId: state.casusId,
       episodeId: state.episodeId,

@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Casus-id | `uwi-eerstelijn` |
-| Versie | 1.3 — 14 november 2026 — bron: besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
+| Versie | 1.4 — 15 november 2026 — bron: besluiten Bart, 15 november 2026 (zie sectie 11). Versie 1.3 (14 november 2026): bron besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
 | Functie | Tutorialcasus: leert het spel én de signatuurvaardigheid |
 | Signatuurvaardigheid | Veranderende context: empirisch starten → bijsturen op de kweek → nierfunctie en comedicatie |
 | Klinische validatie | Voorschrijven en wat daarna komt: Bart Pouls (gevalideerd). Diagnostiek en klinische context: nog voorleggen aan een huisarts |
@@ -210,7 +210,7 @@ Alles uit episode 1, plus V6, B1 en B2.
 
 ### Score
 - **Duurzaamheid:** wisselen terwijl het middel werkt en de klachten afnemen, kost punten.
-- **Doelmatigheid:** G2 spelen vóór de voorschrijfkaart levert punten op.
+- **Doelmatigheid:** G2 spelen vóór de voorschrijfkaart levert punten op. Overbodige kaarten kosten elk 1 punt, met ondergrens 1 (lijst in sectie 11, concept).
 
 ### Wat er zichtbaar wordt als een kaart ontbreekt
 - **Nitrofurantoïne zonder G2:** "De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling."
@@ -220,7 +220,7 @@ Alles uit episode 1, plus V6, B1 en B2.
 | Trigger | Vraag |
 |---|---|
 | Verouderde eGFR niet opgemerkt | "Hoe oud was de eGFR waarop je besloot? Wat is er sindsdien met haar gebeurd?" |
-| I5 | "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?" |
+| I5, na een kweekuitslag (zonder kweekuitslag: de variant in sectie 11, concept) | "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?" |
 | I6, geen kweek | "Wat vertelt een kweek van urine die al antibioticum heeft gezien?" |
 | I6, afwachten | "Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?" |
 | I7, geen kalium | "Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?" |
@@ -252,8 +252,8 @@ Alle kaarten uit de bibliotheek (G1–Ev3).
 ### Gebeurtenissen
 | Id | Trigger | Inhoud |
 |---|---|---|
-| A | Na kaart *n* (engine-parameter); volgorde met B willekeurig | Weefselinvasie: koorts 38,6 °C en flankpijn |
-| B | Na kaart *m* (engine-parameter); volgorde met A willekeurig | Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK] |
+| A | Aan het begin van dag 3 of dag 5 (engine-instelling); welke van A en B op dag 3 komt, is per poging willekeurig | Weefselinvasie: koorts 38,6 °C en flankpijn |
+| B | Aan het begin van dag 3 of dag 5 (engine-instelling); de andere dag dan A | Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK] |
 | C | 3 dagen na O1 | Kweekuitslag. E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne. |
 
 De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.
@@ -297,7 +297,7 @@ De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.
 
 ### Score
 - **Duurzaamheid:** de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op. Wie ciprofloxacine of amoxicilline/clavulaanzuur start terwijl de toestand nog cystitis is (nog geen weefselinvasie), schrijft buiten de richtlijn voor en verliest 1 punt duurzaamheid (ondergrens 1).
-- **Doelmatigheid:** G3 gebruiken vóór de eerste keuze levert punten op.
+- **Doelmatigheid:** G3 gebruiken vóór de eerste keuze levert punten op. Overbodige kaarten kosten elk 1 punt, met ondergrens 1 (lijst in sectie 11, concept).
 
 ### Wat er zichtbaar wordt als een kaart ontbreekt
 - **Geen sick day-maatregelen:** "De nierfunctie daalt verder en het kalium stijgt." Zonder getallen, zoals ook de KNMP-regel geen getallen geeft.
@@ -326,7 +326,7 @@ De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.
 **Poort en score:**
 - Veiligheid is een poort. Bij een schending geeft het spel geen score en toont de downside. De gevolgen bij de patiënt zijn leidend: eerst komen de zinnen uit "Wat er zichtbaar wordt als een kaart ontbreekt" van alle geschonden regels die zo'n zin hebben, daarna één hint van de opleider: de Socratische vraag over de ernstigste schending, als collegiale hint. Daarna volgt een herkansing.
 - Bij sepsis eindigt de episode direct. De uitkomst is "verloren": geen score, geen profiel, de volgende episode gaat niet open, en een herkansing is mogelijk.
-- Wie de poort haalt, ziet de score per as, het voorschrijfprofiel en één reflectievraag.
+- Wie de poort haalt, ziet de score per as, het voorschrijfprofiel en één reflectievraag. Past de route bij geen van de profielen van de episode, dan krijgt ze het restprofiel (sectie 11, concept).
 - Score-assen:
   - **Duurzaamheid:** geen antibioticum, of de kortste en smalste effectieve behandeling; niet onnodig wisselen; de-escaleren na de kweek.
   - **Doelmatigheid:** geen overbodig onderzoek; beschikbare informatie gebruiken.
@@ -336,8 +336,9 @@ De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.
 **Richtlijn raadplegen:** een eigen naslagkaart met verwijzing naar de bronnen, niet de NHG-tekst zelf. In level 1 kost raadplegen niets, in level 3 kost het tempo.
 
 **Episodes en gebeurtenissen:**
-- Gebeurtenissen worden getriggerd op het aantal gespeelde kaarten.
-- Het aantal acties per beurt en de triggerwaarden *n* en *m* zijn engine-parameters, geen klinische regels.
+- Gebeurtenissen verschijnen aan het begin van een dag: weefselinvasie (A) en uitdroging (B) op een vaste dag (dag 3 en dag 5), de kweekuitslag 3 dagen na het inzetten van de kweek.
+- Het aantal acties per beurt en de dagen waarop A en B verschijnen zijn engine-instellingen, geen klinische regels.
+- "Episode afronden" mag altijd. Het spel loopt dan dag voor dag door tot de laatste dag, of tot er een gebeurtenis verschijnt; dan kan de speler reageren en rondt hij opnieuw af.
 
 ---
 
@@ -376,3 +377,59 @@ Bron: besluiten Bart, 14 november 2026.
 - **Ernstvolgorde van de invarianten:** akkoord.
 - **Patiëntkaart episode 3:** "(hypertensie)" achter spironolacton is vervallen. In episode 1 blijft "lisinopril (hypertensie)" staan.
 - **Terugkoppeling bij een schending:** de gevolgen bij de patiënt zijn leidend. Eerst de zinnen uit "Wat er zichtbaar wordt als een kaart ontbreekt" van alle geschonden regels die zo'n zin hebben, daarna één collegiale hint van de opleider: de vraag bij de ernstigste schending, ongewijzigd. Regels zonder zo'n zin krijgen er nog een van Bart.
+
+---
+
+## 11. Wijzigingen in versie 1.4
+
+Bron: besluiten Bart, 15 november 2026.
+
+- **Gebeurtenissen in episode 3 op een vaste dag:** weefselinvasie (A) en uitdroging (B) hangen niet meer aan het aantal gespeelde kaarten. Ze verschijnen aan het begin van dag 3 en dag 5; welke van de twee op dag 3 komt, is per poging willekeurig. De dagen zijn een engine-instelling, geen klinische regel. De escalatieregel blijft: vier volle dagen aanhoudende klachten geven weefselinvasie, tenzij A al eerder kwam; daarna sepsis. Staat A op dag 5 gepland en zou de escalatie op dag 5 ook weefselinvasie geven, dan komt er één weefselinvasie.
+- **Afronden spoelt door:** "Episode afronden" mag altijd. Het spel loopt dan dag voor dag door tot de laatste dag (dag 14), alsof de speler telkens "Volgende dag" kiest zonder kaarten te spelen. Verschijnt onderweg een gebeurtenis (kweekuitslag, A, B, weefselinvasie door escalatie), dan stopt het doorlopen op die dag: de speler ziet de gebeurtenis, kan reageren en moet opnieuw afronden. Sepsis beëindigt de episode als verloren. Is de laatste dag bereikt, dan volgt de beoordeling. De regel uit versie 1.2 ("afronden niet toegestaan zolang er nog gebeurtenissen aankomen") vervalt.
+- **Hint bij nitrofurantoïne bij lage nierfunctie (I5):** de vraag "Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?" blijft alleen als de speler in deze poging een kweekuitslag heeft gezien. Anders verschijnt een variant zonder de eerste zin (concept, zie hieronder). Geldt in elke episode waar I5 geldt.
+- **Overbodige kaarten kosten doelmatigheid (episode 2 en 3):** episode 1 blijft zoals het is. In episode 2 en 3 kost elke overbodige kaart 1 punt doelmatigheid, met ondergrens 1. De bestaande regels (G2 respectievelijk G3 vóór de eerste keuze) blijven. De lijst met situaties is een concept (zie hieronder).
+- **Restprofiel:** een route die de poort haalt maar bij geen van de profielen van de episode past, krijgt een eigen profiel met een reflectievraag (concept, zie hieronder). Geldt in alle episodes. De scores blijven zoals de regels ze opleveren.
+- **Gevolgzinnen:** de regels die nog geen zin hadden onder "Wat er zichtbaar wordt als een kaart ontbreekt", krijgen er een (concept, zie hieronder).
+
+### Concept, ter goedkeuring door Bart
+
+De teksten hieronder zijn een voorschot, afgeleid uit tekst die al in deze casus staat. Ze staan in het spel, gemarkeerd als concept, tot Bart ze goedkeurt of aanpast.
+
+**Hint I5 zonder kweekuitslag (concept):** "Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?" Afgeleid uit de bestaande vraag bij I5.
+
+**Overbodige kaarten (concept):** elk van deze situaties kost 1 punt doelmatigheid.
+
+| | Situatie | Geldt in | Afgeleid uit |
+|---|---|---|---|
+| a | Kalium bepalen (O2) terwijl trimethoprim (V5) in deze poging nooit gestart is | E2 | Downside van O2: "Alleen zinvol bij een indicatie; anders kost het doelmatigheid" |
+| b | Een tweede Urinekweek inzetten (O1) terwijl er geen weefselinvasie is geweest vóór die tweede kweek | E3 | Geldige route "Na A: nieuwe kweek (O1)" |
+| c | Verwijzen (Ev3) terwijl de status "Na 48 uur geen verbetering." niet is voorgekomen vóór het verwijzen | E3 | Downside van Ev3: "Onnodig verwijzen kost doelmatigheid", en "Rand van de kaart: na 48 uur geen verbetering → Ev3 verwijzen" |
+| d | Innametijden aanpassen (B4), of Medicatie tijdelijk stoppen (B3) op calcium, terwijl ciprofloxacine (V7) in deze poging nooit gestart is | E3 | Effect van B4 en de route "ciprofloxacine met B4 (scheiden van calcium) of B3 (calcium tijdelijk stoppen)" |
+| e | Dosis aanpassen (V6) op lisinopril (elke optie) of Medicatie tijdelijk stoppen (B3) op lisinopril, gespeeld vóór de dag waarop uitdroging (B) verschijnt | E2, E3 | Effect van V6: "ook lisinopril halveren bij sick day", en de route "Na B" |
+
+Bij een gehaalde poort staat onder "Van je opleider" per getroffen regel één opmerking (concept): "Deze kaart was hier niet nodig:" gevolgd door het label van de kaart, met het doel erbij als de kaart een doel heeft.
+
+**Restprofiel (concept):** profiel "Eigen route", met de reflectievraag "Je route past bij geen van de beschreven profielen. Wat was je plan?"
+
+**Gevolgzinnen (concept):** een zin met een voorwaarde verschijnt alleen als hij in die poging waar is.
+
+| Regel | Geldt in | Zin | Afgeleid uit |
+|---|---|---|---|
+| I1 | E2, E3 | "Mevrouw weet niet wanneer ze moet bellen." | De zin van episode 1 bij dezelfde regel |
+| I4 | E1, E2, E3 | "Mevrouw gebruikt twee antibiotica tegelijk." | De regel zelf |
+| I5 | E3 | "Er komt geen werkzame concentratie in de urine, en er is kans op stapeling." | Deel van de bestaande zin van episode 2 |
+| I6, geen kweek vóór de eerste dosis | E2, E3 | "Er is geen kweek van vóór de eerste dosis." | Patiëntkaart van episode 2: "een antibioticum is nodig, met een kweek vóór de eerste dosis" |
+| I6, afwachten of niets voorschrijven in de risicogroep | E2, E3 | "Mevrouw krijgt geen antibioticum, terwijl ze in de risicogroep valt." | Patiëntkaart van episode 2: "een antibioticum is nodig, met een kweek vóór de eerste dosis" |
+| I7, kalium niet bepaald | E3 | "De kaliumspiegel is onbekend." | De zin van episode 2 bij dezelfde regel |
+| I7, niet gehalveerd | E2, E3 | "De dosis trimethoprim is na dag 3 niet gehalveerd." | Downside van V5 |
+| I8 | E2, E3 | "De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt." | De kweekuitslag en "klachten houden aan" |
+| I10 | E3 | "Het antibioticum bereikt onvoldoende concentratie in het weefsel." | De regel I10 |
+| I11 | E3 | "Er is geen nieuwe kweek van vóór de wissel." | De regel I11 |
+| I12 | E3 | "Mevrouw krijgt cotrimoxazol bij een ernstige nierfunctiestoornis en naast spironolacton: kans op ernstige hyperkaliëmie." | Downside van V9 |
+| I13 | E3 | "Het clavulaanzuur stapelt bij deze nierfunctie." | Downside van V8 |
+| I16, geen contact binnen 48 uur | E3 | "Er is binnen 48 uur geen contact geweest." | De regel I16 |
+| I16, niet verwezen | E3 | "Mevrouw is na 48 uur niet beter en is niet verwezen." | De regel I16 |
+
+De twee eerdere conceptteksten (de tekst bij sepsis en "Dit middel staat in de richtlijn niet bij een blaasontsteking.") blijven zoals ze zijn.
+
+**Nog open na deze besluiten:** de route "na 48 uur geen verbetering → Ev3 verwijzen" zonder werkzaam antibioticum eindigt in het spel in sepsis, omdat de episode na het verwijzen doorloopt tot dag 14. Wat er na Verwijzen moet gebeuren, is aan Bart.

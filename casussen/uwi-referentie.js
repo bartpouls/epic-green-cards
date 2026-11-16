@@ -217,7 +217,7 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
       ],
       "score": [
         "Duurzaamheid: wisselen terwijl het middel werkt en de klachten afnemen, kost punten.",
-        "Doelmatigheid: G2 spelen vóór de voorschrijfkaart levert punten op."
+        "Doelmatigheid: G2 spelen vóór de voorschrijfkaart levert punten op. Overbodige kaarten kosten elk 1 punt, met ondergrens 1 (lijst in sectie 11, concept)."
       ],
       "zichtbaarAlsOntbreekt": [
         "Nitrofurantoïne zonder G2: \"De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.\"",
@@ -229,7 +229,7 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
           "vraag": "\"Hoe oud was de eGFR waarop je besloot? Wat is er sindsdien met haar gebeurd?\""
         },
         {
-          "trigger": "I5",
+          "trigger": "I5, na een kweekuitslag (zonder kweekuitslag: de variant in sectie 11, concept)",
           "vraag": "\"Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?\""
         },
         {
@@ -333,12 +333,12 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
       "gebeurtenissenTabel": [
         {
           "id": "A",
-          "trigger": "Na kaart *n* (engine-parameter); volgorde met B willekeurig",
+          "trigger": "Aan het begin van dag 3 of dag 5 (engine-instelling); welke van A en B op dag 3 komt, is per poging willekeurig",
           "inhoud": "Weefselinvasie: koorts 38,6 °C en flankpijn"
         },
         {
           "id": "B",
-          "trigger": "Na kaart *m* (engine-parameter); volgorde met A willekeurig",
+          "trigger": "Aan het begin van dag 3 of dag 5 (engine-instelling); de andere dag dan A",
           "inhoud": "Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK]"
         },
         {
@@ -454,7 +454,7 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
       "volgorde": null,
       "score": [
         "Duurzaamheid: de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op. Wie ciprofloxacine of amoxicilline/clavulaanzuur start terwijl de toestand nog cystitis is (nog geen weefselinvasie), schrijft buiten de richtlijn voor en verliest 1 punt duurzaamheid (ondergrens 1).",
-        "Doelmatigheid: G3 gebruiken vóór de eerste keuze levert punten op."
+        "Doelmatigheid: G3 gebruiken vóór de eerste keuze levert punten op. Overbodige kaarten kosten elk 1 punt, met ondergrens 1 (lijst in sectie 11, concept)."
       ],
       "zichtbaarAlsOntbreekt": [
         "Geen sick day-maatregelen: \"De nierfunctie daalt verder en het kalium stijgt.\" Zonder getallen, zoals ook de KNMP-regel geen getallen geeft.",
@@ -597,8 +597,9 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
     {
       "id": "TODO_BART-R6",
       "vraag": "In de gebeurtenissentabel van episode 3 staat bij A en B een trigger met sterretjes om de n en de m: 'Na kaart *n* (engine-parameter); volgorde met B willekeurig' en 'Na kaart *m* (engine-parameter); volgorde met A willekeurig'. Alleen de vetdruk is weggelaten; deze enkele sterretjes (cursief in de casus) staan er nog zoals in de casus. Moeten ze blijven staan, of weg ('Na kaart n')?",
-      "gekozenLezing": "Letterlijk behouden, dus met sterretjes: 'Na kaart *n* (engine-parameter); volgorde met B willekeurig'. Alternatief: de sterretjes weglaten.",
-      "plek": "referentie.E3.gebeurtenissenTabel"
+      "gekozenLezing": "Sinds casus 1.4 staan er geen sterretjes meer in de tabel: de trigger van A en B is een vaste dag ('Aan het begin van dag 3 of dag 5 (engine-instelling); ...'). De tekst staat letterlijk zoals in de casus.",
+      "plek": "referentie.E3.gebeurtenissenTabel",
+      "besluit": "Beslist door Bart op 15 november 2026: weefselinvasie en uitdroging verschijnen op een vaste dag (dag 3 en dag 5); de triggertekst met 'kaart n' en 'kaart m' is vervallen."
     },
     {
       "id": "TODO_BART-R7",
