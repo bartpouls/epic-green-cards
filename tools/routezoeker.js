@@ -30,6 +30,7 @@
      Math.random wordt tijdens het zoeken tijdelijk door de gezaaide generator vervangen.
    - Robuust: onbekende uitkomsten (bv. "verloren") worden een eigen categorie; een fout in de engine of de regels wordt
      per route geteld en in het rapport getoond in plaats van het script te laten stoppen. */
+const LOGO = (() => { try { const t = require("fs").readFileSync(require("path").join(__dirname, "..", "assets", "capsule-pop.svg"), "utf8").trim().replace('width="134" height="270" role="img"', 'width="20" height="40" role="img" aria-label="Capsule Pop"'); return '<div style="display:flex;justify-content:flex-end;margin-top:8px">' + t + "</div>"; } catch (e) { return ""; } })();
 "use strict";
 
 const fs = require("fs"), path = require("path"), vm = require("vm");
@@ -1080,7 +1081,7 @@ th,td{border:1px solid var(--lijn);padding:6px 8px;vertical-align:top;text-align
 ${resultaten.map(htmlEpisode).join("\n")}
 <footer>Casus: ${esc(CASUS.id)}, versie ${esc(CASUS.versie || "onbekend")} · seed ${SEED} · zoekfactor ${FACTOR}${GRONDIG ? " (grondig)" : ""} ·
 gespeelde routes: ${resultaten.map((E) => esc(E.ep.id) + " " + getal(E.aantal)).join(", ")} (samen ${getal(totaal)}; dubbele routes zijn één keer gespeeld) ·
-casusroutes uit tests/routes.js: ${ROUTES_GELADEN ? "geladen" : "niet geladen"} · gemaakt met tools/routezoeker.js</footer>
+casusroutes uit tests/routes.js: ${ROUTES_GELADEN ? "geladen" : "niet geladen"} · gemaakt met tools/routezoeker.js${LOGO}</footer>
 </main></body></html>`;
   fs.writeFileSync(UIT_HTML, html);
   // compacte JSON voor wie verder wil rekenen

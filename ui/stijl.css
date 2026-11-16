@@ -441,3 +441,7 @@ p.fout:empty { display: none; }
   .overslaan { display: none; }
 }
 .kaartvlak > h2 + ul { margin-top: 6px; }
+
+/* Voettekst met logo Capsule Pop, rechtsonder */
+.cp-voet { background: transparent; }
+.cp-voet svg { display: block; height: 40px; width: auto; }
