@@ -5,7 +5,7 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 ## Structuur
 | Pad | Inhoud |
 |---|---|
-| `casus-uwi.md` | Enige bron van klinische inhoud (versie 1.4). Besluiten per versie in sectie 9–11. |
+| `casus-uwi.md` | Enige bron van klinische inhoud (versie 1.5). Besluiten per versie in sectie 9–12. |
 | `casussen/uwi.js` | Speldata (groot, ~160 KB). |
 | `casussen/uwi-referentie.js` | Casustekst voor het docentenoverzicht. |
 | `engine/`, `regels/`, `ui/` | Spelmotor, regeltaal + evaluatie, weergave. `regels/PREDICATEN.md` beschrijft de regeltaal. |

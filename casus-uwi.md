@@ -450,23 +450,23 @@ Bron: besluiten Bart, 16 november 2026.
 
 | Id | Altijd fout | Geldt in | Ernst | Bron |
 |---|---|---|---|---|
-| I17 | Lisinopril verdubbelen | E2, E3 | 2 (concept) | Bart |
-| I18 | Wisselen naar een middel waarvoor de bacterie resistent is | E2, E3 | 4 (concept) | Bart |
+| I17 | Lisinopril verdubbelen | E2, E3 | 2 (concept) | Bart **[G]** |
+| I18 | Wisselen naar een middel waarvoor de bacterie resistent is | E2, E3 | 4 (concept) | Bart **[G]** |
 
 ### Concept, ter goedkeuring door Bart
 
-**Hints (concept):**
+**Hints (concept) [G]:**
 
 | Regel | Vraag |
 |---|---|
 | I17 | "Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?" |
 | I18 | "Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?" |
 
-**Gevolgzinnen (concept):** I17: "De nierfunctie daalt verder en het kalium stijgt." (de zin bij de sick day in episode 3). I18: "De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt." (de zin bij I8).
+**Gevolgzinnen (concept) [G]:** I17: "De nierfunctie daalt verder en het kalium stijgt." (de zin bij de sick day in episode 3). I18: "De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt." (de zin bij I8).
 
-**Oordeel na Verwijzen (concept):** terecht: "Verwijzen was hier terecht: na 48 uur was er geen verbetering." Niet terecht: "Verwijzen was hier nog niet nodig: mevrouw was nog niet 48 uur zonder verbetering."
+**Oordeel na Verwijzen (concept) [G]:** terecht: "Verwijzen was hier terecht: na 48 uur was er geen verbetering." Niet terecht: "Verwijzen was hier nog niet nodig: mevrouw was nog niet 48 uur zonder verbetering."
 
-**Eisen die bij verwijzen vervallen (concept):** wie verwijst terwijl de termijn van een eis nog loopt, kan die eis niet meer halen. Daarom vervallen bij verwijzen:
+**Eisen die bij verwijzen vervallen (concept) [G]:** wie verwijst terwijl de termijn van een eis nog loopt, kan die eis niet meer halen. Daarom vervallen bij verwijzen:
 - de sick day-maatregelen (I15), als Verwijzen valt op de dag van de uitdroging (B) of de dag erna;
 - contact binnen 48 uur (I16) en doorgaan met nitrofurantoïne of fosfomycine (I10), als Verwijzen valt op de dag van de weefselinvasie (A) of de dag erna.
 
