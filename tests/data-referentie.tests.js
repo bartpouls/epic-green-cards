@@ -167,6 +167,7 @@
       "| I14 | Ciprofloxacine zonder B4 (scheiden van calcium) en zonder B3 (calcium tijdelijk stoppen) | Met ciprofloxacine | Kompas; B3-route [G] |",
       "| I15 | Na het halen van de sick day-drempel niet: spironolacton stoppen, lisinopril halveren, drinkadvies, monitoring binnen 1–3 dagen | Met B | SIDRIK |",
       "| I16 | Geen contact binnen 48 uur, of geen verwijzing als ze dan niet beter is | Met A | NHG |",
+      "| I19 | Verwijzen terwijl na 48 uur nog geen sprake is van uitblijvende verbetering | Alle | Bart (besluit 17 november 2026) |",
       "### Score",
       "- **Duurzaamheid:** de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op. Wie ciprofloxacine of amoxicilline/clavulaanzuur start terwijl de toestand nog cystitis is (nog geen weefselinvasie), schrijft buiten de richtlijn voor en verliest 1 punt duurzaamheid (ondergrens 1).",
       "- **Doelmatigheid:** G3 gebruiken vóór de eerste keuze levert punten op. Overbodige kaarten kosten elk 1 punt, met ondergrens 1 (lijst in sectie 11, concept).",
@@ -186,6 +187,7 @@
       "| I14 | \"Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?\" |",
       "| I15 | \"Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?\" |",
       "| I16 | \"Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?\" |",
+      "| I19 (concept, sectie 13) | \"Je verwijst haar naar de tweede lijn. Wat moet er eerst blijken voordat de eerste lijn haar uit handen geeft?\" |",
       "| Ciprofloxacine-dosis (bronconflict) | \"De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?\" |",
       "| Profiel ciprofloxacine | \"Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?\" |"
     ]
@@ -396,9 +398,9 @@
     T.is(r.E1.patientkaart.length, 5); T.is(r.E1.zichtbaarAlsOntbreekt.length, 2); T.is(r.E1.feedbackTabel.length, 6);
     T.is(r.E2.knoppen.length, 3); T.is(r.E2.geldigeRoutes.length, 2); T.is(Object.keys(r.E2.altijdFout).length, 6); T.is(r.E2.volgorde.length, 3); T.is(r.E2.score.length, 2);
     T.is(r.E2.patientkaart.length, 5); T.is(r.E2.gebeurtenisUitleg.length, 7); T.is(r.E2.zichtbaarAlsOntbreekt.length, 2); T.is(r.E2.feedbackTabel.length, 10);
-    T.is(r.E3.knoppen.length, 3); T.is(r.E3.geldigeRoutes.length, 6); T.is(r.E3.routeBijWeefselinvasie.length, 2); T.is(Object.keys(r.E3.altijdFout).length, 8); T.is(r.E3.score.length, 2);
-    T.is(r.E3.patientkaart.length, 5); T.is(r.E3.gebeurtenissenTabel.length, 3); T.is(r.E3.gebeurtenisUitleg.length, 1); T.is(r.E3.zichtbaarAlsOntbreekt.length, 3); T.is(r.E3.feedbackTabel.length, 11);
-    T.gelijk(Object.keys(r.E3.altijdFout), ["I9", "I10", "I11", "I12", "I13", "I14", "I15", "I16"]);
+    T.is(r.E3.knoppen.length, 3); T.is(r.E3.geldigeRoutes.length, 6); T.is(r.E3.routeBijWeefselinvasie.length, 2); T.is(Object.keys(r.E3.altijdFout).length, 9); T.is(r.E3.score.length, 2);
+    T.is(r.E3.patientkaart.length, 5); T.is(r.E3.gebeurtenissenTabel.length, 3); T.is(r.E3.gebeurtenisUitleg.length, 1); T.is(r.E3.zichtbaarAlsOntbreekt.length, 3); T.is(r.E3.feedbackTabel.length, 12);
+    T.gelijk(Object.keys(r.E3.altijdFout), ["I9", "I10", "I11", "I12", "I13", "I14", "I15", "I16", "I19"]);
     T.is(r.E1.volgordeVanSecties.length, 9); T.is(r.E2.volgordeVanSecties.length, 11); T.is(r.E3.volgordeVanSecties.length, 11);
   });
   T.registreer(G, "ref-5 geen markdown-vetdruk (**), geen lege of ongetrimde strings, alleen strings/arrays/objecten/getallen/null", function () {
@@ -461,7 +463,7 @@
     var r = ref();
     T.gelijk(Object.keys(r.E1.altijdFout), ["I1", "I3", "I4"], "E1 altijdFout");
     T.gelijk(Object.keys(r.E2.altijdFout), ["I5", "I6", "I7", "I8", "I17", "I18"], "E2 altijdFout");
-    T.gelijk(Object.keys(r.E3.altijdFout), ["I9", "I10", "I11", "I12", "I13", "I14", "I15", "I16"], "E3 altijdFout");
+    T.gelijk(Object.keys(r.E3.altijdFout), ["I9", "I10", "I11", "I12", "I13", "I14", "I15", "I16", "I19"], "E3 altijdFout");
     EPS.forEach(function (e) {
       Object.keys(r[e].altijdFout).forEach(function (id) {
         T.gelijk(Object.keys(r[e].altijdFout[id]), e === "E3" ? ["tekst", "geldtIn", "bron"] : ["tekst", "bron"], e + " " + id + " velden");

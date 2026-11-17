@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Casus-id | `uwi-eerstelijn` |
-| Versie | 1.5 — 16 november 2026 — bron: besluiten Bart, 16 november 2026 (zie sectie 12). Versie 1.4 (15 november 2026): bron besluiten Bart, 15 november 2026 (zie sectie 11). Versie 1.3 (14 november 2026): bron besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
+| Versie | 1.6 — 17 november 2026 — bron: besluiten Bart, 17 november 2026 (zie sectie 13). Versie 1.5 (16 november 2026): bron besluiten Bart, 16 november 2026 (zie sectie 12). Versie 1.4 (15 november 2026): bron besluiten Bart, 15 november 2026 (zie sectie 11). Versie 1.3 (14 november 2026): bron besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
 | Functie | Tutorialcasus: leert het spel én de signatuurvaardigheid |
 | Signatuurvaardigheid | Veranderende context: empirisch starten → bijsturen op de kweek → nierfunctie en comedicatie |
 | Klinische validatie | Voorschrijven en wat daarna komt: Bart Pouls (gevalideerd). Diagnostiek en klinische context: nog voorleggen aan een huisarts |
@@ -59,7 +59,7 @@ Episode 1 (72 jr, context A)  →  Episode 2 (78 jr, context B)  →  Episode 3 
 | E1 · cystitis | 1 | I1, I3, I4 |
 | E2 · cystitis | 2 | I1, I4, I5, I6, I7, I17, I18 |
 | E2 · cystitis + kweekuitslag | 2 | I1, I4, I5, I6, I7, I8, I17, I18 |
-| E3 · cystitis | 3 | I1, I4, I5, I6, I7, I9, I12, I13, I17, I18 |
+| E3 · cystitis | 3 | I1, I4, I5, I6, I7, I9, I12, I13, I17, I18, I19 |
 | E3 · weefselinvasie | 3 | Als E3 · cystitis, plus I10, I11, I14, I16 |
 | E3 · uitdroging | 3 | Als E3 · cystitis, plus I15 |
 | E3 · weefselinvasie + uitdroging | 3 | Alles hierboven |
@@ -82,11 +82,11 @@ Episode 1 (72 jr, context A)  →  Episode 2 (78 jr, context B)  →  Episode 3 
 | O1 | Onderzoek | Urinekweek inzetten | E1 | Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag 3 dagen na inzetten. | E1: niet geïndiceerd, kost doelmatigheid | NHG |
 | O2 | Onderzoek | Kalium bepalen | E1 | Bepaalt de kaliumspiegel | Alleen zinvol bij een indicatie; anders kost het doelmatigheid | NHG, KNMP |
 | V1 | Voorschrijven | Afwachtend beleid | E1 | Geen antibioticum; ruim drinken, zo nodig pijnstilling | Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger | NHG |
-| V2 | Voorschrijven ⊙ | Uitgesteld recept | E1 | De patiënt start zelf als de klachten aanhouden of toenemen; de speler kiest het middel dat zij thuis start | Ze moet weten wanneer ze moet starten | NHG |
+| V2 | Voorschrijven ⊙ | Uitgesteld recept | E1 | De patiënt start zelf met het gekozen middel als de klachten aanhouden of toenemen | Ze moet weten wanneer ze moet starten | NHG |
 | V3 | Voorschrijven | Nitrofurantoïne | E1 | E1: 5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen. | Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G]. | NHG |
 | V4 | Voorschrijven | Fosfomycine | E1 | Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht | Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie. | NHG |
 | V5 | Voorschrijven | Trimethoprim | E1 | E1: 3 dagen 1 dd 300 mg. Risicogroep: 7 dagen. | Naast een RAS-remmer of kaliumsparend diureticum stijgt het kalium (controle nodig bij een 7-daagse kuur). Bij eGFR 10–30: na dag 3 halveren en kans op therapiefalen. Hoge resistentie bij E. coli. | NHG, KNMP |
-| V6 | Voorschrijven ⊙ | Dosis aanpassen | E2 | Past dosis of interval aan van een nieuw of bestaand middel (ook lisinopril halveren bij sick day) | Een verkeerde aanpassing geeft onder- of overdosering | NHG, SIDRIK |
+| V6 | Voorschrijven ⊙ | Dosis aanpassen | E2 | De nieuwe dosering gaat meteen in en blijft staan | Een verkeerde aanpassing geeft onder- of overdosering | NHG, SIDRIK |
 | V7 | Voorschrijven | Ciprofloxacine | E3 | 7 dagen 2 dd 500 mg | Bij ouderen: kans op peesschade, QT-verlenging, aneurysma. Minder opname naast calcium. NHG: terughoudend bij ouderen en bij een nierfunctiestoornis. | NHG, Kompas |
 | V8 | Voorschrijven | Amoxicilline/clavulaanzuur | E3 | 10 dagen 3 dd 500/125 mg | Bij eGFR < 30 stapelt clavulaanzuur: dan alleen 875/125 mg 2 dd | NHG |
 | V9 | Voorschrijven | Cotrimoxazol | E3 | 10 dagen 2 dd 960 mg | Gecontra-indiceerd bij een ernstige nierfunctiestoornis. Met spironolacton kans op ernstige hyperkaliëmie. | NHG, Kompas |
@@ -94,14 +94,14 @@ Episode 1 (72 jr, context A)  →  Episode 2 (78 jr, context B)  →  Episode 3 
 | B1 | Bijsturen ⊙ | Antibioticum wisselen | E2 | Vervangt het lopende antibioticum | Onnodig wisselen kost duurzaamheid | NHG |
 | B2 | Bijsturen ⊙ | Antibioticum stoppen | E2 | Stopt het lopende antibioticum | Te vroeg stoppen geeft therapiefalen | — |
 | B3 | Bijsturen ⊙ | Medicatie tijdelijk stoppen | E3 | Pauzeert een bestaand middel (sick day) | Vraagt een afspraak over herstart | SIDRIK |
-| B5 | Bijsturen ⊙ | Medicatie hervatten | E3 | Hervat een eerder gestopt middel. Volgens SIDRIK: herstarten zodra de klachten weg zijn. | Hervatten zonder herbeoordeling kan dezelfde schade herhalen | SIDRIK |
+| B5 | Bijsturen ⊙ | Medicatie hervatten | E3 | Het middel wordt weer gestart. Herstarten hoort zodra de klachten weg zijn. | Hervatten zonder herbeoordeling kan dezelfde schade herhalen | SIDRIK |
 | B4 | Bijsturen ⊙ | Innametijden aanpassen | E3 | Ciprofloxacine 1–2 uur vóór of ten minste 4 uur ná calcium | Vraagt uitleg aan de patiënt | Kompas |
 | N1 | Informeren | Alarmsignalen bespreken | E1 | Bij koorts of ziek worden direct contact opnemen | — | NHG |
 | N2 | Informeren ⊙ | Gebruik en verwachting uitleggen | E1 | Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg. Koppelt aan het actieve middel. | — | NHG |
 | N3 | Informeren | Drinkadvies geven | E3 | 2–2,5 liter per dag | — | SIDRIK |
 | Ev1 | Evalueren | Opvolgmoment afspreken | E1 | Afwachten: na 1 week alsnog starten. Na een kuur: als de klachten 24–48 uur na afloop niet duidelijk minder zijn, opnieuw urineonderzoek. Weefselinvasie: contact binnen 48 uur. Sick day: monitoring na 1–3 dagen. | — | NHG, SIDRIK |
 | Ev2 | Evalueren ⊙ | Overleggen met de voorschrijver | E3 | Legt een bestaand middel voor aan de voorschrijver | Kost een actie | Bart; CVRM-richtlijn [G], nog te verifiëren |
-| Ev3 | Evalueren | Verwijzen | E3 | Verlaat de kaart: de patiënt gaat naar de tweede lijn | Onnodig verwijzen kost doelmatigheid | NHG |
+| Ev3 | Evalueren | Verwijzen | E3 | De patiënt gaat naar de tweede lijn | Onnodig verwijzen kost doelmatigheid | NHG |
 
 ---
 
@@ -298,6 +298,7 @@ De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.
 | I14 | Ciprofloxacine zonder B4 (scheiden van calcium) en zonder B3 (calcium tijdelijk stoppen) | Met ciprofloxacine | Kompas; B3-route [G] |
 | I15 | Na het halen van de sick day-drempel niet: spironolacton stoppen, lisinopril halveren, drinkadvies, monitoring binnen 1–3 dagen | Met B | SIDRIK |
 | I16 | Geen contact binnen 48 uur, of geen verwijzing als ze dan niet beter is | Met A | NHG |
+| I19 | Verwijzen terwijl na 48 uur nog geen sprake is van uitblijvende verbetering | Alle | Bart (besluit 17 november 2026) |
 
 ### Score
 - **Duurzaamheid:** de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op. Wie ciprofloxacine of amoxicilline/clavulaanzuur start terwijl de toestand nog cystitis is (nog geen weefselinvasie), schrijft buiten de richtlijn voor en verliest 1 punt duurzaamheid (ondergrens 1).
@@ -320,6 +321,7 @@ De oorzaak van A en B is neutraal: ze volgen niet uit de keuzes van de speler.
 | I14 | "Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?" |
 | I15 | "Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?" |
 | I16 | "Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?" |
+| I19 (concept, sectie 13) | "Je verwijst haar naar de tweede lijn. Wat moet er eerst blijken voordat de eerste lijn haar uit handen geeft?" |
 | Ciprofloxacine-dosis (bronconflict) | "De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?" |
 | Profiel ciprofloxacine | "Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?" |
 
@@ -471,3 +473,29 @@ Bron: besluiten Bart, 16 november 2026.
 - contact binnen 48 uur (I16) en doorgaan met nitrofurantoïne of fosfomycine (I10), als Verwijzen valt op de dag van de weefselinvasie (A) of de dag erna.
 
 Alle andere regels blijven gelden op de stand van het verwijzen. Zonder deze uitzondering kan wie terecht verwijst in de volgorde A–B de poort niet halen: "Na 48 uur geen verbetering." valt dan op dezelfde dag als de uitdroging.
+
+## 13. Wijzigingen in versie 1.6
+
+Bron: besluiten Bart, 17 november 2026.
+
+- **Onterecht verwijzen is een veiligheidsregel (I19, poort) in episode 3.** Onterecht = dezelfde maat als het oordeel na Verwijzen (sectie 12): de status "Na 48 uur geen verbetering." is vóór of op de dag van het verwijzen niet voorgekomen. Dit vervangt "maar is geen veiligheidsregel" in sectie 12. De aftrek van 1 punt doelmatigheid (regel c in sectie 11) blijft in de data staan, maar telt in de praktijk niet meer: wie onterecht verwijst, haalt de poort niet en krijgt geen score.
+- **Een doseringswijziging blijft staan.** Dosis aanpassen (V6) kan per middel één keer per episode; het spel is te kort om een aanpassing terug te draaien. Een middel waarvan de dosis al is aangepast, verschijnt niet meer in het keuzemenu. Dat geldt voor elke doelkaart (ook Antibioticum wisselen, B1): een doel waarvoor de kaart al gespeeld is, staat niet meer in het menu.
+- **Kaartteksten zonder ontwerptaal.** De effectteksten van V2, V6, B5 en Ev3 (sectie 3) zijn herschreven, zodat de student na het spelen geen ontwerptaal ("de speler", "verlaat de kaart") of bronnamen ziet. Oude teksten:
+  - V2: "De patiënt start zelf als de klachten aanhouden of toenemen; de speler kiest het middel dat zij thuis start"
+  - V6: "Past dosis of interval aan van een nieuw of bestaand middel (ook lisinopril halveren bij sick day)"
+  - B5: "Hervat een eerder gestopt middel. Volgens SIDRIK: herstarten zodra de klachten weg zijn."
+  - Ev3: "Verlaat de kaart: de patiënt gaat naar de tweede lijn"
+
+| Id | Altijd fout | Geldt in | Ernst | Bron |
+|---|---|---|---|---|
+| I19 | Verwijzen terwijl na 48 uur nog geen sprake is van uitblijvende verbetering | E3 | 5 (concept; de lichtste) | Bart **[G]** |
+
+### Concept, ter goedkeuring door Bart
+
+**Hint (concept) [G]:** I19: "Je verwijst haar naar de tweede lijn. Wat moet er eerst blijken voordat de eerste lijn haar uit handen geeft?"
+
+**Gevolgzin (concept) [G]:** I19: "Mevrouw gaat naar de tweede lijn terwijl de eerste lijn haar nog kon behandelen."
+
+**Kaartteksten (concept) [G]:** de nieuwe effectteksten van V2, V6, B5 en Ev3 in sectie 3.
+
+**Gevolg voor concept C9 (sectie 12):** verwijzen op de dag van de weefselinvasie of de dag erna is altijd vóór "Na 48 uur geen verbetering." en schendt nu I19. Het vervallen van I16 en I10 bij verwijzen heeft daardoor geen effect meer op de poort. Het vervallen van I15 blijft nodig voor de volgorde A–B.

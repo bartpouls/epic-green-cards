@@ -39,7 +39,7 @@
 
   /* ---------- vastlegging ---------- */
   T.registreer(G, "vastlegging: casus 1.5; de vraag over Verwijzen is beslist (besluit met datum); vier nieuwe concepten ter goedkeuring staan open en in de lijst voor Bart", function () {
-    T.is(casus().versie, "1.5");
+    T.is(casus().versie, "1.6");
     var c5 = todo("TODO_BART-C5");
     T.waar(typeof c5.besluit === "string" && DATUM.test(c5.besluit) && /Bart/.test(c5.besluit), "C5 heeft een besluit met datum");
     T.waar(/stopt de episode/.test(c5.gekozenLezing), "de gekozen lezing beschrijft het nieuwe gedrag");
@@ -68,7 +68,7 @@
     var t = speel("E3", [["G3", "O1", "V4"], ["N1"]]);
     T.is(t.afgerond, false);
   });
-  T.registreer(G, "besluit 1 (beoordeling): verwijzen na 'Na 48 uur geen verbetering.' is terecht; ervoor niet terecht en kost 1 punt doelmatigheid", function () {
+  T.registreer(G, "besluit 1 (beoordeling): verwijzen na 'Na 48 uur geen verbetering.' is terecht; ervoor niet terecht (sinds casus 1.6 een poortregel, I19)", function () {
     // fosfomycine gestopt na A (dag 3), geen werkzaam middel: dag 5 'Na 48 uur geen verbetering.', dan verwijzen
     var s = speel("E3", [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B2:V4"], ["Ev1"], ["Ev3"]]);
     T.is(s.klachten[5].status, "geenVerbetering48");
@@ -78,7 +78,7 @@
     // verwijzen op dag 4, vóór die status
     var v = speel("E3", [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B2:V4"], ["Ev1", "Ev3"]]);
     T.gelijk(v.uitkomst.eindeNaKaart, { kaart: "Ev3", terecht: false, tekst: ONTERECHT });
-    T.is(v.uitkomst.afloop, "gehaald"); T.is(v.uitkomst.score.doelmatigheid, 2, "niet terecht verwijzen kost 1 punt (conceptlijst, regel c)");
+    T.is(v.uitkomst.afloop, "nietGehaald"); T.gelijk(ids(v.uitkomst), ["I19"], "niet terecht verwijzen is sinds 17 november 2026 een veiligheidsregel");
   });
   T.registreer(G, "besluit 1 (beoordeling): de gewone regels gelden op de stand van het verwijzen; het oordeel over verwijzen staat er ook bij een niet-gehaalde poort", function () {
     var s = speel("E3", [["G3", "O1", "V4"], ["Ev3"]]);   // dag 1: geen N1, geen O2/Ev2
@@ -100,7 +100,8 @@
     T.waar(ids(g.Evaluatie.beoordeel(c, "E3", s)).indexOf("I15") >= 0, "zonder de concepteis telt I15 wel");
     // verwijzen op dag 3 (de dag van A), zonder contact: I16 vervalt
     var t = speel("E3", [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "Ev3"]]);
-    T.gelijk(ids(t.uitkomst), [], "I16 en I10 vervallen: verwezen op de dag van de weefselinvasie, fosfomycine liep nog");
+    // I16 en I10 vervallen; wel telt I19 (casus 1.6): op de dag van de weefselinvasie is verwijzen nog niet terecht
+    T.gelijk(ids(t.uitkomst), ["I19"], "I16 en I10 vervallen: verwezen op de dag van de weefselinvasie, fosfomycine liep nog");
     // te laat: werkzaam middel na A, B op dag 5 zonder maatregelen, verwijzen op dag 7: I15 blijft
     var u = speel("E3", [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V8", DOSIS], ["Ev1"], [], [], ["Ev3"]]);
     T.waar(ids(u.uitkomst).indexOf("I15") >= 0, "na de termijn telt I15: " + ids(u.uitkomst).join());

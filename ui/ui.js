@@ -130,8 +130,11 @@
     if (!kaart) return [];
     var doelen = isObj(kaart.doelen) ? kaart.doelen[ep.id] : null, ctx = null, uit = [];
     function heeftOpties(id) { return !kaart.opties || lijst(kaart.opties[id]).length > 0; }
+    // Een doel waarvoor de kaart al het maximum aantal keren is gespeeld, verschijnt niet meer (zelfde regel als de engine).
+    function kanNog(id) { return !(state && Array.isArray(state.tijdlijn) && g.Engine && g.Engine.plafondBereikt && g.Engine.plafondBereikt(state, kaartId, id)); }
     if (Array.isArray(doelen)) {
       doelen.forEach(function (d) {
+        if (!kanNog(d.id)) return;
         if (d.vereist) {
           ctx = ctx || g.Predicaten.maakContext(casus, ep, state);
           if (!g.Predicaten.evalueer(d.vereist, ctx)) return;
@@ -140,9 +143,15 @@
         uit.push({ id: d.id, label: d.label || doelLabel(casus, ep, d.id) });
       });
     } else if (isObj(kaart.opties)) {
-      Object.keys(kaart.opties).forEach(function (id) { uit.push({ id: id, label: doelLabel(casus, ep, id) }); });
+      Object.keys(kaart.opties).forEach(function (id) { if (kanNog(id)) uit.push({ id: id, label: doelLabel(casus, ep, id) }); });
     }
     return uit;
+  }
+
+  // Geen doel meer over, maar wel doelen waarvoor de kaart al gespeeld is: dan is de kaart "op", niet "past nergens bij".
+  function alleDoelenGebruikt(casus, ep, state, kaartId) {
+    if (!state || !Array.isArray(state.tijdlijn)) return false;
+    return state.tijdlijn.some(function (r) { return r.kaart === kaartId && r.doel != null; });
   }
 
   function isDoelkaart(casus, ep, kaartId) {
@@ -898,7 +907,9 @@
     try { doelen = toegestaneDoelen(app.casus, app.ep, app.spel, kaartId); }
     catch (e) { app.melding = (e && e.message) || "Dat lukte niet."; app.downloadFout = true; render(); return; }
     if (!doelen.length) {
-      app.melding = "Deze kaart kun je nu niet spelen: er is geen middel waar hij bij past.";
+      app.melding = alleDoelenGebruikt(app.casus, app.ep, app.spel, kaartId)
+        ? "Deze kaart heb je al gespeeld bij elk middel waar hij nu bij past. Een keuze blijft staan."
+        : "Deze kaart kun je nu niet spelen: er is geen middel waar hij bij past.";
       app.downloadFout = true; app.onthuld = null; app.fokus = "kaart-" + kaartId; render(); return;
     }
     app.dialoog = { type: "doel", kaartId: kaartId, doelen: doelen, stap: 1, doel: null, opties: [] };
@@ -1477,7 +1488,7 @@
     // logica (getest zonder DOM)
     slug: slug, pseudoniemControle: pseudoniemControle, zelfdePseudoniem: zelfdePseudoniem, recordsVan: recordsVan,
     episodeOverzicht: episodeOverzicht, kaartenPerCategorie: kaartenPerCategorie, toegestaneDoelen: toegestaneDoelen,
-    isDoelkaart: isDoelkaart, optiesVoor: optiesVoor, regelTitel: regelTitel, naSpelenTekst: naSpelenTekst,
+    isDoelkaart: isDoelkaart, alleDoelenGebruikt: alleDoelenGebruikt, optiesVoor: optiesVoor, regelTitel: regelTitel, naSpelenTekst: naSpelenTekst,
     dagenModel: dagenModel, patientVelden: patientVelden, evaluatieModel: evaluatieModel, raadpleegModel: raadpleegModel,
     aanhoudendTekst: aanhoudendTekst, klachtenPerDag: klachtenPerDag, gebeurtenissenSindsStart: gebeurtenissenSindsStart,
     medicatieStatus: medicatieStatus, medicatieLijstTekst: medicatieLijstTekst, schoneTekst: schoneTekst, docentModus: docentModus, overzichtModel: overzichtModel, opslagMelding: opslagMelding, actieDots: actieDots, doelLabel: doelLabel,

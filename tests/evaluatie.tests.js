@@ -87,7 +87,7 @@
     var VEREIST = {
       E1: ["I1", "I3", "I4"],
       E2: ["I1", "I4", "I5", "I6", "I7", "I8", "I17", "I18"],   // I17 en I18: casus 1.5, sectie 12
-      E3: ["I1", "I4", "I5", "I6", "I7", "I8", "I9", "I10", "I11", "I12", "I13", "I14", "I15", "I16", "I17", "I18"]
+      E3: ["I1", "I4", "I5", "I6", "I7", "I8", "I9", "I10", "I11", "I12", "I13", "I14", "I15", "I16", "I17", "I18", "I19"]   // I19: casus 1.6, sectie 13
     };
     tr("dekking: elke invariant van elke episode heeft een foutroute die precies die invariant schendt", function () {
       var ontbreekt = [];

@@ -44,7 +44,9 @@
     I16: "Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?",
     // casus 1.5, sectie 12 (concept ter goedkeuring)
     I17: "Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?",
-    I18: "Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?"
+    I18: "Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?",
+    // casus 1.6, sectie 13 (concept ter goedkeuring)
+    I19: "Je verwijst haar naar de tweede lijn. Wat moet er eerst blijken voordat de eerste lijn haar uit handen geeft?"
   };
   var EXTRA = {
     O1: "Wat doe je bij welke uitslag anders?",
@@ -267,6 +269,10 @@
   e3("E3-fout-I17", "Basisroute, plus aan het eind lisinopril verdubbelen", [{ eind: ["V6>lisinopril>verdubbelen"] }], fout(["I17"], VRAAG.I17), "fout");
   e3("E3-fout-I18", "Basisroute; na de kweekuitslag wisselen naar trimethoprim (resistent, ook bekend via G3) en dezelfde dag terug",
     [{ eind: ["B1>V5", "B1>V8", V6_V8] }], fout(["I18"], VRAAG.I18), "fout");
+  // Casus 1.6 (besluit Bart, 17 november 2026): onterecht verwijzen is een veiligheidsregel. Verwijzen op dag 2, vóór de weefselinvasie.
+  e3plannen("E3-fout-I19", "Fosfomycine na de kweek, alarmsignalen en kalium; op dag 2 al verwijzen",
+    { "A,B": ["G3", "O1", "V4", "|", "N1", "O2", "Ev3"], "B,A": ["G3", "O1", "V4", "|", "N1", "O2", "Ev3"] },
+    fout(["I19"], VRAAG.I19), "fout");
   e3plannen("E3-fout-I4", "Twee antibiotica tegelijk (V4 en V8) vóór de weefselinvasie; V4 daarna gestopt",
     {
       "A,B": ["G3", "O1", "V4", "|", "N1", "V8", V6_V8, "|", "B2>V4", "O2", "Ev2>spironolacton", "|", "Ev1",

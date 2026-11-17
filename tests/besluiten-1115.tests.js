@@ -13,10 +13,18 @@
   function ids(u) { return u.geschonden.map(function (x) { return x.id; }); }
   function todo(id) { return casus().todoBart.filter(function (t) { return t.id === id; })[0]; }
   function beoordeel(s) { return g.Evaluatie.beoordeel(casus(), s.episodeId, s); }
-  // De casus zonder het einde na een kaart (casus 1.5: na Verwijzen stopt de episode), om de aftrekregel voor Verwijzen los te toetsen.
+  // De casus zonder het einde na een kaart (casus 1.5: na Verwijzen stopt de episode) en zonder de poortregel I19 (casus 1.6:
+  // onterecht verwijzen), om de aftrekregel voor Verwijzen los te toetsen. I19 zelf toetst tests/besluiten-1117.tests.js.
   var zonderEinde = null;
   function casusZonderEinde() {
-    if (!zonderEinde) { zonderEinde = JSON.parse(JSON.stringify(casus())); zonderEinde.episodes.forEach(function (e) { delete e.eindeNaKaart; }); }
+    if (!zonderEinde) {
+      zonderEinde = JSON.parse(JSON.stringify(casus()));
+      zonderEinde.episodes.forEach(function (e) {
+        delete e.eindeNaKaart;
+        e.invarianten = e.invarianten.filter(function (i) { return i.id !== "I19"; });
+        zonderEinde.gevolgzinnen = zonderEinde.gevolgzinnen.filter(function (z) { return z.invariant !== "I19"; });
+      });
+    }
     return zonderEinde;
   }
   function zinnen(u) { return u.gevolgen.map(function (x) { return x.tekst; }); }
@@ -45,7 +53,7 @@
   var BESLIST = ["TODO_BART-N3", "TODO_BART-E2-16", "TODO_BART-E3-3", "TODO_BART-E2-10", "TODO_BART-E3-11", "TODO_BART-E3-21", "TODO_BART-R6"];
   var CONCEPT = ["TODO_BART-C1", "TODO_BART-C2", "TODO_BART-C3", "TODO_BART-C4"];
   T.registreer(G, "vastlegging: casus 1.4; de zeven besliste vragen houden vraag, lezing en plek en hebben een besluit in één zin met de datum; de concepten en de nieuwe vraag zijn open", function () {
-    T.is(casus().versie, "1.5");
+    T.is(casus().versie, "1.6");
     BESLIST.forEach(function (id) {
       var t = todo(id);
       T.waar(!!t, id + " staat nog in de data");
@@ -173,7 +181,7 @@
       T.is(rij[rij.length - 4], "12", "dagen zonder actie"); T.is(rij[rij.length - 3], "14", "dagen"); T.is(rij[rij.length - 2], "5", "aantal kaarten");
       T.waar(/Kweekuitslag \(dag 4\)/.test(regels[1]), "de gebeurtenis staat met haar dag in de export");
       var js = JSON.parse(g.Logging.exportJSON());
-      T.gelijk(js[0].doorgespoeld, rec.doorgespoeld); T.is(js[0].casusVersie, "1.5");
+      T.gelijk(js[0].doorgespoeld, rec.doorgespoeld); T.is(js[0].casusVersie, "1.6");
       var ov = g.UI.overzichtModel(casus(), js, "Door");
       T.is(ov[0].rijen.length, 14, "het leesbare overzicht toont alle 14 dagen"); T.gelijk(ov[0].rijen[9].kaarten, []);
     } finally { g.Logging._zetOpslag(undefined); g.Logging.wis(); }
@@ -253,7 +261,7 @@
   T.registreer(G, "besluit 4a (c, episode 3): Verwijzen zonder dat 'Na 48 uur geen verbetering.' is voorgekomen kost 1 punt; na die status niet", function () {
     // Getoetst op de casus zonder einde na Verwijzen (casus 1.5), zodat de kaarten na het verwijzen nog gespeeld kunnen worden.
     var plan = basisE3(); plan[3].push("Ev3");
-    var u = beoordeel(speel("E3", plan, 0, casusZonderEinde()));
+    var u = g.Evaluatie.beoordeel(casusZonderEinde(), "E3", speel("E3", plan, 0, casusZonderEinde()));
     T.gelijk(ids(u), []); T.is(u.score.doelmatigheid, 2); T.gelijk(opmerkingen(u), [NIET_NODIG + "Verwijzen"]);
     // fosfomycine gestopt na A, geen werkzaam middel: dag 5 'Na 48 uur geen verbetering.', daarna verwijzen
     var s = speel("E3", [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B2:V4"], ["Ev1"], ["B3:" + SP, HALF, "N3"], ["Ev1", "Ev3"]]);
@@ -262,7 +270,7 @@
     T.gelijk(ids(v), []); T.is(v.score.doelmatigheid, 3); T.gelijk(v.aftrek, []);
     // verwijzen op de dag vóór die status telt als te vroeg
     var vroeg = speel("E3", [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B2:V4"], ["Ev1", "Ev3"], ["B3:" + SP, HALF, "N3"], ["Ev1"]], 0, casusZonderEinde());
-    T.is(beoordeel(vroeg).score.doelmatigheid, 2, "de status kwam pas na het verwijzen");
+    T.is(g.Evaluatie.beoordeel(casusZonderEinde(), "E3", vroeg).score.doelmatigheid, 2, "de status kwam pas na het verwijzen");
   });
   T.registreer(G, "besluit 4a (d, episode 3): Medicatie tijdelijk stoppen op calcium zonder ciprofloxacine kost 1 punt; met ciprofloxacine niet; Innametijden aanpassen kan alleen met ciprofloxacine", function () {
     var plan = basisE3(); plan[3].push("B3:calcium");
@@ -374,8 +382,8 @@
     ["E3", "I16", ZIN.I16contact, true], ["E3", "I16", ZIN.I16verwijs, true]
   ];
   T.registreer(G, "besluit 4c (data): de 21 nieuwe zinnen staan letterlijk in casus.gevolgzinnen, vrijgegeven, elk gemarkeerd als concept met de bron; waar het besluit een voorwaarde noemt, heeft de zin er een; elke regel heeft nu een zin", function () {
-    // De conceptzinnen bij I17 en I18 (casus 1.5) toetst tests/besluiten-1116.tests.js.
-    var concept = casus().gevolgzinnen.filter(function (z) { return z.concept === true && z.invariant !== "I17" && z.invariant !== "I18"; });
+    // De conceptzinnen bij I17 en I18 (casus 1.5) toetst tests/besluiten-1116.tests.js, die bij I19 (casus 1.6) tests/besluiten-1117.tests.js.
+    var concept = casus().gevolgzinnen.filter(function (z) { return z.concept === true && z.invariant !== "I17" && z.invariant !== "I18" && z.invariant !== "I19"; });
     T.is(concept.length, NIEUW.length);
     NIEUW.forEach(function (n) {
       var z = concept.filter(function (x) { return x.episode === n[0] && x.invariant === n[1] && x.tekst === n[2]; });

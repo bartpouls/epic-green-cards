@@ -835,7 +835,7 @@ function voorbeeld(){
     K('V3','Voorschrijven','Nitrofurantoïne',1,0,'E1: 5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen.','Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G].','NHG'),
     K('V4','Voorschrijven','Fosfomycine',1,0,'Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht','Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.','NHG'),
     K('V5','Voorschrijven','Trimethoprim',1,0,'E1: 3 dagen 1 dd 300 mg. Risicogroep: 7 dagen.','Naast een RAS-remmer of kaliumsparend diureticum stijgt het kalium (controle nodig bij een 7-daagse kuur). Bij eGFR 10–30: na dag 3 halveren en kans op therapiefalen. Hoge resistentie bij E. coli.','NHG, KNMP'),
-    K('V6','Voorschrijven','Dosis aanpassen',2,1,'Past dosis of interval aan van een nieuw of bestaand middel (ook lisinopril halveren bij sick day)','Een verkeerde aanpassing geeft onder- of overdosering','NHG, SIDRIK'),
+    K('V6','Voorschrijven','Dosis aanpassen',2,1,'De nieuwe dosering gaat meteen in en blijft staan','Een verkeerde aanpassing geeft onder- of overdosering','NHG, SIDRIK'),
     K('V7','Voorschrijven','Ciprofloxacine',3,0,'7 dagen 2 dd 500 mg','Bij ouderen: kans op peesschade, QT-verlenging, aneurysma. Minder opname naast calcium. NHG: terughoudend bij ouderen en bij een nierfunctiestoornis.','NHG, Kompas'),
     K('V8','Voorschrijven','Amoxicilline/clavulaanzuur',3,0,'10 dagen 3 dd 500/125 mg','Bij eGFR < 30 stapelt clavulaanzuur: dan alleen 875/125 mg 2 dd','NHG'),
     K('V9','Voorschrijven','Cotrimoxazol',3,0,'10 dagen 2 dd 960 mg','Gecontra-indiceerd bij een ernstige nierfunctiestoornis. Met spironolacton kans op ernstige hyperkaliëmie.','NHG, Kompas'),
@@ -844,13 +844,13 @@ function voorbeeld(){
     K('B2','Bijsturen','Antibioticum stoppen',2,1,'Stopt het lopende antibioticum','Te vroeg stoppen geeft therapiefalen','—'),
     K('B3','Bijsturen','Medicatie tijdelijk stoppen',3,1,'Pauzeert een bestaand middel (sick day)','Vraagt een afspraak over herstart','SIDRIK'),
     K('B4','Bijsturen','Innametijden aanpassen',3,1,'Ciprofloxacine 1–2 uur vóór of ten minste 4 uur ná calcium','Vraagt uitleg aan de patiënt','Kompas'),
-    K('B5','Bijsturen','Medicatie hervatten',3,1,'Hervat een eerder gestopt middel. Volgens SIDRIK: herstarten zodra de klachten weg zijn.','Hervatten zonder herbeoordeling kan dezelfde schade herhalen','SIDRIK'),
+    K('B5','Bijsturen','Medicatie hervatten',3,1,'Het middel wordt weer gestart. Herstarten hoort zodra de klachten weg zijn.','Hervatten zonder herbeoordeling kan dezelfde schade herhalen','SIDRIK'),
     K('N1','Informeren','Alarmsignalen bespreken',1,0,'Bij koorts of ziek worden direct contact opnemen','—','NHG'),
     K('N2','Informeren','Gebruik en verwachting uitleggen',1,1,'Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg','—','NHG'),
     K('N3','Informeren','Drinkadvies geven',3,0,'2–2,5 liter per dag','—','SIDRIK'),
     K('Ev1','Evalueren','Opvolgmoment afspreken',1,0,'Afwachten: na 1 week alsnog starten. Na een kuur: als de klachten 24–48 uur na afloop niet duidelijk minder zijn, opnieuw urineonderzoek. Weefselinvasie: contact binnen 48 uur. Sick day: monitoring na 1–3 dagen.','—','NHG, SIDRIK'),
     K('Ev2','Evalueren','Overleggen met de voorschrijver',3,1,'Legt een bestaand middel voor aan de voorschrijver','Kost een actie','Bart; CVRM-richtlijn [G], nog te verifiëren'),
-    K('Ev3','Evalueren','Verwijzen',3,0,'Verlaat de kaart: de patiënt gaat naar de tweede lijn','Onnodig verwijzen kost doelmatigheid','NHG')];
+    K('Ev3','Evalueren','Verwijzen',3,0,'De patiënt gaat naar de tweede lijn','Onnodig verwijzen kost doelmatigheid','NHG')];
   var e1=leegEpisode(1),e2=leegEpisode(2),e3=leegEpisode(3);
   var r1=['G1','G2','O1','O2','V1','V2','V3','V4','V5','N1','N2','Ev1'];
   e1.startToestand='cystitis';e1.knoppen={repertoire:'klein (12 kaarten)',acties:'ruim',gebeurtenissen:'geen',raadplegen:'kost niets'};

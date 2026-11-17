@@ -1,6 +1,6 @@
 {
  "casus": "uwi-eerstelijn",
- "versie": "1.5",
+ "versie": "1.6",
  "seed": 20261114,
  "factor": 1,
  "episodes": [
@@ -758,12 +758,12 @@
   {
    "id": "E3",
    "acties": 66,
-   "gespeeld": 41357,
+   "gespeeld": 40028,
    "telling": {
-    "geslaagd": 11727,
-    "gezakt": 12802,
-    "onspeelbaar": 13436,
-    "verloren": 3392
+    "geslaagd": 5963,
+    "gezakt": 15747,
+    "onspeelbaar": 14707,
+    "verloren": 3611
    },
    "volgordes": [
     "A vóór B",
@@ -773,38 +773,38 @@
    "haalbaar": [
     {
      "volgorde": "A vóór B",
-     "slagers": 2849,
-     "gespeeld": 18251,
+     "slagers": 1659,
+     "gespeeld": 18347,
      "kortste": {
-      "route": "O2+N1|Ev3",
-      "kaarten": 3,
+      "route": "O1+V4|N1+Ev2>spironolacton|B2>V4|Ev1|Ev3",
+      "kaarten": 7,
       "score": {
        "duurzaamheid": null,
-       "doelmatigheid": 1
+       "doelmatigheid": 2
       },
       "profiel": "Eigen route"
      }
     },
     {
      "volgorde": "B vóór A",
-     "slagers": 5835,
-     "gespeeld": 23106,
+     "slagers": 1504,
+     "gespeeld": 21681,
      "kortste": {
-      "route": "N1+O2+Ev3",
-      "kaarten": 3,
+      "route": "O1+V4|O2+N1|B3>spironolacton+V6>lisinopril>halveren+N3|B1>V8+V6>V8>875/125 mg 2 dd|Ev1",
+      "kaarten": 10,
       "score": {
-       "duurzaamheid": null,
-       "doelmatigheid": 1
+       "duurzaamheid": 2,
+       "doelmatigheid": 2
       },
-      "profiel": "Eigen route"
+      "profiel": "Kweekgestuurd"
      }
     }
    ],
    "speelAlles": [
     {
      "volgorde": "A vóór B",
-     "route": "G3+O1+V4|N1+O2+Ev2>spironolacton|O1+B1>V8+V6>V8>875/125 mg 2 dd|B2>V8+Ev1+V8|B3>spironolacton+V6>lisinopril>halveren+N3|Ev1+B5>spironolacton+B3>lisinopril|Ev2>lisinopril+B5>lisinopril+G1|N2>V8+G2",
-     "kaarten": 23,
+     "route": "G3+O1+V4|N1+O2+Ev2>spironolacton|O1+B1>V8+V6>V8>875/125 mg 2 dd|Ev1+G2+V8|B3>spironolacton+V6>lisinopril>halveren+N3|Ev1+B3>lisinopril+B5>lisinopril|B5>spironolacton+Ev2>lisinopril+G1|N2>V8",
+     "kaarten": 22,
      "score": {
       "duurzaamheid": 3,
       "doelmatigheid": 3
@@ -812,7 +812,7 @@
     },
     {
      "volgorde": "B vóór A",
-     "route": "G3+O1+V4|N1+O2+Ev2>spironolacton|B3>spironolacton+V6>lisinopril>halveren+N3|Ev1+G1+N2>V4|O1+B1>V8+V6>V8>875/125 mg 2 dd|Ev1+Ev2>lisinopril+N2>V8|G2+B5>spironolacton+B3>lisinopril|B2>V8+V8+B5>lisinopril",
+     "route": "G3+O1+V4|N1+O2+Ev2>spironolacton|B3>spironolacton+V6>lisinopril>halveren+N3|Ev1+N2>V4+G2|O1+B1>V8+V6>V8>875/125 mg 2 dd|Ev1+B5>spironolacton+G1|B2>V8+V8+N2>V8|B3>lisinopril+B5>lisinopril+Ev2>lisinopril",
      "kaarten": 24,
      "score": {
       "duurzaamheid": 3,
@@ -909,6 +909,15 @@
        "status": "onspeelbaar",
        "geschonden": [],
        "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I19",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I19"
+       ],
+       "statusDoorspelen": "gezakt"
       },
       {
        "id": "E3-fout-I4",
@@ -1804,6 +1813,15 @@
        "statusDoorspelen": "onspeelbaar"
       },
       {
+       "id": "E3-fout-I19",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I19"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
        "id": "E3-fout-I4",
        "soort": "fout",
        "status": "gezakt",
@@ -2624,113 +2642,126 @@
        "geschonden": [
         "I16"
        ]
+      },
+      {
+       "basis": "E3-verwijzen",
+       "wat": "Verwijzen (Ev3) van dag 7 naar dag 6",
+       "geschonden": [
+        "I19"
+       ]
       }
      ]
     }
    ],
    "onbedoeld": {
-    "minimaal": 30,
+    "minimaal": 39,
     "zonderProfiel": 0,
-    "buitenCasus": 3227,
+    "buitenCasus": 624,
     "wachtend": 0,
-    "groepOntlopen": 7458
+    "groepOntlopen": 0
    },
    "dekking": [
     {
      "id": "I1",
-     "geschonden": 4294,
-     "alleen": 549,
-     "voorbeeld": "Ev2>spironolacton+Ev3"
+     "geschonden": 3972,
+     "alleen": 271,
+     "voorbeeld": "O1+V4|Ev2>spironolacton|B2>V4|Ev1|Ev3"
     },
     {
      "id": "I4",
-     "geschonden": 5990,
-     "alleen": 113,
-     "voorbeeld": "O1+V4|Ev2>spironolacton+N1|V10+Ev3+V6>V8>875/125 mg 2 dd||B1>V8|||B2>V9|||||V6>lisinopril>halveren|Ev1"
+     "geschonden": 6237,
+     "alleen": 137,
+     "voorbeeld": "O1+V4|N1+Ev2>spironolacton|O1+B1>V8+V6>V8>875/125 mg 2 dd|Ev1|V6>lisinopril>halveren+N3|Ev1+B3>spironolacton|||||||V10"
     },
     {
      "id": "I5",
-     "geschonden": 2883,
-     "alleen": 70,
-     "voorbeeld": "G3+O1|Ev2>spironolacton+N1|V3+Ev3+V6>V8>875/125 mg 2 dd|||||||||||Ev1+B3>calcium+O2"
+     "geschonden": 2935,
+     "alleen": 78,
+     "voorbeeld": "G3+O1+V3|N1+O2+Ev2>spironolacton|O1+B1>V8+V6>V8>875/125 mg 2 dd|Ev1|B3>spironolacton+V6>lisinopril>halveren+N3|Ev1"
     },
     {
      "id": "I6",
-     "geschonden": 6918,
-     "alleen": 785,
-     "voorbeeld": "V10+N1+Ev2>spironolacton||Ev3"
+     "geschonden": 7108,
+     "alleen": 853,
+     "voorbeeld": "V4|N1+Ev2>spironolacton|B2>V4|Ev1|Ev3"
     },
     {
      "id": "I7",
-     "geschonden": 1858,
-     "alleen": 7,
-     "voorbeeld": "G3+O1|O2+N1+V5|Ev3+V6>V8>875/125 mg 2 dd|Ev1|||||||||Ev1"
+     "geschonden": 1914,
+     "alleen": 8,
+     "voorbeeld": "O1+G3+V4|Ev2>spironolacton+N1|B2>V4+O1|Ev1|V5+V6>lisinopril>halveren+N3|Ev3"
     },
     {
      "id": "I8",
-     "geschonden": 191,
+     "geschonden": 195,
      "alleen": 0,
      "voorbeeld": null
     },
     {
      "id": "I9",
-     "geschonden": 3379,
-     "alleen": 513,
-     "voorbeeld": "N1+Ev3"
+     "geschonden": 3028,
+     "alleen": 178,
+     "voorbeeld": "O1+V4|N1|B2>V4|Ev1|Ev3"
     },
     {
      "id": "I10",
-     "geschonden": 2223,
-     "alleen": 32,
-     "voorbeeld": "O1+V4|N1+O2||Ev1|Ev3"
+     "geschonden": 2600,
+     "alleen": 166,
+     "voorbeeld": "O1+V4|N1+Ev2>spironolacton||Ev1|Ev3"
     },
     {
      "id": "I11",
-     "geschonden": 2786,
-     "alleen": 170,
-     "voorbeeld": "O1+V4|N1+O2|B1>V8+V6>V8>875/125 mg 2 dd|Ev3"
+     "geschonden": 3079,
+     "alleen": 371,
+     "voorbeeld": "O1+V4|O2+N1|B3>spironolacton+V6>lisinopril>halveren+N3||B1>V8+V6>V8>875/125 mg 2 dd|Ev1"
     },
     {
      "id": "I12",
-     "geschonden": 2793,
-     "alleen": 103,
-     "voorbeeld": "G3+O1|N1+Ev2>spironolacton||Ev1+V9+Ev3||G2|||||||Ev1"
+     "geschonden": 2824,
+     "alleen": 107,
+     "voorbeeld": "G3+O1+V9|N1+O2+Ev2>spironolacton|O1+B1>V8+V6>V8>875/125 mg 2 dd|Ev1|B3>spironolacton+V6>lisinopril>halveren+N3|Ev1"
     },
     {
      "id": "I13",
-     "geschonden": 2632,
-     "alleen": 114,
-     "voorbeeld": "O1+V4|N1+O2|B1>V8|Ev3"
+     "geschonden": 2732,
+     "alleen": 187,
+     "voorbeeld": "O1+V4|O2+N1|B3>spironolacton+V6>lisinopril>halveren+N3|B1>V8|Ev1"
     },
     {
      "id": "I14",
-     "geschonden": 2470,
-     "alleen": 71,
-     "voorbeeld": "Ev2>spironolacton|O1+N1||V7+Ev3"
+     "geschonden": 2638,
+     "alleen": 108,
+     "voorbeeld": "O1+V4|N1+O2|N3+B3>spironolacton+V6>lisinopril>halveren||O1+B1>V7|Ev1+B1>V8+V6>V8>875/125 mg 2 dd"
     },
     {
      "id": "I15",
-     "geschonden": 9035,
-     "alleen": 1814,
-     "voorbeeld": "|Ev2>spironolacton||N1|Ev3"
+     "geschonden": 11309,
+     "alleen": 2823,
+     "voorbeeld": "O1+V4|O2+N1|V6>lisinopril>halveren+N3|B1>V8+V6>V8>875/125 mg 2 dd|Ev1"
     },
     {
      "id": "I16",
-     "geschonden": 7734,
-     "alleen": 517,
-     "voorbeeld": "O1+V4|N1+O2|B2>V4||Ev3"
+     "geschonden": 8534,
+     "alleen": 793,
+     "voorbeeld": "O1+V4|N1+Ev2>spironolacton|B2>V4||Ev3"
     },
     {
      "id": "I17",
-     "geschonden": 713,
-     "alleen": 12,
-     "voorbeeld": "Ev2>spironolacton+N1|V6>lisinopril>verdubbelen|B3>spironolacton|Ev3"
+     "geschonden": 699,
+     "alleen": 0,
+     "voorbeeld": null
     },
     {
      "id": "I18",
-     "geschonden": 648,
-     "alleen": 76,
-     "voorbeeld": "O1+V4|N1+O2+Ev2>spironolacton|O1+B1>V8+V6>V8>875/125 mg 2 dd|Ev1|B3>spironolacton+V6>lisinopril>halveren|B1>V10+N3+Ev1"
+     "geschonden": 707,
+     "alleen": 99,
+     "voorbeeld": "G3+O1+V4|N1+O2+Ev2>spironolacton|O1+B1>V8+V6>V8>875/125 mg 2 dd|Ev1|B3>spironolacton+V6>lisinopril>halveren+N3|Ev1+B1>V10"
+    },
+    {
+     "id": "I19",
+     "geschonden": 2087,
+     "alleen": 305,
+     "voorbeeld": "G3+O1|N1+O2+Ev3"
     }
    ]
   }

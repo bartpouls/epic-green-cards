@@ -277,6 +277,20 @@
 
   /* ---------- kaarten spelen ---------- */
 
+  // Heeft de kaart voor dit doel het plafond bereikt (casus.limiet, per kaart te overschrijven met kaart.limiet[episode])?
+  // Ook gebruikt door de weergave: een doel dat niet meer kan, verschijnt niet in het keuzemenu (besluit Bart, 17 november 2026:
+  // een doseringswijziging blijft staan).
+  function plafondBereikt(state, kaartId, doel) {
+    var casus = casusVan(state), kaart = kaartVan(casus, kaartId);
+    if (!kaart) return false;
+    doel = doel == null ? null : doel;
+    var plafond = kaart.limiet && kaart.limiet[state.episodeId];
+    if (typeof plafond !== "number") plafond = casus.limiet;
+    if (typeof plafond !== "number") return false;
+    var aantalGespeeld = state.tijdlijn.filter(function (r) { return r.kaart === kaartId && r.doel === doel; }).length;
+    return aantalGespeeld >= plafond;
+  }
+
   function speelKaart(state, kaartId, opts) {
     return atomisch(state, function () { return speelKaartNu(state, kaartId, opts); });
   }
@@ -316,10 +330,7 @@
 
     // Optionele plafond (casus.limiet, per kaart te overschrijven met kaart.limiet[episode]): zoveel keer mag een kaart per doel.
     // Een herhaling boven de plafond doet niets en kost geen actie. Zonder plafond in de data is herhalen toegestaan.
-    var plafond = kaart.limiet && kaart.limiet[state.episodeId];
-    if (typeof plafond !== "number") plafond = casus.limiet;
-    var aantalGespeeld = state.tijdlijn.filter(function (r) { return r.kaart === kaartId && r.doel === doel; }).length;
-    if (typeof plafond === "number" && aantalGespeeld >= plafond) return fout("Je hebt de kaart “" + label + "” hiervoor al gespeeld. Dat heeft geen effect; er is geen actie verbruikt.");
+    if (plafondBereikt(state, kaartId, doel)) return fout("Je hebt de kaart “" + label + "” hiervoor al gespeeld. Dat heeft geen effect; er is geen actie verbruikt.");
 
     var regel = { volg: state.tijdlijn.length + 1, kaart: kaartId, dag: state.dag, doel: doel, optie: optie };
     state.tijdlijn.push(regel);
@@ -536,7 +547,8 @@
     komend: komend,
     legeDagen: legeDagen,
     ontgrendeld: ontgrendeld,
-    ontgrendeldeEpisodes: ontgrendeldeEpisodes
+    ontgrendeldeEpisodes: ontgrendeldeEpisodes,
+    plafondBereikt: plafondBereikt
   };
   // Alleen voor de tests (niet opsombaar): de VOLLEDIGE broncode van deze module, zodat de tests alles kunnen scannen op casuslogica
   // (niet een handmatige lijst functies). Een benoemde function expression kent zijn eigen tekst; geen fs nodig.

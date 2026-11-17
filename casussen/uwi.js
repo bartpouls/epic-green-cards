@@ -6,7 +6,7 @@
 window.CASUSSEN = [
 {
  "id": "uwi-eerstelijn",
- "versie": "1.5",
+ "versie": "1.6",
  "limiet": 1,
  "regelnamen": [
   {
@@ -582,7 +582,8 @@ window.CASUSSEN = [
   { "episode": "E2", "invariant": "I17", "naam": "Lisinopril verdubbelen" },
   { "episode": "E2", "invariant": "I18", "naam": "Wisselen naar een resistent middel" },
   { "episode": "E3", "invariant": "I17", "naam": "Lisinopril verdubbelen" },
-  { "episode": "E3", "invariant": "I18", "naam": "Wisselen naar een resistent middel" }
+  { "episode": "E3", "invariant": "I18", "naam": "Wisselen naar een resistent middel" },
+  { "episode": "E3", "invariant": "I19", "naam": "Onterecht verwijzen" }
  ],
  "maten": [
   {
@@ -815,7 +816,9 @@ window.CASUSSEN = [
   {"episode": "E2", "invariant": "I17", "tekst": "De nierfunctie daalt verder en het kalium stijgt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De zin bij 'Geen sick day-maatregelen' in episode 3."},
   {"episode": "E3", "invariant": "I17", "tekst": "De nierfunctie daalt verder en het kalium stijgt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De zin bij 'Geen sick day-maatregelen' in episode 3."},
   {"episode": "E2", "invariant": "I18", "tekst": "De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De zin bij I8 (sectie 11)."},
-  {"episode": "E3", "invariant": "I18", "tekst": "De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De zin bij I8 (sectie 11)."}
+  {"episode": "E3", "invariant": "I18", "tekst": "De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De zin bij I8 (sectie 11)."},
+  // Besluit Bart, 17 november 2026: onterecht verwijzen (I19) is een veiligheidsregel. De zin is een concept.
+  {"episode": "E3", "invariant": "I19", "tekst": "Mevrouw gaat naar de tweede lijn terwijl de eerste lijn haar nog kon behandelen.", "vrijgegeven": true, "concept": true, "afgeleidUit": "De downside van Ev3: 'Onnodig verwijzen kost doelmatigheid'."}
  ],
  // Besluit Bart, 15 november 2026: een route die de poort haalt maar bij geen profiel van de episode past, krijgt dit profiel.
  // Naam en reflectievraag zijn een concept ter goedkeuring.
@@ -975,7 +978,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "alle": "De patiënt start zelf als de klachten aanhouden of toenemen; de speler kiest het middel dat zij thuis start"
+    "alle": "De patiënt start zelf met het gekozen middel als de klachten aanhouden of toenemen"
    },
    "downside": "Ze moet weten wanneer ze moet starten",
    "bron": "NHG"
@@ -1146,7 +1149,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "alle": "Past dosis of interval aan van een nieuw of bestaand middel (ook lisinopril halveren bij sick day)"
+    "alle": "De nieuwe dosering gaat meteen in en blijft staan"
    },
    "downside": "Een verkeerde aanpassing geeft onder- of overdosering",
    "bron": "NHG, SIDRIK",
@@ -1621,7 +1624,7 @@ window.CASUSSEN = [
     ]
    },
    "effect": {
-    "alle": "Hervat een eerder gestopt middel. Volgens SIDRIK: herstarten zodra de klachten weg zijn."
+    "alle": "Het middel wordt weer gestart. Herstarten hoort zodra de klachten weg zijn."
    },
    "downside": "Hervatten zonder herbeoordeling kan dezelfde schade herhalen",
    "bron": "SIDRIK",
@@ -1829,7 +1832,7 @@ window.CASUSSEN = [
    "opties": null,
    "doelen": null,
    "effect": {
-    "alle": "Verlaat de kaart: de patiënt gaat naar de tweede lijn"
+    "alle": "De patiënt gaat naar de tweede lijn"
    },
    "downside": "Onnodig verwijzen kost doelmatigheid",
    "bron": "NHG"
@@ -1965,7 +1968,13 @@ window.CASUSSEN = [
    "plek": "E3.eindeNaKaart" },
   { "id": "TODO_BART-C9", "vraag": "Concepttekst ter goedkeuring: wie verwijst terwijl de termijn van een eis nog loopt, kan die eis niet meer halen. Voorstel: twee eisen vervallen bij verwijzen. (1) De sick day-maatregelen (I15) vervallen als Verwijzen valt op de dag van de uitdroging of de dag erna. (2) Contact binnen 48 uur (I16) en doorgaan met nitrofurantoïne of fosfomycine (I10) vervallen als Verwijzen valt op de dag van de weefselinvasie of de dag erna. Alle andere regels blijven gelden op de stand van het verwijzen. Zonder (1) kan wie terecht verwijst in de volgorde weefselinvasie-uitdroging de poort niet halen: 'Na 48 uur geen verbetering.' valt dan op dezelfde dag als de uitdroging. Akkoord, of anders?",
    "gekozenLezing": "Zo gebouwd, als concept. Telt alleen als de episode door Verwijzen eindigde.",
-   "plek": "E3.eindeNaKaart[0].vervalt" }
+   "plek": "E3.eindeNaKaart[0].vervalt" },
+  { "id": "TODO_BART-C10", "vraag": "Concepttekst ter goedkeuring: onterecht verwijzen is sinds 17 november 2026 een veiligheidsregel (I19, episode 3). Als hint verschijnt 'Je verwijst haar naar de tweede lijn. Wat moet er eerst blijken voordat de eerste lijn haar uit handen geeft?' en als gevolg bij de patiënt 'Mevrouw gaat naar de tweede lijn terwijl de eerste lijn haar nog kon behandelen.' Ernst 5 (de lichtste; 1 is het ernstigst): bij meerdere schendingen krijgt een ernstiger regel de vraag. Keur je dit goed of pas je het aan?",
+   "gekozenLezing": "Schending als Verwijzen is gespeeld terwijl 'Na 48 uur geen verbetering.' vóór of op die dag niet is voorgekomen: dezelfde maat als het oordeel na Verwijzen. De zin 'Verwijzen was hier nog niet nodig' blijft op het beoordelingsscherm staan.",
+   "plek": "E3.invarianten.I19; casus.gevolgzinnen" },
+  { "id": "TODO_BART-C11", "vraag": "Concepttekst ter goedkeuring: vier kaartteksten zonder ontwerptaal (zichtbaar na het spelen). V2: 'De patiënt start zelf met het gekozen middel als de klachten aanhouden of toenemen'. V6: 'De nieuwe dosering gaat meteen in en blijft staan'. B5: 'Het middel wordt weer gestart. Herstarten hoort zodra de klachten weg zijn.' Ev3: 'De patiënt gaat naar de tweede lijn'. Keur je deze teksten goed of pas je ze aan?",
+   "gekozenLezing": "Zo overgenomen in sectie 3 van de casus en in de speldata.",
+   "plek": "kaarten[V2,V6,B5,Ev3].effect" }
  ],
  "episodes": []
 }
@@ -3359,6 +3368,27 @@ window.CASUSSEN[0].episodes.push({
       concept: true,
       bron: "Bart (besluit 16 november 2026)",
       TODO_BART: "Concepttekst ter goedkeuring: wisselen naar een middel waarvoor de bacterie resistent is, is sinds 16 november 2026 een veiligheidsregel (I18, episode 2 en 3). Als hint verschijnt 'Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?' en als gevolg bij de pati\u00ebnt 'De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.' (dezelfde zin als bij I8). Keur je deze teksten en de ernst (4, net zo ernstig als I8) goed of pas je ze aan?"
+    },
+    {
+      // Besluit Bart, 17 november 2026: onterecht verwijzen is een veiligheidsregel (poort), niet alleen een punt doelmatigheid.
+      // Onterecht = dezelfde maat als het oordeel na Verwijzen (eindeNaKaart): 'Na 48 uur geen verbetering.' is vóór of op
+      // de dag van het verwijzen niet voorgekomen. Hint en ernst: concept.
+      id: "I19",
+      ernst: 5,
+      geldtIn: ["*"],
+      altijdFout: "Verwijzen terwijl na 48 uur nog geen sprake is van uitblijvende verbetering",
+      geldtInTekst: "E3",
+      predicaat: {
+        p: "en",
+        args: [
+          { p: "gespeeld", K: { kaart: "Ev3" } },
+          { p: "niet", arg: { p: "klachten", waarde: "geenVerbetering48", op: { totEnMetKaart: { kaart: "Ev3" } } } }
+        ]
+      },
+      vraag: "Je verwijst haar naar de tweede lijn. Wat moet er eerst blijken voordat de eerste lijn haar uit handen geeft?",
+      concept: true,
+      bron: "Bart (besluit 17 november 2026)",
+      TODO_BART: "Concepttekst ter goedkeuring: onterecht verwijzen is sinds 17 november 2026 een veiligheidsregel (I19, episode 3). Als hint verschijnt 'Je verwijst haar naar de tweede lijn. Wat moet er eerst blijken voordat de eerste lijn haar uit handen geeft?' en als gevolg bij de patiënt 'Mevrouw gaat naar de tweede lijn terwijl de eerste lijn haar nog kon behandelen.' Ernst 5 (de lichtste; 1 is het ernstigst): bij meerdere schendingen krijgt een ernstiger regel de vraag. Keur je dit goed of pas je het aan?"
     }
   ],
   score: {

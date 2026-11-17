@@ -5,13 +5,18 @@
    `besluit`, en staan hier in de groepen "Beslist op ..." (beslist: true).
    Nieuw na 15 november 2026: vier concepten ter goedkeuring (een voorschot, afgeleid uit tekst die al in de casus staat; zie
    casus-uwi.md sectie 11) en één nieuwe vraag. De regels zonder gevolgzin hebben nu allemaal een conceptzin (TODO_BART-C4).
-   16 november 2026: de vraag over Verwijzen is beslist; drie nieuwe concepten ter goedkeuring (casus-uwi.md sectie 12). */
+   16 november 2026: de vraag over Verwijzen is beslist; drie nieuwe concepten ter goedkeuring (casus-uwi.md sectie 12).
+   17 november 2026: onterecht verwijzen is een poortregel (I19) en een doseringswijziging blijft staan; twee nieuwe concepten
+   ter goedkeuring (casus-uwi.md sectie 13). */
 window.TODO_BART_GROEPEN = [
   { titel: "1. Concepten ter goedkeuring (voorschot bij de besluiten van 15 november 2026; zie casus-uwi.md sectie 11)", ids: [
     "TODO_BART-C1", "TODO_BART-C2", "TODO_BART-C3", "TODO_BART-C4"
   ] },
   { titel: "2. Concepten ter goedkeuring (voorschot bij de besluiten van 16 november 2026; zie casus-uwi.md sectie 12)", ids: [
     "TODO_BART-C6", "TODO_BART-C7", "TODO_BART-C8", "TODO_BART-C9"
+  ] },
+  { titel: "2b. Concepten ter goedkeuring (voorschot bij de besluiten van 17 november 2026; zie casus-uwi.md sectie 13)", ids: [
+    "TODO_BART-C10", "TODO_BART-C11"
   ] },
   { titel: "3. Conceptteksten ter goedkeuring (na de besluiten van 14 november 2026)", ids: [
     "TODO_BART-E3-27", "TODO_BART-E3-28"

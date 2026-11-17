@@ -11,11 +11,11 @@
     "| O1 | Onderzoek | Urinekweek inzetten | E1 | Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag 3 dagen na inzetten. | E1: niet geïndiceerd, kost doelmatigheid | NHG |",
     "| O2 | Onderzoek | Kalium bepalen | E1 | Bepaalt de kaliumspiegel | Alleen zinvol bij een indicatie; anders kost het doelmatigheid | NHG, KNMP |",
     "| V1 | Voorschrijven | Afwachtend beleid | E1 | Geen antibioticum; ruim drinken, zo nodig pijnstilling | Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger | NHG |",
-    "| V2 | Voorschrijven ⊙ | Uitgesteld recept | E1 | De patiënt start zelf als de klachten aanhouden of toenemen; de speler kiest het middel dat zij thuis start | Ze moet weten wanneer ze moet starten | NHG |",
+    "| V2 | Voorschrijven ⊙ | Uitgesteld recept | E1 | De patiënt start zelf met het gekozen middel als de klachten aanhouden of toenemen | Ze moet weten wanneer ze moet starten | NHG |",
     "| V3 | Voorschrijven | Nitrofurantoïne | E1 | E1: 5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen. | Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G]. | NHG |",
     "| V4 | Voorschrijven | Fosfomycine | E1 | Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht | Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie. | NHG |",
     "| V5 | Voorschrijven | Trimethoprim | E1 | E1: 3 dagen 1 dd 300 mg. Risicogroep: 7 dagen. | Naast een RAS-remmer of kaliumsparend diureticum stijgt het kalium (controle nodig bij een 7-daagse kuur). Bij eGFR 10–30: na dag 3 halveren en kans op therapiefalen. Hoge resistentie bij E. coli. | NHG, KNMP |",
-    "| V6 | Voorschrijven ⊙ | Dosis aanpassen | E2 | Past dosis of interval aan van een nieuw of bestaand middel (ook lisinopril halveren bij sick day) | Een verkeerde aanpassing geeft onder- of overdosering | NHG, SIDRIK |",
+    "| V6 | Voorschrijven ⊙ | Dosis aanpassen | E2 | De nieuwe dosering gaat meteen in en blijft staan | Een verkeerde aanpassing geeft onder- of overdosering | NHG, SIDRIK |",
     "| V7 | Voorschrijven | Ciprofloxacine | E3 | 7 dagen 2 dd 500 mg | Bij ouderen: kans op peesschade, QT-verlenging, aneurysma. Minder opname naast calcium. NHG: terughoudend bij ouderen en bij een nierfunctiestoornis. | NHG, Kompas |",
     "| V8 | Voorschrijven | Amoxicilline/clavulaanzuur | E3 | 10 dagen 3 dd 500/125 mg | Bij eGFR < 30 stapelt clavulaanzuur: dan alleen 875/125 mg 2 dd | NHG |",
     "| V9 | Voorschrijven | Cotrimoxazol | E3 | 10 dagen 2 dd 960 mg | Gecontra-indiceerd bij een ernstige nierfunctiestoornis. Met spironolacton kans op ernstige hyperkaliëmie. | NHG, Kompas |",
@@ -23,14 +23,14 @@
     "| B1 | Bijsturen ⊙ | Antibioticum wisselen | E2 | Vervangt het lopende antibioticum | Onnodig wisselen kost duurzaamheid | NHG |",
     "| B2 | Bijsturen ⊙ | Antibioticum stoppen | E2 | Stopt het lopende antibioticum | Te vroeg stoppen geeft therapiefalen | — |",
     "| B3 | Bijsturen ⊙ | Medicatie tijdelijk stoppen | E3 | Pauzeert een bestaand middel (sick day) | Vraagt een afspraak over herstart | SIDRIK |",
-    "| B5 | Bijsturen ⊙ | Medicatie hervatten | E3 | Hervat een eerder gestopt middel. Volgens SIDRIK: herstarten zodra de klachten weg zijn. | Hervatten zonder herbeoordeling kan dezelfde schade herhalen | SIDRIK |",
+    "| B5 | Bijsturen ⊙ | Medicatie hervatten | E3 | Het middel wordt weer gestart. Herstarten hoort zodra de klachten weg zijn. | Hervatten zonder herbeoordeling kan dezelfde schade herhalen | SIDRIK |",
     "| B4 | Bijsturen ⊙ | Innametijden aanpassen | E3 | Ciprofloxacine 1–2 uur vóór of ten minste 4 uur ná calcium | Vraagt uitleg aan de patiënt | Kompas |",
     "| N1 | Informeren | Alarmsignalen bespreken | E1 | Bij koorts of ziek worden direct contact opnemen | — | NHG |",
     "| N2 | Informeren ⊙ | Gebruik en verwachting uitleggen | E1 | Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg. Koppelt aan het actieve middel. | — | NHG |",
     "| N3 | Informeren | Drinkadvies geven | E3 | 2–2,5 liter per dag | — | SIDRIK |",
     "| Ev1 | Evalueren | Opvolgmoment afspreken | E1 | Afwachten: na 1 week alsnog starten. Na een kuur: als de klachten 24–48 uur na afloop niet duidelijk minder zijn, opnieuw urineonderzoek. Weefselinvasie: contact binnen 48 uur. Sick day: monitoring na 1–3 dagen. | — | NHG, SIDRIK |",
     "| Ev2 | Evalueren ⊙ | Overleggen met de voorschrijver | E3 | Legt een bestaand middel voor aan de voorschrijver | Kost een actie | Bart; CVRM-richtlijn [G], nog te verifiëren |",
-    "| Ev3 | Evalueren | Verwijzen | E3 | Verlaat de kaart: de patiënt gaat naar de tweede lijn | Onnodig verwijzen kost doelmatigheid | NHG |"
+    "| Ev3 | Evalueren | Verwijzen | E3 | De patiënt gaat naar de tweede lijn | Onnodig verwijzen kost doelmatigheid | NHG |"
   ].join("\n");
   var REF_OPTIES = [
     "| Trimethoprim (V5) | halveren · verdubbelen · interval 48 uur | halveren vanaf dag 3 [NHG] |",
@@ -87,7 +87,7 @@
   Test.registreer(G, "K0 CASUSSEN is een array met één casus; id en versie uit de casuskop", function () {
     Test.waar(Array.isArray(window.CASUSSEN) && window.CASUSSEN.length === 1, "één casus verwacht");
     Test.is(casus().id, "uwi-eerstelijn");
-    Test.is(casus().versie, "1.5");   // casus-uwi.md versie 1.5 (besluiten Bart, 16 november 2026)
+    Test.is(casus().versie, "1.6");   // casus-uwi.md versie 1.6 (besluiten Bart, 17 november 2026)
     Test.is(casus().titel, REF_TITEL, "titel");
     Test.waar(Array.isArray(casus().episodes), "episodes is een array (door de episodebestanden aangevuld)");
     Test.waar(Array.isArray(casus().todoBart), "todoBart is een array");

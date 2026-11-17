@@ -465,6 +465,11 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
           "tekst": "Geen contact binnen 48 uur, of geen verwijzing als ze dan niet beter is",
           "geldtIn": "Met A",
           "bron": "NHG"
+        },
+        "I19": {
+          "tekst": "Verwijzen terwijl na 48 uur nog geen sprake is van uitblijvende verbetering",
+          "geldtIn": "Alle",
+          "bron": "Bart (besluit 17 november 2026)"
         }
       },
       "volgorde": null,
@@ -513,6 +518,10 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
         {
           "trigger": "I16",
           "vraag": "\"Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?\""
+        },
+        {
+          "trigger": "I19 (concept, sectie 13)",
+          "vraag": "\"Je verwijst haar naar de tweede lijn. Wat moet er eerst blijken voordat de eerste lijn haar uit handen geeft?\""
         },
         {
           "trigger": "Ciprofloxacine-dosis (bronconflict)",
