@@ -132,18 +132,50 @@ var STORE='epicgreencards.casusbouwer.v1';
 var VERBODEN=['juiste','verkeerde','fout','beste','eerst','daarna','na dag','alleen bij','niet doen'];
 
 var STAPPEN=['Start','Probleem & leerdoelen','Kaarten','Episodes','Controle','Markdown'];
+var SOORTEN=[['op een vaste dag','Aan het begin van die dag, los van wat de speler doet.'],['dagen na een kaart','Bijv. een uitslag die een paar dagen na de kaart binnenkomt. Zonder die kaart komt de gebeurtenis niet.'],['anders','Beschrijf het in je eigen woorden; de bouwer zet het om.']];
+function triggerTekst(g){
+  if(g.soort==='op een vaste dag'&&nietLeeg(g.dag))return 'aan het begin van dag '+g.dag+(nietLeeg(g.trigger)?'; '+g.trigger:'');
+  if(g.soort==='dagen na een kaart'&&nietLeeg(g.dag)&&nietLeeg(g.naKaart))return g.dag+' dagen na '+g.naKaart+', aan het begin van die dag'+(nietLeeg(g.trigger)?'; '+g.trigger:'');
+  return g.trigger||'';
+}
 
 /* ================= Toestand ================= */
 function leegEpisode(n){
   return {id:'E'+n,titel:'',level:n,startToestand:'',contextwissel:'',erft:'',
-    knoppen:{repertoire:'',acties:'',gebeurtenissen:'',raadplegen:''},
+    dagen:14,actiesPerDag:4,
+    knoppen:{repertoire:'',gebeurtenissen:'',raadplegen:''},
     patient:{naam:'',leeftijd:'',klachten:'',medicatie:'',lab:'',risico:'',verborgen:[]},
     repertoire:[],gebeurtenissen:[],routes:[],invarianten:[],
-    score:{duurzaamheid:'',doelmatigheid:''},profielen:[],feedbackExtra:[],bronconflict:'',volgorde:''};
+    escalatie:leegEscalatie(),einde:leegEinde(),
+    score:{duurzaamheid:'',doelmatigheid:'',ondergrens:1},overbodig:[],profielen:[],feedbackExtra:[],bronconflict:'',volgorde:''};
 }
+function leegEscalatie(){return {aan:'nee',dagen:4,toestand:'',verlorenDoor:'',tekst:''};}
+function leegEinde(){return {terechtAls:'',zinTerecht:'',zinNietTerecht:''};}
 function leeg(){
   return {basis:{id:'',titel:'',versie:'0.1',datum:datum(),functie:'',signatuur:'',validatie:'',bronnen:[{code:'',tekst:''}]},
-    prestatie:{probleem:'',anders:''},leerdoelen:[],kaarten:[],episodes:[leegEpisode(1)],open:[]};
+    prestatie:{probleem:'',anders:''},leerdoelen:[],kaarten:[],episodes:[leegEpisode(1)],
+    restprofiel:{naam:'Eigen route',vraag:''},open:[]};
+}
+// Werk uit een oudere versie van de casusbouwer (vóór casus 1.9) aanvullen met de nieuwe velden. Niets gaat verloren:
+// een oude omschrijving van acties of een trigger blijft staan als toelichting.
+function migreer(o){
+  if(!o.restprofiel)o.restprofiel={naam:'Eigen route',vraag:''};
+  (o.kaarten||[]).forEach(function(k){if(k.eindigt==null)k.eindigt='nee';if(k.keuzemenu==null)k.keuzemenu='';});
+  (o.episodes||[]).forEach(function(e){
+    var kn=e.knoppen||(e.knoppen={});
+    if(e.actiesPerDag==null){var a=String(kn.acties||'').trim().toLowerCase();e.actiesPerDag=/^\d+$/.test(a)?Number(a):(a==='krap'?3:4);}
+    if(e.dagen==null)e.dagen=14;
+    if(e.knoppen.acties!=null&&!/^(ruim|krap|\d+)?$/i.test(String(kn.acties).trim())&&!nietLeeg(e.volgorde))e.volgorde='Acties: '+kn.acties;
+    delete kn.acties;
+    if(!e.escalatie)e.escalatie=leegEscalatie();
+    if(!e.einde)e.einde=leegEinde();
+    if(!e.overbodig)e.overbodig=[];
+    if(!e.score)e.score={duurzaamheid:'',doelmatigheid:''};
+    if(e.score.ondergrens==null)e.score.ondergrens=1;
+    (e.gebeurtenissen||[]).forEach(function(g){if(!g.soort)g.soort='anders';if(g.dag==null)g.dag='';if(g.naKaart==null)g.naKaart='';});
+    (e.invarianten||[]).forEach(function(v){if(v.weglaat==null)v.weglaat='';});
+  });
+  return o;
 }
 function datum(){var d=new Date();return d.getDate()+' '+['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'][d.getMonth()]+' '+d.getFullYear();}
 var S=leeg(), stap=0, epIdx=0, saveT=null;
@@ -154,7 +186,7 @@ function bewaar(){
   saveT=setTimeout(function(){try{localStorage.setItem(STORE,JSON.stringify(S));}catch(e){}},300);
 }
 function laadOpgeslagen(){
-  try{var s=localStorage.getItem(STORE);if(s){var o=JSON.parse(s);if(o&&o.basis&&o.episodes){S=o;}}}catch(e){}
+  try{var s=localStorage.getItem(STORE);if(s){var o=JSON.parse(s);if(o&&o.basis&&o.episodes){S=migreer(o);}}}catch(e){}
 }
 
 /* ================= Kleine hulpfuncties ================= */
@@ -223,6 +255,7 @@ function stapStart(p){
    '<li>Eén casus toetst <em>één</em> signatuurvaardigheid. Zonder scoorbaar gedrag en invarianten met bron is de casus nog niet klaar.</li>'+
    '<li>Elke klinische regel (invariant) krijgt een bron. Staat iets niet in een bron, markeer het dan met <strong>[G]</strong> (uit geheugen of ontwerpkeuze).</li>'+
    '<li>Kaartlabels zijn neutraal: ze verraden geen timing en geen oplossing. Elke kaart heeft een downside.</li>'+
+   '<li>Een episode duurt een aantal dagen. Per dag heeft de speler een paar acties; gebeurtenissen verschijnen aan het begin van een dag. Dagen en acties zijn spelinstellingen, geen klinische regels.</li>'+
    '<li>Alles wat je invult is concept tot een voorschrijfdeskundige het heeft gevalideerd.</li></ul>';
   p.appendChild(u);
   p.appendChild(el('div',{class:'grid'},[
@@ -283,14 +316,16 @@ function stapKaarten(p){
       veld('Categorie',k,'categorie',{type:'select',options:CATS,onchange:function(){render();}}),
       veld('Label (neutraal)',k,'label',{ph:'Trimethoprim'}),
       veld('Vanaf episode',k,'vanaf',{type:'number'}),
-      veld('Doelkaart?',k,'doel',{type:'select',options:['nee','ja'],hint:'Ja = de speler kiest een middel uit de lijst waarop de kaart werkt.'}),
+      veld('Doelkaart?',k,'doel',{type:'select',options:['nee','ja'],hint:'Ja = de speler kiest een middel uit de lijst waarop de kaart werkt.',onchange:function(){render();}}),
+      veld('Stopt de episode?',k,'eindigt',{type:'select',options:['nee','ja'],hint:'Ja = na deze kaart volgt meteen de beoordeling (zoals Verwijzen).'}),
       veld('Bron',k,'bron',{ph:'NHG'}),
-      veld('Effect / wat de kaart onthult',k,'effect',{type:'area',rows:3,breed:true}),
+      veld('Effect / wat de kaart onthult',k,'effect',{type:'area',rows:3,breed:true,hint:'De speler ziet dit na het spelen. Schrijf het voor de student: geen ontwerptaal ("de speler") en geen bronnamen.'}),
+      k.doel==='ja'?veld('Keuzemenu (doelen en opties)',k,'keuzemenu',{type:'area',rows:2,breed:true,ph:'bijv. lisinopril: halveren of verdubbelen; amoxicilline/clavulaanzuur: 875/125 mg 2 dd',hint:'Waaruit kiest de speler? Een doel waarvoor de kaart al gespeeld is, verdwijnt uit het menu.'}):null,
       veld('Downside (verplicht)',k,'downside',{type:'area',rows:2,breed:true,hint:'Wat kost of riskeert deze kaart? Bij Informeren mag dit "—" zijn als er geen nadeel is.'})
     ]);
     p.appendChild(r);
   });
-  p.appendChild(el('button',{class:'primair',text:'+ Kaart toevoegen',onclick:function(){S.kaarten.push({id:'',categorie:'Voorschrijven',label:'',vanaf:1,doel:'nee',effect:'',downside:'',bron:''});bewaar();render();}}));
+  p.appendChild(el('button',{class:'primair',text:'+ Kaart toevoegen',onclick:function(){S.kaarten.push({id:'',categorie:'Voorschrijven',label:'',vanaf:1,doel:'nee',eindigt:'nee',keuzemenu:'',effect:'',downside:'',bron:''});bewaar();render();}}));
 }
 
 /* ================= Stap 4: Episodes ================= */
@@ -307,8 +342,9 @@ function stapEpisodes(p){
   var d1=el('details',{open:'open'},[el('summary',{text:'A. Opzet van deze episode'}),el('div',{class:'binnen'},[el('div',{class:'grid'},[
     veld('Naam van de startsituatie (toestand)',e,'startToestand',{ph:'cystitis',hint:'Dit wordt het eerste vakje in het doorloopschema.'}),
     veld('Wat verandert t.o.v. de vorige episode?',e,'contextwissel',{ph:'6 jaar later · eGFR gedaald · + calcium',hint:'Komt op de pijl tussen de episodes (laat leeg bij episode 1).'}),
+    veld('Aantal dagen',e,'dagen',{type:'number',hint:'Hoe lang de episode duurt. In de UWI-casus: 14.'}),
+    veld('Acties per dag',e,'actiesPerDag',{type:'number',hint:'4 = ruim, 3 = krap. Spelinstelling, geen klinische regel.'}),
     veld('Knop: zichtbaar repertoire',e.knoppen,'repertoire',{ph:'klein (12 kaarten)'}),
-    veld('Knop: acties per beurt',e.knoppen,'acties',{ph:'ruim'}),
     veld('Knop: gebeurtenissen',e.knoppen,'gebeurtenissen',{ph:'geen / 1 / 2 in vrije volgorde'}),
     veld('Knop: richtlijn raadplegen',e.knoppen,'raadplegen',{ph:'kost niets / kost tempo'}),
     veld('Geldende regels uit eerdere episodes',e,'erft',{ph:'I1, I4, I5',hint:'Invariant-id\'s die hier blijven gelden. Komen in het schema bij elke toestand.'}),
@@ -347,16 +383,19 @@ function stapEpisodes(p){
   p.appendChild(d3);
 
   var d4=el('details',{},[el('summary',{text:'D. Gebeurtenissen en toestanden'}),el('div',{class:'binnen'},[])]);
-  d4.lastChild.appendChild(el('p',{class:'hint',text:'Een gebeurtenis die de ernst verandert krijgt een toestand (bijv. weefselinvasie). Een gebeurtenis die alleen informatie brengt (bijv. een kweekuitslag) laat je zonder toestand. Geef gebeurtenissen met een vrije volgorde dezelfde groepsletter.'}));
+  d4.lastChild.appendChild(el('p',{class:'hint',text:'Gebeurtenissen verschijnen aan het begin van een dag: op een vaste dag (bijv. dag 3), of een aantal dagen nadat een kaart is gespeeld (bijv. de kweekuitslag 3 dagen na de kweek). Een gebeurtenis die de ernst verandert krijgt een toestand (bijv. weefselinvasie); een gebeurtenis die alleen informatie brengt, laat je zonder toestand. Geef gebeurtenissen met een vrije volgorde dezelfde groepsletter.'}));
   e.gebeurtenissen.forEach(function(g,i){
+    var wanneer=[veld('Wanneer?',g,'soort',{type:'select',options:SOORTEN.map(function(s){return s[0];}),onchange:function(){render();},hint:SOORTEN.filter(function(s){return s[0]===g.soort;}).map(function(s){return s[1];})[0]||''})];
+    if(g.soort==='op een vaste dag')wanneer.push(veld('Dag',g,'dag',{type:'number',ph:'3'}));
+    if(g.soort==='dagen na een kaart'){wanneer.push(veld('Aantal dagen',g,'dag',{type:'number',ph:'3'}));wanneer.push(veld('Na kaart',g,'naKaart',{type:'select',options:[''].concat(kaartIds())}));}
     d4.lastChild.appendChild(rij('Gebeurtenis '+(g.id||'?'),null,function(){e.gebeurtenissen.splice(i,1);bewaar();render();},[
-      veld('Id',g,'id',{ph:'A'}),
-      veld('Wanneer? (trigger)',g,'trigger',{ph:'na kaart n / 3 kaarten na O1'}),
+      veld('Id',g,'id',{ph:'A'})].concat(wanneer,[
+      veld(g.soort==='anders'?'Beschrijf wanneer':'Toelichting (optioneel)',g,'trigger',{ph:g.soort==='anders'?'bijv. als de klachten aanhouden':'bijv. welke van A en B eerst komt, is willekeurig'}),
       veld('Naam toestand (leeg = alleen informatie)',g,'toestand',{ph:'weefselinvasie'}),
       veld('Groep (vrije volgorde)',g,'groep',{ph:'AB'}),
-      veld('Wat ziet de speler?',g,'tekst',{type:'area',rows:2,breed:true})]));
+      veld('Wat ziet de speler?',g,'tekst',{type:'area',rows:2,breed:true})])));
   });
-  d4.lastChild.appendChild(el('button',{text:'+ Gebeurtenis',onclick:function(){e.gebeurtenissen.push({id:'',trigger:'',toestand:'',groep:'',tekst:''});bewaar();render();}}));
+  d4.lastChild.appendChild(el('button',{text:'+ Gebeurtenis',onclick:function(){e.gebeurtenissen.push({id:'',soort:'op een vaste dag',dag:'',naKaart:'',trigger:'',toestand:'',groep:'',tekst:''});bewaar();render();}}));
   p.appendChild(d4);
 
   var d5=el('details',{},[el('summary',{text:'E. Geldige routes'}),el('div',{class:'binnen'},[])]);
@@ -388,12 +427,28 @@ function stapEpisodes(p){
   d7.lastChild.appendChild(el('div',{class:'grid'},[
     veld('Score-as duurzaamheid',e.score,'duurzaamheid',{type:'area',rows:2,breed:true,ph:'afwachten > uitgesteld recept > antibioticum'}),
     veld('Score-as doelmatigheid',e.score,'doelmatigheid',{type:'area',rows:2,breed:true,ph:'een kweek zonder indicatie kost punten'})]));
+  d7.lastChild.appendChild(el('h4',{text:'Overbodige kaarten (optioneel)'}));
+  d7.lastChild.appendChild(el('p',{class:'hint',text:'Situaties waarin een kaart niets toevoegt. Elke situatie kost 1 punt doelmatigheid; de score zakt niet onder de ondergrens. De speler ziet "Deze kaart was hier niet nodig:" met het label van de kaart. Laat leeg als je niet wilt dat afvinken punten kost.'}));
+  e.overbodig.forEach(function(r,i){
+    d7.lastChild.appendChild(rij('Situatie '+(r.code||String.fromCharCode(97+i)),null,function(){e.overbodig.splice(i,1);bewaar();render();},[
+      veld('Code (optioneel)',r,'code',{ph:String.fromCharCode(97+i),hint:'Leeg = automatisch per episode.'}),
+      veld('Kaart(en)',r,'kaarten',{ph:'O2'}),
+      veld('Afgeleid uit',r,'afgeleidUit',{ph:'downside van O2, of een bron'}),
+      veld('Wanneer is de kaart overbodig?',r,'situatie',{type:'area',rows:2,breed:true,ph:'Kalium bepalen terwijl trimethoprim in deze poging nooit gestart is'})]));
+  });
+  d7.lastChild.appendChild(el('div',{class:'acties'},[
+    el('button',{text:'+ Overbodige kaart',onclick:function(){e.overbodig.push({kaarten:'',situatie:'',afgeleidUit:''});bewaar();render();}}),
+    e.overbodig.length?veld('Ondergrens doelmatigheid',e.score,'ondergrens',{type:'number'}):null]));
   d7.lastChild.appendChild(el('h4',{text:'Voorschrijfprofielen met reflectievraag'}));
+  d7.lastChild.appendChild(el('p',{class:'hint',text:'Een reflectievraag laat de student vooral nadenken over wat de volgende keer beter kan.'}));
   e.profielen.forEach(function(r,i){
     d7.lastChild.appendChild(rij('Profiel '+(i+1)+(r.naam?' · '+r.naam:''),null,function(){e.profielen.splice(i,1);bewaar();render();},[
       veld('Profiel',r,'naam',{ph:'Terughoudend'}),veld('Reflectievraag',r,'vraag',{type:'area',rows:2,breed:true})]));
   });
   d7.lastChild.appendChild(el('button',{text:'+ Profiel',onclick:function(){e.profielen.push({naam:'',vraag:''});bewaar();render();}}));
+  d7.lastChild.appendChild(rij('Restprofiel (geldt voor alle episodes)',null,null,[
+    veld('Naam',S.restprofiel,'naam',{ph:'Eigen route'}),
+    veld('Reflectievraag',S.restprofiel,'vraag',{type:'area',rows:2,breed:true,hint:'Voor een route die de poort haalt maar bij geen enkel profiel past.'})]));
   d7.lastChild.appendChild(el('h4',{text:'Extra feedbackmomenten (niet-poort)'}));
   e.feedbackExtra.forEach(function(r,i){
     d7.lastChild.appendChild(rij('Feedback '+(i+1),null,function(){e.feedbackExtra.splice(i,1);bewaar();render();},[
@@ -403,7 +458,26 @@ function stapEpisodes(p){
   d7.lastChild.appendChild(el('div',{class:'grid',style:'margin-top:12px'},[
     veld('Bronconflict (geen poort, wel feedbackmoment)',e,'bronconflict',{type:'area',rows:2,breed:true,ph:'Twee bronnen zeggen iets anders: beschrijf het en wat er in de feedback gebeurt. Leeg als er geen is.'})]));
   p.appendChild(d7);
-  [d1,d2,d3,d4,d5,d6,d7].forEach(function(d,i){
+
+  var es=e.escalatie,ei=e.einde;
+  var eindKaarten=e.repertoire.filter(function(id){var k=kaartBy(id);return k&&k.eindigt==='ja';});
+  var d8=el('details',{},[el('summary',{text:'H. Escalatie en einde van de episode (optioneel)'}),el('div',{class:'binnen'},[])]);
+  d8.lastChild.appendChild(el('p',{class:'hint',text:'Escalatie: houden de klachten zonder werkzame behandeling een aantal volle dagen aan, dan verergert de toestand; gebeurt dat daarna nog eens, dan is de episode verloren (geen score, wel een herkansing).'}));
+  var escVelden=[veld('Escalatie bij aanhoudende klachten?',es,'aan',{type:'select',options:['nee','ja'],onchange:function(){render();}})];
+  if(es.aan==='ja')escVelden=escVelden.concat([
+    veld('Na hoeveel volle dagen?',es,'dagen',{type:'number',ph:'4'}),
+    veld('Eerste stap: wordt de toestand',es,'toestand',{ph:'weefselinvasie',hint:'Gebruik dezelfde naam als bij de gebeurtenissen (D).'}),
+    veld('Tweede stap: verloren door',es,'verlorenDoor',{ph:'sepsis'}),
+    veld('Tekst bij een verloren episode',es,'tekst',{type:'area',rows:2,breed:true,ph:'De casus is geëscaleerd. ... Deze episode is verloren.'})]);
+  d8.lastChild.appendChild(el('div',{class:'grid'},escVelden));
+  d8.lastChild.appendChild(el('h4',{text:'Kaart die de episode stopt'+(eindKaarten.length?': '+eindKaarten.join(', '):'')}));
+  if(!eindKaarten.length)d8.lastChild.appendChild(el('p',{class:'hint',text:'Geen kaart in het repertoire stopt de episode. Zet in stap 3 bij een kaart "Stopt de episode?" op ja (bijv. Verwijzen) als je dat wilt.'}));
+  else d8.lastChild.appendChild(el('div',{class:'grid'},[
+    veld('Terecht als...',ei,'terechtAls',{type:'area',rows:2,breed:true,ph:'de status "Na 48 uur geen verbetering." is vóór of op die dag voorgekomen'}),
+    veld('Zin als het terecht was',ei,'zinTerecht',{type:'area',rows:2,breed:true}),
+    veld('Zin als het nog niet nodig was',ei,'zinNietTerecht',{type:'area',rows:2,breed:true,hint:'Wil je dat onterecht stoppen de poort niet haalt, maak dan ook een invariant (F).'})]));
+  p.appendChild(d8);
+  [d1,d2,d3,d4,d5,d6,d7,d8].forEach(function(d,i){
     if(offen[i]!==undefined)d.open=offen[i];
     d.addEventListener('toggle',function(){offen[i]=d.open;});
   });
@@ -464,6 +538,7 @@ function controle(){
     if(!e.routes.length)l(pre+'geen geldige routes beschreven.',3);
     if(!e.invarianten.length)f(pre+'geen invarianten: er is dan geen poort.',3);
     var toest=toestanden(e).nodes.map(function(n){return n.namen.join('|').toLowerCase();}).join('|').split('|');
+    if(e.escalatie&&e.escalatie.aan==='ja'&&nietLeeg(e.escalatie.toestand))toest.push(e.escalatie.toestand.trim().toLowerCase());
     e.invarianten.forEach(function(v){
       var n=pre+(v.id||'invariant zonder id');
       if(!nietLeeg(v.id))f(pre+'een invariant heeft geen id.',3);
@@ -481,7 +556,42 @@ function controle(){
     if(!nietLeeg(e.score.duurzaamheid)||!nietLeeg(e.score.doelmatigheid))l(pre+'beide score-assen invullen.',3);
     e.profielen.forEach(function(r){if(!nietLeeg(r.vraag))l(pre+'profiel '+(r.naam||'zonder naam')+' heeft geen reflectievraag.',3);});
     if(e.profielen.length<1)l(pre+'geen voorschrijfprofielen.',3);
+    // Casus 1.2–1.9: dagen, acties, gebeurtenissen per dag, escalatie, einde, overbodige kaarten, gevolgzinnen.
+    var dagen=Number(e.dagen);
+    if(!(dagen>0))f(pre+'aantal dagen ontbreekt.',3);
+    if(!(Number(e.actiesPerDag)>0))f(pre+'aantal acties per dag ontbreekt.',3);
+    e.gebeurtenissen.forEach(function(g){
+      var n=pre+'gebeurtenis '+(g.id||'?');
+      if(g.soort==='op een vaste dag'){if(!(Number(g.dag)>0))f(n+': dag ontbreekt.',3);else if(dagen>0&&Number(g.dag)>dagen)f(n+': dag '+g.dag+' valt na het einde van de episode (dag '+dagen+').',3);}
+      if(g.soort==='dagen na een kaart'){
+        if(!(Number(g.dag)>0))f(n+': aantal dagen ontbreekt.',3);
+        if(!nietLeeg(g.naKaart))f(n+': kies de kaart waarna de gebeurtenis komt.',3);
+        else if(e.repertoire.indexOf(g.naKaart)<0)f(n+': komt na '+g.naKaart+', maar die kaart zit niet in het repertoire.',3);
+      }
+    });
+    var es=e.escalatie||{};
+    if(es.aan==='ja'){
+      if(!(Number(es.dagen)>0))f(pre+'escalatie staat aan, maar het aantal dagen ontbreekt.',3);
+      if(!nietLeeg(es.toestand))l(pre+'escalatie: de eerste stap (toestand) heeft geen naam.',3);
+      if(!nietLeeg(es.tekst))l(pre+'escalatie: de tekst bij een verloren episode ontbreekt.',3);
+    }
+    var eind=e.repertoire.filter(function(id){var k=kaartBy(id);return k&&k.eindigt==='ja';});
+    if(eind.length&&(!nietLeeg(e.einde.zinTerecht)||!nietLeeg(e.einde.zinNietTerecht)))l(pre+eind.join(', ')+' stopt de episode: vul bij H in wanneer dat terecht is en wat de speler dan ziet.',3);
+    if(eind.length&&!nietLeeg(e.einde.terechtAls))l(pre+eind.join(', ')+' stopt de episode: wanneer is dat terecht? (H)',3);
+    e.overbodig.forEach(function(r,i){
+      var n=pre+'overbodige kaart '+(r.code||String.fromCharCode(97+i));
+      if(!nietLeeg(r.situatie))l(n+': de situatie is niet beschreven.',3);
+      var ids=splitIds(r.kaarten);
+      if(!ids.length)l(n+': geen kaart genoemd.',3);
+      ids.forEach(function(id){if(!kaartBy(id))f(n+': onbekende kaart '+id+'.',3);else if(e.repertoire.indexOf(id)<0)l(n+': kaart '+id+' zit niet in het repertoire.',3);});
+    });
+    e.invarianten.forEach(function(v){if(nietLeeg(v.id)&&!nietLeeg(v.weglaat))l(pre+v.id+': geen gevolgzin. Wat ziet de speler bij de patiënt als deze regel geschonden is?',3);});
   });
+  S.kaarten.forEach(function(k){
+    if(k.doel==='ja'&&!nietLeeg(k.keuzemenu))l('Kaart '+(k.id||'?')+' is een doelkaart: beschrijf het keuzemenu.',2);
+    if(/\bde speler\b|verlaat de kaart/i.test(k.effect||''))l('Kaart '+(k.id||'?')+': de effecttekst bevat ontwerptaal ("de speler"). De student ziet deze tekst.',2);
+  });
+  if(!nietLeeg((S.restprofiel||{}).vraag))l('Restprofiel: de reflectievraag ontbreekt.',3);
   return m;
 }
 function stapControle(p){
@@ -614,11 +724,18 @@ function schemaSvg(fit){
     // info gebeurtenissen onder
     var infoY=vy+NH+14;
     g.info.forEach(function(ev,i){
-      var w=wrap('Gebeurtenis '+(ev.id||'?')+' ('+(ev.trigger||'')+')'+(ev.tekst?': '+ev.tekst:''),Math.floor(c.W/6));
+      var w=wrap('Gebeurtenis '+(ev.id||'?')+' ('+triggerTekst(ev)+')'+(ev.tekst?': '+ev.tekst:''),Math.floor(c.W/6));
       out+='<rect x="'+c.x+'" y="'+infoY+'" width="'+c.W+'" height="'+(w.length*15+14)+'" rx="8" fill="#fdf0dc" stroke="#b45309"/>';
       out+=tekst(c.x+10,infoY+18,w,{size:11,fill:'#1f2a24'});
       infoY+=w.length*15+22;
     });
+    var es=e.escalatie||{};
+    if(es.aan==='ja'){
+      var we=wrap('Escalatie: '+(es.dagen||'?')+' volle dagen aanhoudende klachten → '+(es.toestand||'?')+'; nog eens '+(es.dagen||'?')+' dagen → '+(es.verlorenDoor||'verloren')+' (episode verloren)',Math.floor(c.W/6));
+      out+='<rect x="'+c.x+'" y="'+infoY+'" width="'+c.W+'" height="'+(we.length*15+14)+'" rx="8" fill="#fde8e6" stroke="#b42318"/>';
+      out+=tekst(c.x+10,infoY+18,we,{size:11,fill:'#1f2a24'});
+      infoY+=we.length*15+22;
+    }
     maxH=Math.max(maxH,infoY+10);
     // pijl naar volgende episode
     if(ci<cols.length-1){
@@ -686,7 +803,8 @@ function genereerMarkdown(){
   o.push('- **Tussen episodes** (maanden tot jaren, bij een recidief) verandert de **context**.');
   o.push('- **Binnen een episode** (dagen) verandert de **ernst**, via gebeurtenissen. De volgorde is vrij waar gebeurtenissen dezelfde groep hebben.');
   o.push('- **Klinische regels hangen aan de toestand, niet aan de route.**');
-  o.push('- **Verwijzen** is de rand van de kaart en kan vanuit elke toestand.');
+  var stoppers=S.kaarten.filter(function(k){return k.eindigt==='ja'&&nietLeeg(k.id);});
+  o.push('- **Verwijzen** is de rand van de kaart en kan vanuit elke toestand.'+(stoppers.length?' Na '+stoppers.map(function(k){return k.label||k.id;}).join(' of ')+' stopt de episode.':''));
   o.push('');
   var asc=S.episodes.map(function(e,i){return 'Episode '+(i+1)+' ('+[e.patient.leeftijd,e.startToestand].filter(nietLeeg).join(', ')+')';}).join('  →  ');
   o.push('```');o.push(asc);
@@ -695,7 +813,8 @@ function genereerMarkdown(){
     if(g.nodes.length>1||g.info.length){
       var l=['  Episode '+(i+1)+': '+g.nodes[0].naam];
       g.nodes.slice(1).forEach(function(nd){l.push('    ↳ '+nd.naam+(nd.evs.length?' (gebeurtenis '+nd.evs.join('/')+')':''));});
-      g.info.forEach(function(ev){l.push('    ⇢ gebeurtenis '+ev.id+': '+(ev.trigger||''));});
+      g.info.forEach(function(ev){l.push('    ⇢ gebeurtenis '+ev.id+': '+triggerTekst(ev));});
+      if(e.escalatie&&e.escalatie.aan==='ja')l.push('    ⇢ escalatie: '+(e.escalatie.toestand||'?')+', daarna '+(e.escalatie.verlorenDoor||'verloren'));
       o.push(l.join('\n'));
     }
   });
@@ -708,17 +827,20 @@ function genereerMarkdown(){
   o.push('## '+n+'. Kaartenbibliotheek');o.push('');
   o.push('- Labels zijn neutraal: ze verraden geen timing en geen oplossing.');
   o.push('- Elke kaart heeft een verplichte downside.');
-  o.push('- Kaarten met een **doel** (⊙) richten zich op een middel uit de lijst.');
+  o.push('- Kaarten met een **doel** (⊙) richten zich op een middel uit de lijst: een nieuw voorschrift of bestaande comedicatie. Een doel waarvoor de kaart al gespeeld is, staat niet meer in het keuzemenu.');
   o.push('- Gegevens, Onderzoek, Informeren en Evalueren zijn vaste kaarten die in elke casus terugkomen.');o.push('');
   o.push('| Id | Categorie | Label | Vanaf | Effect / wat de kaart onthult | Downside | Bron |\n|---|---|---|---|---|---|---|');
   var ks=S.kaarten.slice().sort(function(a,b){return CATS.indexOf(a.categorie)-CATS.indexOf(b.categorie);});
-  ks.forEach(function(k){o.push('| '+mdCel(k.id)+' | '+k.categorie+(k.doel==='ja'?' ⊙':'')+' | '+mdCel(k.label)+' | E'+(k.vanaf||1)+' | '+mdCel(k.effect)+' | '+mdCel(k.downside)+' | '+mdCel(k.bron)+' |');});
+  ks.forEach(function(k){
+    var eff=[k.effect,k.doel==='ja'&&nietLeeg(k.keuzemenu)?'Keuzemenu: '+k.keuzemenu:'',k.eindigt==='ja'?'Na deze kaart stopt de episode.':''].filter(nietLeeg).join(' ');
+    o.push('| '+mdCel(k.id)+' | '+k.categorie+(k.doel==='ja'?' ⊙':'')+' | '+mdCel(k.label)+' | E'+(k.vanaf||1)+' | '+mdCel(eff)+' | '+mdCel(k.downside)+' | '+mdCel(k.bron)+' |');
+  });
   o.push('');o.push('---');o.push('');
   S.episodes.forEach(function(e,i){
     n++;var pt=e.patient;
     o.push('## '+n+'. Episode '+(i+1)+' — level '+(e.level||i+1));o.push('');
     o.push('**Knoppen:**');
-    o.push(bullets(['repertoire: '+e.knoppen.repertoire,'acties per beurt: '+e.knoppen.acties,'gebeurtenissen: '+e.knoppen.gebeurtenissen,'richtlijn raadplegen: '+e.knoppen.raadplegen].filter(function(x){return !/: $/.test(x);})));o.push('');
+    o.push(bullets(['duur: '+(e.dagen||'?')+' dagen','acties per dag: '+(e.actiesPerDag||'?'),'repertoire: '+(e.knoppen.repertoire||''),'gebeurtenissen: '+(e.knoppen.gebeurtenissen||''),'richtlijn raadplegen: '+(e.knoppen.raadplegen||'')].filter(function(x){return !/: $/.test(x);})));o.push('');
     if(nietLeeg(e.contextwissel)){o.push('**Wat verandert t.o.v. de vorige episode:** '+e.contextwissel);o.push('');}
     o.push('### Patiëntkaart');
     o.push(bullets([
@@ -734,7 +856,7 @@ function genereerMarkdown(){
     if(e.gebeurtenissen.length){
       o.push('### Gebeurtenissen');o.push('');
       o.push('| Id | Trigger | Toestand | Groep | Inhoud |\n|---|---|---|---|---|');
-      e.gebeurtenissen.forEach(function(g){o.push('| '+mdCel(g.id)+' | '+mdCel(g.trigger)+' | '+mdCel(g.toestand)+' | '+mdCel(g.groep)+' | '+mdCel(g.tekst)+' |');});
+      e.gebeurtenissen.forEach(function(g){o.push('| '+mdCel(g.id)+' | '+mdCel(triggerTekst(g))+' | '+mdCel(g.toestand)+' | '+mdCel(g.groep)+' | '+mdCel(g.tekst)+' |');});
       o.push('');
     }
     if(e.routes.length){
@@ -753,6 +875,28 @@ function genereerMarkdown(){
       o.push('### Score');
       o.push(bullets([nietLeeg(e.score.duurzaamheid)?'**Duurzaamheid:** '+e.score.duurzaamheid:'',nietLeeg(e.score.doelmatigheid)?'**Doelmatigheid:** '+e.score.doelmatigheid:'']));o.push('');
     }
+    var ob=e.overbodig.filter(function(r){return nietLeeg(r.situatie)||nietLeeg(r.kaarten);});
+    if(ob.length){
+      o.push('**Overbodige kaarten:** elke situatie kost 1 punt doelmatigheid, met ondergrens '+(e.score.ondergrens||1)+'. Bij een gehaalde poort ziet de speler per situatie "Deze kaart was hier niet nodig:" met het label van de kaart.');o.push('');
+      o.push('| | Kaart(en) | Situatie | Afgeleid uit |\n|---|---|---|---|');
+      ob.forEach(function(r,j){o.push('| '+mdCel(r.code||String.fromCharCode(97+j))+' | '+mdCel(r.kaarten)+' | '+mdCel(r.situatie)+' | '+mdCel(r.afgeleidUit)+' |');});
+      o.push('');
+    }
+    var es=e.escalatie||{},ei=e.einde||{},eind=e.repertoire.filter(function(id){var k=kaartBy(id);return k&&k.eindigt==='ja';});
+    if(es.aan==='ja'||eind.length){
+      o.push('### Escalatie en einde');
+      var eb=[];
+      if(es.aan==='ja'){
+        eb.push('**Escalatie:** houden de klachten '+(es.dagen||'?')+' volle dagen aan zonder werkzame behandeling, dan volgt '+(es.toestand||'?')+'. Na opnieuw '+(es.dagen||'?')+' volle dagen aanhoudende klachten volgt '+(es.verlorenDoor||'het einde')+': de episode eindigt direct en is verloren (geen score, geen profiel, de volgende episode gaat niet open, herkansing mogelijk). Een werkzaam middel stopt de teller.');
+        if(nietLeeg(es.tekst))eb.push('**Tekst bij een verloren episode:** "'+es.tekst+'"');
+      }
+      if(eind.length){
+        eb.push('**Na '+eind.join(' of ')+' stopt de episode.** Daarna volgt de gewone beoordeling op de stand van dat moment, met één zin of het terecht was.'+(nietLeeg(ei.terechtAls)?' Terecht als '+ei.terechtAls+'.':''));
+        if(nietLeeg(ei.zinTerecht))eb.push('Terecht: "'+ei.zinTerecht+'"');
+        if(nietLeeg(ei.zinNietTerecht))eb.push('Nog niet nodig: "'+ei.zinNietTerecht+'"');
+      }
+      o.push(bullets(eb));o.push('');
+    }
     var wz=e.invarianten.filter(function(v){return nietLeeg(v.weglaat);});
     if(wz.length){o.push('### Wat er zichtbaar wordt als een kaart ontbreekt');o.push(bullets(wz.map(function(v){return '**'+v.id+':** '+v.weglaat;})));o.push('');}
     var fb=e.invarianten.filter(function(v){return nietLeeg(v.vraag);}).map(function(v){return [v.id,v.vraag];})
@@ -766,11 +910,16 @@ function genereerMarkdown(){
   o.push('## '+n+'. Spelregels die de casus veronderstelt');o.push('');
   o.push('*Standaardtekst van het casussjabloon; wijkt deze casus af, pas het dan hier aan.*');o.push('');
   o.push('**Poort en score:**');
-  o.push('- Veiligheid is een poort. Bij een schending geeft het spel geen score, toont de downside en stelt één Socratische vraag over de ernstigste schending. Daarna volgt een herkansing.');
-  o.push('- Wie de poort haalt, ziet de score per as, het voorschrijfprofiel en één reflectievraag.');
+  var rp=S.restprofiel||{};
+  o.push('- Veiligheid is een poort. Bij een schending geeft het spel geen score en toont de downside. De gevolgen bij de patiënt zijn leidend: eerst komen de zinnen uit "Wat er zichtbaar wordt als een kaart ontbreekt" van alle geschonden regels, daarna één hint: de Socratische vraag over de ernstigste schending. Daarna volgt een herkansing.');
+  if(S.episodes.some(function(e){return e.escalatie&&e.escalatie.aan==='ja';}))o.push('- Bij een verloren episode (escalatie) is de uitkomst "verloren": geen score, geen profiel, de volgende episode gaat niet open, en een herkansing is mogelijk.');
+  o.push('- Wie de poort haalt, ziet de score per as, het voorschrijfprofiel en één reflectievraag.'+(nietLeeg(rp.vraag)?' Past de route bij geen van de profielen van de episode, dan krijgt ze het restprofiel "'+(rp.naam||'Eigen route')+'", met de reflectievraag "'+rp.vraag+'"':''));
   o.push('- Score-assen zijn onder meer duurzaamheid en doelmatigheid.');o.push('');
   o.push('**Meten:** alleen de eerste poging telt als meting. Herkansingen zijn om van te leren.');o.push('');
-  o.push('**Episodes en gebeurtenissen:** gebeurtenissen worden getriggerd op het aantal gespeelde kaarten. Het aantal acties per beurt en de triggerwaarden zijn engine-parameters, geen klinische regels.');o.push('');
+  o.push('**Episodes en gebeurtenissen:**');
+  o.push('- Een episode duurt een vast aantal dagen; per dag heeft de speler een vast aantal acties. Gebeurtenissen verschijnen aan het begin van een dag.');
+  o.push('- Het aantal acties per dag en de dagen waarop gebeurtenissen verschijnen zijn engine-instellingen, geen klinische regels.');
+  o.push('- "Episode afronden" mag altijd. Het spel loopt dan dag voor dag door tot de laatste dag, of tot er een gebeurtenis verschijnt; dan kan de speler reageren en rondt opnieuw af.');o.push('');
   o.push('---');o.push('');
   n++;
   o.push('## '+n+'. Open punten (blokkeren het bouwen niet)');o.push('');
@@ -809,11 +958,12 @@ function download(naam,inhoud,type){
   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
 }
 
-/* ================= Voorbeeld: casus UWI (uit casus-uwi.md, versie 1.1) ================= */
-function K(id,categorie,label,vanaf,doel,effect,downside,bron){return {id:id,categorie:categorie,label:label,vanaf:vanaf,doel:doel?'ja':'nee',effect:effect,downside:downside,bron:bron};}
+/* ================= Voorbeeld: casus UWI (uit casus-uwi.md, versie 1.9; keuzemenu's uit casussen/uwi.js) ================= */
+function K(id,categorie,label,vanaf,doel,effect,downside,bron,keuzemenu,eindigt){return {id:id,categorie:categorie,label:label,vanaf:vanaf,doel:doel?'ja':'nee',eindigt:eindigt?'ja':'nee',keuzemenu:keuzemenu||'',effect:effect,downside:downside,bron:bron};}
+function OB(code,kaarten,situatie,afgeleidUit){return {code:code,kaarten:kaarten,situatie:situatie,afgeleidUit:afgeleidUit};}
 function voorbeeld(){
   var o=leeg();
-  o.basis={id:'uwi-eerstelijn',titel:'Casus UWI in de eerste lijn — tutorialcasus Epic green cards',versie:'1.1',datum:'11 oktober 2026',
+  o.basis={id:'uwi-eerstelijn',titel:'Casus UWI in de eerste lijn — tutorialcasus Epic green cards',versie:'1.9',datum:'20 november 2026',
     functie:'Tutorialcasus: leert het spel én de signatuurvaardigheid',
     signatuur:'Veranderende context: empirisch starten → bijsturen op de kweek → nierfunctie en comedicatie',
     validatie:'Voorschrijven en wat daarna komt: Bart Pouls (gevalideerd). Diagnostiek en klinische context: nog voorleggen aan een huisarts',
@@ -824,86 +974,125 @@ function voorbeeld(){
     {episode:'E1',doel:'Kiest bij een ongecompliceerde cystitis een beleid dat bij de patiënt en de richtlijn past (afwachten hoort daarbij) en borgt de veiligheid met alarmsignalen en een opvolgmoment',bloom:'Evalueren',gedrag:'Haalt de poort I1, I3 en I4. Het gekozen voorschrijfprofiel wordt vastgelegd.',meting:'Profiel, plus poort gehaald ja/nee'},
     {episode:'E2',doel:'Herkent dat de beslisinformatie verouderd is, haalt de actuele nierfunctie op, past middel, kweek en monitoring daarop aan en stuurt bij op de kweekuitslag',bloom:'Evalueren',gedrag:'Speelt G2 vóór een voorschrijfkaart. Haalt de poort I5–I8. Wisselt niet onnodig.',meting:'Is G2 gespeeld vóór de voorschrijfkaart ja/nee; poort ja/nee'},
     {episode:'E3',doel:'Herziet bij verslechtering het hele medicatieplan: een antibioticum dat het weefsel bereikt in een aangepaste dosis, de interactie met calcium, de sick day rules, en de bestaande combinatie RAAS-remmer plus spironolacton; volgt op of verwijst',bloom:'Creëren',gedrag:'Haalt de poort I9–I16. Gebruikt de eerdere kweek. De-escaleert na de kweek.',meting:'Poort per invariant; aantal gemiste invarianten'}];
+  var AB='nitrofurantoïne, fosfomycine of trimethoprim (in episode 3 ook ciprofloxacine, amoxicilline/clavulaanzuur, cotrimoxazol of amoxicilline)';
   o.kaarten=[
     K('G1','Gegevens','Medicatieoverzicht nalopen',1,0,'Toont de actuele medicatielijst','Kost een actie','—'),
     K('G2','Gegevens','Recente labwaarden opvragen',1,0,'E1: eGFR 42, recent. E2: eGFR 29 (verborgen). E3: eGFR 28, bevestigd.','Kost een actie','—'),
     K('G3','Gegevens','Eerdere kweekuitslagen opvragen',3,0,'Toont de kweek uit episode 2','Kost een actie','NHG: kweken tot ongeveer 1 jaar terug meewegen'),
-    K('O1','Onderzoek','Urinekweek inzetten',1,0,'Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag in E2 na de 4e gespeelde kaart, in E3 drie kaarten na O1.','E1: niet geïndiceerd, kost doelmatigheid','NHG'),
+    K('O1','Onderzoek','Urinekweek inzetten',1,0,'Zet een kweek in. Moet vóór de eerste dosis worden afgenomen. Uitslag 3 dagen na inzetten.','E1: niet geïndiceerd, kost doelmatigheid','NHG'),
     K('O2','Onderzoek','Kalium bepalen',1,0,'Bepaalt de kaliumspiegel','Alleen zinvol bij een indicatie; anders kost het doelmatigheid','NHG, KNMP'),
     K('V1','Voorschrijven','Afwachtend beleid',1,0,'Geen antibioticum; ruim drinken, zo nodig pijnstilling','Klachten duren langer; risico op pyelonefritis ongeveer 1,6% hoger','NHG'),
-    K('V2','Voorschrijven','Uitgesteld recept',1,0,'De patiënt start zelf als de klachten aanhouden of toenemen','Ze moet weten wanneer ze moet starten','NHG'),
+    K('V2','Voorschrijven','Uitgesteld recept',1,1,'De patiënt start zelf met het gekozen middel als de klachten aanhouden of toenemen','Ze moet weten wanneer ze moet starten','NHG','het middel dat de patiënt thuis start: '+AB),
     K('V3','Voorschrijven','Nitrofurantoïne',1,0,'E1: 5 dagen 2 dd 100 mg mga. In een risicogroep: 7 dagen.','Vermijden bij eGFR < 30: stapeling met kans op neuropathie, en geen bactericide concentratie in de urine. Ongeschikt bij weefselinvasie. Maag-darmklachten [G].','NHG'),
     K('V4','Voorschrijven','Fosfomycine',1,0,'Eenmalig 3 g, 2–3 uur na de maaltijd, bij voorkeur voor de nacht','Klachten zijn niet direct weg. Ongeschikt bij weefselinvasie.','NHG'),
     K('V5','Voorschrijven','Trimethoprim',1,0,'E1: 3 dagen 1 dd 300 mg. Risicogroep: 7 dagen.','Naast een RAS-remmer of kaliumsparend diureticum stijgt het kalium (controle nodig bij een 7-daagse kuur). Bij eGFR 10–30: na dag 3 halveren en kans op therapiefalen. Hoge resistentie bij E. coli.','NHG, KNMP'),
-    K('V6','Voorschrijven','Dosis aanpassen',2,1,'De nieuwe dosering gaat meteen in en blijft staan','Een verkeerde aanpassing geeft onder- of overdosering','NHG, SIDRIK'),
+    K('V6','Voorschrijven','Dosis aanpassen',2,1,'De nieuwe dosering gaat meteen in en blijft staan','Een verkeerde aanpassing geeft onder- of overdosering','NHG, SIDRIK','trimethoprim: halveren / verdubbelen / interval 48 uur; amoxicilline/clavulaanzuur: 875/125 mg 2 dd / 500/125 mg 2 dd / 500/125 mg 1 dd; ciprofloxacine: normale keerdosis 1× per 24 uur / halveren / geen aanpassing; lisinopril: halveren / stoppen / verdubbelen. Alleen middelen die lopen.'),
     K('V7','Voorschrijven','Ciprofloxacine',3,0,'7 dagen 2 dd 500 mg','Bij ouderen: kans op peesschade, QT-verlenging, aneurysma. Minder opname naast calcium. NHG: terughoudend bij ouderen en bij een nierfunctiestoornis.','NHG, Kompas'),
     K('V8','Voorschrijven','Amoxicilline/clavulaanzuur',3,0,'10 dagen 3 dd 500/125 mg','Bij eGFR < 30 stapelt clavulaanzuur: dan alleen 875/125 mg 2 dd','NHG'),
     K('V9','Voorschrijven','Cotrimoxazol',3,0,'10 dagen 2 dd 960 mg','Gecontra-indiceerd bij een ernstige nierfunctiestoornis. Met spironolacton kans op ernstige hyperkaliëmie.','NHG, Kompas'),
     K('V10','Voorschrijven','Amoxicilline',3,0,'3 dd 500 mg, alleen bij aangetoonde gevoeligheid','De kweek laat resistentie zien: geen werking','NHG'),
-    K('B1','Bijsturen','Antibioticum wisselen',2,1,'Vervangt het lopende antibioticum','Onnodig wisselen kost duurzaamheid','NHG'),
-    K('B2','Bijsturen','Antibioticum stoppen',2,1,'Stopt het lopende antibioticum','Te vroeg stoppen geeft therapiefalen','—'),
-    K('B3','Bijsturen','Medicatie tijdelijk stoppen',3,1,'Pauzeert een bestaand middel (sick day)','Vraagt een afspraak over herstart','SIDRIK'),
-    K('B4','Bijsturen','Innametijden aanpassen',3,1,'Ciprofloxacine 1–2 uur vóór of ten minste 4 uur ná calcium','Vraagt uitleg aan de patiënt','Kompas'),
-    K('B5','Bijsturen','Medicatie hervatten',3,1,'Het middel wordt weer gestart. Herstarten hoort zodra de klachten weg zijn.','Hervatten zonder herbeoordeling kan dezelfde schade herhalen','SIDRIK'),
+    K('B1','Bijsturen','Antibioticum wisselen',2,1,'Vervangt het lopende antibioticum','Onnodig wisselen kost duurzaamheid','NHG','het nieuwe antibioticum: '+AB+'; alleen als er een antibioticum loopt'),
+    K('B2','Bijsturen','Antibioticum stoppen',2,1,'Stopt het lopende antibioticum','Te vroeg stoppen geeft therapiefalen','—','het antibioticum dat loopt'),
+    K('B3','Bijsturen','Medicatie tijdelijk stoppen',3,1,'Pauzeert een bestaand middel (sick day)','Vraagt een afspraak over herstart','SIDRIK','lisinopril, spironolacton of calcium/colecalciferol (zolang het loopt)'),
+    K('B4','Bijsturen','Innametijden aanpassen',3,1,'Ciprofloxacine 1–2 uur vóór of ten minste 4 uur ná calcium','Vraagt uitleg aan de patiënt','Kompas','ciprofloxacine (zolang het loopt)'),
+    K('B5','Bijsturen','Medicatie hervatten',3,1,'Het middel wordt weer gestart. Herstarten hoort zodra de klachten weg zijn.','Hervatten zonder herbeoordeling kan dezelfde schade herhalen','SIDRIK','een gestopt middel: lisinopril, spironolacton of calcium/colecalciferol'),
     K('N1','Informeren','Alarmsignalen bespreken',1,0,'Bij koorts of ziek worden direct contact opnemen','—','NHG'),
-    K('N2','Informeren','Gebruik en verwachting uitleggen',1,1,'Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg','—','NHG'),
+    K('N2','Informeren','Gebruik en verwachting uitleggen',1,1,'Inhoud per middel, bijvoorbeeld bij fosfomycine: klachten niet direct weg. Koppelt aan het actieve middel.','—','NHG','het antibioticum dat loopt'),
     K('N3','Informeren','Drinkadvies geven',3,0,'2–2,5 liter per dag','—','SIDRIK'),
     K('Ev1','Evalueren','Opvolgmoment afspreken',1,0,'Afwachten: na 1 week alsnog starten. Na een kuur: als de klachten 24–48 uur na afloop niet duidelijk minder zijn, opnieuw urineonderzoek. Weefselinvasie: contact binnen 48 uur. Sick day: monitoring na 1–3 dagen.','—','NHG, SIDRIK'),
-    K('Ev2','Evalueren','Overleggen met de voorschrijver',3,1,'Legt een bestaand middel voor aan de voorschrijver','Kost een actie','Bart; CVRM-richtlijn [G], nog te verifiëren'),
-    K('Ev3','Evalueren','Verwijzen',3,0,'De patiënt gaat naar de tweede lijn','Onnodig verwijzen kost doelmatigheid','NHG')];
+    K('Ev2','Evalueren','Overleggen met de voorschrijver',3,1,'Legt een bestaand middel voor aan de voorschrijver','Kost een actie','Bart; CVRM-richtlijn [G], nog te verifiëren','lisinopril of spironolacton'),
+    K('Ev3','Evalueren','Verwijzen',3,0,'De patiënt gaat naar de tweede lijn','Onnodig verwijzen kost doelmatigheid','NHG','',1)];
   var e1=leegEpisode(1),e2=leegEpisode(2),e3=leegEpisode(3);
   var r1=['G1','G2','O1','O2','V1','V2','V3','V4','V5','N1','N2','Ev1'];
-  e1.startToestand='cystitis';e1.knoppen={repertoire:'klein (12 kaarten)',acties:'ruim',gebeurtenissen:'geen',raadplegen:'kost niets'};
+  var START='Een antibioticum starten dat op dat moment al loopt (met de kaart zelf, met Antibioticum wisselen of met een Uitgesteld recept)';
+
+  e1.startToestand='cystitis';e1.dagen=14;e1.actiesPerDag=4;e1.knoppen={repertoire:'klein (12 kaarten)',gebeurtenissen:'geen',raadplegen:'kost niets'};
   e1.patient={naam:'Mevrouw V.',leeftijd:'72 jaar',klachten:'Eerste cystitis: pijnlijke en frequente mictie sinds 2 dagen, geen koorts, nitriettest positief.',medicatie:'lisinopril (hypertensie)',lab:'eGFR 42, recent',risico:'Geen risicogroep. De eGFR is ≥ 30 [NHG]. De leeftijd ligt bewust onder 75, de grens die de NHG noemt als factor bij verminderde weerstand [NHG].',verborgen:[]};
   e1.repertoire=r1.slice();e1.volgorde='Alle kaarten mogen in elke volgorde.';
   e1.routes=[{naam:'Afwachten',kern:'V1 + N1 + Ev1',profiel:'Terughoudend'},{naam:'Uitgesteld recept',kern:'V2 (+ middel) + N1 + N2 + Ev1',profiel:'Gedeelde regie'},{naam:'Nitrofurantoïne 5 dagen',kern:'V3 + N1 (+ N2, Ev1)',profiel:'Direct behandelen, 1e keus'},{naam:'Fosfomycine',kern:'V4 + N1 + N2',profiel:'Direct behandelen, 2e keus'},{naam:'Trimethoprim 3 dagen',kern:'V5 + N1',profiel:'Direct behandelen, 3e keus'}];
   e1.invarianten=[
     {id:'I1',ernst:'5',bron:'NHG',geldtIn:'*',fout:'Een route zonder N1',vraag:'Mevrouw staat buiten. Bij welke klacht belt ze vannacht, en van wie weet ze dat?',weglaat:'Mevrouw weet niet wanneer ze moet bellen.'},
     {id:'I3',ernst:'5',bron:'NHG',geldtIn:'*',fout:'V1 zonder Ev1',vraag:'Je wacht af. Tot wanneer, en wat gebeurt er dan?',weglaat:'Er is geen moment om alsnog te starten als de klachten aanhouden.'},
-    {id:'I4',ernst:'5',bron:'[G]',geldtIn:'*',fout:'Twee antibiotica tegelijk',vraag:'Wat lost het tweede middel op dat het eerste niet oplost?',weglaat:''}];
-  e1.score={duurzaamheid:'afwachten > uitgesteld recept > direct een antibioticum',doelmatigheid:'O1 (kweek niet geïndiceerd) en O2 (geen indicatie) kosten punten'};
-  e1.profielen=[{naam:'Terughoudend',vraag:'Je schreef niets voor. Bij welke patiënt zou dat niet mogen?'},{naam:'Gedeelde regie',vraag:''},{naam:'Direct behandelen',vraag:'Het werkt. Was het nodig, en koos zíj ervoor?'}];
+    {id:'I4',ernst:'5',bron:'[G]',geldtIn:'*',fout:'Twee antibiotica tegelijk',vraag:'Wat lost het tweede middel op dat het eerste niet oplost?',weglaat:'Mevrouw gebruikt twee antibiotica tegelijk.'}];
+  e1.score={duurzaamheid:'afwachten > uitgesteld recept > direct een antibioticum',doelmatigheid:'O1 (kweek niet geïndiceerd) en O2 (geen indicatie) kosten punten',ondergrens:1};
+  e1.overbodig=[
+    OB('f','G2','Recente labwaarden opvragen: het lab staat al als "recent" op de patiëntkaart','Patiëntkaart (vastgesteld)'),
+    OB('g','V2, V3, V4, V5',START,'Een middel dat al loopt, opnieuw starten voegt niets toe [G]'),
+    OB('h','V1','Afwachtend beleid terwijl in deze poging direct een antibioticum (V3, V4, V5) gestart wordt','Effect van V1: "Geen antibioticum" [G]')];
+  e1.profielen=[{naam:'Terughoudend',vraag:'Je schreef niets voor. Bij welke patiënt zou dat niet mogen?'},
+    {naam:'Gedeelde regie',vraag:'Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?'},
+    {naam:'Direct behandelen',vraag:'Het werkt. Was het nodig, en koos zíj ervoor?'}];
   e1.feedbackExtra=[{trigger:'O1 gespeeld',vraag:'Wat doe je bij welke uitslag anders?'}];
 
   e2.startToestand='cystitis';e2.contextwissel='6 jaar later · 78 jaar · + calcium/colecalciferol · eGFR gedaald (verborgen)';
-  e2.knoppen={repertoire:'groter, met afleiders (15 kaarten)',acties:'ruim',gebeurtenissen:'1 (kweekuitslag)',raadplegen:'kost niets'};
+  e2.dagen=14;e2.actiesPerDag=4;e2.knoppen={repertoire:'groter, met afleiders (15 kaarten)',gebeurtenissen:'1 (kweekuitslag)',raadplegen:'kost niets'};
   e2.patient={naam:'Mevrouw V.',leeftijd:'78 jaar',klachten:'Tweede cystitis, geen koorts, nitriettest positief.',medicatie:'lisinopril; calcium/colecalciferol (afleider, bereidt episode 3 voor)',lab:'laatst bekende eGFR 42, van 6 jaar geleden',risico:'Eerdere UWI: episode 1, toen geen kweek gedaan. De ware eGFR is 29: daarmee valt ze in de risicogroep.',verborgen:[{kaart:'G2',onthult:'eGFR 29 uit de jaarlijkse controle. Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG].'}]};
   e2.repertoire=r1.concat(['V6','B1','B2']);e2.erft='I1, I4';e2.volgorde='O1 vóór de eerste antibioticumkaart. O2 ná V5. De rest is vrij.';
-  e2.gebeurtenissen=[{id:'C',trigger:'na de 4e gespeelde kaart, alleen als O1 gespeeld is',toestand:'',groep:'',tekst:'Kweekuitslag: E. coli, resistent voor trimethoprim en amoxicilline; gevoelig voor nitrofurantoïne, fosfomycine, amoxicilline/clavulaanzuur en ciprofloxacine.'}];
+  e2.gebeurtenissen=[{id:'C',soort:'dagen na een kaart',dag:3,naKaart:'O1',trigger:'trimethoprim: klachten houden aan; fosfomycine: klachten nemen af',toestand:'',groep:'',tekst:'Kweekuitslag: E. coli, resistent voor trimethoprim en amoxicilline; gevoelig voor nitrofurantoïne, fosfomycine, amoxicilline/clavulaanzuur en ciprofloxacine.'}];
   e2.routes=[{naam:'Fosfomycine',kern:'G2 → O1 → V4 + N1 + N2 → na de uitslag niet wisselen',profiel:'Kweekgestuurd, smal'},{naam:'Trimethoprim 7 dagen',kern:'G2 → O1 → V5 + O2 (dag 2–4) + V6 (na dag 3) + N1 → na de uitslag B1 naar fosfomycine',profiel:'Bijgestuurd'}];
   e2.invarianten=[
     {id:'I5',ernst:'2',bron:'NHG',geldtIn:'*',fout:'Nitrofurantoïne bij eGFR < 30, ook als de kweek "gevoelig" zegt',vraag:'Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?',weglaat:'De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.'},
-    {id:'I6',ernst:'4',bron:'NHG',geldtIn:'*',fout:'Een antibioticum starten zonder O1 vooraf, of afwachten (V1/V2) in de risicogroep',vraag:'Wat vertelt een kweek van urine die al antibioticum heeft gezien?',weglaat:''},
-    {id:'I7',ernst:'3',bron:'NHG, KNMP',geldtIn:'*',fout:'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3',vraag:'Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?',weglaat:'De kaliumspiegel is onbekend.'},
-    {id:'I8',ernst:'4',bron:'NHG',geldtIn:'*',fout:'Bij aanhoudende klachten doorgaan met een middel waarvoor de bacterie resistent is',vraag:'De kweek is binnen en de klachten blijven. Waar wacht je nog op?',weglaat:''}];
-  e2.score={duurzaamheid:'wisselen terwijl het middel werkt en de klachten afnemen, kost punten',doelmatigheid:'G2 spelen vóór de voorschrijfkaart levert punten op'};
-  e2.profielen=[{naam:'Kweekgestuurd, smal',vraag:''},{naam:'Bijgestuurd',vraag:''}];
-  e2.feedbackExtra=[{trigger:'Verouderde eGFR niet opgemerkt',vraag:'Hoe oud was de eGFR waarop je besloot? Wat is er sindsdien met haar gebeurd?'},{trigger:'Onnodig gewisseld',vraag:'Het werkte en de klachten namen af. Wat won je met wisselen?'}];
+    {id:'I6',ernst:'4',bron:'NHG',geldtIn:'*',fout:'Een antibioticum starten zonder O1 vooraf, of afwachten (V1/V2) in de risicogroep',vraag:'Wat vertelt een kweek van urine die al antibioticum heeft gezien?',weglaat:'Geen kweek: "Er is geen kweek van vóór de eerste dosis." Afwachten: "Mevrouw krijgt geen antibioticum, terwijl ze in de risicogroep valt."'},
+    {id:'I7',ernst:'3',bron:'NHG, KNMP',geldtIn:'*',fout:'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3',vraag:'Zeven dagen trimethoprim naast lisinopril bij een eGFR van 29. Wanneer weet je wat haar kalium doet?',weglaat:'Geen kalium: "De kaliumspiegel is onbekend." Niet gehalveerd: "De dosis trimethoprim is na dag 3 niet gehalveerd."'},
+    {id:'I8',ernst:'4',bron:'NHG',geldtIn:'*',fout:'Bij aanhoudende klachten doorgaan met een middel waarvoor de bacterie resistent is',vraag:'De kweek is binnen en de klachten blijven. Waar wacht je nog op?',weglaat:'De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.'},
+    {id:'I17',ernst:'2',bron:'Bart (besluit 16 november 2026) [G]',geldtIn:'*',fout:'Lisinopril verdubbelen',vraag:'Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?',weglaat:'De nierfunctie daalt verder en het kalium stijgt.'},
+    {id:'I18',ernst:'3',bron:'Bart (besluit 16 november 2026) [G]',geldtIn:'*',fout:'Wisselen naar een middel waarvoor de bacterie resistent is (na de kweekuitslag; in episode 3 trimethoprim ook na G3)',vraag:'Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?',weglaat:'De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.'}];
+  e2.score={duurzaamheid:'wisselen terwijl het middel werkt en de klachten afnemen, kost punten',doelmatigheid:'G2 spelen vóór de voorschrijfkaart levert punten op',ondergrens:1};
+  e2.overbodig=[
+    OB('a','O2','Kalium bepalen terwijl trimethoprim (V5) in deze poging nooit gestart is','Downside van O2: "Alleen zinvol bij een indicatie"'),
+    OB('e','V6','Dosis aanpassen op lisinopril (er is geen uitdroging)','Route "Na B" in episode 3'),
+    OB('g','V2, V3, V4, V5, B1',START,'Een middel dat al loopt, opnieuw starten voegt niets toe [G]'),
+    OB('i','B2','Antibioticum stoppen op fosfomycine','Effect van V4: "Eenmalig 3 g" [G]')];
+  e2.profielen=[{naam:'Kweekgestuurd, smal',vraag:'Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?'},
+    {naam:'Bijgestuurd',vraag:'Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?'}];
+  e2.feedbackExtra=[{trigger:'Verouderde eGFR niet opgemerkt',vraag:'Hoe oud was de eGFR waarop je besloot? Wat is er sindsdien met haar gebeurd?'},
+    {trigger:'I5, zonder kweekuitslag',vraag:'Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?'},
+    {trigger:'I6, afwachten',vraag:'Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?'},
+    {trigger:'I7, niet gehalveerd',vraag:'Dag 4. Hoeveel trimethoprim klaren haar nieren nog?'},
+    {trigger:'Onnodig gewisseld',vraag:'Het werkte en de klachten namen af. Wat won je met wisselen?'}];
 
   e3.startToestand='cystitis';e3.contextwissel='1 jaar later · 79 jaar · + spironolacton · eGFR 28';
-  e3.knoppen={repertoire:'volledig (26 kaarten)',acties:'krap',gebeurtenissen:'2 in vrije volgorde, plus de kweekuitslag',raadplegen:'kost tempo'};
-  e3.patient={naam:'Mevrouw V.',leeftijd:'79 jaar',klachten:'Cystitis, geen koorts.',medicatie:'lisinopril, spironolacton (hypertensie), calcium/colecalciferol. Wie spironolacton heeft gestart en waarom, staat er bewust niet op.',lab:'eGFR 28, recent',risico:'Risicogroep [NHG].',verborgen:[{kaart:'G3',onthult:'De kweek uit episode 2, met trimethoprim resistent. Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG].'}]};
-  e3.repertoire=kaartIdsVan(o.kaarten);e3.erft='I1, I4, I5, I6, I7, I8';
+  e3.dagen=14;e3.actiesPerDag=3;e3.knoppen={repertoire:'volledig (26 kaarten)',gebeurtenissen:'2 in vrije volgorde, plus de kweekuitslag',raadplegen:'kost tempo'};
+  e3.patient={naam:'Mevrouw V.',leeftijd:'79 jaar',klachten:'Cystitis, geen koorts.',medicatie:'lisinopril, spironolacton, calcium/colecalciferol. Wie spironolacton heeft gestart en waarom, staat er bewust niet op.',lab:'eGFR 28, recent',risico:'Risicogroep [NHG].',verborgen:[{kaart:'G3',onthult:'De kweek uit episode 2, met trimethoprim resistent. Die valt binnen de termijn van ongeveer een jaar die de NHG aanhoudt [NHG].'}]};
+  e3.repertoire=kaartIdsVan(o.kaarten);e3.erft='I1, I4, I5, I6, I7, I8, I17, I18';
   e3.gebeurtenissen=[
-    {id:'A',trigger:'na kaart n (engine-parameter); volgorde met B willekeurig',toestand:'weefselinvasie',groep:'AB',tekst:'Koorts 38,6 °C en flankpijn.'},
-    {id:'B',trigger:'na kaart m (engine-parameter); volgorde met A willekeurig',toestand:'uitdroging',groep:'AB',tekst:'Eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald.'},
-    {id:'C',trigger:'3 kaarten na O1',toestand:'',groep:'',tekst:'Kweekuitslag: E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne.'}];
-  e3.routes=[{naam:'Amoxicilline/clavulaanzuur 875/125 mg 2 dd (bij weefselinvasie)',kern:'O1 → B1 → V8 + V6',profiel:'Kweekgestuurd; scoort hoger'},{naam:'Ciprofloxacine met calcium gescheiden of gestopt (bij weefselinvasie)',kern:'O1 → B1 → V7 + B4 of B3',profiel:'Richtlijn eerste keus; eigen profiel'}];
+    {id:'A',soort:'op een vaste dag',dag:3,naKaart:'',trigger:'of dag 5: welke van A en B op dag 3 komt, is per poging willekeurig',toestand:'weefselinvasie',groep:'AB',tekst:'Weefselinvasie: koorts 38,6 °C en flankpijn.'},
+    {id:'B',soort:'op een vaste dag',dag:5,naKaart:'',trigger:'of dag 3: de andere dag dan A',toestand:'uitdroging',groep:'AB',tekst:'Uitdroging: eet en drinkt slecht, twee dagen koorts. Daarmee is de SIDRIK-drempel gehaald (koorts ≥ 38,5 °C gedurende 2 dagen en/of braken of diarree > 3× per dag) [SIDRIK].'},
+    {id:'C',soort:'dagen na een kaart',dag:3,naKaart:'O1',trigger:'een tweede kweek geeft 3 dagen later een tweede uitslag met dezelfde gegevens',toestand:'',groep:'',tekst:'Kweekuitslag: E. coli, resistent voor trimethoprim en amoxicilline. Gevoelig voor amoxicilline/clavulaanzuur, ciprofloxacine, fosfomycine en nitrofurantoïne.'}];
+  e3.routes=[{naam:'Start bij cystitis',kern:'G3 → O1 → V4 + N1; vanaf het begin O2 + Ev2 voor lisinopril + spironolacton',profiel:'—'},
+    {naam:'Amoxicilline/clavulaanzuur 875/125 mg 2 dd (bij weefselinvasie)',kern:'O1 → B1 → V8 + V6; Ev1 binnen 48 uur',profiel:'Kweekgestuurd; scoort hoger'},
+    {naam:'Ciprofloxacine met calcium gescheiden of gestopt (bij weefselinvasie)',kern:'O1 → B1 → V7 + B4 of B3; Ev1 binnen 48 uur',profiel:'Richtlijn eerste keus; eigen profiel'},
+    {naam:'Na uitdroging (sick day)',kern:'B3 spironolacton + V6 lisinopril halveren + N3 + Ev1 binnen 1–3 dagen; geen herstart van spironolacton zonder Ev2',profiel:'—'},
+    {naam:'Rand van de kaart',kern:'na 48 uur geen verbetering → Ev3',profiel:'—'}];
   e3.invarianten=[
     {id:'I9',ernst:'3',bron:'Bart; SIDRIK; herstart-nuance [G]',geldtIn:'*',fout:'De combinatie lisinopril + spironolacton bij eGFR < 30 laten liggen (geen O2 én geen Ev2), of spironolacton na de sick day hervatten (B5) zonder eerst Ev2',vraag:'Haar nierfunctie is 28. Welk van haar vaste middelen begon toen die nog hoger was, en wie kijkt daar nu naar?',weglaat:'Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.'},
-    {id:'I10',ernst:'2',bron:'NHG',geldtIn:'weefselinvasie',fout:'Bij weefselinvasie doorgaan met nitrofurantoïne of fosfomycine: onvoldoende concentratie in het weefsel',vraag:'Fosfomycine werkt in de blaas. Waar zit de infectie nu?',weglaat:''},
-    {id:'I11',ernst:'4',bron:'NHG',geldtIn:'weefselinvasie',fout:'Bij weefselinvasie wisselen zonder eerst een nieuwe kweek',vraag:'Je wisselt. Waarop baseer je de wissel daarna?',weglaat:''},
-    {id:'I12',ernst:'1',bron:'NHG, Kompas',geldtIn:'*',fout:'Cotrimoxazol voorschrijven',vraag:'Cotrimoxazol naast spironolacton bij een eGFR van 28. Wat doet dat met haar kalium?',weglaat:''},
-    {id:'I13',ernst:'3',bron:'NHG',geldtIn:'*',fout:'Amoxicilline/clavulaanzuur zonder V6 naar 875/125 mg 2 dd',vraag:'Clavulaanzuur bij een eGFR van 28. Waar blijft het?',weglaat:''},
-    {id:'I14',ernst:'3',bron:'Kompas; B3-route [G]',geldtIn:'weefselinvasie',fout:'Ciprofloxacine zonder B4 (scheiden van calcium) en zonder B3 (calcium tijdelijk stoppen)',vraag:'Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?',weglaat:'Na 48 uur geen verbetering.'},
+    {id:'I10',ernst:'2',bron:'NHG',geldtIn:'weefselinvasie',fout:'Bij weefselinvasie doorgaan met nitrofurantoïne of fosfomycine: onvoldoende concentratie in het weefsel',vraag:'Fosfomycine werkt in de blaas. Waar zit de infectie nu?',weglaat:'Het antibioticum bereikt onvoldoende concentratie in het weefsel.'},
+    {id:'I11',ernst:'4',bron:'NHG',geldtIn:'weefselinvasie',fout:'Bij weefselinvasie wisselen zonder eerst een nieuwe kweek',vraag:'Je wisselt. Waarop baseer je de wissel daarna?',weglaat:'Er is geen nieuwe kweek van vóór de wissel.'},
+    {id:'I12',ernst:'1',bron:'NHG, Kompas',geldtIn:'*',fout:'Cotrimoxazol voorschrijven',vraag:'Cotrimoxazol naast spironolacton bij een eGFR van 28. Wat doet dat met haar kalium?',weglaat:'Mevrouw krijgt cotrimoxazol bij een ernstige nierfunctiestoornis en naast spironolacton: kans op ernstige hyperkaliëmie.'},
+    {id:'I13',ernst:'3',bron:'NHG',geldtIn:'*',fout:'Amoxicilline/clavulaanzuur zonder V6 naar 875/125 mg 2 dd',vraag:'Clavulaanzuur bij een eGFR van 28. Waar blijft het?',weglaat:'Het clavulaanzuur stapelt bij deze nierfunctie.'},
+    {id:'I14',ernst:'3',bron:'Kompas; B3-route [G]',geldtIn:'*',fout:'Ciprofloxacine zonder B4 (scheiden van calcium) en zonder B3 (calcium tijdelijk stoppen)',vraag:'Ze neemt elke ochtend calcium. Hoeveel van je ciprofloxacine komt in haar bloed?',weglaat:'Na 48 uur geen verbetering.'},
     {id:'I15',ernst:'2',bron:'SIDRIK',geldtIn:'uitdroging',fout:'Na het halen van de sick day-drempel niet: spironolacton stoppen, lisinopril halveren, drinkadvies, monitoring binnen 1–3 dagen',vraag:'Ze drinkt nauwelijks en heeft twee dagen koorts. Wat doen lisinopril en spironolacton met een nier die al droog staat?',weglaat:'De nierfunctie daalt verder en het kalium stijgt.'},
-    {id:'I16',ernst:'3',bron:'NHG',geldtIn:'weefselinvasie',fout:'Geen contact binnen 48 uur, of geen verwijzing als ze dan niet beter is',vraag:'Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?',weglaat:''}];
-  e3.score={duurzaamheid:'de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op',doelmatigheid:'G3 gebruiken vóór de eerste keuze levert punten op'};
-  e3.profielen=[{naam:'Kweekgestuurd (V8)',vraag:''},{naam:'Richtlijn eerste keus (V7)',vraag:'Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?'}];
+    {id:'I16',ernst:'3',bron:'NHG',geldtIn:'weefselinvasie',fout:'Geen contact binnen 48 uur, of geen verwijzing als ze dan niet beter is',vraag:'Het is 48 uur later en ze is niet beter. Wat is je volgende kaart, en is die nog aan jou?',weglaat:'Geen contact: "Er is binnen 48 uur geen contact geweest." Niet verwezen: "Mevrouw is na 48 uur niet beter en is niet verwezen."'},
+    {id:'I19',ernst:'5',bron:'Bart (besluit 17 november 2026) [G]',geldtIn:'*',fout:'Verwijzen terwijl na 48 uur nog geen sprake is van uitblijvende verbetering',vraag:'Je verwijst haar naar de tweede lijn. Wat moet er eerst blijken voordat de eerste lijn haar uit handen geeft?',weglaat:'Mevrouw gaat naar de tweede lijn terwijl de eerste lijn haar nog kon behandelen.'}];
+  e3.escalatie={aan:'ja',dagen:4,toestand:'weefselinvasie',verlorenDoor:'sepsis',tekst:'De casus is geëscaleerd. Mevrouw V. heeft sepsis en wordt met spoed verwezen. Deze episode is verloren.'};
+  e3.einde={terechtAls:'de status "Na 48 uur geen verbetering." vóór of op de dag van het verwijzen is voorgekomen',zinTerecht:'Verwijzen was hier terecht: na 48 uur was er geen verbetering.',zinNietTerecht:'Verwijzen was hier nog niet nodig: mevrouw was nog niet 48 uur zonder verbetering.'};
+  e3.score={duurzaamheid:'de-escaleren van ciprofloxacine naar amoxicilline/clavulaanzuur na de kweek (C) levert punten op. Ciprofloxacine of amoxicilline/clavulaanzuur starten terwijl de toestand nog cystitis is, kost 1 punt (ondergrens 1).',doelmatigheid:'G3 gebruiken vóór de eerste keuze levert punten op',ondergrens:1};
+  e3.overbodig=[
+    OB('b','O1','Een tweede urinekweek inzetten terwijl er vóór die tweede kweek geen weefselinvasie is geweest','Geldige route "Na A: nieuwe kweek (O1)"'),
+    OB('c','Ev3','Verwijzen terwijl de status "Na 48 uur geen verbetering." vóór het verwijzen niet is voorgekomen (telt niet meer: dit is ook I19)','Downside van Ev3'),
+    OB('d','B4, B3','Innametijden aanpassen, of calcium tijdelijk stoppen, terwijl ciprofloxacine (V7) in deze poging nooit gestart is','Effect van B4 en de route "ciprofloxacine met B4 of B3"'),
+    OB('e','V6, B3','Dosis aanpassen of tijdelijk stoppen op lisinopril, vóór de dag waarop uitdroging (B) verschijnt','Route "Na B"'),
+    OB('f','G2','Recente labwaarden opvragen: het lab staat al als "recent" op de patiëntkaart','Patiëntkaart (vastgesteld)'),
+    OB('g','V2, V3, V4, V5, V7, V8, V9, V10, B1',START,'Een middel dat al loopt, opnieuw starten voegt niets toe [G]'),
+    OB('j','B3','Calcium tijdelijk stoppen terwijl ciprofloxacine loopt, naast Innametijden aanpassen (B4)','Route "ciprofloxacine met B4 of B3": één van de twee volstaat [G]'),
+    OB('k','B3','Calcium tijdelijk stoppen nadat ciprofloxacine is gestopt of vervangen','Calcium stoppen dient alleen zolang ciprofloxacine loopt [G]')];
+  e3.profielen=[{naam:'Kweekgestuurd (V8)',vraag:'Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?'},
+    {naam:'Richtlijn eerste keus (V7)',vraag:'Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?'}];
   e3.feedbackExtra=[{trigger:'Automatische herstart',vraag:'De koorts is weg. Wat herstart je, en wat juist niet zonder overleg?'},{trigger:'Ciprofloxacine-dosis (bronconflict)',vraag:'De NHG en het Kompas verschillen hier. Welke keuze maak jij, en waarom?'}];
   e3.bronconflict='Voor ciprofloxacine bij eGFR 10–30 geeft de NHG de normale keerdosis eenmaal per 24 uur [NHG]. Het Kompas past de dosis pas aan bij een klaring ≤ 15 [Kompas]. Beide zijn verdedigbaar; het wordt een feedbackmoment.';
   o.episodes=[e1,e2,e3];
-  o.open=['Voorleggen aan de huisarts: de diagnostische kant en de geloofwaardigheid van de eGFR-daling van 42 naar 29 in 6 jaar.','Rol van de speler (apotheker of huisarts) per variant. Zelf spironolacton stoppen kan later een geldige route worden.'];
+  o.restprofiel={naam:'Eigen route',vraag:'Je route past bij geen van de beschreven profielen. Wat was je plan?'};
+  o.open=['Voorleggen aan de huisarts: de diagnostische kant (presentatie van cystitis, weefselinvasie en uitdroging) en de geloofwaardigheid van de eGFR-daling van 42 naar 29 in 6 jaar.','Rol van de speler (apotheker of huisarts) per variant. Zelf spironolacton stoppen kan later een geldige route worden.','Later, als derde laag: patiëntvarianten (man, morbide obees, kwetsbaar, zwanger) op dezelfde toestandsgraaf.'];
   return o;
 }
 function kaartIdsVan(k){return k.map(function(x){return x.id;});}
@@ -926,7 +1115,7 @@ document.getElementById('bOpslaan').onclick=function(){download('casus-'+(S.basi
 document.getElementById('bLaden').onclick=function(){document.getElementById('fLaden').click();};
 document.getElementById('fLaden').onchange=function(ev){
   var f=ev.target.files[0];if(!f)return;
-  var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(!o.basis||!o.episodes)throw new Error('geen casusbestand');S=o;stap=0;epIdx=0;bewaar();render();}catch(e){alert('Dit bestand is geen geldig casusbestand van de Casusbouwer.');}};
+  var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(!o.basis||!o.episodes)throw new Error('geen casusbestand');S=migreer(o);stap=0;epIdx=0;bewaar();render();}catch(e){alert('Dit bestand is geen geldig casusbestand van de Casusbouwer.');}};
   r.readAsText(f);ev.target.value='';
 };
 document.getElementById('bSvg').onclick=function(){download('doorloopschema-'+(S.basis.id||'nieuw')+'.svg',schemaSvg(),'image/svg+xml');};
@@ -934,7 +1123,7 @@ document.getElementById('bSvg').onclick=function(){download('doorloopschema-'+(S
 window.addEventListener('pagehide',function(){try{localStorage.setItem(STORE,JSON.stringify(S));}catch(e){}});
 laadOpgeslagen();
 render();
-window.__CB={get S(){return S;},set S(v){S=v;},controle:controle,genereerMarkdown:genereerMarkdown,schemaSvg:schemaSvg,schemaTabel:schemaTabel,voorbeeld:voorbeeld,toestanden:toestanden,leeg:leeg};
+window.__CB={get S(){return S;},set S(v){S=v;},controle:controle,genereerMarkdown:genereerMarkdown,schemaSvg:schemaSvg,schemaTabel:schemaTabel,voorbeeld:voorbeeld,toestanden:toestanden,leeg:leeg,migreer:migreer,render:render,get stap(){return stap;},set stap(v){stap=v;},get epIdx(){return epIdx;},set epIdx(v){epIdx=v;}};
 })();
 </script>
 </body>
