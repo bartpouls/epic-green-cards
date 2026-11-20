@@ -551,3 +551,5 @@ Bron: besluit Bart, 20 november 2026 (werkpakket E: afvinken afstraffen).
 - Medicatie tijdelijk stoppen op calcium vóór de start van ciprofloxacine: het calcium staat dan stil als de kuur begint.
 - Medicatie hervatten op spironolacton de dag na de sick day-maatregelen, en Medicatie hervatten op calcium terwijl ciprofloxacine nog loopt: geen kwestie van een overbodige kaart, maar van timing en interactie.
 - Dosis aanpassen (V6) op ciprofloxacine: alle drie de opties kosten niets, ook "halveren", die NHG noch Kompas noemt.
+
+**Besluit Bart, 20 november 2026:** de keuzes rond calcium en ciprofloxacine blijven zoals ze zijn (de opmerking bij j en de twijfelgevallen hierboven). Wie het bewust anders doet, merkt dat het spel geen rekening houdt met die timing; voor de anderen is het een herhaling van de interactie. Discussie rond het spel versterkt het leren.
