@@ -593,31 +593,36 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
       "id": "TODO_BART-R1",
       "vraag": "De koppen van de casus zijn overgenomen zoals ze in casus-uwi.md staan, inclusief de toevoegingen tussen haakjes (bijvoorbeeld 'Invarianten (poort; I1 en I4 blijven gelden)') en inclusief de vetgedrukte labels die geen kop zijn ('Knoppen', 'Volgorde vrij', 'Brug', 'Bronconflict, geen poort') en de tabelkop 'Route bij weefselinvasie'. Moet het overzicht deze namen precies zo tonen, of liever kortere namen zonder de toevoeging (bijvoorbeeld 'Invarianten (poort)' en 'Volgorde')?",
       "gekozenLezing": "De namen staan precies zoals in de casus (met toevoegingen tussen haakjes en met 'Volgorde vrij' in episode 1). Alternatief: korte namen zonder toevoeging.",
-      "plek": "referentie.E1/E2/E3.volgordeVanSecties"
+      "plek": "referentie.E1/E2/E3.volgordeVanSecties",
+      "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
     },
     {
       "id": "TODO_BART-R2",
       "vraag": "Onder de tabel 'Geldige routes' van episode 1 staat een losse alinea: 'Bij trimethoprim 3 dagen is geen kaliumcontrole nodig. ...'. Ze is geen tabelrij maar hoort wel bij de routes; ze staat daarom als aparte tekst in geldigeRoutesNoot. Hoort ze bij de route Trimethoprim 3 dagen, of is een aparte alinea in het overzicht goed?",
       "gekozenLezing": "De alinea staat letterlijk als apart veld geldigeRoutesNoot van episode 1. Alternatief: onder de route Trimethoprim 3 dagen tonen.",
-      "plek": "referentie.E1.geldigeRoutesNoot"
+      "plek": "referentie.E1.geldigeRoutesNoot",
+      "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
     },
     {
       "id": "TODO_BART-R3",
       "vraag": "Onder 'Gebeurtenis' van episode 2 staan in de casus twee bullets met onderliggende bullets: 'Kweekuitslag, 3 dagen nadat O1 is gespeeld, aan het begin van die dag.' (met drie onderliggende regels, onder andere 'De 3 dagen zijn Barts keuze; de oorspronkelijke 2–4 dagen berusten op geen van de genoemde bronnen [G] en zijn niet geverifieerd.') en 'Wat de patiënt laat zien, hangt af van de keuze:' (met 'Trimethoprim: klachten houden aan.' en 'Fosfomycine: klachten nemen af.'). Moet het overzicht deze zeven regels in de volgorde van de casus tonen, met de onderliggende regels ingesprongen onder hun hoofdbullet?",
       "gekozenLezing": "Elke bullet staat als aparte regel in gebeurtenisUitleg, in de volgorde van de casus, zonder samenvoeging. Welke regels onderliggend zijn, staat apart in inspringing.gebeurtenisUitleg (0 = hoofdbullet, 1 = onderliggende bullet). De regels over de kweekuitslag staan ook in de gebeurtenis zelf; hier staan ze nogmaals zodat de hele sectie naast de casus past. Alternatief: alleen de regels tonen die niet al in de gebeurtenis staan.",
-      "plek": "referentie.E2.gebeurtenisUitleg"
+      "plek": "referentie.E2.gebeurtenisUitleg",
+      "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
     },
     {
       "id": "TODO_BART-R4",
       "vraag": "De casus zet onder de gebeurtenissentabel van episode 3 een alinea 'De oorzaak van A en B is neutraal: ...'. Ze is geen tabelrij en geen bullet; ze staat hier als enige regel van gebeurtenisUitleg. Is dat de goede plek in het overzicht?",
       "gekozenLezing": "De alinea staat letterlijk als enige regel van gebeurtenisUitleg van episode 3. Alternatief: als losse toelichting onder de gebeurtenissentabel.",
-      "plek": "referentie.E3.gebeurtenisUitleg"
+      "plek": "referentie.E3.gebeurtenisUitleg",
+      "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
     },
     {
       "id": "TODO_BART-R5",
       "vraag": "In episode 3 staat 'Geldige routes (kern)' als bullets met onderliggende bullets, niet als tabel met een kolom Profiel. Gekozen: route is de tekst van de hoofdbullet (zonder vetdruk, zoals 'Na A (weefselinvasie):'), kern zijn de onderliggende bullets, en profiel is leeg omdat de casus hier geen profiel noemt. De profielen bij weefselinvasie staan apart in routeBijWeefselinvasie. Alternatief: het vetgedrukte begin ('Start bij cystitis:') als route en de rest van de bullet als kern.",
       "gekozenLezing": "route = hoofdbullet, kern = onderliggende bullets, profiel leeg. Alternatief: vetgedrukt begin als route, rest als kern.",
-      "plek": "referentie.E3.geldigeRoutes"
+      "plek": "referentie.E3.geldigeRoutes",
+      "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
     },
     {
       "id": "TODO_BART-R6",
@@ -630,7 +635,8 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
       "id": "TODO_BART-R7",
       "vraag": "Het overzicht heeft de gewone speldata voor de patiëntkaart, het repertoire, de kaarten die ontbreken en de feedbackvragen, maar de casus zet er ook kopjes, labels en een kolom 'Trigger' bij (bijvoorbeeld 'Zonder N1:', 'I6, geen kweek', 'Verborgen: niets.'). Moeten die casusregels in het overzicht naast de speldata getoond worden?",
       "gekozenLezing": "Ja: de hele tekst van deze kopjes staat letterlijk in de referentie (de patiëntkaart, het repertoire, wat er zichtbaar wordt als een kaart ontbreekt, de feedbacktabel, de tabelkoppen, de episodekop en de labels), zodat elk kopje van de casus regel voor regel te vergelijken is. Alternatief: alleen de speldata tonen en deze casusregels weglaten.",
-      "plek": "referentie.E1/E2/E3.patientkaart, repertoireTekst, zichtbaarAlsOntbreekt, feedbackTabel, tabelkoppen, episodeKop, labels"
+      "plek": "referentie.E1/E2/E3.patientkaart, repertoireTekst, zichtbaarAlsOntbreekt, feedbackTabel, tabelkoppen, episodeKop, labels",
+      "besluit": "Beslist door Bart op 20 november 2026: weg. Het overzicht toont alleen de speldata; de casusregels blijven in de referentie staan maar worden niet getoond."
     }
   );
 }

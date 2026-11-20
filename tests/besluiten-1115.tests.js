@@ -53,7 +53,7 @@
   var BESLIST = ["TODO_BART-N3", "TODO_BART-E2-16", "TODO_BART-E3-3", "TODO_BART-E2-10", "TODO_BART-E3-11", "TODO_BART-E3-21", "TODO_BART-R6"];
   var CONCEPT = ["TODO_BART-C1", "TODO_BART-C2", "TODO_BART-C3", "TODO_BART-C4"];
   T.registreer(G, "vastlegging: casus 1.4; de zeven besliste vragen houden vraag, lezing en plek en hebben een besluit in één zin met de datum; de concepten zijn op 20 november 2026 goedgekeurd", function () {
-    T.is(casus().versie, "1.7");
+    T.is(casus().versie, "1.8");
     BESLIST.forEach(function (id) {
       var t = todo(id);
       T.waar(!!t, id + " staat nog in de data");
@@ -183,7 +183,7 @@
       T.is(rij[rij.length - 4], "12", "dagen zonder actie"); T.is(rij[rij.length - 3], "14", "dagen"); T.is(rij[rij.length - 2], "5", "aantal kaarten");
       T.waar(/Kweekuitslag \(dag 4\)/.test(regels[1]), "de gebeurtenis staat met haar dag in de export");
       var js = JSON.parse(g.Logging.exportJSON());
-      T.gelijk(js[0].doorgespoeld, rec.doorgespoeld); T.is(js[0].casusVersie, "1.7");
+      T.gelijk(js[0].doorgespoeld, rec.doorgespoeld); T.is(js[0].casusVersie, "1.8");
       var ov = g.UI.overzichtModel(casus(), js, "Door");
       T.is(ov[0].rijen.length, 14, "het leesbare overzicht toont alle 14 dagen"); T.gelijk(ov[0].rijen[9].kaarten, []);
     } finally { g.Logging._zetOpslag(undefined); g.Logging.wis(); }
@@ -324,7 +324,7 @@
   });
   T.registreer(G, "besluit 4b (restprofiel): een route die wel bij een profiel past, houdt dat profiel; bij een schending is er geen profiel; in episode 1 heeft elke geslaagde route een eigen profiel", function () {
     var u = g.Test.rondAfTotEinde(speel("E2", [["G2", "O1", "V4"], ["N1"]]));
-    T.gelijk(u.profiel, { naam: "Kweekgestuurd, smal", reflectievraag: null });
+    T.gelijk(u.profiel, { naam: "Kweekgestuurd, smal", reflectievraag: "Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?" });   // concept C12 (20 november 2026)
     var fout = g.Test.rondAfTotEinde(speel("E2", [["G2", "O1", "V5"], ["O2"], ["B2:V5"]]));
     T.is(fout.poortGehaald, false); T.is(fout.profiel, null);
     [[["V1", "N1", "Ev1"]], [["V2:V3", "N1", "Ev1"]], [["V3", "N1"]]].forEach(function (plan) {

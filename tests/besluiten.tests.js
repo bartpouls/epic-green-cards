@@ -40,7 +40,7 @@
       T.waar(typeof t.vraag === "string" && typeof t.gekozenLezing === "string" && typeof t.plek === "string", id + " houdt vraag, gekozen lezing en plek");
     });
     T.gelijk(casus().todoBart.filter(function (t) { return t.besluit !== undefined && DATUM.test(t.besluit); }).map(function (t) { return t.id; }).sort(), BESLIST.slice().sort());
-    T.is(casus().versie, "1.7");
+    T.is(casus().versie, "1.8");
   });
   T.registreer(G, "vastlegging: de lijst voor Bart (gauntlet/todo-bart.js) heeft een groep 'Beslist op 14 november 2026' met precies de besliste vragen; open groepen bevatten geen besliste vraag en alleen bestaande ids", function () {
     var gr = g.TODO_BART_GROEPEN;
@@ -242,7 +242,7 @@
       T.waar(/Sepsis \(dag 9\)/.test(regels[1]), "de gebeurtenis sepsis staat in de export");
       T.waar(/;gehaald$/.test(regels[2]), "gehaalde episode: afloop 'gehaald'");
       var js = JSON.parse(g.Logging.exportJSON());
-      T.is(js[0].afloop, "verloren"); T.is(js[1].afloop, "gehaald"); T.is(js[0].casusVersie, "1.7");
+      T.is(js[0].afloop, "verloren"); T.is(js[1].afloop, "gehaald"); T.is(js[0].casusVersie, "1.8");
       T.is(g.Engine.ontgrendeld(casus(), "E2", [js[1]]), true); T.is(g.UI.episodeOverzicht(casus(), "Sep", js, false)[2].gehaald, false, "episode 3 is niet gehaald");
       var ov = g.UI.overzichtModel(casus(), js, "Sep");
       T.is(ov[1].uitkomst, "Episode verloren.", "leesbaar overzicht");

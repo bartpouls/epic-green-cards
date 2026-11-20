@@ -175,7 +175,7 @@
       }
       var dz = h("V2") ? 2 : nAb > 0 ? 1 : 3, dm = Math.max(1, 3 - (h("O1") ? 1 : 0) - (h("O2") ? 1 : 0));
       var profiel = h("V2") ? "Gedeelde regie" : nAb > 0 ? "Direct behandelen" : "Terughoudend";
-      var refl = h("V2") ? null : nAb > 0 ? R.REFLECTIE.direct : R.REFLECTIE.terughoudend;
+      var refl = h("V2") ? R.REFLECTIE.gedeeldeRegie : nAb > 0 ? R.REFLECTIE.direct : R.REFLECTIE.terughoudend;
       if (!u.score || u.score.duurzaamheid !== dz || u.score.doelmatigheid !== dm) afw.push(naam + "score " + js(u.score) + " i.p.v. " + dz + "/" + dm);
       if (!u.profiel || u.profiel.naam !== profiel || u.profiel.reflectievraag !== refl) afw.push(naam + "profiel " + js(u.profiel) + " i.p.v. " + profiel);
       if (js(teksten(u.extraVragen, "vraag")) !== js(h("O1") ? [R.EXTRA.O1] : [])) afw.push(naam + "extraVragen " + js(u.extraVragen));

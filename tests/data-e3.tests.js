@@ -520,8 +520,9 @@
   reg("E3-5 profielen: Kweekgestuurd (reflectievraag ontbreekt = null + TODO_BART) en Richtlijn eerste keus (reflectievraag letterlijk)", function (e) {
     T.gelijk(e.profielen.map(function (p) { return p.naam; }), ["Kweekgestuurd", "Richtlijn eerste keus"]);
     var k = e.profielen[0], r = e.profielen[1];
-    T.is(k.reflectievraag, null);
-    T.waar(typeof k.TODO_BART === "string", "Kweekgestuurd heeft TODO_BART");
+    // Besluit 20 november 2026 (TODO_BART-E3-12): conceptreflectievraag, ter goedkeuring in TODO_BART-C12.
+    T.is(k.reflectievraag, "Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?");
+    T.is(k.TODO_BART, casus().todoBart.filter(function (t) { return t.id === "TODO_BART-C12"; })[0].vraag, "Kweekgestuurd heeft de markering van C12");
     T.is(r.reflectievraag, REF.fb["Profiel ciprofloxacine"]);
     T.gelijk(k.als, { p: "gestart", middel: "V8" });
     T.gelijk(r.als, { p: "gestart", middel: "V7" });
@@ -594,7 +595,12 @@
       T.waar(alle.indexOf(f.vraag) >= 0, "feedbackExtra-vraag staat niet in de casus");
     });
     T.is(e.feedbackExtra.filter(function (f) { return f.concept === true; }).length, 1, "precies één concepttekst in feedbackExtra");
-    e.profielen.forEach(function (p) { if (p.reflectievraag !== null) T.waar(alle.indexOf(p.reflectievraag) >= 0, p.naam + " reflectievraag"); });
+    // Een conceptreflectievraag (casus 1.8, TODO_BART-C12) staat niet in de casus; dan moet de open vraag voor Bart hem letterlijk noemen.
+    e.profielen.forEach(function (p) {
+      if (p.reflectievraag === null) return;
+      if (typeof p.TODO_BART === "string" && p.TODO_BART.indexOf("Concepttekst ter goedkeuring") === 0) { T.waar(p.TODO_BART.indexOf(p.reflectievraag) > 0, p.naam + " conceptreflectievraag niet in de open vraag"); return; }
+      T.waar(alle.indexOf(p.reflectievraag) >= 0, p.naam + " reflectievraag");
+    });
   });
 
   reg("S-TODO: elke TODO_BART-markering in E3 staat ook in casus.todoBart (id, vraag, gekozenLezing, plek)", function (e) {
@@ -637,7 +643,7 @@
     "E3.invarianten[1]": "TODO_BART-E3-15", "E3.invarianten[2]": "TODO_BART-E3-16", "E3.invarianten[3]": "TODO_BART-E3-18", "E3.invarianten[4]": "TODO_BART-E3-19", "E3.invarianten[5]": "TODO_BART-E3-23", "E3.invarianten[6]": "TODO_BART-E3-1",
     "E3.invarianten[7]": "TODO_BART-E3-5", "E3.invarianten[11]": "TODO_BART-E3-6", "E3.invarianten[12]": "TODO_BART-E3-24", "E3.invarianten[13]": "TODO_BART-E3-2", "E3.score": "TODO_BART-E3-22",
     "E3.score.duurzaamheid": "TODO_BART-E3-11", "E3.score.doelmatigheid": "TODO_BART-E3-20", "E3.score.doelmatigheid.regels[1]": "TODO_BART-E3-21",
-    "E3.profielen[0]": "TODO_BART-E3-12", "E3.feedbackExtra[0]": "TODO_BART-E3-13", "E3.feedbackExtra[1]": "TODO_BART-E3-13", "E3.zichtbaarAlsOntbreekt[0]": "TODO_BART-E3-14",
+    "E3.profielen[0]": "TODO_BART-C12", "E3.feedbackExtra[0]": "TODO_BART-E3-13", "E3.feedbackExtra[1]": "TODO_BART-E3-13", "E3.zichtbaarAlsOntbreekt[0]": "TODO_BART-E3-14",
     "E3.feedbackExtra[2]": "TODO_BART-E3-27", "E3.gebeurtenissen[2].einde": "TODO_BART-E3-28",   // conceptteksten ter goedkeuring (besluiten van 14 november 2026)
     "E3.invarianten[2].vraagVarianten[0]": "TODO_BART-C1", "E3.score.doelmatigheid.TODO_BART_overbodig": "TODO_BART-C2",   // concepten ter goedkeuring (besluiten van 15 november 2026)
     "E3.invarianten[14]": "TODO_BART-C6", "E3.invarianten[15]": "TODO_BART-C7", "E3.eindeNaKaart[0]": "TODO_BART-C8", "E3.eindeNaKaart[0].TODO_BART_vervalt": "TODO_BART-C9",
@@ -1046,6 +1052,19 @@
     {"id":"TODO_BART-E3-28","vraag":"Concepttekst ter goedkeuring: bij sepsis toont het beoordelingsscherm 'De casus is geëscaleerd. Mevrouw V. heeft sepsis en wordt met spoed verwezen. Deze episode is verloren.' De melding op de tijdlijn blijft 'Sepsis: de patiënt is ernstig ziek.' Beide teksten staan niet in de casus. Keur je ze goed, of welke klinische tekst hoort bij sepsis?","gekozenLezing":"De concepttekst staat letterlijk in de data (gebeurtenis sepsis) en verschijnt bovenaan het beoordelingsscherm als de episode door sepsis is verloren, onder de melding 'Sepsis: de patiënt is ernstig ziek.'","plek":"E3.gebeurtenissen.S.einde","besluit":"Beslist door Bart op 20 november 2026: de teksten bij sepsis goedgekeurd."}
   ]
   };
+  // Besluiten van 20 november 2026 (casus 1.8) bovenop de vastgelegde stand: elke open vraag kreeg een besluit
+  // (akkoord met de gekozen lezing), en Kweekgestuurd kreeg een conceptreflectievraag met de markering van TODO_BART-C12.
+  (function () {
+    var c12 = casus().todoBart.filter(function (t) { return t.id === "TODO_BART-C12"; })[0];
+    GOLD.episode.profielen[0].reflectievraag = "Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?";
+    GOLD.episode.profielen[0].TODO_BART = c12 ? c12.vraag : "(C12 ontbreekt)";
+    var b = "Beslist door Bart op 20 november 2026: ";
+    GOLD.todoBart.forEach(function (t) {
+      if (t.besluit) return;
+      t.besluit = t.id === "TODO_BART-E3-12" ? b + "er komt een reflectievraag die de student laat nadenken over wat de volgende keer beter kan; concepttekst in TODO_BART-C12."
+        : b + "akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen.";
+    });
+  })();
   function eerstVerschil(a, b, pad) {
     if (a === b) return null;
     if (typeof a !== typeof b || a === null || b === null || typeof a !== "object") return pad + ": " + JSON.stringify(a) + " <> " + JSON.stringify(b);

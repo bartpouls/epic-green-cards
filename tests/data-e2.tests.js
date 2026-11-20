@@ -356,12 +356,13 @@
       return { p: "en", args: [{ p: "gespeeld", kaart: v }, { p: "niet", arg: { p: "voor", a: { kaart: "G2" }, b: { kaart: v } } }] };
     }) } }] }, "regel 1: G2 gespeeld en geen voorschrijfkaart zonder G2 ervoor (voor(G2,Vx) in alle vijf de armen, juiste richting)");
   });
-  reg("E2-5 profielen: Kweekgestuurd, smal / Bijgestuurd, reflectievraag null + TODO_BART", function (e) {
+  // Besluit 20 november 2026 (TODO_BART-E2-8): de casus geeft geen reflectievragen; er staan nu concepten ter goedkeuring (TODO_BART-C12).
+  reg("E2-5 profielen: Kweekgestuurd, smal / Bijgestuurd, conceptreflectievraag + markering van C12", function (e) {
     T.gelijk(e.profielen.map(function (p) { return p.naam; }), ["Kweekgestuurd, smal", "Bijgestuurd"]);
-    e.profielen.forEach(function (p) {
-      T.is(p.reflectievraag, null, p.naam + ": de casus geeft in episode 2 geen reflectievraag");
-      T.waar(typeof p.TODO_BART === "string", p.naam + " heeft TODO_BART op de plek zelf");
-    });
+    T.gelijk(e.profielen.map(function (p) { return p.reflectievraag; }), ["Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?",
+      "Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?"]);
+    var c12 = casus().todoBart.filter(function (t) { return t.id === "TODO_BART-C12"; })[0];
+    e.profielen.forEach(function (p) { T.is(p.TODO_BART, c12.vraag, p.naam + " heeft de markering van C12 op de plek zelf"); });
     T.gelijk(e.profielen[0].als, { p: "en", args: [{ p: "gespeeld", kaart: "V4" }, { p: "nietGespeeld", kaart: "B1" }] });
     T.gelijk(e.profielen[1].als, { p: "en", args: [{ p: "gespeeld", kaart: "V5" }, { p: "gespeeld", kaart: "B1" }, { p: "na", a: { kaart: "B1" }, b: { kaart: "V5" } }] });
   });
@@ -436,7 +437,8 @@
     markeringen.forEach(function (m) { T.waar(vragen.indexOf(m.v) >= 0, "TODO_BART op " + m.pad + " staat niet in casus.todoBart: " + m.v); });
     // Omgekeerd: elke E2-TODO is op de plek zelf gemarkeerd.
     var gemarkeerd = markeringen.map(function (m) { return m.v; });
-    mijn.forEach(function (t) { T.waar(gemarkeerd.indexOf(t.vraag) >= 0, t.id + " staat niet als TODO_BART op de plek zelf in de data"); });
+    // Uitzondering: E2-8 is op 20 november 2026 beslist; de markering op de profielen hoort nu bij concept C12.
+    mijn.forEach(function (t) { if (t.id !== "TODO_BART-E2-8") T.waar(gemarkeerd.indexOf(t.vraag) >= 0, t.id + " staat niet als TODO_BART op de plek zelf in de data"); });
   });
   reg("S-TODO: de gedeelde casus-onduidelijkheden zijn gemeld (dag-lezing I7, grens I8, kweek-doorlooptijd, ontbrekende reflectievragen)", function (e) {
     var tekst = JSON.stringify((casus().todoBart || []).filter(function (t) { return /^TODO_BART-E2-/.test(t.id); })).toLowerCase();

@@ -38,7 +38,7 @@
 
   /* ---------- vastlegging ---------- */
   T.registreer(G, "vastlegging: casus 1.6; de twee concepten zijn op 20 november 2026 goedgekeurd", function () {
-    T.is(casus().versie, "1.7");
+    T.is(casus().versie, "1.8");
     ["TODO_BART-C10", "TODO_BART-C11"].forEach(function (id) {
       var t = todo(id);
       T.waar(!!t && /^Beslist door Bart op 20 november 2026/.test(t.besluit || "") && /^Concepttekst ter goedkeuring/.test(t.vraag) && typeof t.gekozenLezing === "string" && typeof t.plek === "string", id + " is goedgekeurd");

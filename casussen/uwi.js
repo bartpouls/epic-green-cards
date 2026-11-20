@@ -6,7 +6,7 @@
 window.CASUSSEN = [
 {
  "id": "uwi-eerstelijn",
- "versie": "1.7",
+ "versie": "1.8",
  "limiet": 1,
  "regelnamen": [
   {
@@ -1843,31 +1843,36 @@ window.CASUSSEN = [
    "id": "TODO_BART-K1",
    "vraag": "De casus noemt bij elke kaart een verplichte downside, maar geeft bij N1, N2, N3 en Ev1 \"—\". Is dat bedoeld (geen downside) of ontbreekt er een tekst?",
    "gekozenLezing": "Letterlijk \"—\" overgenomen; geen downside verzonnen.",
-   "plek": "kaarten[N1,N2,N3,Ev1].downside"
+   "plek": "kaarten[N1,N2,N3,Ev1].downside",
+   "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
    "id": "TODO_BART-K2",
    "vraag": "De casus geeft het effect van V3 en V5 en de downside van O1 alleen met het voorvoegsel \"E1:\". Geldt dat ook voor E2 en E3?",
    "gekozenLezing": "Effect van V3 en V5: de hele casuscel staat letterlijk, inclusief het voorvoegsel \"E1: \", in effect.alle (geldt voor elke episode waarin de kaart in het repertoire zit); geen tekst voor E2 of E3 toegevoegd. Downside van O1: alleen E1 (\"niet geïndiceerd\" geldt niet vanzelf in E2 en E3, waar een kweek wel nodig is); E2 en E3 hebben dus geen downside.",
-   "plek": "kaarten[V3,V5].effect; kaarten[O1].downside"
+   "plek": "kaarten[V3,V5].effect; kaarten[O1].downside",
+   "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
    "id": "TODO_BART-K3",
    "vraag": "Het effect van O1 en Ev1 en de G2-tekst bevatten zinnen die per episode of situatie verschillen, zonder voorvoegsel per episode (G2 E2: \"(verborgen)\"). Moeten die per episode gesplitst worden?",
    "gekozenLezing": "O1 en Ev1: niet gesplitst, de volledige casuscel staat letterlijk in effect.alle (geldt voor elke episode vanaf de eerste). G2: gesplitst in drie teksten (E1, E2 met \"(verborgen)\", E3), omdat de casus de varianten per episode noemt.",
-   "plek": "kaarten[O1,Ev1,G2].effect"
+   "plek": "kaarten[O1,Ev1,G2].effect",
+   "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
    "id": "TODO_BART-K4",
    "vraag": "De casus noemt niet expliciet welke doelen een doelkaart per episode mag krijgen. Zijn de gekozen lijsten (V6: V5/V7/V8/lisinopril; B1 en B2: alle antibiotica van de episode, B1-doel = het nieuwe middel; B3 en B5: lisinopril, spironolacton, calcium; B4: V7; N2: de voorgeschreven middelen; Ev2: lisinopril en spironolacton) juist?",
    "gekozenLezing": "Doelen afgeleid uit de routes, invarianten en kaarteffecten van de casus en uit bouwopdracht 6.1/6.2; geen enkel doel zonder aanleiding in de casus. De V6-opties zijn letterlijk bouwopdracht 6.2 (door Bart gevalideerd).",
-   "plek": "kaarten[V6,B1,B2,B3,B5,B4,N2,Ev2].doelen"
+   "plek": "kaarten[V6,B1,B2,B3,B5,B4,N2,Ev2].doelen",
+   "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
    "id": "TODO_BART-L1",
    "vraag": "Elke kaart mag één keer per doel gespeeld worden. Voor Urinekweek inzetten en Opvolgmoment afspreken staat in episode 3 een uitzondering: twee keer (een nieuwe kweek na weefselinvasie; contact na weefselinvasie én monitoring na de sick day). Klopt dat, of moet een andere kaart ook twee keer kunnen?",
    "gekozenLezing": "Casus-brede grens 1 (casus.limiet); alleen O1 en Ev1 in E3 mogen twee keer (kaart.limiet).",
-   "plek": "casus.limiet; kaarten[O1,Ev1].limiet"
+   "plek": "casus.limiet; kaarten[O1,Ev1].limiet",
+   "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
    "id": "TODO_BART-G1",
@@ -1880,7 +1885,8 @@ window.CASUSSEN = [
    "id": "TODO_BART-N1",
    "vraag": "Aanhoudende klachten leiden tot weefselinvasie en daarna tot sepsis. Gekozen volgens Barts antwoord: vier volle dagen aanhoudende klachten (dus pas op dag 5) geven weefselinvasie; bij weefselinvasie en opnieuw vier volle dagen aanhoudende klachten volgt sepsis. Nog open voor een huisarts: (1) geldt dit ook in episode 2 (daar komt de kweekuitslag op dag 4)? (2) tellen de vier dagen vanaf de start van het middel of vanaf het begin van de klachten? De NHG-termijnen zijn niet gecheckt.",
    "gekozenLezing": "Alleen in episode 3 aan (episode 1 en 2: uit). De teller telt de volle dagen op rij vanaf dag 1 waarop de klachten niet afnamen (ook als er niets is voorgeschreven); een werkzaam antibioticum stopt de teller. Na vier volle dagen volgt op dag 5 weefselinvasie (A), tenzij A al eerder kwam; daarna begint de teller opnieuw en volgt na nog eens vier volle dagen sepsis (S). Sinds casus 1.4 staat weefselinvasie zelf op dag 3 of dag 5 gepland; de eerste stap valt daardoor altijd samen met de geplande weefselinvasie of komt erna, en geeft nooit een tweede weefselinvasie. Sepsis volgt dus op dag 7 (weefselinvasie op dag 3) of dag 9 (weefselinvasie op dag 5) als de klachten blijven aanhouden.",
-   "plek": "E1.escalatie; E2.escalatie; E3.escalatie"
+   "plek": "E1.escalatie; E2.escalatie; E3.escalatie",
+   "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
    "id": "TODO_BART-N4",
@@ -1893,7 +1899,8 @@ window.CASUSSEN = [
    "id": "TODO_BART-N2",
    "vraag": "Concepttekst: de uitleg bij de start van elke episode, de waarschuwing 'Klachten houden aan: dag 1, 2, 3.' en de sturende uitleg 'Houden de klachten aan, dan wordt het erger. Kies nu een middel of stuur bij.' Keur je deze teksten goed of pas je ze aan?",
    "gekozenLezing": "Teksten zoals in de data (episode.startUitleg en episode.escalatie.waarschuwing/uitleg). Het zijn concepten, geen klinische inhoud uit de casus.",
-   "plek": "E1-E3.startUitleg; E3.escalatie"
+   "plek": "E1-E3.startUitleg; E3.escalatie",
+   "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
    "id": "TODO_BART-N3",
@@ -1906,25 +1913,29 @@ window.CASUSSEN = [
    "id": "TODO_BART-N5",
    "vraag": "Concepttekst: de rondleiding aan het begin van episode 1 (vijf korte stappen) en de smaakregel van elke kaart (één korte, neutrale zin boven het effect). Beide zijn bedacht, niet uit de casus, en bevatten volgens mij geen klinische beweringen. Keur je ze goed of pas je ze aan?",
    "gekozenLezing": "Teksten zoals in de data (de rondleiding staat in ui/ui.js, de smaakregels bij elke kaart in de kaartenbibliotheek).",
-   "plek": "kaarten[].smaak; de rondleiding staat in ui/ui.js"
+   "plek": "kaarten[].smaak; de rondleiding staat in ui/ui.js",
+   "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
    "id": "TODO_BART-N6",
    "vraag": "Het kaartvenster toont de effecttekst uit de casus. Een paar effectteksten verklappen een oplossing: Urinekweek inzetten ('Moet vóór de eerste dosis worden afgenomen'), Opvolgmoment afspreken (alle momenten), Nitrofurantoïne en Trimethoprim ('In een risicogroep: 7 dagen'), Innametijden aanpassen. Mogen ze zo getoond worden? Verder: bij Gebruik en verwachting uitleggen toont het spel de dosering en duur van het gekozen middel; alleen bij fosfomycine geeft de casus meer ('klachten niet direct weg'). Is dat genoeg?",
    "gekozenLezing": "Alle effectteksten staan letterlijk in het kaartvenster. De uitleg per middel is de standaarddosering en duur uit de casus (bij fosfomycine plus 'Klachten niet direct weg.').",
-   "plek": "kaarten[].effect; kaarten[].uitleg"
+   "plek": "kaarten[].effect; kaarten[].uitleg",
+   "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
    "id": "TODO_BART-N7",
    "vraag": "Uitgesteld recept: de speler kiest het middel dat de patiënt thuis start. In het spel telt dat middel meteen als gestart: het telt mee voor 'nooit twee antibiotica tegelijk', voor nitrofurantoïne bij een lage nierfunctie en voor de kweek vóór de eerste dosis. De patiënt start in werkelijkheid pas als de klachten aanhouden. Klopt deze vereenvoudiging?",
    "gekozenLezing": "Uitgesteld recept met een middel = dat middel is gestart op de dag van het recept. Duurzaamheid en profiel (Gedeelde regie) blijven zoals ze waren.",
-   "plek": "kaarten[V2].doelen; casus.rollen.uitgesteld"
+   "plek": "kaarten[V2].doelen; casus.rollen.uitgesteld",
+   "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
    "id": "TODO_BART-K5",
    "vraag": "De casus noemt voor het raadplegen alleen \"een eigen naslagkaart met verwijzing naar de bronnen\", zonder te zeggen welke bronnen erop staan. Zijn de vier bronnen uit de casuskop (NHG, SIDRIK, Kompas, KNMP) de bedoelde keuze, en blijft de naslagkaart voor alle episodes hetzelfde?",
    "gekozenLezing": "Alle vier de bronnen uit de casuskop, in kopvolgorde, als verwijzing op casusniveau (casus.raadplegen), voor elke episode gelijk; geen richtlijntekst toegevoegd.",
-   "plek": "raadplegen.bronnen"
+   "plek": "raadplegen.bronnen",
+   "besluit": "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
    "id": "TODO_BART-C1",
@@ -1984,7 +1995,13 @@ window.CASUSSEN = [
   { "id": "TODO_BART-C11", "vraag": "Concepttekst ter goedkeuring: vier kaartteksten zonder ontwerptaal (zichtbaar na het spelen). V2: 'De patiënt start zelf met het gekozen middel als de klachten aanhouden of toenemen'. V6: 'De nieuwe dosering gaat meteen in en blijft staan'. B5: 'Het middel wordt weer gestart. Herstarten hoort zodra de klachten weg zijn.' Ev3: 'De patiënt gaat naar de tweede lijn'. Keur je deze teksten goed of pas je ze aan?",
    "gekozenLezing": "Zo overgenomen in sectie 3 van de casus en in de speldata.",
    "plek": "kaarten[V2,V6,B5,Ev3].effect",
-   "besluit": "Beslist door Bart op 20 november 2026: de vier kaartteksten goedgekeurd." }
+   "besluit": "Beslist door Bart op 20 november 2026: de vier kaartteksten goedgekeurd." },
+  {
+   "id": "TODO_BART-C12",
+   "vraag": "Concepttekst ter goedkeuring: reflectievragen bij de vier profielen zonder reflectievraag in de casus, volgens het besluit van Bart van 20 november 2026 dat een reflectievraag de student vooral moet laten nadenken over wat de volgende keer beter kan. Episode 1, Gedeelde regie: 'Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?' Episode 2, Kweekgestuurd, smal: 'Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?' Episode 2, Bijgestuurd: 'Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?' Episode 3, Kweekgestuurd: 'Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?' Keur je ze goed of pas je ze aan?",
+   "gekozenLezing": "De vier vragen staan letterlijk in de data bij de profielen (E1 Gedeelde regie, E2 Kweekgestuurd, smal en Bijgestuurd, E3 Kweekgestuurd) en verschijnen op het beoordelingsscherm zoals de andere reflectievragen. Ze berusten niet op een bron [G].",
+   "plek": "E1.profielen.Gedeelde regie; E2.profielen.Kweekgestuurd, smal; E2.profielen.Bijgestuurd; E3.profielen.Kweekgestuurd"
+  }
  ],
  "episodes": []
 }
@@ -2104,8 +2121,8 @@ window.CASUSSEN[0].episodes.push({
     {
       naam: "Gedeelde regie",
       als: { p: "gespeeld", kaart: "V2" },
-      reflectievraag: null,
-      TODO_BART: "De casus geeft bij het profiel Gedeelde regie (uitgesteld recept) geen reflectievraag, wel bij Terughoudend en Direct behandelen. Welke reflectievraag hoort bij Gedeelde regie?"
+      reflectievraag: "Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?",
+      TODO_BART: "Concepttekst ter goedkeuring: reflectievragen bij de vier profielen zonder reflectievraag in de casus, volgens het besluit van Bart van 20 november 2026 dat een reflectievraag de student vooral moet laten nadenken over wat de volgende keer beter kan. Episode 1, Gedeelde regie: 'Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?' Episode 2, Kweekgestuurd, smal: 'Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?' Episode 2, Bijgestuurd: 'Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?' Episode 3, Kweekgestuurd: 'Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?' Keur je ze goed of pas je ze aan?"
     },
     {
       naam: "Direct behandelen",
@@ -2128,13 +2145,13 @@ window.CASUSSEN[0].episodes.push({
   ]
 });
 window.CASUSSEN[0].todoBart.push(
-  { id: "TODO_BART-E1-1", vraag: "De casus noemt als invariant I1 'Een route zonder N1'. Telt een episode zonder enige route (niets gespeeld) ook als 'een route zonder N1', en telt afronden zonder gekozen route (geen V1, V2, V3, V4 of V5), ook mét N1, als geschonden?", gekozenLezing: "Strengste lezing: elke afronding zonder N1 schendt I1, ook als er helemaal geen route is gekozen. Ook afronden mét N1 maar zonder route-kaart (geen V1 t/m V5) schendt I1; de casus noemt dit geval niet, maar zonder deze lezing haalt een lege route de poort zonder profiel of duurzaamheidsscore.", plek: "E1.invarianten.I1" },
-  { id: "TODO_BART-E1-2", vraag: "In episode 1 kunnen de klachten af, aan of na 48 uur niet verbeterd zijn, maar de casus geeft bij episode 1 geen statusteksten. Welke tekst hoort bij welke klachtenstatus?", gekozenLezing: "Status af = 'klachten nemen af.', status aan = 'klachten houden aan.' (casusfragmenten uit episode 2, met slotpunt). Voor de status na 48 uur geen verbetering geeft de casus in episode 1 geen tekst: leeg (geen tekst); de casus geeft die zin alleen in episode 3. In episode 1 komen aan en na 48 uur niet verbeterd niet voor.", plek: "E1.statusTeksten" },
-  { id: "TODO_BART-E1-3", vraag: "De casus geeft bij het profiel Gedeelde regie (uitgesteld recept) geen reflectievraag, wel bij Terughoudend en Direct behandelen. Welke reflectievraag hoort bij Gedeelde regie?", gekozenLezing: "Geen reflectievraag (leeg); er wordt niets verzonnen.", plek: "E1.profielen.Gedeelde regie" },
-  { id: "TODO_BART-E1-4", vraag: "De casus noemt bij de geldige routes 'Direct behandelen, 1e keus' (nitrofurantoïne), '2e keus' (fosfomycine) en '3e keus' (trimethoprim 3 dagen), maar geeft één reflectievraag. Is dat één profiel of drie?", gekozenLezing: "Eén profiel 'Direct behandelen' (V3, V4 of V5) met de ene reflectievraag uit de casus.", plek: "E1.profielen.Direct behandelen" },
-  { id: "TODO_BART-E1-5", vraag: "De casus noemt bij O1 gespeeld de vraag 'Wat doe je bij welke uitslag anders?'. Komt die vraag ook bij een poortschending?", gekozenLezing: "Alleen bij gehaalde poort; bij een schending verschijnt maar één vraag, die van de ernstigste schending.", plek: "E1.feedbackExtra[O1]" },
-  { id: "TODO_BART-E1-6", vraag: "De casus geeft als route 'V2 (+ middel) + N1 + N2 + Ev1' en rangschikt de duurzaamheid 'afwachten > uitgesteld recept > direct een antibioticum'. Telt uitgesteld recept met een middel erbij, of met V1 erbij, nog als 2 (uitgesteld recept)?", gekozenLezing: "Gespeeld V2 (ook met V1 of met een middel erbij) = 2, in lijn met profiel Gedeelde regie; V1 zonder V2 en zonder antibioticum = 3; een antibioticum zonder V2 = 1 (ook met V1 erbij, profiel Direct behandelen). Zonder gekozen route is er geen score (de poort is dan geschonden).", plek: "E1.score.duurzaamheid" },
-  { id: "TODO_BART-E1-7", vraag: "Mag de student de risicogroepmelding zien? De casus zet bij de patiëntkaart de regel 'Geen risicogroep. De eGFR is ≥ 30 [NHG]. De leeftijd ligt bewust onder 75, de grens die de NHG noemt als factor bij verminderde weerstand [NHG].' Die regel legt de drempels (eGFR 30, leeftijd 75) vooraf uit. Mag hij bij de patiëntkaart getoond worden, of alleen in het overzicht voor de docent?", gekozenLezing: "Nee: de student ziet de risicogroepmelding niet. De regel staat in de data onder patient.meta.risicogroep (voor Bart en het overzicht); de student ziet alleen de kop, de klachten, de medicatie en het lab. Alternatief: de regel wel bij de patiëntkaart tonen.", plek: "E1.patient.meta.risicogroep" }
+  { id: "TODO_BART-E1-1", vraag: "De casus noemt als invariant I1 'Een route zonder N1'. Telt een episode zonder enige route (niets gespeeld) ook als 'een route zonder N1', en telt afronden zonder gekozen route (geen V1, V2, V3, V4 of V5), ook mét N1, als geschonden?", gekozenLezing: "Strengste lezing: elke afronding zonder N1 schendt I1, ook als er helemaal geen route is gekozen. Ook afronden mét N1 maar zonder route-kaart (geen V1 t/m V5) schendt I1; de casus noemt dit geval niet, maar zonder deze lezing haalt een lege route de poort zonder profiel of duurzaamheidsscore.", plek: "E1.invarianten.I1", besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen." },
+  { id: "TODO_BART-E1-2", vraag: "In episode 1 kunnen de klachten af, aan of na 48 uur niet verbeterd zijn, maar de casus geeft bij episode 1 geen statusteksten. Welke tekst hoort bij welke klachtenstatus?", gekozenLezing: "Status af = 'klachten nemen af.', status aan = 'klachten houden aan.' (casusfragmenten uit episode 2, met slotpunt). Voor de status na 48 uur geen verbetering geeft de casus in episode 1 geen tekst: leeg (geen tekst); de casus geeft die zin alleen in episode 3. In episode 1 komen aan en na 48 uur niet verbeterd niet voor.", plek: "E1.statusTeksten", besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen." },
+  { id: "TODO_BART-E1-3", vraag: "De casus geeft bij het profiel Gedeelde regie (uitgesteld recept) geen reflectievraag, wel bij Terughoudend en Direct behandelen. Welke reflectievraag hoort bij Gedeelde regie?", gekozenLezing: "Geen reflectievraag (leeg); er wordt niets verzonnen.", plek: "E1.profielen.Gedeelde regie", besluit: "Beslist door Bart op 20 november 2026: er komt een reflectievraag die de student laat nadenken over wat de volgende keer beter kan; concepttekst in TODO_BART-C12." },
+  { id: "TODO_BART-E1-4", vraag: "De casus noemt bij de geldige routes 'Direct behandelen, 1e keus' (nitrofurantoïne), '2e keus' (fosfomycine) en '3e keus' (trimethoprim 3 dagen), maar geeft één reflectievraag. Is dat één profiel of drie?", gekozenLezing: "Eén profiel 'Direct behandelen' (V3, V4 of V5) met de ene reflectievraag uit de casus.", plek: "E1.profielen.Direct behandelen", besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen." },
+  { id: "TODO_BART-E1-5", vraag: "De casus noemt bij O1 gespeeld de vraag 'Wat doe je bij welke uitslag anders?'. Komt die vraag ook bij een poortschending?", gekozenLezing: "Alleen bij gehaalde poort; bij een schending verschijnt maar één vraag, die van de ernstigste schending.", plek: "E1.feedbackExtra[O1]", besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen." },
+  { id: "TODO_BART-E1-6", vraag: "De casus geeft als route 'V2 (+ middel) + N1 + N2 + Ev1' en rangschikt de duurzaamheid 'afwachten > uitgesteld recept > direct een antibioticum'. Telt uitgesteld recept met een middel erbij, of met V1 erbij, nog als 2 (uitgesteld recept)?", gekozenLezing: "Gespeeld V2 (ook met V1 of met een middel erbij) = 2, in lijn met profiel Gedeelde regie; V1 zonder V2 en zonder antibioticum = 3; een antibioticum zonder V2 = 1 (ook met V1 erbij, profiel Direct behandelen). Zonder gekozen route is er geen score (de poort is dan geschonden).", plek: "E1.score.duurzaamheid", besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen." },
+  { id: "TODO_BART-E1-7", vraag: "Mag de student de risicogroepmelding zien? De casus zet bij de patiëntkaart de regel 'Geen risicogroep. De eGFR is ≥ 30 [NHG]. De leeftijd ligt bewust onder 75, de grens die de NHG noemt als factor bij verminderde weerstand [NHG].' Die regel legt de drempels (eGFR 30, leeftijd 75) vooraf uit. Mag hij bij de patiëntkaart getoond worden, of alleen in het overzicht voor de docent?", gekozenLezing: "Nee: de student ziet de risicogroepmelding niet. De regel staat in de data onder patient.meta.risicogroep (voor Bart en het overzicht); de student ziet alleen de kop, de klachten, de medicatie en het lab. Alternatief: de regel wel bij de patiëntkaart tonen.", plek: "E1.patient.meta.risicogroep", besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen." }
 );
 }
 
@@ -2529,8 +2546,8 @@ window.CASUSSEN[0].episodes.push({
     {
       naam: "Kweekgestuurd, smal",
       als: { p: "en", args: [{ p: "gespeeld", kaart: "V4" }, { p: "nietGespeeld", kaart: "B1" }] },
-      reflectievraag: null,
-      TODO_BART: "Reflectievraag voor profiel ontbreekt in de casus (episode 2 geeft alleen de profielnamen, geen reflectievragen)."
+      reflectievraag: "Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?",
+      TODO_BART: "Concepttekst ter goedkeuring: reflectievragen bij de vier profielen zonder reflectievraag in de casus, volgens het besluit van Bart van 20 november 2026 dat een reflectievraag de student vooral moet laten nadenken over wat de volgende keer beter kan. Episode 1, Gedeelde regie: 'Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?' Episode 2, Kweekgestuurd, smal: 'Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?' Episode 2, Bijgestuurd: 'Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?' Episode 3, Kweekgestuurd: 'Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?' Keur je ze goed of pas je ze aan?"
     },
     {
       naam: "Bijgestuurd",
@@ -2542,8 +2559,8 @@ window.CASUSSEN[0].episodes.push({
           { p: "na", a: { kaart: "B1" }, b: { kaart: "V5" } }
         ]
       },
-      reflectievraag: null,
-      TODO_BART: "Reflectievraag voor profiel ontbreekt in de casus (episode 2 geeft alleen de profielnamen, geen reflectievragen).",
+      reflectievraag: "Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?",
+      TODO_BART: "Concepttekst ter goedkeuring: reflectievragen bij de vier profielen zonder reflectievraag in de casus, volgens het besluit van Bart van 20 november 2026 dat een reflectievraag de student vooral moet laten nadenken over wat de volgende keer beter kan. Episode 1, Gedeelde regie: 'Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?' Episode 2, Kweekgestuurd, smal: 'Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?' Episode 2, Bijgestuurd: 'Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?' Episode 3, Kweekgestuurd: 'Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?' Keur je ze goed of pas je ze aan?",
       TODO_BART_geenProfiel: "Een route die de poort haalt maar geen van beide profielen matcht (trimethoprim gevolgd door stoppen zonder wissel) heeft in de casus geen profiel."
     }
   ],
@@ -2630,13 +2647,15 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E2-19",
     vraag: "Terugkoppeling van weggelaten kaarten: de casus noemt niet welke weggelaten kaart welke downside toont.",
     gekozenLezing: "Geen terugkoppeling voor weggelaten kaarten in episode 2 (zelfde lezing als episode 3); wat de speler ziet bij een ontbrekende kaart staat in de zinnen onder 'Wat er zichtbaar wordt als een kaart ontbreekt'.",
-    plek: "E2.invarianten[].weglaatDownside"
+    plek: "E2.invarianten[].weglaatDownside",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E2-1",
     vraag: "I1 in episode 2: telt een episode zonder enige route (niets gespeeld) ook als 'een route zonder N1'?",
     gekozenLezing: "Strengste lezing, gelijk aan episode 1: elke afronding zonder N1 schendt I1, ook zonder gekozen route.",
-    plek: "E2.invarianten.I1"
+    plek: "E2.invarianten.I1",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E2-2",
@@ -2649,43 +2668,50 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E2-3",
     vraag: "Casus geeft bij I7 twee verschillende vragen (geen kalium / niet gehalveerd). Welke vraag verschijnt als beide eisen ontbreken?",
     gekozenLezing: "Beide vragen staan letterlijk in de data, elk met zijn eigen voorwaarde; de eerste waarvan de voorwaarde klopt wint, in de volgorde van de casustabel (eerst geen kalium, dan niet gehalveerd).",
-    plek: "E2.invarianten.I7.vraagVarianten"
+    plek: "E2.invarianten.I7.vraagVarianten",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E2-4",
     vraag: "Casus geeft bij I6 twee verschillende vragen (geen kweek / afwachten). Welke vraag verschijnt als beide spelen?",
     gekozenLezing: "Beide vragen staan letterlijk in de data, elk met zijn eigen voorwaarde; de eerste waarvan de voorwaarde klopt wint, in de volgorde van de casustabel (eerst 'geen kweek', dan 'afwachten').",
-    plek: "E2.invarianten.I6.vraagVarianten"
+    plek: "E2.invarianten.I6.vraagVarianten",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E2-5",
     vraag: "I8 (episode 2): casus zegt 'hoe streng de grens ligt, blijkt uit de eerste ervaringen met studenten'. Hoeveel beurten na de kweekuitslag (C) mag het resistente middel nog doorlopen, en vanaf wanneer 'houden de klachten aan'?",
     gekozenLezing: "Streng: binnen 2 beurten na de kweekuitslag moet de speler gewisseld (B1) of gestopt (B2) hebben. Aan het einde van de tweede beurt (de dag van de uitslag plus 1) mag geen middel actief zijn waarvoor de kweek resistent zegt, terwijl de klachten aanhouden. Een wissel naar een ander resistent middel telt dus niet als bijsturen. De '2' staat als offset 1 in de data en is instelbaar.",
-    plek: "E2.invarianten.I8"
+    plek: "E2.invarianten.I8",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E2-6",
     vraag: "De 3 dagen tot de uitslag zijn Barts keuze; de oorspronkelijke 2–4 dagen berusten op geen van de genoemde bronnen [G] en zijn niet geverifieerd. Een huisarts of lab moet dit bevestigen.",
     gekozenLezing: "De uitslag komt 3 dagen nadat Urinekweek inzetten is gespeeld, aan het begin van die dag (instelling: trigger.dagen in de data). Is O1 niet gespeeld, dan komt er geen kweekuitslag in deze poging.",
-    plek: "E2.gebeurtenissen.C"
+    plek: "E2.gebeurtenissen.C",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E2-7",
     vraag: "Moet de zin 'Daarmee valt ze in de risicogroep: een antibioticum is nodig, met een kweek vóór de eerste dosis, en nitrofurantoïne valt af [NHG].' bij het onthullen van G2 aan de speler getoond worden (botst met 'feedback zegt niet voor')?",
     gekozenLezing: "Alleen 'eGFR 29 uit de jaarlijkse controle' wordt getoond. De zin over de risicogroep staat in de data onder 'meta' (voor Bart en het overzicht), niet in de interface van de speler.",
-    plek: "E2.patient.verborgen[G2]"
+    plek: "E2.patient.verborgen[G2]",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E2-8",
     vraag: "Reflectievraag voor profiel ontbreekt in de casus (episode 2 geeft alleen de profielnamen, geen reflectievragen).",
     gekozenLezing: "reflectievraag = null voor Kweekgestuurd, smal en voor Bijgestuurd.",
-    plek: "E2.profielen"
+    plek: "E2.profielen",
+    besluit: "Beslist door Bart op 20 november 2026: er komen reflectievragen die de student laten nadenken over wat de volgende keer beter kan; concepttekst in TODO_BART-C12."
   },
   {
     id: "TODO_BART-E2-9",
     vraag: "Statusteksten in episode 2: de casus geeft alleen de regels 'Trimethoprim: klachten houden aan.' en 'Fosfomycine: klachten nemen af.' Moet de tekst die de speler ziet het casusfragment zijn (met slotpunt, kleine letter) of een volledige zin met hoofdletter, en is 'Na 48 uur geen verbetering.' ook in episode 2 bedoeld?",
     gekozenLezing: "af = 'klachten nemen af.', aan = 'klachten houden aan.': de casusfragmenten letterlijk, met het slotpunt van de casusregel en met een kleine letter (het fragment staat na de dubbele punt); geenVerbetering48 = null (komt in episode 2 niet voor, er is geen gebeurtenis A). Alternatief: een volledige zin met hoofdletter, bijvoorbeeld 'Klachten nemen af.' en 'Klachten houden aan.', of 'Na 48 uur geen verbetering.' ook in episode 2.",
-    plek: "E2.statusTeksten"
+    plek: "E2.statusTeksten",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E2-10",
@@ -2698,19 +2724,22 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E2-11",
     vraag: "Score episode 2: telt alleen een wissel (B1) op een dag met klachtenstatus 'af' als 'onnodig wisselen', en telt 'de voorschrijfkaart' V1–V5 (niet V6)?",
     gekozenLezing: "Alleen een B1 op een dag met klachtenstatus 'af' kost 1 punt duurzaamheid (start 3); 'de voorschrijfkaart' = V1 t/m V5: doelmatigheid 3 als G2 vóór elke gespeelde V1-V5 ligt, anders 2.",
-    plek: "E2.score"
+    plek: "E2.score",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E2-12",
     vraag: "Komen de feedbackvragen 'Verouderde eGFR niet opgemerkt' en 'Onnodig gewisseld' ook bij een poortschending (dan zijn het er meer dan één)?",
     gekozenLezing: "Alleen bij een gehaalde poort (bij een schending verschijnt maar één vraag, A4).",
-    plek: "E2.feedbackExtra"
+    plek: "E2.feedbackExtra",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E2-15",
     vraag: "Een route zonder enig antibioticum (geen V3, V4, V5, ook geen wissel ernaartoe) in de risicogroep: de casus zegt 'een antibioticum is nodig', maar I6 noemt alleen 'afwachten (V1/V2)'. Telt niets voorschrijven als afwachten?",
     gekozenLezing: "Strengste lezing: ja. Een risicogroep-episode zonder gestart antibioticum schendt I6, met de afwachten-vraag ('Wat is er veranderd sinds de vorige keer, toen afwachten wél kon?').",
-    plek: "E2.invarianten.I6"
+    plek: "E2.invarianten.I6",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E2-16",
@@ -2723,13 +2752,15 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E2-17",
     vraag: "I7 bij een middel dat al vóór dag 3 is vervangen (V5, dan B1 naar V4, O2 en V6 halveren op het al gestopte V5): de casus zegt 'Trimethoprim 7 dagen zonder O2 op dag 2–4, of zonder V6 na dag 3'. Geldt I7 nog als trimethoprim niet 7 dagen loopt?",
     gekozenLezing: "Sinds casus 1.2 geldt I7 alleen bij de 7-daagse kuur, dus zolang trimethoprim nog loopt. De kaliumcontrole (kuurdag 2 t/m 4) is alleen vereist als trimethoprim aan het einde van kuurdag 3 nog actief is; het halveren (vanaf kuurdag 4) alleen als het aan het einde van kuurdag 4 nog actief is. Wie trimethoprim op kuurdag 3 of eerder vervangt of stopt, krijgt geen schending, ook zonder kaliumcontrole en zonder halveren. Wie op kuurdag 4 vervangt of stopt, heeft wel de kaliumcontrole nodig, maar hoeft niet te halveren.",
-    plek: "E2.invarianten.I7"
+    plek: "E2.invarianten.I7",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E2-14",
     vraag: "Zichtbaar als kaart ontbreekt (episode 2): 'Nitrofurantoïne zonder G2' en 'V5 zonder O2' - telt G2/O2 dat later (te laat) wordt gespeeld als 'ontbreekt'?",
     gekozenLezing: "Letterlijk: 'zonder' = de kaart is nooit gespeeld (een te late G2 of O2 telt als gespeeld).",
-    plek: "E2.zichtbaarAlsOntbreekt"
+    plek: "E2.zichtbaarAlsOntbreekt",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   }
 );
 }
@@ -3477,8 +3508,8 @@ window.CASUSSEN[0].episodes.push({
       naam: "Kweekgestuurd",
       casusTekst: "Kweekgestuurd; scoort hoger. De keuze leunt op de eerdere kweek en vermijdt de risico's van ciprofloxacine bij ouderen [NHG].",
       als: { p: "gestart", middel: "V8" },
-      reflectievraag: null,
-      TODO_BART: "Reflectievraag voor profiel Kweekgestuurd (episode 3) ontbreekt in de casus."
+      reflectievraag: "Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?",
+      TODO_BART: "Concepttekst ter goedkeuring: reflectievragen bij de vier profielen zonder reflectievraag in de casus, volgens het besluit van Bart van 20 november 2026 dat een reflectievraag de student vooral moet laten nadenken over wat de volgende keer beter kan. Episode 1, Gedeelde regie: 'Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?' Episode 2, Kweekgestuurd, smal: 'Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?' Episode 2, Bijgestuurd: 'Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?' Episode 3, Kweekgestuurd: 'Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?' Keur je ze goed of pas je ze aan?"
     },
     {
       naam: "Richtlijn eerste keus",
@@ -3597,7 +3628,8 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-2",
     vraag: "Eisen 'binnen n beurten' (I15, I16, I10) bij vroeg afronden: telt een onvervulde eis als schending?",
     gekozenLezing: "Ja: schendingen worden bepaald op de eindstand; een eis die bij afronden nog niet vervuld is, telt als geschonden. Geldt alleen als gebeurtenis A of B geweest is.",
-    plek: "E3.invarianten.I10, I15, I16"
+    plek: "E3.invarianten.I10, I15, I16",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-3",
@@ -3610,25 +3642,29 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-4",
     vraag: "Een tweede kweekuitslag in episode 3 (nieuwe O1 na weefselinvasie): voorlopig komt er een tweede kweekuitslag, 3 dagen na de nieuwe kweek, met dezelfde bacterie en dezelfde gevoeligheden. Kan de gevoeligheid bij weefselinvasie afwijken? (Vraag voor de huisarts.) De 3 dagen zijn Barts keuze; de oorspronkelijke 2–4 dagen berusten op geen van de genoemde bronnen [G] en zijn niet geverifieerd.",
     gekozenLezing: "Ja: gebeurtenis C2 geeft 3 dagen na de tweede O1 een tweede uitslag met dezelfde gegevens als C. De invarianten (I8) kijken alleen naar de eerste uitslag C.",
-    plek: "E3.gebeurtenissen.C2"
+    plek: "E3.gebeurtenissen.C2",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-5",
     vraag: "I10, I11, I13, I14, I15, I16: wat is 'dezelfde beurt', 'de beurt na A' en 'tussen A en de wissel'?",
     gekozenLezing: "De beurt van een gebeurtenis is de dag waarop de banner verscheen (begin van de volgende dag). 'Eind van de beurt na A' = einde van die dag; 'binnen 2 beurten' = die dag en de dag erna; 'na A' = kaarten gespeeld vanaf die dag.",
-    plek: "E3.invarianten.I10, I11, I13, I14, I15, I16"
+    plek: "E3.invarianten.I10, I11, I13, I14, I15, I16",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-6",
     vraag: "I14: de toestandstabel zet I14 alleen bij weefselinvasie, de invariantentabel zegt 'Met ciprofloxacine'; bouwopdracht 6.1 zegt 'E3'. Waar geldt I14? En: B4 'op calcium' (bouwopdracht) of op ciprofloxacine (kaartdoelen)?",
     gekozenLezing: "Strengste lezing: geldt in elke toestand zodra ciprofloxacine gestart is (in elke toestand). B4 telt op elk doel; B3 alleen op calcium; beide in dezelfde of de volgende beurt als de start van ciprofloxacine, tenzij calcium dan al gepauzeerd is.",
-    plek: "E3.invarianten.I14"
+    plek: "E3.invarianten.I14",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-7",
     vraag: "I1 in episode 3: telt een episode zonder enige route ook als 'een route zonder N1'? (Dezelfde vraag als in episode 1.)",
     gekozenLezing: "Strengste lezing: elke afronding zonder N1 schendt I1.",
-    plek: "E3.invarianten.I1"
+    plek: "E3.invarianten.I1",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-8",
@@ -3648,7 +3684,8 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-10",
     vraag: "Welke tekst hoort bij welke klachtenstatus in episode 3?",
     gekozenLezing: "af = 'klachten nemen af.', aan = 'klachten houden aan.', geenVerbetering48 = 'Na 48 uur geen verbetering.' (letterlijke fragmenten uit E2/E3).",
-    plek: "E3.statusTeksten"
+    plek: "E3.statusTeksten",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-11",
@@ -3661,19 +3698,22 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-12",
     vraag: "Reflectievraag voor profiel Kweekgestuurd (episode 3) ontbreekt in de casus.",
     gekozenLezing: "Geen reflectievraag tonen bij dit profiel.",
-    plek: "E3.profielen.Kweekgestuurd"
+    plek: "E3.profielen.Kweekgestuurd",
+    besluit: "Beslist door Bart op 20 november 2026: er komt een reflectievraag die de student laat nadenken over wat de volgende keer beter kan; concepttekst in TODO_BART-C12."
   },
   {
     id: "TODO_BART-E3-13",
     vraag: "Feedbackvragen 'Automatische herstart' en 'Ciprofloxacine-dosis (bronconflict)': de casus noemt geen trigger en niet of ze ook bij een poortschending verschijnen.",
     gekozenLezing: "Automatische herstart: zodra B5 gespeeld is. Ciprofloxacine-dosis: zodra ciprofloxacine gestart is (geen poort). Beide alleen bij gehaalde poort, zodat bij een schending één vraag verschijnt.",
-    plek: "E3.feedbackExtra"
+    plek: "E3.feedbackExtra",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-14",
     vraag: "'Geen sick day-maatregelen' (zichtbaar als een kaart ontbreekt): geen enkele maatregel, of ook als er één ontbreekt?",
     gekozenLezing: "Geen van de vier maatregelen (B3 op spironolacton, V6 lisinopril halveren, N3, Ev1) is gespeeld terwijl B geweest is.",
-    plek: "E3.zichtbaarAlsOntbreekt[0]"
+    plek: "E3.zichtbaarAlsOntbreekt[0]",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-15",
@@ -3686,19 +3726,22 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-16",
     vraag: "Terugkoppeling van weggelaten kaarten: de casus noemt niet welke weggelaten kaart welke downside toont.",
     gekozenLezing: "Bij weggelaten kaarten komt in episode 3 geen aparte downside-tekst; de teksten bij ontbrekende kaarten staan bij 'wat zichtbaar wordt als een kaart ontbreekt'.",
-    plek: "E3.invarianten (markering op I5)"
+    plek: "E3.invarianten (markering op I5)",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-17",
     vraag: "Acties per beurt in episode 3: de casus noemt 'krap', bouwopdracht 6.6 zegt 3 (zelfde als E1 en E2).",
     gekozenLezing: "3 acties per beurt, 7 dagen, raadplegen kost 1 (bouwopdracht 6.6; instelbaar).",
-    plek: "E3.knoppen"
+    plek: "E3.knoppen",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-18",
     vraag: "I6 en I7 hebben elk twee Socratische vragen in de casus, maar één invariant.",
     gekozenLezing: "Beide vragen staan in de data; per vraag is vastgelegd bij welke schending ze horen. Standaard geldt de eerste vraag.",
-    plek: "E3.invarianten.I6, I7"
+    plek: "E3.invarianten.I6, I7",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-19",
@@ -3711,7 +3754,8 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-20",
     vraag: "Doelmatigheid 'G3 gebruiken vóór de eerste keuze': welke kaarten tellen als 'de eerste keuze'? Bouwopdracht 6.5 zegt 'de eerste V-kaart', de casus 'de eerste keuze'.",
     gekozenLezing: "Strengste lezing: elke V-kaart telt als keuze, dus V1 t/m V10 inclusief V6 (dosering). Doelmatigheid is 3 alleen als G3 gespeeld is en vóór elke gespeelde V-kaart ligt; anders 2.",
-    plek: "E3.score.doelmatigheid"
+    plek: "E3.score.doelmatigheid",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-21",
@@ -3724,13 +3768,15 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-22",
     vraag: "Feedback 'O1 gespeeld' en 'Onnodig gewisseld' (en de duurzaamheidsregel 'wisselen terwijl het middel werkt') staan alleen bij episode 1 en 2; I1 en I4–I8 blijven in episode 3 gelden. Geldt dat ook voor deze feedback en deze score in episode 3?",
     gekozenLezing: "Nee: de feedback 'O1 gespeeld' en 'Onnodig gewisseld' en de duurzaamheidsregel 'wisselen terwijl het middel werkt' komen in episode 3 niet voor; de casus noemt ze alleen bij episode 1 en 2. Alleen I1 en I4–I8 gelden als invariant. Alternatief: ze ook in episode 3 toepassen.",
-    plek: "E3.score; E3.feedbackExtra"
+    plek: "E3.score; E3.feedbackExtra",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-23",
     vraag: "I8 in episode 3: op welke dag moeten 'de klachten houden aan' gelden, en wanneer telt 'doorgaan met een resistent middel'? Bouwopdracht 6.1 noemt geen dag.",
     gekozenLezing: "Bouwopdracht 6.1 letterlijk: schending als na C het resistente middel (V5, V10) aan het eind van de tweede beurt (dag van C + 1) nog actief is én de klachten op de dag van C 'aan' of 'geen verbetering na 48 uur' zijn. Niet gedekt: een resistent middel dat pas op of na de dag van C wordt gestart (bijvoorbeeld V4 naar V10 via B1 op de dag na C). Alternatief (strenger): klachten 'aan' op elke dag vanaf C meetellen.",
-    plek: "E3.invarianten.I8"
+    plek: "E3.invarianten.I8",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-24",
@@ -3743,13 +3789,15 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-25",
     vraag: "Randgeval klachtenstatus na gebeurtenis A: stel dat na A eerst een werkzaam antibioticum actief is (de klachten nemen af), en daarna weer een periode komt zonder werkzaam antibioticum. Geldt dan opnieuw 'Na 48 uur geen verbetering.'?",
     gekozenLezing: "Nee: alleen de eerste periode na A zonder werkzaam antibioticum telt voor 'Na 48 uur geen verbetering.' Zodra in die periode een werkzaam antibioticum actief is geweest, geldt voor de rest van de episode de gewone status (klachten nemen af, klachten houden aan, of geen status), ook als er later weer een periode zonder werkzaam antibioticum volgt. Alternatief: de status 'Na 48 uur geen verbetering.' opnieuw laten gelden bij elke nieuwe periode van twee dagen zonder werkzaam antibioticum.",
-    plek: "E3.statusTeksten; E3.gebeurtenissen.A; E3.invarianten.I8, I16"
+    plek: "E3.statusTeksten; E3.gebeurtenissen.A; E3.invarianten.I8, I16",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-26",
     vraag: "Mag de student de risicogroepmelding zien? De casus zet bij de patiëntkaart (bij het lab) de zin 'Risicogroep [NHG].' Die zin vertelt vooraf dat deze patiënt in de risicogroep valt. Mag hij bij de patiëntkaart getoond worden, of alleen in het overzicht voor de docent?",
     gekozenLezing: "Nee: de student ziet de risicogroepmelding niet. De zin staat in de data onder patient.meta.risicogroep (voor Bart en het overzicht); de student ziet alleen de kop, de klachten, de medicatie en het lab ('eGFR 28, recent.'). Alternatief: de zin wel bij de patiëntkaart tonen.",
-    plek: "E3.patient.meta.risicogroep"
+    plek: "E3.patient.meta.risicogroep",
+    besluit: "Beslist door Bart op 20 november 2026: akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen."
   },
   {
     id: "TODO_BART-E3-27",

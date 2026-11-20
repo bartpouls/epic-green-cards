@@ -69,7 +69,12 @@
   var REFLECTIE = {
     terughoudend: "Je schreef niets voor. Bij welke patiënt zou dat niet mogen?",
     direct: "Het werkt. Was het nodig, en koos zíj ervoor?",
-    cipro: "Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?"
+    cipro: "Eerste keus volgens de richtlijn. Gold die eerste keus ook voor déze patiënt?",
+    // Concepten ter goedkeuring (besluit 20 november 2026, TODO_BART-C12).
+    gedeeldeRegie: "Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?",
+    kweekSmal: "Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?",
+    bijgestuurd: "Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?",
+    kweekE3: "Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?"
   };
   // Downside per kaart (casus sectie 3). Een object geldt alleen voor de genoemde episodes ("E1: niet geïndiceerd ..."); geen sleutel = geen downside.
   var DOWNSIDE = {
@@ -150,8 +155,8 @@
   e1("E1-afwachten", "Afwachten: V1 + N1 + Ev1", ["V1", "N1", "Ev1"], geldig("Terughoudend", REFLECTIE.terughoudend, 3, 3));
   e1("E1-afwachten-omgekeerd", "Afwachten, kaarten in omgekeerde volgorde (volgorde vrij)", ["Ev1", "N1", "V1"], geldig("Terughoudend", REFLECTIE.terughoudend, 3, 3));
   // Casus 1.2: uitgesteld recept is een doelkaart; de speler kiest het middel dat de patiënt thuis start.
-  e1("E1-uitgesteld", "Uitgesteld recept (middel: nitrofurantoïne): V2 + N1 + Ev1", ["V2>V3", "N1", "Ev1"], geldig("Gedeelde regie", null, 2, 3));
-  e1("E1-uitgesteld-middel", "Uitgesteld recept met middel: V2 (+ middel) + N1 + N2 + Ev1", ["V2>V4", "N1", "N2>V4", "|", "Ev1"], geldig("Gedeelde regie", null, 2, 3));
+  e1("E1-uitgesteld", "Uitgesteld recept (middel: nitrofurantoïne): V2 + N1 + Ev1", ["V2>V3", "N1", "Ev1"], geldig("Gedeelde regie", REFLECTIE.gedeeldeRegie, 2, 3));
+  e1("E1-uitgesteld-middel", "Uitgesteld recept met middel: V2 (+ middel) + N1 + N2 + Ev1", ["V2>V4", "N1", "N2>V4", "|", "Ev1"], geldig("Gedeelde regie", REFLECTIE.gedeeldeRegie, 2, 3));
   e1("E1-nitrofurantoine", "Nitrofurantoïne 5 dagen: V3 + N1", ["V3", "N1"], geldig("Direct behandelen", REFLECTIE.direct, 1, 3));
   e1("E1-nitrofurantoine-compleet", "Nitrofurantoïne: V3 + N1 + N2 + Ev1", ["V3", "N1", "N2>V3", "|", "Ev1"], geldig("Direct behandelen", REFLECTIE.direct, 1, 3));
   e1("E1-fosfomycine", "Fosfomycine: V4 + N1 + N2", ["V4", "N1", "N2>V4"], geldig("Direct behandelen", REFLECTIE.direct, 1, 3));
@@ -173,20 +178,20 @@
 
   /* =============== EPISODE 2: geldige routes (casus sectie 5) =============== */
   e2("E2-fosfomycine", "Fosfomycine: G2 -> O1 -> V4 + N1 + N2, na de uitslag niet wisselen",
-    ["G2", "O1", "V4", "|", "N1", "N2>V4", "|", "=7"], geldig("Kweekgestuurd, smal", null, 3, 3));
+    ["G2", "O1", "V4", "|", "N1", "N2>V4", "|", "=7"], geldig("Kweekgestuurd, smal", REFLECTIE.kweekSmal, 3, 3));
   e2("E2-fosfomycine-andere-volgorde", "Fosfomycine met N1 en G2 voor O1 (volgorde vrij, O1 wel voor V4)",
-    ["N1", "G2", "O1", "|", "V4", "N2>V4", "|", "=7"], geldig("Kweekgestuurd, smal", null, 3, 3));
+    ["N1", "G2", "O1", "|", "V4", "N2>V4", "|", "=7"], geldig("Kweekgestuurd, smal", REFLECTIE.kweekSmal, 3, 3));
   e2("E2-trimethoprim-bijgestuurd", "Trimethoprim 7 dagen: G2 -> O1 -> V5 + O2 + V6 + N1, na de uitslag B1 naar fosfomycine",
-    ["G2", "O1", "V5", "|", "O2", "N1", "|", "|", "V6>V5>halveren", "B1>V4", "=7"], geldig("Bijgestuurd", null, 3, 3));
+    ["G2", "O1", "V5", "|", "O2", "N1", "|", "|", "V6>V5>halveren", "B1>V4", "=7"], geldig("Bijgestuurd", REFLECTIE.bijgestuurd, 3, 3));
   e2("E2-onnodig-gewisseld", "Fosfomycine werkt (klachten af), wissel naar trimethoprim en terug: duurzaamheid 2, extra vraag",
     ["G2", "O1", "V4", "|", "N1", "B1>V5", "|", "B1>V4", "O2", "|", "|", "V6>V5>halveren", "=7"],
     { geschonden: [], vraag: null, score: { duurzaamheid: 2, doelmatigheid: 3 }, extraVragen: [EXTRA.gewisseld], zichtbaar: [] });
   e2("E2-grens-I8-wissel-op-tweede-beurt", "Trimethoprim, wissel naar fosfomycine op de laatste toegestane dag (de dag na de uitslag: binnen 2 beurten)",
-    ["G2", "O1", "V5", "|", "O2", "N1", "|", "|", "V6>V5>halveren", "|", "B1>V4", "=7"], geldig("Bijgestuurd", null, 3, 3));
+    ["G2", "O1", "V5", "|", "O2", "N1", "|", "|", "V6>V5>halveren", "|", "B1>V4", "=7"], geldig("Bijgestuurd", REFLECTIE.bijgestuurd, 3, 3));
   e2("E2-G2-te-laat", "Fosfomycine, G2 pas na V4: doelmatigheid 2, extra vraag verouderde eGFR",
-    ["O1", "V4", "N1", "|", "G2", "|", "=7"], geldig("Kweekgestuurd, smal", null, 3, 2, { extra: [EXTRA.eGFR] }));
+    ["O1", "V4", "N1", "|", "G2", "|", "=7"], geldig("Kweekgestuurd, smal", REFLECTIE.kweekSmal, 3, 2, { extra: [EXTRA.eGFR] }));
   e2("E2-G2-nooit", "Fosfomycine zonder G2: doelmatigheid 2, extra vraag verouderde eGFR",
-    ["O1", "V4", "N1", "|", "|", "=7"], geldig("Kweekgestuurd, smal", null, 3, 2, { extra: [EXTRA.eGFR] }));
+    ["O1", "V4", "N1", "|", "|", "=7"], geldig("Kweekgestuurd, smal", REFLECTIE.kweekSmal, 3, 2, { extra: [EXTRA.eGFR] }));
 
   /* =============== EPISODE 2: foutroutes =============== */
   e2("E2-fout-I1", "Fosfomycine zonder N1", ["G2", "O1", "V4", "|", "|", "=7"], fout(["I1"], VRAAG.I1), "fout");
@@ -226,14 +231,14 @@
   // De casusregel "Start bij cystitis: G3 -> O1 -> V4 + N1" is het begin van elke route hieronder. Als losse route bestaat hij sinds casus 1.4
   // niet meer: afronden spoelt door, dus weefselinvasie en uitdroging komen altijd (zie de foutroute E3-fout-niet-gereageerd).
   e3("E3-amoxicilline-clavulaanzuur", "Weefselinvasie: O1, B1 naar V8, V6 875/125; sick day-set na B", [],
-    geldig("Kweekgestuurd", null, 3, 3));
+    geldig("Kweekgestuurd", REFLECTIE.kweekE3, 3, 3));
   e3("E3-sickday-omgekeerde-volgorde", "Als de basisroute, maar de sick day-kaarten in andere volgorde (N3 en B3 omgewisseld)",
-    [{ ruil: ["B3>spironolacton", "N3"] }], geldig("Kweekgestuurd", null, 3, 3));
+    [{ ruil: ["B3>spironolacton", "N3"] }], geldig("Kweekgestuurd", REFLECTIE.kweekE3, 3, 3));
   e3("E3-hervatten-na-overleg", "Als de basisroute, daarna B5 op spironolacton nadat Ev2 is gespeeld (geen automatische herstart)",
-    [{ eind: ["B5>spironolacton"] }], geldig("Kweekgestuurd", null, 3, 3, { extra: [EXTRA.herstart] }));
+    [{ eind: ["B5>spironolacton"] }], geldig("Kweekgestuurd", REFLECTIE.kweekE3, 3, 3, { extra: [EXTRA.herstart] }));
   e3("E3-G3-te-laat", "Als de basisroute, maar G3 pas na V4 (O1 wel eerst): doelmatigheid 2",
     [{ ruil: ["G3", "O1"] }, { ruil: ["G3", "V4"] }],
-    geldig("Kweekgestuurd", null, 3, 2));
+    geldig("Kweekgestuurd", REFLECTIE.kweekE3, 3, 2));
   e3("E3-ciprofloxacine-B4", "Weefselinvasie: B1 naar ciprofloxacine met B4 (scheiden van calcium)",
     [["B1>V8", "B1>V7"], [V6_V8, "B4>V7"]], geldig("Richtlijn eerste keus", REFLECTIE.cipro, 2, 3, { extra: [EXTRA.cipro] }));
   e3("E3-ciprofloxacine-B3-calcium", "Weefselinvasie: B1 naar ciprofloxacine met B3 (calcium tijdelijk stoppen)",
@@ -245,7 +250,7 @@
       "B,A": ["G3", "O1", "V4", "|", "N1", "O2", "Ev2>spironolacton", "|", "B3>spironolacton", "V6>lisinopril>halveren", "N3", "|", "Ev1",
         "|", "O1", "B1>V7", "B4>V7", "|", "Ev1", "B1>V8", V6_V8, "=7"]
     },
-    geldig("Kweekgestuurd", null, 3, 3, { extra: [EXTRA.cipro] }));
+    geldig("Kweekgestuurd", REFLECTIE.kweekE3, 3, 3, { extra: [EXTRA.cipro] }));
   e3plannen("E3-grens-I14-B4-volgende-beurt", "Ciprofloxacine, B4 pas de dag na de start van ciprofloxacine (dezelfde of de volgende beurt)",
     {
       "A,B": ["G3", "O1", "V4", "|", "N1", "O2", "Ev2>spironolacton", "|", "O1", "B1>V7", "G1", "|", "Ev1", "B4>V7",

@@ -42,7 +42,6 @@ ul, ol { margin: 4px 0; padding-left: 22px; }
 .inv .ernst { display: inline-block; min-width: 64px; background: var(--vlak); border: 1px solid var(--lijn); border-radius: 4px; padding: 0 6px; margin-left: 8px; font-weight: 400; font-size: 13px; }
 .etiket { color: var(--zacht); font-size: 12.5px; text-transform: none; }
 .casus-tekst { border-left: 3px solid var(--accent); padding-left: 10px; margin: 4px 0; }
-.casus-tekst li.inspring { margin-left: 1.5em; }
 .smaak { font-style: italic; color: var(--zacht); font-size: 12.5px; }
 .meta { background: var(--meta); border-left: 4px solid var(--meta-lijn); border-radius: 3px; padding: 4px 10px; margin: 6px 0; font-size: 13.5px; }
 .meta > .etiket { display: block; font-weight: 600; margin-bottom: 2px; }
@@ -680,26 +679,7 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
     return el('ul', null, l.map(function (x) { return el('li', null, x); }));
   }
 
-  // Regels letterlijk uit de casus, met optionele inspringing (aantal niveaus per regel) en een etiket ervoor.
-  function casusRegels(regels, inspring, etiket) {
-    if (isLeeg(regels)) return null;
-    var l = Array.isArray(regels) ? regels : [regels];
-    if (!l.length) return null;
-    var ul = el('ul', null, l.map(function (x, i) { return el('li', (inspring && inspring[i] > 0) ? { 'class': 'inspring' } : null, x); }));
-    return el('div', { 'class': 'casus-tekst' }, [el('span', { 'class': 'etiket' }, etiket || 'Zoals in de casus:'), ul]);
-  }
-  function inspringVan(ref, sleutel) { return ref && ref.inspringing ? ref.inspringing[sleutel] : null; }
-  function labelVan(ref, sleutel) { return ref && ref.labels && !isLeeg(ref.labels[sleutel]) ? ref.labels[sleutel] : null; }
-  function kopjesVan(ref, sleutel) { return ref && ref.tabelkoppen && ref.tabelkoppen[sleutel] ? ref.tabelkoppen[sleutel] : null; }
-  // Tabel zoals in de casus: koppen uit de casus, rijen met dezelfde sleutels in dezelfde volgorde.
-  function casusTabel(koppen, rijen, sleutels, tabelnaam) {
-    var t = el('table', { 'data-tabel': tabelnaam });
-    t.appendChild(el('thead', null, el('tr', null, koppen.map(function (h) { return el('th', null, h); }))));
-    t.appendChild(el('tbody', null, rijen.map(function (r) { return el('tr', null, sleutels.map(function (k) { return el('td', null, isLeeg(r[k]) ? '' : String(r[k])); })); })));
-    return t;
-  }
-
-  function patientKaart(e, naam, ref) {
+  function patientKaart(e, naam) {
     var p = e.patient || {};
     var w = el('div', { 'data-sectie': 'patient' });
     w.appendChild(el('h3', null, naam));
@@ -755,14 +735,13 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
     // meta en overig
     if (p.meta) w.appendChild(metaBox(p.meta, 'Niet zichtbaar voor de student (patiëntkaart, alleen voor de ontwerper)'));
     if (!isLeeg(p.casusMedicatieregel)) w.appendChild(casusQuote(p.casusMedicatieregel));
-    if (ref && ref.patientkaart) w.appendChild(casusRegels(ref.patientkaart, inspringVan(ref, 'patientkaart'), 'De patiëntkaart zoals in de casus:'));
     var ov = rest(p, ['zichtbaar', 'waar', 'medicatie', 'verborgen', 'meta', 'casusMedicatieregel']);
     if (ov) w.appendChild(ov);
     badges(p).forEach(function (b) { w.appendChild(b); });
     return w;
   }
 
-  function repertoireBlok(e, naam, ref) {
+  function repertoireBlok(e, naam) {
     var w = el('div', { 'data-sectie': 'repertoire' });
     var r = e.repertoire || [];
     w.appendChild(el('h3', null, naam));
@@ -771,14 +750,13 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
       var k = kaartVan(id);
       return el('li', null, [el('b', null, id), k ? k.label : '(kaart niet in bibliotheek)']);
     })));
-    if (ref && !isLeeg(ref.repertoireTekst)) w.appendChild(casusRegels(ref.repertoireTekst));
     return w;
   }
 
   function knoppenBlok(e, naam, ref) {
     var w = el('div', { 'data-sectie': 'knoppen' });
     w.appendChild(el('h3', null, naam));
-    if (ref && ref.knoppen && ref.knoppen.length) w.appendChild(casusRegels(ref.knoppen, null, labelVan(ref, 'knoppen')));
+    if (ref && ref.knoppen && ref.knoppen.length) w.appendChild(lijstTekst(ref.knoppen));
     var kn = e.knoppen || {};
     var dl = el('dl', { 'class': 'kv', 'data-blok': 'knoppen' });
     Object.keys(kn).forEach(function (k) {
@@ -836,11 +814,7 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
       if (r) blok.appendChild(r);
       w.appendChild(blok);
     });
-    if (ref && ref.gebeurtenissenTabel && ref.gebeurtenissenTabel.length) {
-      var gk = kopjesVan(ref, 'gebeurtenissen') || ['Id', 'Trigger', 'Inhoud'];
-      w.appendChild(el('details', { 'class': 'klein' }, [el('summary', null, 'Zo staat de tabel in de casus'), casusTabel(gk, ref.gebeurtenissenTabel, ['id', 'trigger', 'inhoud'], 'gebeurtenissen-casus')]));
-    }
-    if (ref && ref.gebeurtenisUitleg && ref.gebeurtenisUitleg.length) w.appendChild(casusRegels(ref.gebeurtenisUitleg, inspringVan(ref, 'gebeurtenisUitleg')));
+    if (ref && ref.gebeurtenisUitleg && ref.gebeurtenisUitleg.length) w.appendChild(lijstTekst(ref.gebeurtenisUitleg));
     return w;
   }
 
@@ -858,8 +832,6 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
     var inv = e.invarianten || [];
     w.appendChild(el('h3', null, naam));
     w.appendChild(el('p', { 'class': 'zacht klein' }, 'Ernst 1 = ernstigst. De voorwaarde hieronder is de schending: is die waar (in een toestand waarin de invariant geldt), dan is de poort niet gehaald.'));
-    var afKoppen = kopjesVan(ref, 'altijdFout');
-    if (afKoppen) w.appendChild(el('p', { 'class': 'zacht klein' }, 'In de casus is dit een tabel met de kolommen: ' + afKoppen.join(' · ')));
     inv.forEach(function (i) {
       var blok = el('div', { 'class': 'inv', 'data-invariant': e.id + ':' + i.id });
       var rn = (casus.regelnamen || []).filter(function (r) { return r.episode === e.id && r.invariant === i.id; })[0];
@@ -976,7 +948,7 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
     alleenBijGehaaldePoort: 'alleen als de poort gehaald is'
   };
   // Eén tabel Trigger | Vraag, zoals in de casus: invarianten, extra vragen en profielen.
-  function feedbackBlok(e, naam, ref) {
+  function feedbackBlok(e, naam) {
     var w = el('div', { 'data-sectie': 'feedback' });
     w.appendChild(el('h3', null, naam));
     var t = el('table', { 'data-tabel': 'feedback' });
@@ -1019,15 +991,11 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
       isLeeg(rp.reflectievraag) ? el('span', { 'class': 'zacht' }, '(geen reflectievraag)') : rp.reflectievraag, { 'data-profiel': e.id + ':rest' });
     t.appendChild(tb);
     w.appendChild(t);
-    if (ref && ref.feedbackTabel && ref.feedbackTabel.length) {
-      var fk = kopjesVan(ref, 'feedback') || ['Trigger', 'Vraag'];
-      w.appendChild(el('details', { 'class': 'klein' }, [el('summary', null, 'Zo staat de tabel in de casus'), casusTabel(fk, ref.feedbackTabel, ['trigger', 'vraag'], 'feedback-casus')]));
-    }
     w.appendChild(el('p', { 'class': 'zacht klein' }, 'Bij het eerste profiel (op volgorde) waarvan de voorwaarde klopt hoort de reflectievraag. Bij een poortschending verschijnt alleen de vraag van de ernstigste invariant.'));
     return w;
   }
 
-  function zichtbaarBlok(e, naam, ref) {
+  function zichtbaarBlok(e, naam) {
     var w = el('div', { 'data-sectie': 'zichtbaar' });
     var z = e.zichtbaarAlsOntbreekt || [];
     w.appendChild(el('h3', null, naam));
@@ -1041,7 +1009,6 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
       w.appendChild(blok);
     });
     if (!z.length) w.appendChild(el('p', { 'class': 'zacht' }, 'Geen.'));
-    if (ref && ref.zichtbaarAlsOntbreekt && ref.zichtbaarAlsOntbreekt.length) w.appendChild(casusRegels(ref.zichtbaarAlsOntbreekt));
     return w;
   }
 
@@ -1165,7 +1132,7 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
     var w = el('div', { 'data-sectie': 'routeBij' });
     w.appendChild(el('h3', null, naam));
     var t = el('table', { 'data-tabel': 'routeBij' });
-    t.appendChild(el('thead', null, el('tr', null, (kopjesVan(ref, 'routeBijWeefselinvasie') || ['Route', 'Poort', 'Profiel']).map(function (h) { return el('th', null, h); }))));
+    t.appendChild(el('thead', null, el('tr', null, ['Route', 'Poort', 'Profiel'].map(function (h) { return el('th', null, h); }))));
     var tb = el('tbody');
     (ref.routeBijWeefselinvasie || []).forEach(function (x) {
       tb.appendChild(el('tr', null, [el('td', null, x.route), el('td', null, x.poort), el('td', null, x.profiel)]));
@@ -1174,10 +1141,9 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
     w.appendChild(t);
     return w;
   }
-  function tekstSectie(naam, regels, sleutel, etiket) {
+  function tekstSectie(naam, regels, sleutel) {
     var w = el('div', { 'data-sectie': sleutel });
     w.appendChild(el('h3', null, naam));
-    if (etiket) w.appendChild(el('div', { 'class': 'etiket' }, etiket));
     var l = Array.isArray(regels) ? regels : [regels];
     if (l.length === 1) w.appendChild(el('p', { 'class': 'casus-tekst' }, l[0]));
     else w.appendChild(el('div', { 'class': 'casus-tekst' }, lijstTekst(l)));
@@ -1209,7 +1175,6 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
     var ref = refVan(e);
     var s = el('section', { id: e.id, 'data-episode': e.id });
     s.appendChild(el('h2', null, episodeKop(e)));
-    if (ref && !isLeeg(ref.episodeKop)) s.appendChild(el('p', { 'class': 'zacht klein' }, 'Kop in de casus: ' + ref.episodeKop));
     var dl = el('dl', { 'class': 'kv' });
     if (e.startToestanden) { dl.appendChild(el('dt', null, 'Begint in toestand')); dl.appendChild(el('dd', null, e.startToestanden.join(', '))); }
     if (e.antibiotica) { dl.appendChild(el('dt', null, 'Antibiotica in deze episode')); dl.appendChild(el('dd', null, e.antibiotica.map(lab).join(', '))); }
@@ -1237,17 +1202,17 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
       var blok;
       switch (x.type) {
         case 'knoppen': blok = knoppenBlok(e, x.naam, ref); break;
-        case 'patient': blok = patientKaart(e, x.naam, ref); break;
-        case 'repertoire': blok = repertoireBlok(e, x.naam, ref); break;
+        case 'patient': blok = patientKaart(e, x.naam); break;
+        case 'repertoire': blok = repertoireBlok(e, x.naam); break;
         case 'gebeurtenissen': blok = gebeurtenissenBlok(e, x.naam, ref); break;
         case 'routes': blok = ref ? routesBlok(e, x.naam, ref) : null; break;
         case 'routeBij': blok = ref && ref.routeBijWeefselinvasie ? routeWeefselBlok(e, x.naam, ref) : null; break;
         case 'bronconflict': blok = ref && ref.bronconflict ? tekstSectie(x.naam, ref.bronconflict, 'bronconflict') : null; break;
         case 'invarianten': blok = invariantenBlok(e, x.naam, ref); break;
-        case 'volgorde': blok = ref && ref.volgorde && ref.volgorde.length ? tekstSectie(x.naam, ref.volgorde, 'volgorde', labelVan(ref, 'volgorde')) : null; break;
+        case 'volgorde': blok = ref && ref.volgorde && ref.volgorde.length ? tekstSectie(x.naam, ref.volgorde, 'volgorde') : null; break;
         case 'score': blok = scoreBlok(e, x.naam, ref); break;
-        case 'zichtbaar': blok = zichtbaarBlok(e, x.naam, ref); break;
-        case 'feedback': blok = feedbackBlok(e, x.naam, ref); break;
+        case 'zichtbaar': blok = zichtbaarBlok(e, x.naam); break;
+        case 'feedback': blok = feedbackBlok(e, x.naam); break;
         case 'brug': blok = ref && ref.brug ? tekstSectie(x.naam, ref.brug, 'brug') : null; break;
         default: blok = el('div', { 'data-sectie': 'onbekend' }, [el('h3', null, x.naam), el('p', { 'class': 'zacht' }, 'Dit onderdeel van de casus heeft dit overzicht niet.')]);
       }

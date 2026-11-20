@@ -173,8 +173,9 @@
     var p = {}; e.profielen.forEach(function (x) { p[x.naam] = x; });
     T.is(p["Terughoudend"].reflectievraag, "Je schreef niets voor. Bij welke patiënt zou dat niet mogen?");
     T.is(p["Direct behandelen"].reflectievraag, "Het werkt. Was het nodig, en koos zíj ervoor?");
-    T.is(p["Gedeelde regie"].reflectievraag, null, "ontbrekende reflectievraag = null");
-    T.waar(typeof p["Gedeelde regie"].TODO_BART === "string", "Gedeelde regie heeft TODO_BART op de plek zelf");
+    // Besluit 20 november 2026 (TODO_BART-E1-3): de ontbrekende reflectievraag is nu een concept ter goedkeuring (TODO_BART-C12).
+    T.is(p["Gedeelde regie"].reflectievraag, "Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?", "conceptreflectievraag Gedeelde regie");
+    T.is(p["Gedeelde regie"].TODO_BART, casus().todoBart.filter(function (t) { return t.id === "TODO_BART-C12"; })[0].vraag, "Gedeelde regie: markering van concept C12 op de plek zelf");
     T.gelijk(p["Terughoudend"].als, AFWACHTEN);
     T.gelijk(p["Gedeelde regie"].als, { p: "gespeeld", kaart: "V2" });
     T.gelijk(p["Direct behandelen"].als, DIRECT);
@@ -456,7 +457,7 @@
     };
     c.invarianten.forEach(function (i) { is([i.ernst, i.geldtIn, i.bron, i.vraag], [5, ["*"], bron[i.id], vraag[i.id]], "invariant " + i.id); });
     is(c.profielen.map(function (p) { return p.reflectievraag; }),
-      ["Je schreef niets voor. Bij welke patiënt zou dat niet mogen?", null, "Het werkt. Was het nodig, en koos zíj ervoor?"], "reflectievragen");
+      ["Je schreef niets voor. Bij welke patiënt zou dat niet mogen?", "Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?", "Het werkt. Was het nodig, en koos zíj ervoor?"], "reflectievragen");
     is("raadplegen" in c, false, "episode.raadplegen");
     var ref = casusRef();
     Object.keys(ref).forEach(function (k) { if (k !== "risicogroep") is(c.patient.zichtbaar[k], ref[k], "patient.zichtbaar." + k); });
@@ -482,7 +483,7 @@
       ["vraag I4 leesteken", function (c) { c.invarianten[2].vraag = c.invarianten[2].vraag.replace("?", "."); }],
       ["reflectievraag Terughoudend", function (c) { c.profielen[0].reflectievraag = c.profielen[0].reflectievraag.replace("patiënt", "patient"); }],
       ["reflectievraag Direct", function (c) { c.profielen[2].reflectievraag = c.profielen[2].reflectievraag.replace("zíj", "zij"); }],
-      ["reflectievraag Gedeelde regie niet meer null", function (c) { c.profielen[1].reflectievraag = "?"; }],
+      ["reflectievraag Gedeelde regie gewijzigd", function (c) { c.profielen[1].reflectievraag = "?"; }],
       ["episode.raadplegen terug", function (c) { c.raadplegen = { titel: "x", bronnen: [] }; }],
       ["medicatieTekst zonder slotpunt", function (c) { c.patient.zichtbaar.medicatieTekst = c.patient.zichtbaar.medicatieTekst.slice(0, -1); }],
       ["kop", function (c) { c.patient.zichtbaar.kop = "Mevrouw V., 72 jaar"; }],
@@ -528,7 +529,7 @@
     { id: "TODO_BART-E1-2", pad: function (e) { return e.statusTeksten; }, plek: "E1.statusTeksten", kern: ["klachten nemen af.", "geen tekst"],
       vraag: "In episode 1 kunnen de klachten af, aan of na 48 uur niet verbeterd zijn, maar de casus geeft bij episode 1 geen statusteksten. Welke tekst hoort bij welke klachtenstatus?",
       lezing: "Status af = 'klachten nemen af.', status aan = 'klachten houden aan.' (casusfragmenten uit episode 2, met slotpunt). Voor de status na 48 uur geen verbetering geeft de casus in episode 1 geen tekst: leeg (geen tekst); de casus geeft die zin alleen in episode 3. In episode 1 komen aan en na 48 uur niet verbeterd niet voor." },
-    { id: "TODO_BART-E1-3", pad: function (e) { return e.profielen[1]; }, plek: "E1.profielen.Gedeelde regie", kern: ["Geen reflectievraag"],
+    { id: "TODO_BART-E1-3", geenMarkering: true, pad: function (e) { return e.profielen[1]; }, plek: "E1.profielen.Gedeelde regie", kern: ["Geen reflectievraag"],
       vraag: "De casus geeft bij het profiel Gedeelde regie (uitgesteld recept) geen reflectievraag, wel bij Terughoudend en Direct behandelen. Welke reflectievraag hoort bij Gedeelde regie?",
       lezing: "Geen reflectievraag (leeg); er wordt niets verzonnen." },
     { id: "TODO_BART-E1-4", pad: function (e) { return e.profielen[2]; }, plek: "E1.profielen.Direct behandelen", kern: ["Eén profiel"],
@@ -567,9 +568,10 @@
       if (!niet_leeg(t.vraag) || t.vraag !== p.vraag) f.push(p.id + " vraag");
       if (!niet_leeg(t.gekozenLezing) || t.gekozenLezing !== p.lezing) f.push(p.id + " gekozenLezing");
       if (t.plek !== p.plek) f.push(p.id + " plek");
-      if (JSON.stringify(Object.keys(t).sort()) !== JSON.stringify(["gekozenLezing", "id", "plek", "vraag"])) f.push(p.id + " extra of ontbrekende velden");
+      if (JSON.stringify(Object.keys(t).sort()) !== JSON.stringify(["besluit", "gekozenLezing", "id", "plek", "vraag"])) f.push(p.id + " extra of ontbrekende velden");
       p.kern.forEach(function (k) { if (String(t.gekozenLezing).indexOf(k) < 0) f.push(p.id + " kernzin " + k); });
       var obj = p.pad(e);
+      if (p.geenMarkering) return;   // beslist op 20 november 2026; de markering op deze plek hoort nu bij een ander concept
       if (!obj || typeof obj !== "object" || !niet_leeg(obj.TODO_BART) || obj.TODO_BART !== t.vraag) f.push(p.id + " markering op de plek");
       if (VERBODEN_IN_TODO.test(String(t.vraag)) || VERBODEN_IN_TODO.test(String(t.gekozenLezing))) f.push(p.id + " verwijst naar contract/ronde/stuk");
     });
@@ -603,7 +605,7 @@
     var lijst0 = casus().todoBart.filter(function (x) { return /^TODO_BART-E1-/.test(x.id); });
     var muts = [
       ["TODO van I1 weg", function (c) { delete c.invarianten[0].TODO_BART; }],
-      ["TODO Gedeelde regie leeg", function (c) { c.profielen[1].TODO_BART = ""; }],
+      ["TODO Direct leeg", function (c) { c.profielen[2].TODO_BART = ""; }],
       ["TODO feedbackExtra weg", function (c) { delete c.feedbackExtra[0].TODO_BART; }],
       ["TODO Direct weg", function (c) { delete c.profielen[2].TODO_BART; }],
       ["TODO duurzaamheid weg", function (c) { delete c.score.duurzaamheid.regels[1].TODO_BART; }],

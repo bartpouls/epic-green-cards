@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Casus-id | `uwi-eerstelijn` |
-| Versie | 1.7 — 20 november 2026 — bron: besluiten Bart, 20 november 2026 (zie sectie 14). Versie 1.6 (17 november 2026): bron besluiten Bart, 17 november 2026 (zie sectie 13). Versie 1.5 (16 november 2026): bron besluiten Bart, 16 november 2026 (zie sectie 12). Versie 1.4 (15 november 2026): bron besluiten Bart, 15 november 2026 (zie sectie 11). Versie 1.3 (14 november 2026): bron besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
+| Versie | 1.8 — 20 november 2026 — bron: besluiten Bart, 20 november 2026, tweede ronde (zie sectie 15). Versie 1.7 (20 november 2026): bron besluiten Bart, 20 november 2026 (zie sectie 14). Versie 1.6 (17 november 2026): bron besluiten Bart, 17 november 2026 (zie sectie 13). Versie 1.5 (16 november 2026): bron besluiten Bart, 16 november 2026 (zie sectie 12). Versie 1.4 (15 november 2026): bron besluiten Bart, 15 november 2026 (zie sectie 11). Versie 1.3 (14 november 2026): bron besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
 | Functie | Tutorialcasus: leert het spel én de signatuurvaardigheid |
 | Signatuurvaardigheid | Veranderende context: empirisch starten → bijsturen op de kweek → nierfunctie en comedicatie |
 | Klinische validatie | Voorschrijven en wat daarna komt: Bart Pouls (gevalideerd). Diagnostiek en klinische context: nog voorleggen aan een huisarts |
@@ -508,3 +508,20 @@ Bron: besluiten Bart, 20 november 2026.
 - **Ernst I18 is 3** (was 4, sectie 12). Wisselen naar een middel waarvoor de bacterie resistent is, weegt daarmee zwaarder dan doorgaan met een resistent middel (I8, ernst 4) en lichter dan lisinopril verdubbelen (I17, ernst 2).
 - **Eisen die bij verwijzen vervallen (C9) blijven beide staan.** Het tweede deel (I16 en I10) heeft door I19 geen effect meer op de poort, maar zorgt dat de hint over te vroeg verwijzen gaat.
 - **Acties per dag:** episode 1 en 2 hebben 4 acties per dag ("ruim"), episode 3 houdt er 3 ("krap"). Doorgerekend met de routezoeker: bij 4 en bij 3 zijn alle geldige casusroutes speelbaar. Dit is een engine-instelling, geen klinische regel.
+
+## 15. Wijzigingen in versie 1.8
+
+Bron: besluiten Bart, 20 november 2026 (tweede ronde).
+
+- **Voor de huisarts: akkoord met de gekozen lezing.** Escalatie naar weefselinvasie en sepsis na telkens vier volle dagen aanhoudende klachten, alleen in episode 3, tellen vanaf dag 1. Kweekuitslag 3 dagen na de kweek. Een tweede kweek in episode 3 geeft dezelfde bacterie en dezelfde gevoeligheden. De markering **[G]** blijft: deze keuzes berusten niet op een van de bronnen.
+- **Alle overige open vragen: akkoord met de gekozen lezing.** Aanpassingen volgen eventueel na het testspelen.
+- **Docentenoverzicht: alleen de speldata.** De casusregels (kopjes, labels, de tabel zoals in de casus) worden niet naast de speldata getoond.
+- **Reflectievragen:** een reflectievraag moet de student vooral laten nadenken over wat de volgende keer beter kan. Voor de vier profielen zonder reflectievraag in de casus zijn er concepten.
+
+### Concept, ter goedkeuring door Bart
+
+- **C12. Reflectievragen bij vier profielen [G].**
+  - Episode 1, Gedeelde regie: "Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?"
+  - Episode 2, Kweekgestuurd, smal: "Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?"
+  - Episode 2, Bijgestuurd: "Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?"
+  - Episode 3, Kweekgestuurd: "Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?"

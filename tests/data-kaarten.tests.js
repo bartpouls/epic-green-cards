@@ -87,7 +87,7 @@
   Test.registreer(G, "K0 CASUSSEN is een array met één casus; id en versie uit de casuskop", function () {
     Test.waar(Array.isArray(window.CASUSSEN) && window.CASUSSEN.length === 1, "één casus verwacht");
     Test.is(casus().id, "uwi-eerstelijn");
-    Test.is(casus().versie, "1.7");   // casus-uwi.md versie 1.6 (besluiten Bart, 17 november 2026)
+    Test.is(casus().versie, "1.8");   // casus-uwi.md versie 1.8 (besluiten Bart, 20 november 2026)
     Test.is(casus().titel, REF_TITEL, "titel");
     Test.waar(Array.isArray(casus().episodes), "episodes is een array (door de episodebestanden aangevuld)");
     Test.waar(Array.isArray(casus().todoBart), "todoBart is een array");
@@ -256,7 +256,7 @@
     k.forEach(function (t) {
       var r = REF_TODO_TEKST[t.id.slice(10)];
       Test.waar(r, t.id + " onbekend");
-      Test.gelijk(Object.keys(t), ["id", "vraag", "gekozenLezing", "plek"], t.id + " velden");
+      Test.gelijk(Object.keys(t), ["id", "vraag", "gekozenLezing", "plek", "besluit"], t.id + " velden");   // besluit: 20 november 2026
       Test.is(t.vraag, r.vraag, t.id + " vraag");
       Test.is(t.gekozenLezing, r.gekozenLezing, t.id + " gekozenLezing");
     });

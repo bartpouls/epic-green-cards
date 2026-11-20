@@ -24,12 +24,15 @@ const isTodo = k => /^TODO_BART/.test(k);
 // Alle tekstvelden uit de data: strings buiten predicaten/triggers en buiten TODO_BART-sleutels.
 const SLA = new Set(["predicaat", "als", "trigger", "vereist", "perKeer", "teller", "K", "a", "b", "arg", "args", "dan", "anker"]);
 const SLA_SLEUTELS = new Set(["id", "kaart", "p", "op", "doel", "optie", "middel", "veld", "t", "type", "naGebeurtenis", "sleutel", "wanneer", "categorie", "geldtIn", "groep", "toestand", "startToestanden", "antibiotica", "repertoire", "rollen", "resistent", "gevoelig", "vanafEpisode", "plek"]);
+// Besluit Bart 20 nov 2026 (TODO_BART-R7): deze casusregels uit de referentie blijven in de data, maar het overzicht toont ze niet.
+const R7_NIET_TONEN = new Set(["episodeKop", "labels", "patientkaart", "repertoireTekst", "gebeurtenissenTabel", "zichtbaarAlsOntbreekt", "feedbackTabel", "tabelkoppen", "inspringing"]);
 const velden = [];
 (function loop(o, pad, sleutel) {
   if (Array.isArray(o)) return o.forEach((x, i) => loop(x, pad + "[" + i + "]", sleutel));
   if (o && typeof o === "object") {
     for (const k of Object.keys(o)) {
       if (isTodo(k) || SLA.has(k) || k === "todoBart" || k === "doelen" && false) continue;
+      if (/^casus\.referentie\.E\d+$/.test(pad) && R7_NIET_TONEN.has(k)) continue;
       loop(o[k], pad + "." + k, k);
     }
     return;
@@ -119,7 +122,7 @@ const rnd = () => (zaad = (zaad * 1664525 + 1013904223) % 4294967296) / 42949672
     const epTekst = norm(await page.$eval("[data-episode='" + e.id + "']", n => n.textContent));
     // alle tekst van de referentie van deze episode staat in de episode
     const refStrings = [];
-    (function loop(o, k) { if (Array.isArray(o)) o.forEach(x => loop(x, k)); else if (o && typeof o === "object") Object.keys(o).forEach(kk => { if (!isTodo(kk)) loop(o[kk], kk); }); else if (typeof o === "string" && k !== "volgordeVanSecties") refStrings.push(o); })(r, "");
+    (function loop(o, k) { if (Array.isArray(o)) o.forEach(x => loop(x, k)); else if (o && typeof o === "object") Object.keys(o).forEach(kk => { if (!isTodo(kk) && !(o === r && R7_NIET_TONEN.has(kk))) loop(o[kk], kk); }); else if (typeof o === "string" && k !== "volgordeVanSecties") refStrings.push(o); })(r, "");
     const refMis = refStrings.filter(x => !epTekst.includes(norm(x)));
     ok("(d) " + e.id + ": alle " + refStrings.length + " referentietekstvelden letterlijk in de episode", refMis.length === 0, refMis.slice(0, 5).join(" | "));
     // routes
@@ -152,7 +155,7 @@ const rnd = () => (zaad = (zaad * 1664525 + 1013904223) % 4294967296) / 42949672
   // Algemene Nederlandse woorden die in de interface mogen staan (geen klinische inhoud, drempel of middelnaam).
   const ALGEMEEN = new Set(("verwijzing geldige rest spelen brug gegeven begin bronconflict kern versie kost vóór gespeelde bepaalt start starten direct past nieuw nieuwe laat zien zodra inhoud bart gaat zegt onbekend gehaald tegelijk eerst toestanden vaste daar wissel daarna alle alleen alles anders beurt beurten bron bronnen casus dagen dag deze dezelfde doel doelen eerste eerder elke elk episode episodes geen geldig geldt gelijk gespeeld gebeurtenis gebeurtenissen gebruik grote groter hoogste jaar kaart kaarten keer klein kleiner kosten laatste later level lijst maar minstens meer niet nooit onder ooit opties optie pas punt punten regel regels route routes score staat tekst telt toestand tussen twee uitleg volgens volgorde voor waar wanneer weer welke wordt zijn zonder zelf zich worden aantal aan antwoord begint beide bij binnen dan dat de die dit door dus een eerste enkele erna geeft geval goed heeft het hier hoort kaarten klopt komt krijgt mag moet naar nadat naast niets nodig nummer ook over per plek speler spel student studenten tijdens tot uit vanaf van veld velden vraag vragen vroeg waarde waarden waarop waarvan wat wel wie wordt zoek zowel altijd antibiotica antibioticum actief gestart gestopt vervangen pauze pauzeren hervat hervatten klachten klachtenstatus medicatie patiënt patiëntkaart repertoire knoppen invariant invarianten poort schending ernst downside effect profiel profielen feedback reflectievraag verborgen onthuld onthult zichtbaar ontbreekt gegevens overzicht aanvullend werkzaam middel werkzaamheid statusteksten status tekst teksten raadplegen richtlijn acties dagen eindigt eind einde moment huidige stand episode afronden afronden herkansing opnieuw lezing gekozen open"
     // Werkpakket C (20 nov 2026): gewone interfacewoorden en veldnamen die sinds casus 1.4 ook in casusteksten voorkomen; geen middelnaam, drempel of statuszin.
-    + " toont iets ziet voorwaarde aanhouden bekend dosering staan andere bibliotheek actieve grens ligt besluit welk sectie concept eigen opmerking leeftijd fout trigger achter gebruikt vaak poging zoals").split(" "));
+    + " toont iets ziet voorwaarde aanhouden bekend dosering staan andere bibliotheek actieve grens ligt besluit welk sectie concept eigen opmerking leeftijd fout trigger achter gebruikt vaak poging zoals zodat betekent kiest").split(" "));
   const hits = [...dataWoorden].filter(w => !ALGEMEEN.has(w) && new RegExp("(^|[^A-Za-zÀ-ÿ])" + w + "([^A-Za-zÀ-ÿ]|$)", "i").test(code));
   ok("(e) geen woorden uit de casusdata (≥4 letters, buiten algemene interfacewoorden) in de code van overzicht.html", hits.length === 0, hits.slice(0, 30).join(", "));
   const klin = ["lisinopril", "spironolacton", "nitrofurantoïne", "fosfomycine", "trimethoprim", "ciprofloxacine", "amoxicilline", "eGFR", "klachten nemen af", "klachten houden aan", "geen verbetering", "48 uur", "weefselinvasie", "kweek", "875/125"];
