@@ -119,7 +119,7 @@
     });
   });
   reg("E2-2 knoppen, antibiotica en begintoestand", function (e) {
-    T.gelijk(e.knoppen, { actiesPerBeurt: 3, aantalDagen: 14, raadplegenKost: 0 });
+    T.gelijk(e.knoppen, { actiesPerBeurt: 4, aantalDagen: 14, raadplegenKost: 0 });   // casus 1.7: 4 acties per dag ("ruim")
     T.waar(e.raadplegen === undefined, "raadplegen staat alleen op casusniveau (contract §4), niet in de episode");
     T.gelijk(e.antibiotica, ["V3", "V4", "V5"]);
     T.gelijk(e.startToestanden, ["cystitis"]);

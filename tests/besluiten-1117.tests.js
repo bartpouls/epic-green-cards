@@ -37,17 +37,17 @@
   }
 
   /* ---------- vastlegging ---------- */
-  T.registreer(G, "vastlegging: casus 1.6; twee nieuwe concepten ter goedkeuring staan open en in de lijst voor Bart", function () {
-    T.is(casus().versie, "1.6");
+  T.registreer(G, "vastlegging: casus 1.6; de twee concepten zijn op 20 november 2026 goedgekeurd", function () {
+    T.is(casus().versie, "1.7");
     ["TODO_BART-C10", "TODO_BART-C11"].forEach(function (id) {
       var t = todo(id);
-      T.waar(!!t && t.besluit === undefined && /^Concepttekst ter goedkeuring/.test(t.vraag) && typeof t.gekozenLezing === "string" && typeof t.plek === "string", id + " is een open concept");
+      T.waar(!!t && /^Beslist door Bart op 20 november 2026/.test(t.besluit || "") && /^Concepttekst ter goedkeuring/.test(t.vraag) && typeof t.gekozenLezing === "string" && typeof t.plek === "string", id + " is goedgekeurd");
     });
     T.waar(/17 november 2026/.test(todo("TODO_BART-C10").vraag));
     var gr = g.TODO_BART_GROEPEN;
     if (!gr) return;
-    var concept = gr.filter(function (x) { return /ter goedkeuring/.test(x.titel) && DATUM.test(x.titel); });
-    T.is(concept.length, 1); T.gelijk(concept[0].ids, ["TODO_BART-C10", "TODO_BART-C11"]);
+    var g20 = gr.filter(function (x) { return x.titel === "Beslist op 20 november 2026"; })[0];
+    ["TODO_BART-C10", "TODO_BART-C11"].forEach(function (id) { T.waar(g20.ids.indexOf(id) >= 0, id + " staat bij de besluiten van 20 november"); });
   });
 
   /* ---------- besluit 1: onterecht verwijzen (I19) ---------- */

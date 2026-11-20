@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Casus-id | `uwi-eerstelijn` |
-| Versie | 1.6 — 17 november 2026 — bron: besluiten Bart, 17 november 2026 (zie sectie 13). Versie 1.5 (16 november 2026): bron besluiten Bart, 16 november 2026 (zie sectie 12). Versie 1.4 (15 november 2026): bron besluiten Bart, 15 november 2026 (zie sectie 11). Versie 1.3 (14 november 2026): bron besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
+| Versie | 1.7 — 20 november 2026 — bron: besluiten Bart, 20 november 2026 (zie sectie 14). Versie 1.6 (17 november 2026): bron besluiten Bart, 17 november 2026 (zie sectie 13). Versie 1.5 (16 november 2026): bron besluiten Bart, 16 november 2026 (zie sectie 12). Versie 1.4 (15 november 2026): bron besluiten Bart, 15 november 2026 (zie sectie 11). Versie 1.3 (14 november 2026): bron besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
 | Functie | Tutorialcasus: leert het spel én de signatuurvaardigheid |
 | Signatuurvaardigheid | Veranderende context: empirisch starten → bijsturen op de kweek → nierfunctie en comedicatie |
 | Klinische validatie | Voorschrijven en wat daarna komt: Bart Pouls (gevalideerd). Diagnostiek en klinische context: nog voorleggen aan een huisarts |
@@ -499,3 +499,12 @@ Bron: besluiten Bart, 17 november 2026.
 **Kaartteksten (concept) [G]:** de nieuwe effectteksten van V2, V6, B5 en Ev3 in sectie 3.
 
 **Gevolg voor concept C9 (sectie 12):** verwijzen op de dag van de weefselinvasie of de dag erna is altijd vóór "Na 48 uur geen verbetering." en schendt nu I19. Het vervallen van I16 en I10 bij verwijzen heeft daardoor geen effect meer op de poort. Het vervallen van I15 blijft nodig voor de volgorde A–B.
+
+## 14. Wijzigingen in versie 1.7
+
+Bron: besluiten Bart, 20 november 2026.
+
+- **Alle concepten goedgekeurd.** De concepten in sectie 11 (C1–C4), sectie 12 (C6–C9) en sectie 13 (C10, C11), de tekst bij sepsis en de zin "Dit middel staat in de richtlijn niet bij een blaasontsteking." zijn goedgekeurd. Waar die secties "concept" zeggen, geldt de tekst nu als vastgesteld. De markering **[G]** blijft: de teksten berusten niet op een van de bronnen, maar zijn door Bart geaccepteerd.
+- **Ernst I18 is 3** (was 4, sectie 12). Wisselen naar een middel waarvoor de bacterie resistent is, weegt daarmee zwaarder dan doorgaan met een resistent middel (I8, ernst 4) en lichter dan lisinopril verdubbelen (I17, ernst 2).
+- **Eisen die bij verwijzen vervallen (C9) blijven beide staan.** Het tweede deel (I16 en I10) heeft door I19 geen effect meer op de poort, maar zorgt dat de hint over te vroeg verwijzen gaat.
+- **Acties per dag:** episode 1 en 2 hebben 4 acties per dag ("ruim"), episode 3 houdt er 3 ("krap"). Doorgerekend met de routezoeker: bij 4 en bij 3 zijn alle geldige casusroutes speelbaar. Dit is een engine-instelling, geen klinische regel.

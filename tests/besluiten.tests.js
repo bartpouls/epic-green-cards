@@ -40,7 +40,7 @@
       T.waar(typeof t.vraag === "string" && typeof t.gekozenLezing === "string" && typeof t.plek === "string", id + " houdt vraag, gekozen lezing en plek");
     });
     T.gelijk(casus().todoBart.filter(function (t) { return t.besluit !== undefined && DATUM.test(t.besluit); }).map(function (t) { return t.id; }).sort(), BESLIST.slice().sort());
-    T.is(casus().versie, "1.6");
+    T.is(casus().versie, "1.7");
   });
   T.registreer(G, "vastlegging: de lijst voor Bart (gauntlet/todo-bart.js) heeft een groep 'Beslist op 14 november 2026' met precies de besliste vragen; open groepen bevatten geen besliste vraag en alleen bestaande ids", function () {
     var gr = g.TODO_BART_GROEPEN;
@@ -159,11 +159,11 @@
     var v = beoordeel(speel("E3", [["O1", "V7"], ["N1", "O2"], []]));
     T.waar(ids(v).indexOf("I14") >= 0, ids(v).join());
   });
-  T.registreer(G, "besluit 4 (concept): de opmerking is gemarkeerd als concept ter goedkeuring en staat als open vraag op de lijst", function () {
+  T.registreer(G, "besluit 4 (concept): de opmerking stond als concept ter goedkeuring en is op 20 november 2026 goedgekeurd", function () {
     var f = ep("E3").feedbackExtra.filter(function (x) { return x.vraag === OPMERKING; })[0];
     T.waar(!!f && f.concept === true && f.soort === "opmerking", "gemarkeerd als concept");
     T.is(f.TODO_BART, todo("TODO_BART-E3-27").vraag);
-    T.waar(todo("TODO_BART-E3-27").vraag.indexOf(OPMERKING) > 0 && todo("TODO_BART-E3-27").besluit === undefined, "open vraag met de letterlijke concepttekst");
+    T.waar(todo("TODO_BART-E3-27").vraag.indexOf(OPMERKING) > 0 && /20 november 2026/.test(todo("TODO_BART-E3-27").besluit || ""), "goedgekeurde vraag met de letterlijke concepttekst");
   });
 
   /* ---------- besluit 5: sepsis beëindigt de episode, uitkomst 'verloren' ---------- */
@@ -242,7 +242,7 @@
       T.waar(/Sepsis \(dag 9\)/.test(regels[1]), "de gebeurtenis sepsis staat in de export");
       T.waar(/;gehaald$/.test(regels[2]), "gehaalde episode: afloop 'gehaald'");
       var js = JSON.parse(g.Logging.exportJSON());
-      T.is(js[0].afloop, "verloren"); T.is(js[1].afloop, "gehaald"); T.is(js[0].casusVersie, "1.6");
+      T.is(js[0].afloop, "verloren"); T.is(js[1].afloop, "gehaald"); T.is(js[0].casusVersie, "1.7");
       T.is(g.Engine.ontgrendeld(casus(), "E2", [js[1]]), true); T.is(g.UI.episodeOverzicht(casus(), "Sep", js, false)[2].gehaald, false, "episode 3 is niet gehaald");
       var ov = g.UI.overzichtModel(casus(), js, "Sep");
       T.is(ov[1].uitkomst, "Episode verloren.", "leesbaar overzicht");
@@ -251,11 +251,11 @@
       T.waar(/;$/.test(g.Logging.exportCSV().replace(/^﻿/, "").split("\r\n")[3]), "oud record: lege afloop");
     } finally { g.Logging._zetOpslag(undefined); g.Logging.wis(); }
   });
-  T.registreer(G, "besluit 5 (concept): de tekst bij sepsis is gemarkeerd als concept ter goedkeuring en staat als open vraag op de lijst", function () {
+  T.registreer(G, "besluit 5 (concept): de tekst bij sepsis stond als concept ter goedkeuring en is op 20 november 2026 goedgekeurd", function () {
     var e = ep("E3").gebeurtenissen.filter(function (x) { return x.id === "S"; })[0].einde;
     T.is(e.tekst, SEPSISTEKST); T.is(e.uitkomst, "verloren"); T.is(e.concept, true);
     T.is(e.TODO_BART, todo("TODO_BART-E3-28").vraag);
-    T.waar(todo("TODO_BART-E3-28").vraag.indexOf(SEPSISTEKST) > 0 && todo("TODO_BART-E3-28").besluit === undefined, "open vraag met de letterlijke concepttekst");
+    T.waar(todo("TODO_BART-E3-28").vraag.indexOf(SEPSISTEKST) > 0 && /20 november 2026/.test(todo("TODO_BART-E3-28").besluit || ""), "goedgekeurde vraag met de letterlijke concepttekst");
   });
 
   /* ---------- besluit 6: ernstvolgorde (akkoord, geen gedragswijziging) ---------- */

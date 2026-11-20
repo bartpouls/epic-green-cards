@@ -6,7 +6,7 @@
 window.CASUSSEN = [
 {
  "id": "uwi-eerstelijn",
- "versie": "1.6",
+ "versie": "1.7",
  "limiet": 1,
  "regelnamen": [
   {
@@ -1930,25 +1930,29 @@ window.CASUSSEN = [
    "id": "TODO_BART-C1",
    "vraag": "Concepttekst ter goedkeuring: wie nitrofurantoïne geeft bij een lage nierfunctie en in deze poging nog geen kweekuitslag heeft gezien, krijgt als hint 'Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?' (de vraag uit de casus zonder de eerste zin 'Het lab zegt gevoelig.'). Keur je deze variant goed of pas je hem aan?",
    "gekozenLezing": "De variant staat letterlijk in de data als vraagvariant van I5 in episode 2 en 3 en verschijnt als de gebeurtenis kweekuitslag (C) in deze poging niet is geweest. Is de kweekuitslag wel geweest, dan blijft de vraag uit de casus: 'Het lab zegt gevoelig. Hoeveel nitrofurantoïne komt er bij deze nieren in de urine terecht?' Afgeleid uit die vraag.",
-   "plek": "E2.invarianten.I5.vraagVarianten; E3.invarianten.I5.vraagVarianten"
+   "plek": "E2.invarianten.I5.vraagVarianten; E3.invarianten.I5.vraagVarianten",
+   "besluit": "Beslist door Bart op 20 november 2026: de hint bij nitrofurantoïne zonder kweekuitslag goedgekeurd."
   },
   {
    "id": "TODO_BART-C2",
    "vraag": "Conceptlijst ter goedkeuring: in episode 2 en 3 kost elke overbodige kaart 1 punt doelmatigheid (ondergrens 1), en bij een gehaalde poort staat onder 'Van je opleider' per regel de opmerking 'Deze kaart was hier niet nodig:' met het label van de kaart. De vijf regels: (a) Kalium bepalen in episode 2 zonder dat trimethoprim is gestart; (b) een tweede Urinekweek inzetten in episode 3 zonder weefselinvasie vóór die kweek; (c) Verwijzen zonder dat 'Na 48 uur geen verbetering.' eerder is voorgekomen; (d) Innametijden aanpassen, of Medicatie tijdelijk stoppen op calcium, zonder dat ciprofloxacine is gestart; (e) Dosis aanpassen of Medicatie tijdelijk stoppen op lisinopril vóór de dag van de uitdroging. Keur je de lijst en de opmerking goed, of pas je ze aan?",
    "gekozenLezing": "De regels staan in de data als scoreregels met een leesbare naam, elk gemarkeerd als concept met de casuspassage waaruit hij is afgeleid. Per regel hooguit 1 punt en één opmerking, ook als de regel twee kaarten noemt; de opmerking noemt de eerst gespeelde kaart van die regel, met het doel tussen haakjes. Regel (e) geldt ook in episode 2 (daar komt geen uitdroging voor, dus elke aanpassing van lisinopril telt). Innametijden aanpassen kan in het spel alleen als ciprofloxacine is gestart, dus regel (d) raakt in de praktijk alleen Medicatie tijdelijk stoppen op calcium. De bestaande regels (G2 respectievelijk G3 vóór de eerste keuze) blijven; episode 1 is ongewijzigd.",
-   "plek": "E2.score.doelmatigheid; E3.score.doelmatigheid"
+   "plek": "E2.score.doelmatigheid; E3.score.doelmatigheid",
+   "besluit": "Beslist door Bart op 20 november 2026: de lijst met overbodige kaarten en de opmerking goedgekeurd."
   },
   {
    "id": "TODO_BART-C3",
    "vraag": "Concepttekst ter goedkeuring: een route die de poort haalt maar bij geen van de profielen van de episode past, krijgt het profiel 'Eigen route' met de reflectievraag 'Je route past bij geen van de beschreven profielen. Wat was je plan?' Keur je naam en vraag goed of pas je ze aan?",
    "gekozenLezing": "Naam en reflectievraag staan letterlijk in de data (casus.restprofiel) en gelden in alle episodes. In episode 1 past elke route die de poort haalt bij een profiel, dus daar komt het restprofiel niet voor.",
-   "plek": "casus.restprofiel"
+   "plek": "casus.restprofiel",
+   "besluit": "Beslist door Bart op 20 november 2026: het restprofiel 'Eigen route' met de reflectievraag goedgekeurd."
   },
   {
    "id": "TODO_BART-C4",
    "vraag": "Conceptteksten ter goedkeuring: de veiligheidsregels die nog geen zin hadden over wat er met de patiënt gebeurt, hebben er nu een (voorschot, afgeleid uit tekst die al in de casus staat). De zinnen staan in casus-uwi.md sectie 11 en in de data bij casus.gevolgzinnen (elk gemarkeerd als concept, met de bron). Keur je ze goed of pas je ze aan?",
    "gekozenLezing": "Alle zinnen zijn vrijgegeven en staan letterlijk in de data. Zinnen met een voorwaarde verschijnen alleen als ze in deze poging waar zijn (bijvoorbeeld 'Er is geen kweek van vóór de eerste dosis.' alleen als er een antibioticum is gestart zonder kweek vooraf). Een regel kan twee zinnen hebben (I6, I7, I16); ze verschijnen allebei als ze allebei waar zijn.",
-   "plek": "casus.gevolgzinnen"
+   "plek": "casus.gevolgzinnen",
+   "besluit": "Beslist door Bart op 20 november 2026: de gevolgzinnen goedgekeurd."
   },
   {
    "id": "TODO_BART-C5",
@@ -1959,22 +1963,28 @@ window.CASUSSEN = [
   },
   { "id": "TODO_BART-C6", "vraag": "Concepttekst ter goedkeuring: lisinopril verdubbelen is sinds 16 november 2026 een veiligheidsregel (I17, episode 2 en 3). Als hint verschijnt 'Haar nierfunctie is lager dan 30. Wat doet een dubbele dosis lisinopril met haar nieren en haar kalium?' en als gevolg bij de pati\u00ebnt 'De nierfunctie daalt verder en het kalium stijgt.' (dezelfde zin als bij de sick day in episode 3). Keur je deze teksten en de ernst (2, net zo ernstig als nitrofuranto\u00efne bij lage nierfunctie) goed of pas je ze aan?",
    "gekozenLezing": "Schending zodra Dosis aanpassen op lisinopril met de optie 'verdubbelen' is gespeeld, op elk moment in episode 2 en 3. Hint en gevolgzin zijn een concept.",
-   "plek": "E2.invarianten.I17; E3.invarianten.I17; casus.gevolgzinnen" },
+   "plek": "E2.invarianten.I17; E3.invarianten.I17; casus.gevolgzinnen",
+   "besluit": "Beslist door Bart op 20 november 2026: hint, gevolgzin en ernst 2 van I17 goedgekeurd." },
   { "id": "TODO_BART-C7", "vraag": "Concepttekst ter goedkeuring: wisselen naar een middel waarvoor de bacterie resistent is, is sinds 16 november 2026 een veiligheidsregel (I18, episode 2 en 3). Als hint verschijnt 'Je wisselt. Wat zegt de kweek over het middel waar je naartoe gaat?' en als gevolg bij de pati\u00ebnt 'De klachten houden aan: de bacterie is resistent voor het middel dat ze gebruikt.' (dezelfde zin als bij I8). Keur je deze teksten en de ernst (4, net zo ernstig als I8) goed of pas je ze aan?",
    "gekozenLezing": "Schending als de speler wisselt naar een middel waarvan hij op dat moment kan weten dat de bacterie er resistent voor is: na de kweekuitslag (trimethoprim; in episode 3 ook amoxicilline), en in episode 3 ook na Eerdere kweekuitslagen opvragen (trimethoprim). Een wissel vóór die informatie is geen schending van deze regel; doorgaan met een resistent middel blijft onder I8 vallen. Hint en gevolgzin zijn een concept.",
-   "plek": "E2.invarianten.I18; E3.invarianten.I18; casus.gevolgzinnen" },
+   "plek": "E2.invarianten.I18; E3.invarianten.I18; casus.gevolgzinnen",
+   "besluit": "Beslist door Bart op 20 november 2026: hint en gevolgzin van I18 goedgekeurd; ernst 3 (was 4)." },
   { "id": "TODO_BART-C8", "vraag": "Concepttekst ter goedkeuring: na Verwijzen stopt de episode (besluit 16 november 2026) en het beoordelingsscherm zegt of verwijzen terecht was. Terecht: 'Verwijzen was hier terecht: na 48 uur was er geen verbetering.' Niet terecht: 'Verwijzen was hier nog niet nodig: mevrouw was nog niet 48 uur zonder verbetering.' Keur je deze teksten goed of pas je ze aan?",
    "gekozenLezing": "De twee zinnen staan letterlijk in de data (episode 3, einde na Verwijzen) en verschijnen op het beoordelingsscherm, ook als de poort niet gehaald is.",
-   "plek": "E3.eindeNaKaart" },
+   "plek": "E3.eindeNaKaart",
+   "besluit": "Beslist door Bart op 20 november 2026: de twee zinnen na Verwijzen goedgekeurd." },
   { "id": "TODO_BART-C9", "vraag": "Concepttekst ter goedkeuring: wie verwijst terwijl de termijn van een eis nog loopt, kan die eis niet meer halen. Voorstel: twee eisen vervallen bij verwijzen. (1) De sick day-maatregelen (I15) vervallen als Verwijzen valt op de dag van de uitdroging of de dag erna. (2) Contact binnen 48 uur (I16) en doorgaan met nitrofurantoïne of fosfomycine (I10) vervallen als Verwijzen valt op de dag van de weefselinvasie of de dag erna. Alle andere regels blijven gelden op de stand van het verwijzen. Zonder (1) kan wie terecht verwijst in de volgorde weefselinvasie-uitdroging de poort niet halen: 'Na 48 uur geen verbetering.' valt dan op dezelfde dag als de uitdroging. Akkoord, of anders?",
    "gekozenLezing": "Zo gebouwd, als concept. Telt alleen als de episode door Verwijzen eindigde.",
-   "plek": "E3.eindeNaKaart[0].vervalt" },
+   "plek": "E3.eindeNaKaart[0].vervalt",
+   "besluit": "Beslist door Bart op 20 november 2026: beide eisen die bij verwijzen vervallen blijven staan." },
   { "id": "TODO_BART-C10", "vraag": "Concepttekst ter goedkeuring: onterecht verwijzen is sinds 17 november 2026 een veiligheidsregel (I19, episode 3). Als hint verschijnt 'Je verwijst haar naar de tweede lijn. Wat moet er eerst blijken voordat de eerste lijn haar uit handen geeft?' en als gevolg bij de patiënt 'Mevrouw gaat naar de tweede lijn terwijl de eerste lijn haar nog kon behandelen.' Ernst 5 (de lichtste; 1 is het ernstigst): bij meerdere schendingen krijgt een ernstiger regel de vraag. Keur je dit goed of pas je het aan?",
    "gekozenLezing": "Schending als Verwijzen is gespeeld terwijl 'Na 48 uur geen verbetering.' vóór of op die dag niet is voorgekomen: dezelfde maat als het oordeel na Verwijzen. De zin 'Verwijzen was hier nog niet nodig' blijft op het beoordelingsscherm staan.",
-   "plek": "E3.invarianten.I19; casus.gevolgzinnen" },
+   "plek": "E3.invarianten.I19; casus.gevolgzinnen",
+   "besluit": "Beslist door Bart op 20 november 2026: hint, gevolgzin en ernst 5 van I19 goedgekeurd." },
   { "id": "TODO_BART-C11", "vraag": "Concepttekst ter goedkeuring: vier kaartteksten zonder ontwerptaal (zichtbaar na het spelen). V2: 'De patiënt start zelf met het gekozen middel als de klachten aanhouden of toenemen'. V6: 'De nieuwe dosering gaat meteen in en blijft staan'. B5: 'Het middel wordt weer gestart. Herstarten hoort zodra de klachten weg zijn.' Ev3: 'De patiënt gaat naar de tweede lijn'. Keur je deze teksten goed of pas je ze aan?",
    "gekozenLezing": "Zo overgenomen in sectie 3 van de casus en in de speldata.",
-   "plek": "kaarten[V2,V6,B5,Ev3].effect" }
+   "plek": "kaarten[V2,V6,B5,Ev3].effect",
+   "besluit": "Beslist door Bart op 20 november 2026: de vier kaartteksten goedgekeurd." }
  ],
  "episodes": []
 }
@@ -1987,7 +1997,7 @@ window.CASUSSEN[0].episodes.push({
   id: "E1",
   level: 1,
   startToestanden: ["cystitis"],
-  knoppen: { actiesPerBeurt: 3, aantalDagen: 14, raadplegenKost: 0 },
+  knoppen: { actiesPerBeurt: 4, aantalDagen: 14, raadplegenKost: 0 },
   startUitleg: "Het doel: de klachten nemen zo snel mogelijk af. Houden ze aan, dan wordt het erger.",
   escalatie: { aan: false },
   antibiotica: ["V3", "V4", "V5"],
@@ -2136,7 +2146,7 @@ window.CASUSSEN[0].episodes.push({
   level: 2,
   titel: "Episode 2 — level 2",
   startToestanden: ["cystitis"],
-  knoppen: { actiesPerBeurt: 3, aantalDagen: 14, raadplegenKost: 0 },
+  knoppen: { actiesPerBeurt: 4, aantalDagen: 14, raadplegenKost: 0 },
   startUitleg: "Het doel: de klachten nemen zo snel mogelijk af. Houden ze aan, dan wordt het erger.",
   escalatie: { aan: false },
   antibiotica: ["V3", "V4", "V5"],
@@ -2413,7 +2423,7 @@ window.CASUSSEN[0].episodes.push({
       // Besluit Bart, 16 november 2026: wisselen naar een middel waarvoor de bacterie resistent is, is een veiligheidsregel (poort).
       // Telt vanaf het moment dat de speler de resistentie kan kennen (kweekuitslag). Hint en ernst: concept.
       id: "I18",
-      ernst: 4,
+      ernst: 3,
       geldtIn: ["*"],
       altijdFout: "Wisselen naar een middel waarvoor de bacterie resistent is",
       geldtInTekst: "E2, E3",
@@ -3352,7 +3362,7 @@ window.CASUSSEN[0].episodes.push({
       // Besluit Bart, 16 november 2026: wisselen naar een middel waarvoor de bacterie resistent is, is een veiligheidsregel (poort).
       // Telt vanaf het moment dat de speler de resistentie kan kennen (kweekuitslag; voor trimethoprim ook de eerdere kweek via G3). Hint en ernst: concept.
       id: "I18",
-      ernst: 4,
+      ernst: 3,
       geldtIn: ["*"],
       altijdFout: "Wisselen naar een middel waarvoor de bacterie resistent is",
       geldtInTekst: "E2, E3",
@@ -3745,14 +3755,16 @@ window.CASUSSEN[0].todoBart.push(
     id: "TODO_BART-E3-27",
     vraag: "Concepttekst ter goedkeuring: wie ciprofloxacine of amoxicilline/clavulaanzuur start terwijl de toestand nog cystitis is en de poort haalt, ziet de opmerking 'Dit middel staat in de richtlijn niet bij een blaasontsteking.' Die zin staat niet in de casus. Keur je hem goed of pas je hem aan?",
     gekozenLezing: "De concepttekst staat letterlijk in de data en verschijnt alleen bij een gehaalde poort, onder 'Van je opleider'. 'Nog cystitis' betekent: gestart op een dag vóór de dag waarop de melding weefselinvasie verschijnt. De aftrek is eenmalig 1 punt, ook als beide middelen bij cystitis zijn gestart.",
-    plek: "E3.feedbackExtra; E3.score.duurzaamheid"
+    plek: "E3.feedbackExtra; E3.score.duurzaamheid",
+    besluit: "Beslist door Bart op 20 november 2026: de zin 'Dit middel staat in de richtlijn niet bij een blaasontsteking.' goedgekeurd."
 
   },
   {
     id: "TODO_BART-E3-28",
     vraag: "Concepttekst ter goedkeuring: bij sepsis toont het beoordelingsscherm 'De casus is geëscaleerd. Mevrouw V. heeft sepsis en wordt met spoed verwezen. Deze episode is verloren.' De melding op de tijdlijn blijft 'Sepsis: de patiënt is ernstig ziek.' Beide teksten staan niet in de casus. Keur je ze goed, of welke klinische tekst hoort bij sepsis?",
     gekozenLezing: "De concepttekst staat letterlijk in de data (gebeurtenis sepsis) en verschijnt bovenaan het beoordelingsscherm als de episode door sepsis is verloren, onder de melding 'Sepsis: de patiënt is ernstig ziek.'",
-    plek: "E3.gebeurtenissen.S.einde"
+    plek: "E3.gebeurtenissen.S.einde",
+    besluit: "Beslist door Bart op 20 november 2026: de teksten bij sepsis goedgekeurd."
   }
 );
 }

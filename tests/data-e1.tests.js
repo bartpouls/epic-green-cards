@@ -93,7 +93,7 @@
     T.is(effectVoor(kaarten.filter(function (x) { return x.id === "G2"; })[0], "E1"), e.patient.zichtbaar.labTekst, "G2-effect in E1 gelijk aan de lab-regel van de patiëntkaart");
   });
   reg("E1-2 knoppen (raadplegenKost 0), geen episode.raadplegen en geen gebeurtenissen", function (e) {
-    T.gelijk(e.knoppen, { actiesPerBeurt: 3, aantalDagen: 14, raadplegenKost: 0 });
+    T.gelijk(e.knoppen, { actiesPerBeurt: 4, aantalDagen: 14, raadplegenKost: 0 });   // casus 1.7: 4 acties per dag ("ruim")
     T.gelijk(e.gebeurtenissen, []);
     T.waar(!("raadplegen" in e), "raadplegen staat alleen op casusniveau (S1), niet in episode 1");
     T.is(e.knoppen.raadplegenKost, 0, "casus: richtlijn raadplegen kost niets");

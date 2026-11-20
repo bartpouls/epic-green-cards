@@ -439,14 +439,14 @@
   test("nep-DOM: acties lopen terug, bij 0 acties zijn kaarten uitgeschakeld, 'Volgende dag' geeft nieuw budget", function () {
     metNepDom(function (root) {
       begin(root, "anna"); startEp(root, "E1");
-      ["G1", "G2", "O2"].forEach(function (k) { speelKlik(root, k); });
+      ["G1", "G2", "O2", "N1"].forEach(function (k) { speelKlik(root, k); });   // casus 1.7: 4 acties per dag in episode 1
       T.is(metId(root, "acties").getAttribute("data-over"), "0");
       klik(metAttr(root, "data-kaart", "V1"));   // lezen mag altijd, spelen niet meer
       T.is(metId(root, "btn-speel").getAttribute("disabled"), "", "Speel is uitgeschakeld bij 0 acties");
       T.waar(/geen acties meer/.test(tekstVan(root)), "uitleg waarom");
       klik(metId(root, "btn-sluit-kaart"));
       klik(metId(root, "btn-volgende-dag"));
-      T.is(metId(root, "acties").getAttribute("data-over"), "3");
+      T.is(metId(root, "acties").getAttribute("data-over"), "4");
       T.is(metId(root, "dagtelling").textContent, "Dag 2 van 14");
     });
   });
@@ -628,7 +628,7 @@
         klik(metId(root, "btn-hervat"));
         T.is(metId(root, "dagtelling").textContent, "Dag 2 van 14");
         T.is(alle(root, function (e) { return e.getAttribute("data-gespeeld") !== null; }).map(function (e) { return e.getAttribute("data-gespeeld"); }).sort().join(), "G1,N1,V4");
-        T.is(metId(root, "acties").getAttribute("data-over"), "2", "actie van vandaag al besteed");
+        T.is(metId(root, "acties").getAttribute("data-over"), "3", "actie van vandaag al besteed (4 per dag in episode 1)");
       });
     });
   });

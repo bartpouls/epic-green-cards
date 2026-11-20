@@ -1,17 +1,17 @@
 {
  "casus": "uwi-eerstelijn",
- "versie": "1.6",
+ "versie": "1.7",
  "seed": 20261114,
  "factor": 1,
  "episodes": [
   {
    "id": "E1",
    "acties": 16,
-   "gespeeld": 74043,
+   "gespeeld": 74161,
    "telling": {
-    "gezakt": 46132,
-    "geslaagd": 5387,
-    "onspeelbaar": 22524
+    "gezakt": 46131,
+    "geslaagd": 5501,
+    "onspeelbaar": 22529
    },
    "volgordes": [
     "—"
@@ -22,16 +22,16 @@
      "gespeeld": 65535,
      "geslaagd": 880,
      "kortste": "V2>V3+N1",
-     "langste": "G1+G2+O1|O2+V1+V2>V3|V3+N1+N2>V3|Ev1"
+     "langste": "G1+G2+O1+O2|V1+V2>V3+V3+N1|N2>V3+Ev1"
     }
    ],
    "haalbaar": [
     {
      "volgorde": "—",
-     "slagers": 3870,
-     "gespeeld": 74043,
+     "slagers": 3983,
+     "gespeeld": 74161,
      "kortste": {
-      "route": "N1+V2>V3",
+      "route": "V2>V5+N1",
       "kaarten": 2,
       "score": {
        "duurzaamheid": 2,
@@ -44,7 +44,7 @@
    "speelAlles": [
     {
      "volgorde": "—",
-     "route": "V2>V3+N1+Ev1|N2>V3+G2+V3|V1+G1",
+     "route": "V2>V3+N1+Ev1+N2>V3|V1+G2+V3+G1",
      "kaarten": 8,
      "score": {
       "duurzaamheid": 2,
@@ -218,7 +218,7 @@
     }
    ],
    "onbedoeld": {
-    "minimaal": 20,
+    "minimaal": 17,
     "zonderProfiel": 0,
     "buitenCasus": 0,
     "wachtend": 0,
@@ -227,20 +227,20 @@
    "dekking": [
     {
      "id": "I1",
-     "geschonden": 23399,
-     "alleen": 1648,
+     "geschonden": 23408,
+     "alleen": 1624,
      "voorbeeld": ""
     },
     {
      "id": "I3",
-     "geschonden": 11531,
-     "alleen": 464,
+     "geschonden": 11473,
+     "alleen": 480,
      "voorbeeld": "V1+N1"
     },
     {
      "id": "I4",
-     "geschonden": 43629,
-     "alleen": 16885,
+     "geschonden": 43652,
+     "alleen": 16913,
      "voorbeeld": "V2>V3+V2>V4+N1"
     }
    ]
@@ -248,11 +248,11 @@
   {
    "id": "E2",
    "acties": 28,
-   "gespeeld": 10173,
+   "gespeeld": 10577,
    "telling": {
-    "geslaagd": 3244,
-    "gezakt": 4707,
-    "onspeelbaar": 2222
+    "geslaagd": 3360,
+    "gezakt": 4921,
+    "onspeelbaar": 2296
    },
    "volgordes": [
     "—"
@@ -261,8 +261,8 @@
    "haalbaar": [
     {
      "volgorde": "—",
-     "slagers": 1736,
-     "gespeeld": 10173,
+     "slagers": 1848,
+     "gespeeld": 10577,
      "kortste": {
       "route": "O1+V4+N1",
       "kaarten": 3,
@@ -277,7 +277,7 @@
    "speelAlles": [
     {
      "volgorde": "—",
-     "route": "G2+O1+V5|O2+N1+G1|N2>V5+Ev1|V6>V5>halveren+B1>V4+B2>V4|V4+N2>V4",
+     "route": "G2+O1+V5+G1|O2+N1+Ev1+N2>V5||V6>V5>halveren+B1>V4+V4+N2>V4|B2>V4",
      "kaarten": 13,
      "score": {
       "duurzaamheid": 3,
@@ -562,6 +562,13 @@
        ]
       },
       {
+       "basis": "E2-trimethoprim-bijgestuurd",
+       "wat": "Kalium bepalen (O2) van dag 2 naar dag 1",
+       "geschonden": [
+        "I7"
+       ]
+      },
+      {
        "basis": "E2-onnodig-gewisseld",
        "wat": "Dag 1 in de volgorde: Recente labwaarden opvragen (G2), Fosfomycine (V4), Urinekweek inzetten (O1)",
        "geschonden": [
@@ -620,6 +627,13 @@
       {
        "basis": "E2-grens-I8-wissel-op-tweede-beurt",
        "wat": "Trimethoprim (V5) van dag 1 naar dag 2",
+       "geschonden": [
+        "I7"
+       ]
+      },
+      {
+       "basis": "E2-grens-I8-wissel-op-tweede-beurt",
+       "wat": "Kalium bepalen (O2) van dag 2 naar dag 1",
        "geschonden": [
         "I7"
        ]
@@ -698,60 +712,60 @@
     }
    ],
    "onbedoeld": {
-    "minimaal": 13,
+    "minimaal": 15,
     "zonderProfiel": 0,
-    "buitenCasus": 473,
+    "buitenCasus": 469,
     "wachtend": 0,
     "groepOntlopen": 0
    },
    "dekking": [
     {
      "id": "I1",
-     "geschonden": 1421,
-     "alleen": 254,
+     "geschonden": 1419,
+     "alleen": 279,
      "voorbeeld": "O1+V4"
     },
     {
      "id": "I4",
-     "geschonden": 1874,
-     "alleen": 11,
-     "voorbeeld": "O1+V5+V4|O2+B2>V5+N1|V6>V5>halveren"
+     "geschonden": 2003,
+     "alleen": 9,
+     "voorbeeld": "O1+V5+V4|O2+B2>V5+N1||V6>V5>halveren"
     },
     {
      "id": "I5",
-     "geschonden": 2010,
-     "alleen": 114,
+     "geschonden": 2089,
+     "alleen": 118,
      "voorbeeld": "O1+V3+N1"
     },
     {
      "id": "I6",
-     "geschonden": 3747,
-     "alleen": 1198,
+     "geschonden": 3887,
+     "alleen": 1283,
      "voorbeeld": "N1"
     },
     {
      "id": "I7",
-     "geschonden": 1534,
-     "alleen": 51,
-     "voorbeeld": "N1||||||||||||O1+V5"
+     "geschonden": 1568,
+     "alleen": 66,
+     "voorbeeld": "|||||||||||||O1+V5+N1"
     },
     {
      "id": "I8",
-     "geschonden": 668,
-     "alleen": 44,
+     "geschonden": 711,
+     "alleen": 42,
      "voorbeeld": "O1+V5|O2+N1||V6>V5>halveren"
     },
     {
      "id": "I17",
-     "geschonden": 701,
-     "alleen": 102,
-     "voorbeeld": "N1||||||V6>lisinopril>verdubbelen||||||O1+V4"
+     "geschonden": 702,
+     "alleen": 106,
+     "voorbeeld": "O1+V6>lisinopril>verdubbelen+V4||||||||||N1"
     },
     {
      "id": "I18",
-     "geschonden": 278,
-     "alleen": 14,
-     "voorbeeld": "G2+O1+V4|||||||||||||N1+B1>V5+B1>V4"
+     "geschonden": 331,
+     "alleen": 17,
+     "voorbeeld": "G2+O1|||||||||||||V4+N1+B1>V5+B1>V4"
     }
    ]
   },

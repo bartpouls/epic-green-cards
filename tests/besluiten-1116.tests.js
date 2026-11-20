@@ -38,22 +38,22 @@
   function basisE2() { return [["G2", "O1", "V4"], ["N1", "N2:V4"]]; }
 
   /* ---------- vastlegging ---------- */
-  T.registreer(G, "vastlegging: casus 1.5; de vraag over Verwijzen is beslist (besluit met datum); vier nieuwe concepten ter goedkeuring staan open en in de lijst voor Bart", function () {
-    T.is(casus().versie, "1.6");
+  T.registreer(G, "vastlegging: casus 1.5; de vraag over Verwijzen is beslist (besluit met datum); de vier concepten zijn op 20 november 2026 goedgekeurd", function () {
+    T.is(casus().versie, "1.7");
     var c5 = todo("TODO_BART-C5");
     T.waar(typeof c5.besluit === "string" && DATUM.test(c5.besluit) && /Bart/.test(c5.besluit), "C5 heeft een besluit met datum");
     T.waar(/stopt de episode/.test(c5.gekozenLezing), "de gekozen lezing beschrijft het nieuwe gedrag");
     ["TODO_BART-C6", "TODO_BART-C7", "TODO_BART-C8", "TODO_BART-C9"].forEach(function (id) {
       var t = todo(id);
-      T.waar(!!t && t.besluit === undefined && /^Concepttekst ter goedkeuring/.test(t.vraag) && typeof t.gekozenLezing === "string" && typeof t.plek === "string", id + " is een open concept");
+      T.waar(!!t && /^Beslist door Bart op 20 november 2026/.test(t.besluit || "") && /^Concepttekst ter goedkeuring/.test(t.vraag) && typeof t.gekozenLezing === "string" && typeof t.plek === "string", id + " is goedgekeurd");
     });
     T.is(casus().todoBart.filter(function (t) { return t.besluit !== undefined && DATUM.test(t.besluit); }).length, 1, "alleen C5 is op 16 november beslist");
     var gr = g.TODO_BART_GROEPEN;
     if (!gr) return;
     var beslist = gr.filter(function (x) { return x.titel === "Beslist op 16 november 2026"; });
     T.is(beslist.length, 1); T.is(beslist[0].beslist, true); T.gelijk(beslist[0].ids, ["TODO_BART-C5"]);
-    var concept = gr.filter(function (x) { return /ter goedkeuring/.test(x.titel) && /16 november 2026/.test(x.titel); });
-    T.is(concept.length, 1); T.gelijk(concept[0].ids, ["TODO_BART-C6", "TODO_BART-C7", "TODO_BART-C8", "TODO_BART-C9"]);
+    var g20 = gr.filter(function (x) { return x.titel === "Beslist op 20 november 2026"; })[0];
+    ["TODO_BART-C6", "TODO_BART-C7", "TODO_BART-C8", "TODO_BART-C9"].forEach(function (id) { T.waar(g20.ids.indexOf(id) >= 0, id + " staat bij de besluiten van 20 november"); });
   });
 
   /* ---------- besluit 1: na Verwijzen stopt de episode ---------- */
@@ -162,7 +162,7 @@
     T.waar(i18([["G3", "O1", "V4"], ["N1"], [], ["B1:V10", "B1:V4"]]), "amoxicilline na de uitslag (dag 4)");
     T.waar(!i18([["G3", "O1", "V4"], ["N1", "B1:V10", "B1:V4"]]), "amoxicilline vóór de uitslag: niet onder deze regel");
     var i = inv("E3", "I18");
-    T.is(i.ernst, 4); T.is(i.concept, true); T.is(i.TODO_BART, todo("TODO_BART-C7").vraag); T.is(i.vraag, HINT18);
+    T.is(i.ernst, 3, "ernst 3: besluit Bart, 20 november 2026"); T.is(i.concept, true); T.is(i.TODO_BART, todo("TODO_BART-C7").vraag); T.is(i.vraag, HINT18);
   });
   T.registreer(G, "besluit 2 (data): regelnamen en conceptzinnen voor I17 en I18 in episode 2 en 3", function () {
     ["E2", "E3"].forEach(function (e) {

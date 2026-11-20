@@ -24,6 +24,7 @@
       if (ep.escalatie) ep.escalatie.aan = false;
       delete ep.eindeNaKaart;                        // casus 1.5: na Verwijzen stopt de episode (getoetst in tests/besluiten-1116.tests.js)
       ep.knoppen.aantalDagen = dagen[ep.id];
+      ep.knoppen.actiesPerBeurt = 3;                 // casus 1.7: E1 en E2 hebben nu 4 acties per dag; de oude regels hadden er overal 3
       ep.gebeurtenissen = ep.gebeurtenissen.filter(function (e) { return e.id !== "C2"; });
       ep.gebeurtenissen.forEach(function (e) {
         if (e.groep && OUDE_TRIGGERS[e.id]) e.trigger = JSON.parse(JSON.stringify(OUDE_TRIGGERS[e.id]));

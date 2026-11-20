@@ -52,8 +52,8 @@
   /* ---------- vastlegging ---------- */
   var BESLIST = ["TODO_BART-N3", "TODO_BART-E2-16", "TODO_BART-E3-3", "TODO_BART-E2-10", "TODO_BART-E3-11", "TODO_BART-E3-21", "TODO_BART-R6"];
   var CONCEPT = ["TODO_BART-C1", "TODO_BART-C2", "TODO_BART-C3", "TODO_BART-C4"];
-  T.registreer(G, "vastlegging: casus 1.4; de zeven besliste vragen houden vraag, lezing en plek en hebben een besluit in één zin met de datum; de concepten en de nieuwe vraag zijn open", function () {
-    T.is(casus().versie, "1.6");
+  T.registreer(G, "vastlegging: casus 1.4; de zeven besliste vragen houden vraag, lezing en plek en hebben een besluit in één zin met de datum; de concepten zijn op 20 november 2026 goedgekeurd", function () {
+    T.is(casus().versie, "1.7");
     BESLIST.forEach(function (id) {
       var t = todo(id);
       T.waar(!!t, id + " staat nog in de data");
@@ -63,7 +63,7 @@
     T.gelijk(casus().todoBart.filter(function (t) { return t.besluit !== undefined && DATUM.test(t.besluit); }).map(function (t) { return t.id; }).sort(), BESLIST.slice().sort());
     CONCEPT.forEach(function (id) {
       var t = todo(id);
-      T.waar(!!t && t.besluit === undefined && typeof t.vraag === "string" && typeof t.gekozenLezing === "string" && typeof t.plek === "string", id + " is een open vraag met lezing en plek");
+      T.waar(!!t && /^Beslist door Bart op 20 november 2026/.test(t.besluit || "") && typeof t.vraag === "string" && typeof t.gekozenLezing === "string" && typeof t.plek === "string", id + " is goedgekeurd en houdt lezing en plek");
     });
     CONCEPT.forEach(function (id) { T.waar(/^Concept/.test(todo(id).vraag) && /ter goedkeuring/.test(todo(id).vraag), id + " is herkenbaar als concept ter goedkeuring"); });
   });
@@ -73,8 +73,10 @@
     var beslist = gr.filter(function (x) { return x.titel === "Beslist op 15 november 2026"; });
     T.is(beslist.length, 1); T.is(beslist[0].beslist, true);
     T.gelijk(beslist[0].ids.slice().sort(), BESLIST.slice().sort());
-    var concept = gr.filter(function (x) { return /ter goedkeuring/.test(x.titel) && /15 november 2026/.test(x.titel); });
-    T.is(concept.length, 1); T.gelijk(concept[0].ids, CONCEPT); T.waar(!concept[0].beslist, "de concepten zijn niet beslist");
+    // De concepten zijn op 20 november 2026 goedgekeurd: ze staan in die groep.
+    var g20 = gr.filter(function (x) { return x.titel === "Beslist op 20 november 2026"; })[0];
+    T.waar(!!g20 && g20.beslist === true, "groep 'Beslist op 20 november 2026'");
+    CONCEPT.forEach(function (id) { T.waar(g20.ids.indexOf(id) >= 0, id + " staat bij de besluiten van 20 november"); });
     // De vraag over Verwijzen (C5) is op 16 november 2026 beslist; zie tests/besluiten-1116.tests.js.
     var alleIds = casus().todoBart.map(function (t) { return t.id; }), gezien = {};
     gr.forEach(function (x) {
@@ -181,7 +183,7 @@
       T.is(rij[rij.length - 4], "12", "dagen zonder actie"); T.is(rij[rij.length - 3], "14", "dagen"); T.is(rij[rij.length - 2], "5", "aantal kaarten");
       T.waar(/Kweekuitslag \(dag 4\)/.test(regels[1]), "de gebeurtenis staat met haar dag in de export");
       var js = JSON.parse(g.Logging.exportJSON());
-      T.gelijk(js[0].doorgespoeld, rec.doorgespoeld); T.is(js[0].casusVersie, "1.6");
+      T.gelijk(js[0].doorgespoeld, rec.doorgespoeld); T.is(js[0].casusVersie, "1.7");
       var ov = g.UI.overzichtModel(casus(), js, "Door");
       T.is(ov[0].rijen.length, 14, "het leesbare overzicht toont alle 14 dagen"); T.gelijk(ov[0].rijen[9].kaarten, []);
     } finally { g.Logging._zetOpslag(undefined); g.Logging.wis(); }
@@ -396,7 +398,7 @@
         T.waar(casus().gevolgzinnen.some(function (z) { return z.episode === e.id && z.invariant === i.id && z.vrijgegeven === true; }), e.id + " " + i.id + " heeft een zin");
       });
     });
-    T.waar(todo("TODO_BART-C4").besluit === undefined && /casus\.gevolgzinnen/.test(todo("TODO_BART-C4").plek));
+    T.waar(/20 november 2026/.test(todo("TODO_BART-C4").besluit || "") && /casus\.gevolgzinnen/.test(todo("TODO_BART-C4").plek));
     // de twee eerdere conceptteksten zijn ongewijzigd
     T.is(ep("E3").gebeurtenissen.filter(function (x) { return x.id === "S"; })[0].einde.tekst, "De casus is geëscaleerd. Mevrouw V. heeft sepsis en wordt met spoed verwezen. Deze episode is verloren.");
     T.is(ep("E3").feedbackExtra[2].vraag, "Dit middel staat in de richtlijn niet bij een blaasontsteking.");

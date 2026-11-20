@@ -210,7 +210,7 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
       const csv = fs.readFileSync(await csvDl.path(), "utf8"), js = JSON.parse(fs.readFileSync(await jsonDl.path(), "utf8"));
       const regels = csv.replace(/^﻿/, "").split("\r\n").filter(Boolean);
       check("export CSV: BOM, puntkomma, kopregel en één regel per poging", csv.charCodeAt(0) === 0xFEFF && regels[0].startsWith("pseudoniem;episode;poging;eerste poging;testmodus;casusversie;speltijdstip;tijdlijn") && js.length === 7);
-      check("export JSON: eerste poging per episode, volledige tijdlijn, casusversie 1.6", js.filter(p => p.eerstePoging).length === 3 && js.every(p => p.casusVersie === "1.6" && Array.isArray(p.tijdlijn)));
+      check("export JSON: eerste poging per episode, volledige tijdlijn, casusversie 1.7", js.filter(p => p.eerstePoging).length === 3 && js.every(p => p.casusVersie === "1.7" && Array.isArray(p.tijdlijn)));
       check("export: de afloop staat erin (laatste kolom 'afloop'; de sepsis-poging is 'verloren')", regels[0].endsWith(";afloop") && regels[regels.length - 1].endsWith(";verloren") && js[js.length - 1].afloop === "verloren" && js.filter(p => p.afloop === "gehaald").length === 3);
       check("export CSV: tijdlijn in woorden", /Dag 1: Recente labwaarden opvragen/.test(csv) && /Dag \d+: Antibioticum wisselen → Amoxicilline\/clavulaanzuur/.test(csv));
     }
