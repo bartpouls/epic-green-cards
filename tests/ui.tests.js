@@ -1,5 +1,5 @@
 // Tests van de weergave (stuk S9, groep 'ui'). Draait in Node (gauntlet/tools/run-node.js) met een minimale nep-DOM,
-// zonder browser. De echte browsercontrole staat in gauntlet/tools/speel-ui.js (Playwright, alle episodes via klikken).
+// zonder browser. De echte browsercontrole staat in gauntlet/tools/speel-iteratie1.js (Playwright, alle episodes via de echte interface).
 //
 // Laden: ui/ui.js moet geladen zijn (tests.html en run-node.js zetten het erbij: zie rapport "Verzoek aan LEAD"). Is window.UI
 // er niet, dan probeert deze file het in Node zelf van schijf te laden; in de browser faalt dan de test 'ui.js is geladen'.
@@ -29,7 +29,7 @@
     T.registreer(GROEP, naam, fn);
   }
   // Rooktest in een ECHTE browser-DOM (alleen in de browser): start het echte scherm, vul een pseudoniem in en kies episode 1.
-  // De volledige speelcontrole in Chromium staat in gauntlet/tools/speel-ui.js.
+  // De volledige speelcontrole in Chromium staat in gauntlet/tools/speel-iteratie1.js.
   if (IN_BROWSER) T.registreer(GROEP, "UI in echte DOM (rooktest): pseudoniem verplicht, daarna episodekeuze en patiëntkaart", function () {
     var root = document.createElement("div"); document.body.appendChild(root);
     try {

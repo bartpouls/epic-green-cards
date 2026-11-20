@@ -629,7 +629,7 @@ if (window.CASUSSEN && window.CASUSSEN[0]) {
     {
       "id": "TODO_BART-R7",
       "vraag": "Het overzicht heeft de gewone speldata voor de patiëntkaart, het repertoire, de kaarten die ontbreken en de feedbackvragen, maar de casus zet er ook kopjes, labels en een kolom 'Trigger' bij (bijvoorbeeld 'Zonder N1:', 'I6, geen kweek', 'Verborgen: niets.'). Moeten die casusregels in het overzicht naast de speldata getoond worden?",
-      "gekozenLezing": "Ja: de hele tekst van deze kopjes staat letterlijk in de referentie (patientkaart, repertoireTekst, zichtbaarAlsOntbreekt, feedbackTabel, tabelkoppen, episodeKop, labels), zodat elk kopje van de casus regel voor regel te vergelijken is. Alternatief: alleen de speldata tonen en deze casusregels weglaten.",
+      "gekozenLezing": "Ja: de hele tekst van deze kopjes staat letterlijk in de referentie (de patiëntkaart, het repertoire, wat er zichtbaar wordt als een kaart ontbreekt, de feedbacktabel, de tabelkoppen, de episodekop en de labels), zodat elk kopje van de casus regel voor regel te vergelijken is. Alternatief: alleen de speldata tonen en deze casusregels weglaten.",
       "plek": "referentie.E1/E2/E3.patientkaart, repertoireTekst, zichtbaarAlsOntbreekt, feedbackTabel, tabelkoppen, episodeKop, labels"
     }
   );

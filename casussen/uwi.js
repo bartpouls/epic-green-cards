@@ -1,5 +1,5 @@
 /* casussen/uwi.js — samengevoegd uit uwi.js (kop + kaarten), uwi-e1.js, uwi-e2.js en uwi-e3.js. Alleen data, geen logica.
-   Bron: casus-uwi.md (v1.4). Gemaakt met gauntlet/tools/voeg-samen.js; de losse bestanden zijn daarna vervallen. */
+   Bron: casus-uwi.md (v1.4). Eenmalig samengevoegd (het hulpscript daarvoor is in werkpakket C verwijderd); de losse bestanden zijn vervallen. */
 /* ===== uwi.js ===== */
 // Casus UWI in de eerste lijn: kaartenbibliotheek (stuk S1). Alleen data, geen logica.
 // Bron: casus-uwi.md v1.4, sectie 3. Episodes worden aangevuld door uwi-e1.js, uwi-e2.js en uwi-e3.js.
@@ -1872,7 +1872,7 @@ window.CASUSSEN = [
   {
    "id": "TODO_BART-G1",
    "vraag": "Bij een geschonden veiligheidsregel tonen we naast de vraag de zin uit 'Wat er zichtbaar wordt als een kaart ontbreekt'. Sommige zinnen verklappen wat de speler miste. Mogen deze zinnen toch getoond worden? - E1 I1: \"Mevrouw weet niet wanneer ze moet bellen.\" (noemt direct de ontbrekende informatie (alarmsignalen))\n- E1 I3: \"Er is geen moment om alsnog te starten als de klachten aanhouden.\" (noemt direct de ontbrekende kaart (opvolgmoment))\n- E2 I5: \"De nierfunctie bleek 29. Er komt geen werkzame concentratie in de urine, en er is kans op stapeling.\" (noemt het getal dat de speler had kunnen opvragen (nierfunctie 29) en de reden waarom het middel afvalt)\n- E2 I7: \"De kaliumspiegel is onbekend.\" (noemt direct de ontbrekende kaart (kalium bepalen))\n- E3 I9: \"Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.\" (noemt direct wat de speler miste (kalium en overleg over spironolacton))",
-   "gekozenLezing": "Alle zeven zinnen zijn vrijgegeven (vrijgegeven: true in casus.gevolgzinnen). Bij een niet-gehaalde poort staan onder 'Wat er met mevrouw V. gebeurde' de zinnen van alle geschonden regels die zo'n zin hebben; daarna volgt onder 'Hint van je opleider' de vraag van de ernstigste geschonden regel, ongewijzigd. Een zin geldt alleen in de episode waarin de casus hem noemt. Twee zinnen hebben een voorwaarde, zodat ze niet verschijnen als ze niet waar zijn: 'De kaliumspiegel is onbekend.' alleen als Kalium bepalen niet is gespeeld; 'Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.' alleen als Kalium bepalen én Overleggen met de voorschrijver (over spironolacton) allebei ontbreken. Regels zonder zin in de casus krijgen geen zin.",
+   "gekozenLezing": "Alle zeven zinnen zijn vrijgegeven (in de data gemarkeerd als vrijgegeven). Bij een niet-gehaalde poort staan onder 'Wat er met mevrouw V. gebeurde' de zinnen van alle geschonden regels die zo'n zin hebben; daarna volgt onder 'Hint van je opleider' de vraag van de ernstigste geschonden regel, ongewijzigd. Een zin geldt alleen in de episode waarin de casus hem noemt. Twee zinnen hebben een voorwaarde, zodat ze niet verschijnen als ze niet waar zijn: 'De kaliumspiegel is onbekend.' alleen als Kalium bepalen niet is gespeeld; 'Het kalium is onbekend, en niemand heeft naar spironolacton gekeken.' alleen als Kalium bepalen én Overleggen met de voorschrijver (over spironolacton) allebei ontbreken. Regels zonder zin in de casus krijgen geen zin.",
    "plek": "casus.gevolgzinnen",
    "besluit": "Beslist door Bart op 14 november 2026: de gevolgen bij de patiënt zijn leidend en worden allemaal getoond, daarna volgt één collegiale hint van de opleider."
   },
@@ -1905,7 +1905,7 @@ window.CASUSSEN = [
   {
    "id": "TODO_BART-N5",
    "vraag": "Concepttekst: de rondleiding aan het begin van episode 1 (vijf korte stappen) en de smaakregel van elke kaart (één korte, neutrale zin boven het effect). Beide zijn bedacht, niet uit de casus, en bevatten volgens mij geen klinische beweringen. Keur je ze goed of pas je ze aan?",
-   "gekozenLezing": "Teksten zoals in de data (de rondleiding staat in ui/ui.js, de smaakregels in kaarten[].smaak).",
+   "gekozenLezing": "Teksten zoals in de data (de rondleiding staat in ui/ui.js, de smaakregels bij elke kaart in de kaartenbibliotheek).",
    "plek": "kaarten[].smaak; de rondleiding staat in ui/ui.js"
   },
   {
