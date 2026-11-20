@@ -314,7 +314,7 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
   }
 
   // ---------- Predicaat naar leesbare Nederlandse tekst (generiek) ----------
-  var KVELDEN = ['kaart', 'doel', 'optie', 'optieNiet', 'kaartUit', 'start', 'naGebeurtenis', 'voorGebeurtenis'];
+  var KVELDEN = ['kaart', 'doel', 'optie', 'optieNiet', 'kaartUit', 'start', 'naGebeurtenis', 'voorGebeurtenis', 'alActief'];
   function kOf(p, uitsluiten) {
     if (p.K && typeof p.K === 'object') return p.K;
     var k = {};
@@ -350,6 +350,8 @@ pre.json { background: var(--vlak); padding: 6px 10px; overflow-x: auto; font-si
     if (k.optieNiet && k.optieNiet.length) s += ', niet met de optie ' + k.optieNiet.map(function (o) { return '‘' + o + '’'; }).join(' of ') + ' (een regel zonder optie telt wel mee)';
     if (k.naGebeurtenis != null) s += ', op of na de dag van ' + gebeurtenisLab(k.naGebeurtenis);
     if (k.voorGebeurtenis != null) s += ', vóór de dag van ' + gebeurtenisLab(k.voorGebeurtenis);
+    if (k.alActief === true) s += ', terwijl dat middel al liep';
+    if (k.alActief === false) s += ', terwijl dat middel nog niet liep';
     return s;
   }
   // Moment bij actief / medicatieActief.

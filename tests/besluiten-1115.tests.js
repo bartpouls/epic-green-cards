@@ -53,7 +53,7 @@
   var BESLIST = ["TODO_BART-N3", "TODO_BART-E2-16", "TODO_BART-E3-3", "TODO_BART-E2-10", "TODO_BART-E3-11", "TODO_BART-E3-21", "TODO_BART-R6"];
   var CONCEPT = ["TODO_BART-C1", "TODO_BART-C2", "TODO_BART-C3", "TODO_BART-C4"];
   T.registreer(G, "vastlegging: casus 1.4; de zeven besliste vragen houden vraag, lezing en plek en hebben een besluit in één zin met de datum; de concepten zijn op 20 november 2026 goedgekeurd", function () {
-    T.is(casus().versie, "1.8");
+    T.is(casus().versie, "1.9");
     BESLIST.forEach(function (id) {
       var t = todo(id);
       T.waar(!!t, id + " staat nog in de data");
@@ -183,7 +183,7 @@
       T.is(rij[rij.length - 4], "12", "dagen zonder actie"); T.is(rij[rij.length - 3], "14", "dagen"); T.is(rij[rij.length - 2], "5", "aantal kaarten");
       T.waar(/Kweekuitslag \(dag 4\)/.test(regels[1]), "de gebeurtenis staat met haar dag in de export");
       var js = JSON.parse(g.Logging.exportJSON());
-      T.gelijk(js[0].doorgespoeld, rec.doorgespoeld); T.is(js[0].casusVersie, "1.8");
+      T.gelijk(js[0].doorgespoeld, rec.doorgespoeld); T.is(js[0].casusVersie, "1.9");
       var ov = g.UI.overzichtModel(casus(), js, "Door");
       T.is(ov[0].rijen.length, 14, "het leesbare overzicht toont alle 14 dagen"); T.gelijk(ov[0].rijen[9].kaarten, []);
     } finally { g.Logging._zetOpslag(undefined); g.Logging.wis(); }
@@ -240,7 +240,8 @@
   T.registreer(G, "besluit 4a (episode 1 ongewijzigd, en alleen bij een gehaalde poort): in episode 1 geen nieuwe regel of opmerking; bij een schending geen score en geen opmerking", function () {
     var e1 = g.Test.rondAfTotEinde(speel("E1", [["V4", "N1", "N2:V4"], ["O2"]]));
     T.is(e1.score.doelmatigheid, 2, "de bestaande regel van episode 1"); T.gelijk(opmerkingen(e1), []); T.gelijk(e1.aftrek, []);
-    T.is(ep("E1").score.doelmatigheid.regels.length, 2); T.is(ep("E1").score.doelmatigheid.opmerkingBijAftrek, undefined);
+    // Casus 1.9 (werkpakket E, besluit Bart 20 november 2026): episode 1 kreeg drie regels met een opmerking erbij (tests/besluiten-1120.tests.js).
+    T.is(ep("E1").score.doelmatigheid.regels.length, 5); T.is(ep("E1").score.doelmatigheid.opmerkingBijAftrek, "Deze kaart was hier niet nodig:");
     var fout = g.Test.rondAfTotEinde(speel("E2", [["G2", "O1", "V4"], ["O2"]]));   // zonder alarmsignalen
     T.gelijk(ids(fout), ["I1"]); T.is(fout.score, null); T.gelijk(fout.extraVragen, []); T.gelijk(fout.aftrek, []);
   });
@@ -295,7 +296,8 @@
     var namen = { E2: ["Kalium bepalen zonder trimethoprim", "Lisinopril aanpassen zonder uitdroging"],
       E3: ["Tweede urinekweek zonder weefselinvasie", "Verwijzen zonder 'na 48 uur geen verbetering'", "Calcium scheiden of stoppen zonder ciprofloxacine", "Lisinopril aanpassen of stoppen vóór de uitdroging"] };
     Object.keys(namen).forEach(function (e) {
-      var dm = ep(e).score.doelmatigheid, nieuwe = dm.regels.filter(function (r) { return r.naam !== undefined; });
+      // Casus 1.9: na deze regels volgen die van werkpakket E (tests/besluiten-1120.tests.js).
+      var dm = ep(e).score.doelmatigheid, nieuwe = dm.regels.filter(function (r) { return r.naam !== undefined; }).slice(0, namen[e].length);
       T.gelijk(nieuwe.map(function (r) { return r.naam; }), namen[e], e);
       nieuwe.forEach(function (r) {
         T.is(r.delta, -1); T.is(r.concept, true); T.waar(typeof r.afgeleidUit === "string" && r.afgeleidUit.length > 15, r.naam + ": casuspassage");

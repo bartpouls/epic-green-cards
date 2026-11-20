@@ -39,7 +39,7 @@
 
   /* ---------- vastlegging ---------- */
   T.registreer(G, "vastlegging: casus 1.5; de vraag over Verwijzen is beslist (besluit met datum); de vier concepten zijn op 20 november 2026 goedgekeurd", function () {
-    T.is(casus().versie, "1.8");
+    T.is(casus().versie, "1.9");
     var c5 = todo("TODO_BART-C5");
     T.waar(typeof c5.besluit === "string" && DATUM.test(c5.besluit) && /Bart/.test(c5.besluit), "C5 heeft een besluit met datum");
     T.waar(/stopt de episode/.test(c5.gekozenLezing), "de gekozen lezing beschrijft het nieuwe gedrag");

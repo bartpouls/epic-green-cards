@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Casus-id | `uwi-eerstelijn` |
-| Versie | 1.8 — 20 november 2026 — bron: besluiten Bart, 20 november 2026, tweede ronde (zie sectie 15). Versie 1.7 (20 november 2026): bron besluiten Bart, 20 november 2026 (zie sectie 14). Versie 1.6 (17 november 2026): bron besluiten Bart, 17 november 2026 (zie sectie 13). Versie 1.5 (16 november 2026): bron besluiten Bart, 16 november 2026 (zie sectie 12). Versie 1.4 (15 november 2026): bron besluiten Bart, 15 november 2026 (zie sectie 11). Versie 1.3 (14 november 2026): bron besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
+| Versie | 1.9 — 20 november 2026 — bron: besluit Bart, 20 november 2026, werkpakket E (zie sectie 16). Versie 1.8 (20 november 2026): bron besluiten Bart, 20 november 2026, tweede ronde (zie sectie 15). Versie 1.7 (20 november 2026): bron besluiten Bart, 20 november 2026 (zie sectie 14). Versie 1.6 (17 november 2026): bron besluiten Bart, 17 november 2026 (zie sectie 13). Versie 1.5 (16 november 2026): bron besluiten Bart, 16 november 2026 (zie sectie 12). Versie 1.4 (15 november 2026): bron besluiten Bart, 15 november 2026 (zie sectie 11). Versie 1.3 (14 november 2026): bron besluiten Bart, 14 november 2026 (zie sectie 10). Versie 1.2 (12 oktober 2026): bron Bart, speltest 12 oktober 2026 (zie sectie 9). Versie 1.1 (11 oktober 2026): kaart B5 "Medicatie hervatten" toegevoegd (akkoord Bart) |
 | Functie | Tutorialcasus: leert het spel én de signatuurvaardigheid |
 | Signatuurvaardigheid | Veranderende context: empirisch starten → bijsturen op de kweek → nierfunctie en comedicatie |
 | Klinische validatie | Voorschrijven en wat daarna komt: Bart Pouls (gevalideerd). Diagnostiek en klinische context: nog voorleggen aan een huisarts |
@@ -525,3 +525,29 @@ Bron: besluiten Bart, 20 november 2026 (tweede ronde).
   - Episode 2, Kweekgestuurd, smal: "Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?"
   - Episode 2, Bijgestuurd: "Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?"
   - Episode 3, Kweekgestuurd: "Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?"
+
+## 16. Wijzigingen in versie 1.9
+
+Bron: besluit Bart, 20 november 2026 (werkpakket E: afvinken afstraffen).
+
+- **Geen algemene straf per extra kaart.** De lijst overbodige kaarten (sectie 11, situaties a–e) wordt aangevuld. Elke situatie kost 1 punt doelmatigheid, ondergrens 1, met de opmerking "Deze kaart was hier niet nodig:" en het label van de kaart. Gegevens verzamelen (G1), informeren (N-kaarten), Overleggen met de voorschrijver (Ev2) en Medicatie tijdelijk stoppen (B3) op lisinopril na de uitdroging blijven gratis.
+- **f. Recente labwaarden opvragen (G2) in episode 1 en 3** is overbodig: het lab staat daar al als "recent" op de patiëntkaart. Vastgesteld (geen concept). In episode 2 blijft G2 punten opleveren (de eGFR is daar verborgen).
+
+### Concept, ter goedkeuring door Bart
+
+**Overbodige kaarten, vervolg (concept) [G]:** gevonden met de routezoeker (voorschrijf- en bijstuurkaarten die zonder scoreverlies aan een geldige route konden worden toegevoegd).
+
+| | Situatie | Geldt in | Afgeleid uit |
+|---|---|---|---|
+| g | Een antibioticum starten dat op dat moment al loopt (met de kaart zelf, met Antibioticum wisselen of met een Uitgesteld recept) | E1, E2, E3 | Een middel dat al loopt, opnieuw starten voegt niets toe |
+| h | Afwachtend beleid (V1) terwijl in deze poging direct een antibioticum (V3, V4, V5) gestart wordt | E1 | Effect van V1: "Geen antibioticum" |
+| i | Antibioticum stoppen (B2) op fosfomycine | E2 | Effect van V4: "Eenmalig 3 g" |
+| j | Medicatie tijdelijk stoppen (B3) op calcium terwijl ciprofloxacine loopt, naast Innametijden aanpassen (B4) | E3 | De route "ciprofloxacine met B4 of B3": één van de twee volstaat |
+| k | Medicatie tijdelijk stoppen (B3) op calcium nadat ciprofloxacine is gestopt of vervangen | E3 | Calcium stoppen dient alleen zolang ciprofloxacine loopt |
+
+**Twijfelgevallen, niet gestraft:**
+- Afwachtend beleid naast een Uitgesteld recept (E1): het uitgesteld recept omvat het afwachten; volgens sectie 15 telt deze combinatie als Gedeelde regie.
+- Antibioticum stoppen op fosfomycine in episode 3: de geldige route "verwijzen" gebruikt deze kaart om fosfomycine af te sluiten bij weefselinvasie (I10).
+- Medicatie tijdelijk stoppen op calcium vóór de start van ciprofloxacine: het calcium staat dan stil als de kuur begint.
+- Medicatie hervatten op spironolacton de dag na de sick day-maatregelen, en Medicatie hervatten op calcium terwijl ciprofloxacine nog loopt: geen kwestie van een overbodige kaart, maar van timing en interactie.
+- Dosis aanpassen (V6) op ciprofloxacine: alle drie de opties kosten niets, ook "halveren", die NHG noch Kompas noemt.

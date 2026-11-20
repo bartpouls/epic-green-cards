@@ -6,7 +6,7 @@
 window.CASUSSEN = [
 {
  "id": "uwi-eerstelijn",
- "versie": "1.8",
+ "versie": "1.9",
  "limiet": 1,
  "regelnamen": [
   {
@@ -2001,6 +2001,12 @@ window.CASUSSEN = [
    "vraag": "Concepttekst ter goedkeuring: reflectievragen bij de vier profielen zonder reflectievraag in de casus, volgens het besluit van Bart van 20 november 2026 dat een reflectievraag de student vooral moet laten nadenken over wat de volgende keer beter kan. Episode 1, Gedeelde regie: 'Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?' Episode 2, Kweekgestuurd, smal: 'Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?' Episode 2, Bijgestuurd: 'Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?' Episode 3, Kweekgestuurd: 'Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?' Keur je ze goed of pas je ze aan?",
    "gekozenLezing": "De vier vragen staan letterlijk in de data bij de profielen (E1 Gedeelde regie, E2 Kweekgestuurd, smal en Bijgestuurd, E3 Kweekgestuurd) en verschijnen op het beoordelingsscherm zoals de andere reflectievragen. Ze berusten niet op een bron [G].",
    "plek": "E1.profielen.Gedeelde regie; E2.profielen.Kweekgestuurd, smal; E2.profielen.Bijgestuurd; E3.profielen.Kweekgestuurd"
+  },
+  {
+   "id": "TODO_BART-C13",
+   "vraag": "Concept ter goedkeuring (werkpakket E, besluit Bart 20 november 2026: afvinken afstraffen): nieuwe situaties in de lijst overbodige kaarten, elk 1 punt doelmatigheid (ondergrens 1). (g) Een antibioticum starten dat op dat moment al loopt (met de kaart zelf, door te wisselen of met een uitgesteld recept), episode 1, 2 en 3; (h) Afwachtend beleid naast een direct gestart antibioticum, episode 1; (i) Antibioticum stoppen op fosfomycine (een eenmalige dosis), episode 2; (j) Innametijden aanpassen én Medicatie tijdelijk stoppen op calcium (één van de twee volstaat), episode 3; (k) Medicatie tijdelijk stoppen op calcium nadat ciprofloxacine al is gestopt of vervangen, episode 3. Keur je deze situaties goed, of pas je ze aan?",
+   "gekozenLezing": "De situaties staan in de data als scoreregels met een leesbare naam, elk gemarkeerd als concept met de passage waaruit ze zijn afgeleid, en tellen al mee. Ze vullen de lijst a–e aan en hebben dezelfde vorm: per situatie hooguit 1 punt en één opmerking 'Deze kaart was hier niet nodig:' met het label van de kaart. Vastgesteld (geen concept): Recente labwaarden opvragen kost in episode 1 en 3 een punt, omdat het lab daar al recent op de patiëntkaart staat. Niet gestraft (twijfelgevallen): Afwachtend beleid naast een uitgesteld recept; Antibioticum stoppen op fosfomycine in episode 3 (daarmee sluit de route 'verwijzen' fosfomycine af bij weefselinvasie); Medicatie tijdelijk stoppen op calcium vóór de start van ciprofloxacine. Gegevens verzamelen, informeren, Overleggen met de voorschrijver en Medicatie tijdelijk stoppen op lisinopril na de uitdroging blijven gratis. Ze berusten niet op een bron [G].",
+   "plek": "E1.score.doelmatigheid; E2.score.doelmatigheid; E3.score.doelmatigheid"
   }
  ],
  "episodes": []
@@ -2102,9 +2108,19 @@ window.CASUSSEN[0].episodes.push({
     },
     doelmatigheid: {
       start: 3,
+      opmerkingBijAftrek: "Deze kaart was hier niet nodig:",
       regels: [
         { als: { p: "gespeeld", kaart: "O1" }, delta: -1 },
-        { als: { p: "gespeeld", kaart: "O2" }, delta: -1 }
+        { als: { p: "gespeeld", kaart: "O2" }, delta: -1 },
+        // Vastgesteld door Bart, 20 november 2026 (werkpakket E): het lab staat als "recent" op de patiëntkaart.
+        { naam: "Labwaarden opvragen terwijl het lab recent is", als: {"p": "gespeeld", "kaart": "G2"}, delta: -1,
+          kaarten: [{"kaart": "G2"}], bron: "Bart (besluit 20 november 2026)" },
+        { naam: "Antibioticum starten dat al loopt", als: {"p": "gespeeld", "K": {"start": ["V3", "V4", "V5"], "alActief": true}}, delta: -1,
+          kaarten: [{"start": ["V3", "V4", "V5"], "alActief": true}], concept: true,
+          afgeleidUit: "Werkpakket E (besluit Bart, 20 november 2026): een middel dat al loopt, opnieuw starten voegt niets toe." },
+        { naam: "Afwachtend beleid naast een antibioticum", als: {"p": "en", "args": [{"p": "gespeeld", "kaart": "V1"}, {"p": "gespeeld", "K": {"kaartUit": "antibiotica"}}]}, delta: -1,
+          kaarten: [{"kaart": "V1"}], concept: true,
+          afgeleidUit: "Effect van V1: 'Geen antibioticum'. Wie ook een antibioticum start, volgt geen afwachtend beleid." }
       ]
     }
   },
@@ -2463,6 +2479,7 @@ window.CASUSSEN[0].episodes.push({
       min: 1,
       opmerkingBijAftrek: "Deze kaart was hier niet nodig:",
       conceptRegels: true,
+      TODO_BART_C13: "Concept ter goedkeuring (werkpakket E, besluit Bart 20 november 2026: afvinken afstraffen): nieuwe situaties in de lijst overbodige kaarten, elk 1 punt doelmatigheid (ondergrens 1). (g) Een antibioticum starten dat op dat moment al loopt (met de kaart zelf, door te wisselen of met een uitgesteld recept), episode 1, 2 en 3; (h) Afwachtend beleid naast een direct gestart antibioticum, episode 1; (i) Antibioticum stoppen op fosfomycine (een eenmalige dosis), episode 2; (j) Innametijden aanpassen én Medicatie tijdelijk stoppen op calcium (één van de twee volstaat), episode 3; (k) Medicatie tijdelijk stoppen op calcium nadat ciprofloxacine al is gestopt of vervangen, episode 3. Keur je deze situaties goed, of pas je ze aan?",
       TODO_BART_overbodig: "Conceptlijst ter goedkeuring: in episode 2 en 3 kost elke overbodige kaart 1 punt doelmatigheid (ondergrens 1), en bij een gehaalde poort staat onder 'Van je opleider' per regel de opmerking 'Deze kaart was hier niet nodig:' met het label van de kaart. De vijf regels: (a) Kalium bepalen in episode 2 zonder dat trimethoprim is gestart; (b) een tweede Urinekweek inzetten in episode 3 zonder weefselinvasie vóór die kweek; (c) Verwijzen zonder dat 'Na 48 uur geen verbetering.' eerder is voorgekomen; (d) Innametijden aanpassen, of Medicatie tijdelijk stoppen op calcium, zonder dat ciprofloxacine is gestart; (e) Dosis aanpassen of Medicatie tijdelijk stoppen op lisinopril vóór de dag van de uitdroging. Keur je de lijst en de opmerking goed, of pas je ze aan?",
       regels: [
         {
@@ -2538,7 +2555,13 @@ window.CASUSSEN[0].episodes.push({
           afgeleidUit: "De downside van O2: 'Alleen zinvol bij een indicatie; anders kost het doelmatigheid'." },
         { naam: "Lisinopril aanpassen zonder uitdroging", als: {"p": "gespeeld", "kaart": "V6", "doel": "lisinopril"}, delta: -1,
           kaarten: [{"kaart": "V6", "doel": "lisinopril"}], concept: true,
-          afgeleidUit: "Het effect van V6: 'ook lisinopril halveren bij sick day'; in episode 2 komt geen uitdroging voor." }
+          afgeleidUit: "Het effect van V6: 'ook lisinopril halveren bij sick day'; in episode 2 komt geen uitdroging voor." },
+        { naam: "Antibioticum starten dat al loopt", als: {"p": "gespeeld", "K": {"start": ["V3", "V4", "V5"], "alActief": true}}, delta: -1,
+          kaarten: [{"start": ["V3", "V4", "V5"], "alActief": true}], concept: true,
+          afgeleidUit: "Werkpakket E (besluit Bart, 20 november 2026): een middel dat al loopt, opnieuw starten voegt niets toe." },
+        { naam: "Fosfomycine stoppen", als: {"p": "gespeeld", "kaart": "B2", "doel": "V4"}, delta: -1,
+          kaarten: [{"kaart": "B2", "doel": "V4"}], concept: true,
+          afgeleidUit: "Effect van V4: 'Eenmalig 3 g'. Na de inname valt er niets meer te stoppen." }
       ]
     }
   },
@@ -3462,6 +3485,7 @@ window.CASUSSEN[0].episodes.push({
       min: 1,
       opmerkingBijAftrek: "Deze kaart was hier niet nodig:",
       conceptRegels: true,
+      TODO_BART_C13: "Concept ter goedkeuring (werkpakket E, besluit Bart 20 november 2026: afvinken afstraffen): nieuwe situaties in de lijst overbodige kaarten, elk 1 punt doelmatigheid (ondergrens 1). (g) Een antibioticum starten dat op dat moment al loopt (met de kaart zelf, door te wisselen of met een uitgesteld recept), episode 1, 2 en 3; (h) Afwachtend beleid naast een direct gestart antibioticum, episode 1; (i) Antibioticum stoppen op fosfomycine (een eenmalige dosis), episode 2; (j) Innametijden aanpassen én Medicatie tijdelijk stoppen op calcium (één van de twee volstaat), episode 3; (k) Medicatie tijdelijk stoppen op calcium nadat ciprofloxacine al is gestopt of vervangen, episode 3. Keur je deze situaties goed, of pas je ze aan?",
       TODO_BART_overbodig: "Conceptlijst ter goedkeuring: in episode 2 en 3 kost elke overbodige kaart 1 punt doelmatigheid (ondergrens 1), en bij een gehaalde poort staat onder 'Van je opleider' per regel de opmerking 'Deze kaart was hier niet nodig:' met het label van de kaart. De vijf regels: (a) Kalium bepalen in episode 2 zonder dat trimethoprim is gestart; (b) een tweede Urinekweek inzetten in episode 3 zonder weefselinvasie vóór die kweek; (c) Verwijzen zonder dat 'Na 48 uur geen verbetering.' eerder is voorgekomen; (d) Innametijden aanpassen, of Medicatie tijdelijk stoppen op calcium, zonder dat ciprofloxacine is gestart; (e) Dosis aanpassen of Medicatie tijdelijk stoppen op lisinopril vóór de dag van de uitdroging. Keur je de lijst en de opmerking goed, of pas je ze aan?",
       TODO_BART: "Doelmatigheid 'G3 gebruiken vóór de eerste keuze': welke kaarten tellen als 'de eerste keuze'? Bouwopdracht 6.5 zegt 'de eerste V-kaart', de casus 'de eerste keuze'.",
       regels: [
@@ -3499,7 +3523,19 @@ window.CASUSSEN[0].episodes.push({
           afgeleidUit: "Het effect van B4 en de route 'ciprofloxacine met B4 (scheiden van calcium) of B3 (calcium tijdelijk stoppen)'." },
         { naam: "Lisinopril aanpassen of stoppen vóór de uitdroging", als: {"p": "of", "args": [{"p": "gespeeld", "K": {"kaart": "V6", "doel": "lisinopril", "voorGebeurtenis": "B"}}, {"p": "gespeeld", "K": {"kaart": "B3", "doel": "lisinopril", "voorGebeurtenis": "B"}}]}, delta: -1,
           kaarten: [{"kaart": "V6", "doel": "lisinopril", "voorGebeurtenis": "B"}, {"kaart": "B3", "doel": "lisinopril", "voorGebeurtenis": "B"}], concept: true,
-          afgeleidUit: "Het effect van V6: 'ook lisinopril halveren bij sick day', en de route 'Na B'." }
+          afgeleidUit: "Het effect van V6: 'ook lisinopril halveren bij sick day', en de route 'Na B'." },
+        // Vastgesteld door Bart, 20 november 2026 (werkpakket E): het lab staat als "recent" op de patiëntkaart.
+        { naam: "Labwaarden opvragen terwijl het lab recent is", als: {"p": "gespeeld", "kaart": "G2"}, delta: -1,
+          kaarten: [{"kaart": "G2"}], bron: "Bart (besluit 20 november 2026)" },
+        { naam: "Antibioticum starten dat al loopt", als: {"p": "gespeeld", "K": {"start": ["V3", "V4", "V5", "V7", "V8", "V9", "V10"], "alActief": true}}, delta: -1,
+          kaarten: [{"start": ["V3", "V4", "V5", "V7", "V8", "V9", "V10"], "alActief": true}], concept: true,
+          afgeleidUit: "Werkpakket E (besluit Bart, 20 november 2026): een middel dat al loopt, opnieuw starten voegt niets toe." },
+        { naam: "Calcium dubbel geregeld", als: {"p": "en", "args": [{"p": "gespeeld", "kaart": "B4"}, {"p": "actief", "middel": "V7", "op": {"naKaart": {"kaart": "B3", "doel": "calcium"}}}]}, delta: -1,
+          kaarten: [{"kaart": "B3", "doel": "calcium"}], concept: true,
+          afgeleidUit: "De route 'ciprofloxacine met B4 (scheiden van calcium) of B3 (calcium tijdelijk stoppen)': één van de twee volstaat." },
+        { naam: "Calcium stoppen na ciprofloxacine", als: {"p": "en", "args": [{"p": "voor", "a": {"start": "V7"}, "b": {"kaart": "B3", "doel": "calcium"}}, {"p": "niet", "arg": {"p": "actief", "middel": "V7", "op": {"naKaart": {"kaart": "B3", "doel": "calcium"}}}}]}, delta: -1,
+          kaarten: [{"kaart": "B3", "doel": "calcium"}], concept: true,
+          afgeleidUit: "Effect van B4 en de route 'ciprofloxacine met B3 (calcium tijdelijk stoppen)': calcium stoppen dient alleen zolang ciprofloxacine loopt." }
       ]
     }
   },

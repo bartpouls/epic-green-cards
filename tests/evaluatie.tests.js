@@ -173,12 +173,15 @@
         if (u.vraag !== R.VRAAG[inv[0]]) afw.push(naam + "vraag " + u.vraag);
         continue;
       }
-      var dz = h("V2") ? 2 : nAb > 0 ? 1 : 3, dm = Math.max(1, 3 - (h("O1") ? 1 : 0) - (h("O2") ? 1 : 0));
+      // Casus 1.9: G2 kost een punt (lab recent op de patiëntkaart); afwachten naast een direct antibioticum ook (concept).
+      var g2 = h("G2"), afwAb = h("V1") && nAb > 0;
+      var dz = h("V2") ? 2 : nAb > 0 ? 1 : 3, dm = Math.max(1, 3 - (h("O1") ? 1 : 0) - (h("O2") ? 1 : 0) - (g2 ? 1 : 0) - (afwAb ? 1 : 0));
       var profiel = h("V2") ? "Gedeelde regie" : nAb > 0 ? "Direct behandelen" : "Terughoudend";
       var refl = h("V2") ? R.REFLECTIE.gedeeldeRegie : nAb > 0 ? R.REFLECTIE.direct : R.REFLECTIE.terughoudend;
       if (!u.score || u.score.duurzaamheid !== dz || u.score.doelmatigheid !== dm) afw.push(naam + "score " + js(u.score) + " i.p.v. " + dz + "/" + dm);
       if (!u.profiel || u.profiel.naam !== profiel || u.profiel.reflectievraag !== refl) afw.push(naam + "profiel " + js(u.profiel) + " i.p.v. " + profiel);
-      if (js(teksten(u.extraVragen, "vraag")) !== js(h("O1") ? [R.EXTRA.O1] : [])) afw.push(naam + "extraVragen " + js(u.extraVragen));
+      var extra = (h("O1") ? [R.EXTRA.O1] : []).concat(g2 ? ["Deze kaart was hier niet nodig: Recente labwaarden opvragen"] : [], afwAb ? ["Deze kaart was hier niet nodig: Afwachtend beleid"] : []);
+      if (js(teksten(u.extraVragen, "vraag")) !== js(extra)) afw.push(naam + "extraVragen " + js(u.extraVragen));
       if (afw.length > 5) break;
     }
     T.waar(afw.length === 0, afw.length + " afwijkingen, bv. " + afw.slice(0, 3).join(" ; "));

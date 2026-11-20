@@ -40,7 +40,7 @@
       T.waar(typeof t.vraag === "string" && typeof t.gekozenLezing === "string" && typeof t.plek === "string", id + " houdt vraag, gekozen lezing en plek");
     });
     T.gelijk(casus().todoBart.filter(function (t) { return t.besluit !== undefined && DATUM.test(t.besluit); }).map(function (t) { return t.id; }).sort(), BESLIST.slice().sort());
-    T.is(casus().versie, "1.8");
+    T.is(casus().versie, "1.9");
   });
   T.registreer(G, "vastlegging: de lijst voor Bart (gauntlet/todo-bart.js) heeft een groep 'Beslist op 14 november 2026' met precies de besliste vragen; open groepen bevatten geen besliste vraag en alleen bestaande ids", function () {
     var gr = g.TODO_BART_GROEPEN;
@@ -132,9 +132,10 @@
     var u = sickDay(5);
     T.is(u.poortGehaald, true); T.is(u.profiel.naam, "Kweekgestuurd");
     T.is(u.score.duurzaamheid, 2, "3 − 1 voor buiten de richtlijn");
-    var opm = u.extraVragen.filter(function (x) { return x.soort === "opmerking"; });
+    // Casus 1.9: opmerkingen over overbodige kaarten (bv. G2 bij een recent lab) tellen hier niet mee.
+    var opm = u.extraVragen.filter(function (x) { return x.soort === "opmerking" && x.vraag.indexOf("Deze kaart was hier niet nodig:") !== 0; });
     T.gelijk(opm.map(function (x) { return x.vraag; }), [OPMERKING]);
-    T.gelijk(g.UI.evaluatieModel(u).extraVragen, [OPMERKING], "de opmerking staat bij de feedback van de opleider");
+    T.gelijk(g.UI.evaluatieModel(u).extraVragen.filter(function (x) { return x.indexOf("Deze kaart was hier niet nodig:") !== 0; }), [OPMERKING], "de opmerking staat bij de feedback van de opleider");
     // na weefselinvasie (dag 3) wisselen naar amoxicilline/clavulaanzuur: binnen de richtlijn
     var na = beoordeel(speel("E3", [["G3", "O1", "V4"], ["N1", "O2", "Ev2:" + SP], ["O1", "B1:V8", DOSIS], ["Ev1"], ["B3:" + SP, HALF, "N3"], ["Ev1"], []]));
     T.is(na.poortGehaald, true); T.is(na.score.duurzaamheid, 3, "geen aftrek");
@@ -242,7 +243,7 @@
       T.waar(/Sepsis \(dag 9\)/.test(regels[1]), "de gebeurtenis sepsis staat in de export");
       T.waar(/;gehaald$/.test(regels[2]), "gehaalde episode: afloop 'gehaald'");
       var js = JSON.parse(g.Logging.exportJSON());
-      T.is(js[0].afloop, "verloren"); T.is(js[1].afloop, "gehaald"); T.is(js[0].casusVersie, "1.8");
+      T.is(js[0].afloop, "verloren"); T.is(js[1].afloop, "gehaald"); T.is(js[0].casusVersie, "1.9");
       T.is(g.Engine.ontgrendeld(casus(), "E2", [js[1]]), true); T.is(g.UI.episodeOverzicht(casus(), "Sep", js, false)[2].gehaald, false, "episode 3 is niet gehaald");
       var ov = g.UI.overzichtModel(casus(), js, "Sep");
       T.is(ov[1].uitkomst, "Episode verloren.", "leesbaar overzicht");

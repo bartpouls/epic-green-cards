@@ -12,7 +12,7 @@
   // Benoemde sets die door een gebeurtenis (zet) worden aangevuld, met hun tegenset (verwijdert uit de set).
   var TEGENSET = { resistent: "gevoelig", gevoelig: "resistent" };
   var VERGELIJK = ["<", "<=", ">", ">=", "==", "=", "!="];
-  var K_VELDEN = ["kaart", "kaartUit", "start", "doel", "optie", "optieNiet", "naGebeurtenis", "voorGebeurtenis"];
+  var K_VELDEN = ["kaart", "kaartUit", "start", "doel", "optie", "optieNiet", "naGebeurtenis", "voorGebeurtenis", "alActief"];
   // Toegestane velden per predicaat (plat: K-velden direct op het predicaat; genest: onder 'K'). Elk ander
   // veld is een typfout en geeft een fout. Sleutels die met TODO_BART beginnen zijn geen data en worden genegeerd.
   var VELDEN = {
@@ -192,7 +192,19 @@
       var d2 = gebDag(ctx, K.voorGebeurtenis);
       if (d2 !== null && !(regel.dag < d2)) return false;
     }
+    if (K.alActief !== undefined) {
+      // Alleen een regel die een middel start dat direct vóór die regel al actief was (true), of juist niet (false).
+      var mid = gestartMiddel(regel, ctx);
+      if (mid === null) return false;
+      if (!!simuleer(ctx, { maxVolg: regel.volg - 1 }).act[mid] !== K.alActief) return false;
+    }
     return true;
+  }
+  // Het middel dat een tijdlijnregel start (de kaart zelf, de wissel-kaart of het uitgesteld recept met doel), of null.
+  function gestartMiddel(regel, ctx) {
+    var rl = rollen(ctx);
+    if ((regel.kaart === rl.wissel || (rl.uitgesteld !== null && regel.kaart === rl.uitgesteld)) && regel.doel !== null) return regel.doel;
+    return antibiotica(ctx).indexOf(regel.kaart) >= 0 ? regel.kaart : null;
   }
   function alle(ctx, K) { return regels(ctx).filter(function (r) { return matcht(r, K, ctx); }); }
   function eerste(ctx, K) { var a = alle(ctx, K); return a.length ? a[0] : null; }
@@ -337,6 +349,11 @@
     if (K.optieNiet !== undefined) valLijstTekst(K.optieNiet, "optieNiet");   // null is een fout; geen uitsluiting = veld weglaten of []
     if (K.naGebeurtenis !== undefined) valGebeurtenis(ctx, K.naGebeurtenis, "naGebeurtenis");
     if (K.voorGebeurtenis !== undefined) valGebeurtenis(ctx, K.voorGebeurtenis, "voorGebeurtenis");
+    if (K.alActief !== undefined) {
+      if (typeof K.alActief !== "boolean") fout("'alActief' moet waar of onwaar zijn.");
+      if (K.start === undefined) fout("'alActief' hoort bij een kaartverwijzing met 'start'.");
+      antibiotica(ctx);
+    }
     return K;
   }
   function valOffset(op) { if (op.offset !== undefined) valHeel(op.offset, "offset"); }

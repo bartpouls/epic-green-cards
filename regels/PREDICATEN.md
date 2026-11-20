@@ -54,6 +54,7 @@ Beide vormen mengen (`K` én losse K-velden) is een fout. Bij `voor`/`na` staan 
 | `start` *(uitbreiding)* | middel-id (of lijst): regel waarmee dat middel start: de kaart zelf, óf de wissel-kaart met `doel` = middel |
 | `naGebeurtenis` *(uitbreiding)* | gebeurtenis-id: alleen regels op een dag ≥ de dag van die gebeurtenis (gebeurtenis niet geweest: niets matcht) |
 | `voorGebeurtenis` *(uitbreiding)* | alleen regels op een dag < de dag van die gebeurtenis (niet geweest: alles matcht) |
+| `alActief` *(uitbreiding)* | waar/onwaar, alleen samen met `start`: alleen regels die een middel starten dat direct vóór die regel al actief was (`true`), of juist niet (`false`). Starten = de kaart zelf, de wissel-kaart of het uitgesteld recept met dat middel als doel |
 
 Voorbeeld: `{ "kaart": "X2", "doel": "Y1", "optie": "halveren" }`.
 
@@ -99,7 +100,7 @@ Precies één van de drie vormen; een `offset` hoort alleen bij `eindeBeurtNaGeb
 | `binnenBeurtenNaKaart` | `K`, `naKaart` (K), `n` | K gespeeld op een dag van dag(eerste match naKaart) t/m +n−1. `n`=1: dezelfde beurt; `n`=2: dezelfde of de volgende beurt. De volgorde binnen één dag telt niet. Geen anker: `false` | `{p:"binnenBeurtenNaKaart", K:{kaart:"X2"}, naKaart:{start:"Q1"}, n:2}` |
 | `tel` | `teller`, `op`, `waarde` | vergelijkt een teller (hieronder) met een getal, operatoren als bij `waar` | `{p:"tel", teller:{t:"gespeeld", K:{kaart:"X1"}}, op:">=", waarde:2}` |
 
-Verder uitgebreid: de K-velden `kaartUit`, `start`, `naGebeurtenis`, `voorGebeurtenis`, het moment `{naKaart}`, `uitSet` bij `actief`, en `middel` als lijst (zie de tabellen).
+Verder uitgebreid: de K-velden `kaartUit`, `start`, `naGebeurtenis`, `voorGebeurtenis`, `alActief`, het moment `{naKaart}`, `uitSet` bij `actief`, en `middel` als lijst (zie de tabellen).
 
 ## Tellers (contract §3b): `Predicaten.tel(teller, ctx)` → getal
 | `t` | Velden | Betekenis | Voorbeeld |

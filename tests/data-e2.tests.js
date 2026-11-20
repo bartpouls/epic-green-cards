@@ -272,7 +272,7 @@
       T.waar(pr && typeof pr === "object" && typeof pr.p === "string", pad + ": predicaat zonder 'p'");
       T.waar(bekend.indexOf(pr.p) >= 0, pad + ": onbekend predicaat " + pr.p);
       n++;
-      if (pr.p === "gespeeld" || pr.p === "nietGespeeld") T.waar(typeof pr.kaart === "string", pad + ": kaart ontbreekt");
+      if (pr.p === "gespeeld" || pr.p === "nietGespeeld") T.waar(typeof pr.kaart === "string" || (pr.K && typeof pr.K === "object"), pad + ": kaart ontbreekt");
       if (pr.p === "voor" || pr.p === "na") T.waar(isK(pr.a) && isK(pr.b), pad + ": a en b moeten kaartverwijzingen zijn");
       if (pr.p === "en" || pr.p === "of") { T.waar(Array.isArray(pr.args) && pr.args.length >= 1, pad + ": args"); pr.args.forEach(function (a, i) { check(a, pad + ".args[" + i + "]"); }); }
       if (pr.p === "niet") check(pr.arg, pad + ".arg");
@@ -343,9 +343,10 @@
   reg("E2-5 score doelmatigheid: 3 als G2 vóór de eerste voorschrijfkaart, anders 2", function (e) {
     var r = e.score.doelmatigheid.regels;
     // Casus 1.4: na de twee punten-regels volgen de aftrekregels voor overbodige kaarten (concept); die toetst tests/besluiten-1115.tests.js.
-    T.is(r.length, 4);
-    T.gelijk(r.map(function (x) { return x.punten; }), [3, 2, undefined, undefined]);
-    T.gelijk(r.slice(2).map(function (x) { return [x.delta, x.concept, typeof x.naam, typeof x.afgeleidUit]; }), [[-1, true, "string", "string"], [-1, true, "string", "string"]]);
+    // Casus 1.9 (werkpakket E): twee aftrekregels erbij (concept); die toetst tests/besluiten-1120.tests.js.
+    T.is(r.length, 6);
+    T.gelijk(r.map(function (x) { return x.punten; }), [3, 2, undefined, undefined, undefined, undefined]);
+    T.gelijk(r.slice(2).map(function (x) { return [x.delta, x.concept, typeof x.naam, typeof x.afgeleidUit]; }), [[-1, true, "string", "string"], [-1, true, "string", "string"], [-1, true, "string", "string"], [-1, true, "string", "string"]]);
     T.is(e.score.doelmatigheid.min, 1, "ondergrens 1");
     T.gelijk(r[1].als, { p: "waarheid", waarde: true });
     var tekst = s(r[0].als);

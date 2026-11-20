@@ -17,7 +17,7 @@ Een didactisch kaartspel waarmee farmacie- en geneeskundestudenten die nog niet 
 | Bestand | Inhoud |
 |---|---|
 | `index.html` | Het speelbare prototype van de casus UWI. Dubbelklik om te spelen; er is geen installatie of internet nodig. |
-| `casus-uwi.md` | De tutorialcasus urineweginfectie (UWI), versie 1.8: leerdoelen, kaarten, regels en feedback. Dit is de enige bron van klinische inhoud voor het prototype. |
+| `casus-uwi.md` | De tutorialcasus urineweginfectie (UWI), versie 1.9: leerdoelen, kaarten, regels en feedback. Dit is de enige bron van klinische inhoud voor het prototype. |
 | `bouwopdracht-uwi.md` | Bouwopdracht voor het speelbare prototype (engine, regels, tests). |
 | `tools/overzicht.html` | Leesbaar overzicht van alle speldata, om de casus regel voor regel te controleren. |
 | `tests/tests.html` | De regeltests; openen in de browser toont groen of rood. |

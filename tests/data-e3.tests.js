@@ -442,7 +442,7 @@
       if (pr.p === "binnenBeurten") { T.waar(typeof pr.naGebeurtenis === "string" && typeof pr.n === "number", pad + ": binnenBeurten-velden"); }
       if (pr.p === "opDagRelatief") { T.waar(pr.K && pr.anker && typeof pr.van === "number", pad + ": opDagRelatief-velden"); }
       if (pr.p === "voor" || pr.p === "na") { T.waar(pr.a && pr.b, pad + ": voor/na-velden"); }
-      if (pr.p === "gespeeld" || pr.p === "nietGespeeld") { T.waar(pr.K && typeof pr.K === "object", pad + ": K ontbreekt"); }
+      if (pr.p === "gespeeld" || pr.p === "nietGespeeld") { T.waar((pr.K && typeof pr.K === "object") || typeof pr.kaart === "string", pad + ": K ontbreekt"); }
     }
     e.invarianten.forEach(function (i) { check(i.predicaat, "invariant " + i.id); (i.vraagVarianten || []).forEach(function (v, k) { check(v.als, "invariant " + i.id + " variant " + k); }); });
     e.score.duurzaamheid.regels.forEach(function (r, k) { check(r.als, "duurzaamheid[" + k + "]"); });
@@ -539,9 +539,11 @@
     T.waar(heeftPad(d[1].als, { p: "gespeeld", K: { start: "V8", naGebeurtenis: "C" } }), "wissel naar V8 na C");
     T.gelijk(d[2].als, { p: "gestart", middel: "V7" });
     // Casus 1.4: na de twee punten-regels volgen vier aftrekregels voor overbodige kaarten (concept); die toetst tests/besluiten-1115.tests.js.
-    T.gelijk(m.map(function (r) { return r.punten; }), [3, 2, undefined, undefined, undefined, undefined]);
-    T.gelijk(m.slice(2).map(function (r) { return [r.delta, r.concept, typeof r.naam, typeof r.afgeleidUit, Array.isArray(r.kaarten)]; }),
-      [[-1, true, "string", "string", true], [-1, true, "string", "string", true], [-1, true, "string", "string", true], [-1, true, "string", "string", true]]);
+    // Casus 1.9 (werkpakket E): G2 bij een recent lab (vastgesteld) en drie aftrekregels (concept); die toetst tests/besluiten-1120.tests.js.
+    T.gelijk(m.map(function (r) { return r.punten; }), [3, 2, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined]);
+    T.gelijk(m.slice(2).map(function (r) { return [r.delta, r.concept === true, typeof r.naam, typeof (r.afgeleidUit || r.bron), Array.isArray(r.kaarten)]; }),
+      [[-1, true, "string", "string", true], [-1, true, "string", "string", true], [-1, true, "string", "string", true], [-1, true, "string", "string", true],
+       [-1, false, "string", "string", true], [-1, true, "string", "string", true], [-1, true, "string", "string", true], [-1, true, "string", "string", true]]);
     T.is(e.score.doelmatigheid.min, 1, "ondergrens 1");
     T.waar(heeftPad(m[0].als, { p: "gespeeld", K: { kaart: "G3" } }), "G3 gespeeld");
     T.waar(heeftPad(m[0].als, { p: "voor", a: { kaart: "G3" } }), "G3 vóór de voorschrijfkaart");
@@ -645,7 +647,8 @@
     "E3.score.duurzaamheid": "TODO_BART-E3-11", "E3.score.doelmatigheid": "TODO_BART-E3-20", "E3.score.doelmatigheid.regels[1]": "TODO_BART-E3-21",
     "E3.profielen[0]": "TODO_BART-C12", "E3.feedbackExtra[0]": "TODO_BART-E3-13", "E3.feedbackExtra[1]": "TODO_BART-E3-13", "E3.zichtbaarAlsOntbreekt[0]": "TODO_BART-E3-14",
     "E3.feedbackExtra[2]": "TODO_BART-E3-27", "E3.gebeurtenissen[2].einde": "TODO_BART-E3-28",   // conceptteksten ter goedkeuring (besluiten van 14 november 2026)
-    "E3.invarianten[2].vraagVarianten[0]": "TODO_BART-C1", "E3.score.doelmatigheid.TODO_BART_overbodig": "TODO_BART-C2",   // concepten ter goedkeuring (besluiten van 15 november 2026)
+    "E3.invarianten[2].vraagVarianten[0]": "TODO_BART-C1", "E3.score.doelmatigheid.TODO_BART_overbodig": "TODO_BART-C2",
+    "E3.score.doelmatigheid.TODO_BART_C13": "TODO_BART-C13",   // concept ter goedkeuring (werkpakket E, besluit van 20 november 2026)   // concepten ter goedkeuring (besluiten van 15 november 2026)
     "E3.invarianten[14]": "TODO_BART-C6", "E3.invarianten[15]": "TODO_BART-C7", "E3.eindeNaKaart[0]": "TODO_BART-C8", "E3.eindeNaKaart[0].TODO_BART_vervalt": "TODO_BART-C9",
     "E3.invarianten[16]": "TODO_BART-C10"   // concept ter goedkeuring (besluit van 17 november 2026)   // concepten ter goedkeuring (besluiten van 16 november 2026)
   };
@@ -1064,6 +1067,25 @@
       t.besluit = t.id === "TODO_BART-E3-12" ? b + "er komt een reflectievraag die de student laat nadenken over wat de volgende keer beter kan; concepttekst in TODO_BART-C12."
         : b + "akkoord met de gekozen lezing. Aanpassingen volgen eventueel na het testspelen.";
     });
+  })();
+  // Casus 1.9 (werkpakket E, besluit Bart 20 november 2026): vier aftrekregels erbij (G2 vastgesteld, drie concept) en de markering van TODO_BART-C13.
+  (function () {
+    var c13 = casus().todoBart.filter(function (t) { return t.id === "TODO_BART-C13"; })[0];
+    var d = GOLD.episode.score.doelmatigheid, uit = {};
+    Object.keys(d).forEach(function (k) { if (k === "TODO_BART_overbodig") uit.TODO_BART_C13 = c13 ? c13.vraag : "(C13 ontbreekt)"; uit[k] = d[k]; });
+    GOLD.episode.score.doelmatigheid = uit;
+    uit.regels.push(
+      { naam: "Labwaarden opvragen terwijl het lab recent is", als: { p: "gespeeld", kaart: "G2" }, delta: -1, kaarten: [{ kaart: "G2" }], bron: "Bart (besluit 20 november 2026)" },
+      { naam: "Antibioticum starten dat al loopt", als: { p: "gespeeld", K: { start: ["V3", "V4", "V5", "V7", "V8", "V9", "V10"], alActief: true } }, delta: -1,
+        kaarten: [{ start: ["V3", "V4", "V5", "V7", "V8", "V9", "V10"], alActief: true }], concept: true,
+        afgeleidUit: "Werkpakket E (besluit Bart, 20 november 2026): een middel dat al loopt, opnieuw starten voegt niets toe." },
+      { naam: "Calcium dubbel geregeld", als: { p: "en", args: [{ p: "gespeeld", kaart: "B4" }, { p: "actief", middel: "V7", op: { naKaart: { kaart: "B3", doel: "calcium" } } }] }, delta: -1,
+        kaarten: [{ kaart: "B3", doel: "calcium" }], concept: true,
+        afgeleidUit: "De route 'ciprofloxacine met B4 (scheiden van calcium) of B3 (calcium tijdelijk stoppen)': één van de twee volstaat." },
+      { naam: "Calcium stoppen na ciprofloxacine", als: { p: "en", args: [{ p: "voor", a: { start: "V7" }, b: { kaart: "B3", doel: "calcium" } },
+        { p: "niet", arg: { p: "actief", middel: "V7", op: { naKaart: { kaart: "B3", doel: "calcium" } } } }] }, delta: -1,
+        kaarten: [{ kaart: "B3", doel: "calcium" }], concept: true,
+        afgeleidUit: "Effect van B4 en de route 'ciprofloxacine met B3 (calcium tijdelijk stoppen)': calcium stoppen dient alleen zolang ciprofloxacine loopt." });
   })();
   function eerstVerschil(a, b, pad) {
     if (a === b) return null;

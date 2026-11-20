@@ -165,7 +165,10 @@
   e1("E1-doelmatigheid-O1-O2", "Nitrofurantoïne + O1 + O2: doelmatigheid 3 - 1 - 1", ["V3", "N1", "O1", "|", "O2"], geldig("Direct behandelen", REFLECTIE.direct, 1, 1, { extra: [EXTRA.O1] }));
   e1("E1-doelmatigheid-O1", "Afwachten + O1: doelmatigheid 2, extra vraag O1", ["V1", "N1", "Ev1", "|", "O1"], geldig("Terughoudend", REFLECTIE.terughoudend, 3, 2, { extra: [EXTRA.O1] }));
   e1("E1-doelmatigheid-O2", "Fosfomycine + O2: doelmatigheid 2", ["V4", "N1", "N2>V4", "|", "O2"], geldig("Direct behandelen", REFLECTIE.direct, 1, 2));
-  e1("E1-gegevens-gratis", "Fosfomycine + G1 + G2: gegevens kosten geen doelmatigheidspunt", ["V4", "N1", "N2>V4", "|", "G1", "G2"], geldig("Direct behandelen", REFLECTIE.direct, 1, 3));
+  e1("E1-gegevens-gratis", "Fosfomycine + G1: gegevens verzamelen kost geen doelmatigheidspunt", ["V4", "N1", "N2>V4", "|", "G1"], geldig("Direct behandelen", REFLECTIE.direct, 1, 3));
+  // Casus 1.9 (besluit Bart, 20 november 2026, vastgesteld): G2 is in episode 1 overbodig, het lab staat recent op de patiëntkaart.
+  e1("E1-G2-overbodig", "Fosfomycine + G2: het lab is recent, doelmatigheid 2 en de opmerking", ["V4", "N1", "N2>V4", "|", "G1", "G2"],
+    geldig("Direct behandelen", REFLECTIE.direct, 1, 2, { extra: ["Deze kaart was hier niet nodig: Recente labwaarden opvragen"] }));
 
   /* =============== EPISODE 1: foutroutes =============== */
   e1("E1-fout-I1", "Nitrofurantoïne zonder N1", ["V3"], fout(["I1"], VRAAG.I1, [ZICHT.N1]), "fout");

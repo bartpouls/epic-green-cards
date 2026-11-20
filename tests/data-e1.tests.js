@@ -133,7 +133,7 @@
       T.waar(pr && typeof pr === "object" && typeof pr.p === "string", pad + ": predicaat zonder 'p'");
       T.waar(bekend.indexOf(pr.p) >= 0, pad + ": onbekend predicaat " + pr.p);
       n++;
-      if (pr.p === "gespeeld" || pr.p === "nietGespeeld") T.waar(typeof pr.kaart === "string", pad + ": kaart ontbreekt");
+      if (pr.p === "gespeeld" || pr.p === "nietGespeeld") T.waar(typeof pr.kaart === "string" || (pr.K && typeof pr.K === "object"), pad + ": kaart ontbreekt");
       if (pr.p === "en" || pr.p === "of") { T.waar(Array.isArray(pr.args) && pr.args.length >= 1, pad + ": args"); pr.args.forEach(function (a, i) { check(a, pad + ".args[" + i + "]"); }); }
       if (pr.p === "niet") check(pr.arg, pad + ".arg");
       if (pr.p === "waarheid") T.waar(typeof pr.waarde === "boolean", pad + ": waarde");
@@ -163,10 +163,16 @@
     T.gelijk(r[2].als, DIRECT);
     T.waar(typeof r[1].TODO_BART === "string", "regel 2 (V2, ook met V1 of middel) heeft een TODO_BART op de plek zelf");
   });
-  reg("E1-4 score: doelmatigheid start 3, -1 voor O1, -1 voor O2", function (e) {
+  reg("E1-4 score: doelmatigheid start 3, -1 voor O1, -1 voor O2; sinds casus 1.9 ook voor G2 (vastgesteld) en twee overbodige kaarten (concept)", function (e) {
     var d = e.score.doelmatigheid;
     T.is(d.start, 3);
-    T.gelijk(d.regels, [{ als: { p: "gespeeld", kaart: "O1" }, delta: -1 }, { als: { p: "gespeeld", kaart: "O2" }, delta: -1 }]);
+    T.gelijk(d.regels.slice(0, 2), [{ als: { p: "gespeeld", kaart: "O1" }, delta: -1 }, { als: { p: "gespeeld", kaart: "O2" }, delta: -1 }]);
+    T.gelijk(d.regels.slice(2).map(function (r) { return [r.naam, r.delta, !!r.concept]; }), [
+      ["Labwaarden opvragen terwijl het lab recent is", -1, false],
+      ["Antibioticum starten dat al loopt", -1, true],
+      ["Afwachtend beleid naast een antibioticum", -1, true]]);
+    T.gelijk(d.regels[2].als, { p: "gespeeld", kaart: "G2" });
+    T.is(d.opmerkingBijAftrek, "Deze kaart was hier niet nodig:");
   });
   reg("E1-4 profielen en reflectievragen letterlijk", function (e) {
     T.gelijk(e.profielen.map(function (p) { return p.naam; }), ["Terughoudend", "Gedeelde regie", "Direct behandelen"]);
@@ -234,7 +240,8 @@
       inv: inv,
       dz: h("V2") ? 2 : antib ? 1 : h("V1") ? 3 : null,   // afwachten > uitgesteld recept > direct (TODO_BART-E1-6)
       profiel: h("V2") ? "Gedeelde regie" : antib ? "Direct behandelen" : h("V1") ? "Terughoudend" : null,
-      dm: 3 - (h("O1") ? 1 : 0) - (h("O2") ? 1 : 0),
+      // Casus 1.9: G2 is overbodig (lab recent op de patiëntkaart); afwachten naast een direct antibioticum is overbodig (concept).
+      dm: 3 - (h("O1") ? 1 : 0) - (h("O2") ? 1 : 0) - (h("G2") ? 1 : 0) - (h("V1") && antib ? 1 : 0),
       fbO1: h("O1"), zichtN1: !h("N1"), zichtV1: h("V1") && !h("Ev1")
     };
   }
@@ -291,7 +298,8 @@
     [["V5", "N1", "O1", "O2"], [], 1, 1, "Direct behandelen"],
     [["V1", "N1", "Ev1", "O1"], [], 3, 2, "Terughoudend"],
     [["V1", "V2", "N1", "N2", "Ev1"], [], 2, 3, "Gedeelde regie"],                // TODO_BART-E1-6
-    [["V1", "V3", "N1", "Ev1"], [], 1, 3, "Direct behandelen"],
+    [["V1", "V3", "N1", "Ev1"], [], 1, 2, "Direct behandelen"],                 // casus 1.9: afwachten naast een antibioticum (concept)
+    [["V4", "N1", "N2", "G1", "G2"], [], 1, 2, "Direct behandelen"],            // casus 1.9: G2 bij een recent lab
     [["V3", "G1", "G2"], ["I1"], null, null, null],                                // zonder N1
     [["N1"], ["I1"], null, null, null],                                            // alleen N1: geen route (TODO_BART-E1-1)
     [["G1", "G2", "N1", "N2", "Ev1"], ["I1"], null, null, null],
@@ -382,24 +390,28 @@
     "E1.score": ["duurzaamheid", "doelmatigheid"],
     "E1.score.duurzaamheid": ["regels"],
     "E1.score.duurzaamheid.regels[]": ["als", "punten"],
-    "E1.score.doelmatigheid": ["start", "regels"],
-    "E1.score.doelmatigheid.regels[]": ["als", "delta"],
+    "E1.score.doelmatigheid": ["start", "opmerkingBijAftrek", "regels"],
+    "E1.score.doelmatigheid.regels[]": [["als", "delta"], ["naam", "als", "delta", "kaarten", "bron"], ["naam", "als", "delta", "kaarten", "concept", "afgeleidUit"]],
+    "E1.score.doelmatigheid.regels[].kaarten[]": [["kaart"], ["start", "alActief"]],
     "E1.profielen[]": ["naam", "als", "reflectievraag"],
     "E1.feedbackExtra[]": ["trigger", "vraag", "wanneer"],
     "E1.zichtbaarAlsOntbreekt[]": ["trigger", "tekst"]
   };
-  var PRED_SLEUTELS = { gespeeld: ["p", "kaart"], nietGespeeld: ["p", "kaart"], en: ["p", "args"], of: ["p", "args"], niet: ["p", "arg"], aantalActieveAntibiotica: ["p", "op", "n"], waarheid: ["p", "waarde"] };
+  var PRED_SLEUTELS = { gespeeld: [["p", "kaart"], ["p", "K"]], nietGespeeld: ["p", "kaart"], en: ["p", "args"], of: ["p", "args"], niet: ["p", "arg"], aantalActieveAntibiotica: ["p", "op", "n"], waarheid: ["p", "waarde"] };
   function sleutelFouten(e) {
     var f = [];
     function gelijkSet(pad, keys, verwacht) {
-      var k = keys.filter(function (x) { return !/^TODO_BART/.test(x); }).sort(), v = verwacht.slice().sort();
-      if (JSON.stringify(k) !== JSON.stringify(v)) f.push(pad + " heeft sleutels [" + k + "] i.p.v. [" + v + "]");
+      // verwacht: één lijst sleutels, of een lijst alternatieven (lijsten) waarvan er één precies moet kloppen.
+      var k = keys.filter(function (x) { return !/^TODO_BART/.test(x); }).sort();
+      var alts = Array.isArray(verwacht[0]) ? verwacht : [verwacht];
+      if (!alts.some(function (a) { return JSON.stringify(k) === JSON.stringify(a.slice().sort()); })) f.push(pad + " heeft sleutels [" + k + "] i.p.v. [" + alts.map(function (a) { return a.slice().sort(); }).join("] of [") + "]");
     }
     function pred(x, pad) {
       if (!x || typeof x !== "object" || Array.isArray(x)) { f.push(pad + " is geen predicaat"); return; }
       var w = PRED_SLEUTELS[x.p];
       if (!w) { f.push(pad + " onbekend predicaat " + x.p); return; }
       gelijkSet(pad, Object.keys(x), w);
+      if (x.K) gelijkSet(pad + ".K", Object.keys(x.K), [["start", "alActief"], ["kaartUit"]]);
       if (x.args) x.args.forEach(function (a, i) { pred(a, pad + ".args[" + i + "]"); });
       if (x.arg) pred(x.arg, pad + ".arg");
     }

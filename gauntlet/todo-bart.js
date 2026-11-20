@@ -10,9 +10,11 @@
    ter goedkeuring (casus-uwi.md sectie 13).
    20 november 2026: alle concepten goedgekeurd (C1–C4, C6–C11, E3-27, E3-28); I18 krijgt ernst 3 (casus-uwi.md sectie 14).
    Later op 20 november 2026: alle overige open vragen beslist (akkoord met de gekozen lezing; aanpassingen eventueel na het
-   testspelen). De ontbrekende reflectievragen worden concepten ter goedkeuring (TODO_BART-C12; casus-uwi.md sectie 15). */
+   testspelen). De ontbrekende reflectievragen worden concepten ter goedkeuring (TODO_BART-C12; casus-uwi.md sectie 15).
+   Werkpakket E (besluit 20 november 2026): nieuwe overbodige kaarten g–k als concept ter goedkeuring (TODO_BART-C13; casus-uwi.md sectie 16). */
 window.TODO_BART_GROEPEN = [
   { titel: "1. Concept ter goedkeuring: reflectievragen bij vier profielen", ids: ["TODO_BART-C12"] },
+  { titel: "2. Concept ter goedkeuring: nieuwe overbodige kaarten (g–k)", ids: ["TODO_BART-C13"] },
   { titel: "Beslist op 20 november 2026", beslist: true, ids: [
     "TODO_BART-C1", "TODO_BART-C2", "TODO_BART-C3", "TODO_BART-C4", "TODO_BART-C6", "TODO_BART-C7", "TODO_BART-C8", "TODO_BART-C9",
     "TODO_BART-C10", "TODO_BART-C11", "TODO_BART-E3-27", "TODO_BART-E3-28",
