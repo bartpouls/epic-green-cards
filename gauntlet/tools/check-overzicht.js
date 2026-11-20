@@ -1,4 +1,4 @@
-// Controle van tools/overzicht.html in headless Chromium (file://). Gebruik: node gauntlet/tools/check-overzicht.js [--screenshots]
+// Controle van tools/overzicht.html in headless Chromium (file://). Gebruik: node gauntlet/tools/check-overzicht.js [--screenshots] [--browser=firefox|webkit]
 // (a) geen console-/pagina-fouten, (b) elke kaart, invariant en TODO_BART zichtbaar in de DOM,
 // (c) steekproef van 40 tekstvelden uit de data letterlijk in de DOM (plus: alle tekstvelden).
 // (d) casusreferentie (routes, altijd fout, volgorde, score, brug, bronconflict), sectievolgorde en -namen, feedbacktabel,
@@ -9,6 +9,7 @@ const root = process.env.OVERZICHT_ROOT || path.resolve(__dirname, "../..");
 let pw;
 try { pw = require("/opt/node-tools/node_modules/playwright"); } catch (e) { pw = require("playwright"); }
 process.env.PLAYWRIGHT_BROWSERS_PATH = process.env.PLAYWRIGHT_BROWSERS_PATH || "/opt/pw-browsers";
+const BROWSER = ((process.argv.find(a => a.startsWith("--browser=")) || "").split("=")[1] || "chromium").toLowerCase();   // werkpakket D
 
 // Data laden zoals in Node-tests (dezelfde bestanden).
 globalThis.window = globalThis;
@@ -47,12 +48,13 @@ const rnd = () => (zaad = (zaad * 1664525 + 1013904223) % 4294967296) / 42949672
 (async () => {
   const fouten = [], resultaten = [];
   const ok = (naam, goed, detail) => { resultaten.push({ naam, goed, detail }); console.log((goed ? "PASS " : "FAIL ") + naam + (detail ? "  " + detail : "")); };
-  const browser = await pw.chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
+  const browser = await pw[BROWSER].launch(BROWSER === "chromium" && process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
+  console.log("Browser: " + BROWSER + " " + browser.version());
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   page.on("console", m => { if (m.type() === "error" || m.type() === "warning") fouten.push("console." + m.type() + ": " + m.text()); });
   page.on("pageerror", e => fouten.push("pageerror: " + e.message));
   page.on("requestfailed", r => fouten.push("requestfailed: " + r.url()));
-  await page.goto("file://" + path.join(root, "tools/overzicht.html"));
+  await page.goto(process.env.EGC_BASIS ? process.env.EGC_BASIS + "tools/overzicht.html" : "file://" + path.join(root, "tools/overzicht.html"));
   await page.waitForFunction("window.OVERZICHT_KLAAR === true || window.OVERZICHT_FOUT", null, { timeout: 15000 });
   const fout = await page.evaluate("window.OVERZICHT_FOUT || null");
   ok("(a) overzicht opgebouwd zonder interne fout", !fout, fout || "");

@@ -5,10 +5,14 @@ const path = require("path"), fs = require("fs");
 const root = path.resolve(__dirname, "../..");
 let pw; try { pw = require("/opt/node-tools/node_modules/playwright"); } catch (e) { pw = require("playwright"); }
 process.env.PLAYWRIGHT_BROWSERS_PATH = process.env.PLAYWRIGHT_BROWSERS_PATH || "/opt/pw-browsers";
+// Werkpakket D: --browser=firefox of --browser=webkit (Safari-motor). Standaard chromium. Zie "Testen" in CLAUDE.md voor de installatie.
+const BROWSER = ((process.argv.find(a => a.startsWith("--browser=")) || "").split("=")[1] || "chromium").toLowerCase();
+if (!["chromium", "firefox", "webkit"].includes(BROWSER)) { console.log("Onbekende browser: " + BROWSER + " (kies chromium, firefox of webkit)"); process.exit(2); }
 const schermArg = process.argv.find(a => a.startsWith("--screenshots"));
 const SCHERMDIR = schermArg ? (schermArg.split("=")[1] || path.join(require("os").tmpdir(), "speel-iteratie1")) : null;
 if (SCHERMDIR) fs.mkdirSync(SCHERMDIR, { recursive: true });
-const URL = "file://" + path.join(root, "index.html");
+// EGC_BASIS: andere plek dan file://, bijv. http://localhost:8123/epic-green-cards/ (GitHub Pages nabootsen, werkpakket D).
+const URL = process.env.EGC_BASIS ? process.env.EGC_BASIS + "index.html" : "file://" + path.join(root, "index.html");
 
 let groen = 0, rood = 0;
 function check(naam, ok, detail) { if (ok) { groen++; console.log("PASS " + naam); } else { rood++; console.log("FAIL " + naam + (detail ? "\n     " + detail : "")); } }
@@ -56,7 +60,8 @@ async function uitslag(page) {
 async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); await page.waitForSelector("#dagtelling"); }
 
 (async () => {
-  const browser = await pw.chromium.launch();
+  const browser = await pw[BROWSER].launch();
+  console.log("Browser: " + BROWSER + " " + browser.version());
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, acceptDownloads: true });
   await ctx.addInitScript("Math.random = function () { return 0; };");   // A en B komen in de volgorde van de data
   const page = await ctx.newPage();
@@ -227,6 +232,32 @@ async function metEpisode(page, ep) { await page.click(`[data-start="${ep}"]`); 
     check("E3 verwijzen te vroeg: de poort is niet gehaald en de hint gaat over onterecht verwijzen (I19, casus 1.6)",
       sok === "Je verwijst haar naar de tweede lijn. Wat moet er eerst blijken voordat de eerste lijn haar uit handen geeft?", sok);
     await foto(page, "e3-verwezen");
+    /* ---------------- hervatten na herladen en in een nieuw tabblad (werkpakket D) ---------------- */
+    if (!(await page.locator('[data-start="E3"]').count())) { await page.click("#btn-terug").catch(() => {}); }
+    await metEpisode(page, "E3");
+    await speelPlan(page, ["G3", "O1", "V4", "|", "N1"]);
+    await page.click("#btn-pauzeer");
+    await page.reload(); await page.waitForSelector("#btn-start");
+    check("herladen: het pseudoniem staat nog ingevuld (zelfde tabblad)", (await page.inputValue("#pseudoniem")) === "playtest");
+    await page.click("#btn-start"); await page.waitForSelector("[data-start]");
+    check("herladen: de opgeslagen casus staat klaar (episode 3, dag 2)", (await page.locator("#btn-hervat").count()) === 1 && /Episode 3, dag 2 van/.test(await page.textContent("#opgeslagen")), (await page.locator("#opgeslagen").count()) ? norm(await page.textContent("#opgeslagen")) : "(geen opgeslagen casus)");
+    check("herladen: de voortgang blijft (episode 1 en 2 gehaald)", /Gehaald\./.test(await page.textContent('[data-episode="E1"]')) && /Gehaald\./.test(await page.textContent('[data-episode="E2"]')));
+    await page.click("#btn-hervat"); await page.waitForSelector("#dagtelling");
+    check("herladen: hervatten brengt je terug op dag 2 met dezelfde vier kaarten", (await dag(page)) === 2 && (await page.locator("[data-gespeeld]").count()) === 4);
+    await speelPlan(page, ["O2", "|"]);
+    check("herladen: na hervatten speelt het spel gewoon door (dag 3)", (await dag(page)) === 3);
+    await page.click("#btn-pauzeer");
+    // Nieuw tabblad, alsof de browser dicht is geweest: het pseudoniem moet opnieuw, de casus staat er nog.
+    const tab = await ctx.newPage();
+    tab.on("pageerror", e => problemen.push("pagina (nieuw tabblad): " + e.message));
+    await tab.goto(URL); await tab.waitForSelector("#btn-start");
+    check("nieuw tabblad: het pseudoniem is leeg (wordt per tabblad onthouden)", (await tab.inputValue("#pseudoniem")) === "");
+    await tab.fill("#pseudoniem", "iemand-anders"); await tab.click("#btn-start"); await tab.waitForSelector("[data-start]");
+    check("nieuw tabblad: een ander pseudoniem ziet de opgeslagen casus niet", (await tab.locator("#btn-hervat").count()) === 0);
+    await tab.click("#btn-ander"); await tab.fill("#pseudoniem", "playtest"); await tab.click("#btn-start"); await tab.waitForSelector("[data-start]");
+    check("nieuw tabblad: met hetzelfde pseudoniem staat de casus klaar op dag 3", (await tab.locator("#btn-hervat").count()) === 1 && /Episode 3, dag 3 van/.test(await tab.textContent("#opgeslagen")));
+    await tab.click("#btn-wis-opgeslagen");
+    await tab.close();
     /* ---------------- testmodus alleen met ?docent (eindcontrole PR 1, F8) ---------------- */
     const docent = await ctx.newPage();
     docent.on("console", m => { if (m.type() === "error") problemen.push("console (docent): " + m.text()); });
