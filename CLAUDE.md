@@ -33,6 +33,11 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 - Besluiten 20 nov 2026 verwerkt (`casus-uwi.md` sectie 14): alle concepten goedgekeurd (C1–C4, C6–C11, sepsis, blaasontsteking); I18 ernst 3; C9 blijft; 4 acties per dag in E1/E2, 3 in E3.
 - Besluiten 20 nov 2026, tweede ronde (`casus-uwi.md` sectie 15): alle open vragen akkoord met de gekozen lezing (aanpassingen eventueel na testspelen); R7: overzicht toont alleen speldata.
 - Open, wacht op Bart: concept C12 (vier reflectievragen, gericht op 'wat kan de volgende keer beter').
+- Werkwijze: lees Barts besluiten ruim. Een besluit uit een eerdere sessie mag hij later bijstellen zonder het opnieuw uit te leggen.
 - Werkpakketten (volgorde: E, dan D):
-  - E: afvinken afstraffen (routezoeker: in E3 kosten 24 van 66 kaartacties geen scoreverlies).
+  - E: afvinken afstraffen (routezoeker: in E3 kosten 24 van 66 kaartacties geen scoreverlies). Besluiten Bart 20 nov 2026:
+    1. Geen algemene straf per extra kaart. Breid de bestaande lijst "overbodige kaarten" uit (`casus-uwi.md` sectie 11, situaties a–e; −1 doelmatigheid per situatie, ondergrens 1). Gegevens verzamelen (G1) en informeren (N-kaarten) blijven gratis; ook klinisch passende acties (Ev2, B3 lisinopril na uitdroging) blijven gratis.
+    2. Vastgesteld (geen concept): Recente labwaarden opvragen (G2) is overbodig in E1 en E3, waar het lab al "recent" op de patiëntkaart staat: −1 doelmatigheid. Dit geldt dus ook in episode 1.
+    3. Loop met de routezoeker de gratis kaarten bij voorschrijven en bijsturen na (V-, B-kaarten; bv. extra antibioticum starten, fosfomycine stoppen terwijl het een eenmalige dosis is). Maak per situatie die klinisch overbodig is een concept [G] (situatie f, g, …, zelfde vorm als a–e), bouw het in als concept en zet het als open vraag voor Bart. Twijfelgeval: niet straffen, wel noemen.
+    4. Daarna: routezoeker opnieuw draaien en rapport bijwerken, `casus-uwi.md` sectie 16 (versie 1.9), tests, overzicht 43/43.
   - D: vrijgavecheck: hervatten na herladen, GitHub Pages, andere browsers.
