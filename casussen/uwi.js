@@ -2000,13 +2000,15 @@ window.CASUSSEN = [
    "id": "TODO_BART-C12",
    "vraag": "Concepttekst ter goedkeuring: reflectievragen bij de vier profielen zonder reflectievraag in de casus, volgens het besluit van Bart van 20 november 2026 dat een reflectievraag de student vooral moet laten nadenken over wat de volgende keer beter kan. Episode 1, Gedeelde regie: 'Zij besliste of ze het recept ophaalde. Wat spreek je de volgende keer vooraf met haar af, zodat ze weet wanneer wel en wanneer niet?' Episode 2, Kweekgestuurd, smal: 'Je wachtte de kweek af en koos smal. Bij welke patiënt doe je dat de volgende keer weer, en bij wie niet?' Episode 2, Bijgestuurd: 'Je stuurde bij op de kweekuitslag. Wat betekent die uitslag voor je eerste keuze bij haar volgende infectie?' Episode 3, Kweekgestuurd: 'Je koos op basis van de eerdere kweek. Wat kijk je de volgende keer altijd na voordat je bij een oudere patiënt een middel kiest?' Keur je ze goed of pas je ze aan?",
    "gekozenLezing": "De vier vragen staan letterlijk in de data bij de profielen (E1 Gedeelde regie, E2 Kweekgestuurd, smal en Bijgestuurd, E3 Kweekgestuurd) en verschijnen op het beoordelingsscherm zoals de andere reflectievragen. Ze berusten niet op een bron [G].",
-   "plek": "E1.profielen.Gedeelde regie; E2.profielen.Kweekgestuurd, smal; E2.profielen.Bijgestuurd; E3.profielen.Kweekgestuurd"
+   "plek": "E1.profielen.Gedeelde regie; E2.profielen.Kweekgestuurd, smal; E2.profielen.Bijgestuurd; E3.profielen.Kweekgestuurd",
+   "besluit": "Beslist door Bart op 20 november 2026: de vier reflectievragen goedgekeurd."
   },
   {
    "id": "TODO_BART-C13",
    "vraag": "Concept ter goedkeuring (werkpakket E, besluit Bart 20 november 2026: afvinken afstraffen): nieuwe situaties in de lijst overbodige kaarten, elk 1 punt doelmatigheid (ondergrens 1). (g) Een antibioticum starten dat op dat moment al loopt (met de kaart zelf, door te wisselen of met een uitgesteld recept), episode 1, 2 en 3; (h) Afwachtend beleid naast een direct gestart antibioticum, episode 1; (i) Antibioticum stoppen op fosfomycine (een eenmalige dosis), episode 2; (j) Innametijden aanpassen én Medicatie tijdelijk stoppen op calcium (één van de twee volstaat), episode 3; (k) Medicatie tijdelijk stoppen op calcium nadat ciprofloxacine al is gestopt of vervangen, episode 3. Keur je deze situaties goed, of pas je ze aan?",
    "gekozenLezing": "De situaties staan in de data als scoreregels met een leesbare naam, elk gemarkeerd als concept met de passage waaruit ze zijn afgeleid, en tellen al mee. Ze vullen de lijst a–e aan en hebben dezelfde vorm: per situatie hooguit 1 punt en één opmerking 'Deze kaart was hier niet nodig:' met het label van de kaart. Vastgesteld (geen concept): Recente labwaarden opvragen kost in episode 1 en 3 een punt, omdat het lab daar al recent op de patiëntkaart staat. Niet gestraft (twijfelgevallen): Afwachtend beleid naast een uitgesteld recept; Antibioticum stoppen op fosfomycine in episode 3 (daarmee sluit de route 'verwijzen' fosfomycine af bij weefselinvasie); Medicatie tijdelijk stoppen op calcium vóór de start van ciprofloxacine. Gegevens verzamelen, informeren, Overleggen met de voorschrijver en Medicatie tijdelijk stoppen op lisinopril na de uitdroging blijven gratis. Ze berusten niet op een bron [G].",
-   "plek": "E1.score.doelmatigheid; E2.score.doelmatigheid; E3.score.doelmatigheid"
+   "plek": "E1.score.doelmatigheid; E2.score.doelmatigheid; E3.score.doelmatigheid",
+   "besluit": "Beslist door Bart op 20 november 2026: de overbodige kaarten g–k goedgekeurd."
   }
  ],
  "episodes": []

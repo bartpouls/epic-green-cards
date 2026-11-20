@@ -36,15 +36,15 @@
   function E2trim() { return [["G2", "O1", "V5"], ["O2", "N1"], [], ["V6:V5:halveren", "B1:V4"]]; }
 
   /* ---------- vastlegging ---------- */
-  T.registreer(G, "vastlegging: casus 1.9; TODO_BART-C13 is open (geen besluit), noemt g–k en staat bij de open vragen", function () {
+  T.registreer(G, "vastlegging: casus 1.9; TODO_BART-C13 is goedgekeurd (besluit 20 november 2026), noemt g–k en staat bij de besluiten", function () {
     T.is(casus().versie, "1.9");
     var t = todo("TODO_BART-C13");
-    T.waar(!!t && t.besluit === undefined, "C13 is nog open");
+    T.waar(!!t && /^Beslist door Bart op 20 november 2026/.test(t.besluit || ""), "C13 is goedgekeurd");
     ["(g)", "(h)", "(i)", "(j)", "(k)"].forEach(function (x) { T.waar(t.vraag.indexOf(x) > 0, "C13 noemt " + x); });
     T.is(t.plek, "E1.score.doelmatigheid; E2.score.doelmatigheid; E3.score.doelmatigheid");
     T.waar(/\[G\]/.test(t.gekozenLezing), "markering [G] in de gekozen lezing");
     ["E2", "E3"].forEach(function (e) { T.is(ep(e).score.doelmatigheid.TODO_BART_C13, t.vraag, e + ": markering op de plek"); });
-    if (g.TODO_BART_GROEPEN) T.waar(g.TODO_BART_GROEPEN.some(function (x) { return !x.beslist && x.ids.indexOf("TODO_BART-C13") >= 0; }), "C13 staat bij de open vragen");
+    if (g.TODO_BART_GROEPEN) T.waar(g.TODO_BART_GROEPEN.some(function (x) { return x.beslist && x.ids.indexOf("TODO_BART-C13") >= 0; }), "C13 staat bij de besluiten");
   });
   T.registreer(G, "vastlegging: de nieuwe regels hebben een naam, delta -1 en kaarten; G2 is vastgesteld (bron), de andere zijn concept (afgeleidUit)", function () {
     var verwacht = {

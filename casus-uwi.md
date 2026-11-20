@@ -553,3 +553,5 @@ Bron: besluit Bart, 20 november 2026 (werkpakket E: afvinken afstraffen).
 - Dosis aanpassen (V6) op ciprofloxacine: alle drie de opties kosten niets, ook "halveren", die NHG noch Kompas noemt.
 
 **Besluit Bart, 20 november 2026:** de keuzes rond calcium en ciprofloxacine blijven zoals ze zijn (de opmerking bij j en de twijfelgevallen hierboven). Wie het bewust anders doet, merkt dat het spel geen rekening houdt met die timing; voor de anderen is het een herhaling van de interactie. Discussie rond het spel versterkt het leren.
+
+**Besluit Bart, 20 november 2026 (na werkpakket D):** de concepten C12 (sectie 15, vier reflectievragen) en C13 (hierboven, overbodige kaarten g–k) zijn goedgekeurd. Waar sectie 15 en 16 "concept" zeggen, geldt de tekst nu als vastgesteld. De markering **[G]** blijft: de teksten berusten niet op een van de bronnen, maar zijn door Bart geaccepteerd.

@@ -35,7 +35,7 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 - Besluiten 20 nov 2026 verwerkt (`casus-uwi.md` sectie 14): alle concepten goedgekeurd (C1–C4, C6–C11, sepsis, blaasontsteking); I18 ernst 3; C9 blijft; 4 acties per dag in E1/E2, 3 in E3.
 - Besluiten 20 nov 2026, tweede ronde (`casus-uwi.md` sectie 15): alle open vragen akkoord met de gekozen lezing (aanpassingen eventueel na testspelen); R7: overzicht toont alleen speldata.
 - Werkpakket E (20 nov) klaar (`casus-uwi.md` sectie 16): G2 overbodig in E1/E3 (vastgesteld); situaties g–k als concept; regeltaal kreeg K-veld `alActief`; `tests/besluiten-1120.tests.js`. Routezoeker: grootste route zonder scoreverlies E1 8→6, E2 13→11, E3 24→21 van 66; wat nog gratis is, zijn twijfelgevallen (sectie 16). Besluit Bart: calcium/ciprofloxacine-keuzes en twijfelgevallen blijven zoals ze zijn.
-- Open, wacht op Bart: concept C12 (vier reflectievragen, gericht op 'wat kan de volgende keer beter') en concept C13 (overbodige kaarten g–k).
+- C12 (vier reflectievragen) en C13 (overbodige kaarten g–k) goedgekeurd op 20 nov 2026 (slot van `casus-uwi.md` sectie 16). Geen open vragen meer.
 - Werkwijze: lees Barts besluiten ruim. Een besluit uit een eerdere sessie mag hij later bijstellen zonder het opnieuw uit te leggen.
 - Werkpakket D (20 nov) klaar: speelscript, docentenoverzicht, tests.html en casusbouwer groen in Chromium, Firefox en WebKit, via file:// én via een webserver zoals Pages. Hervatten na herladen en in een nieuw tabblad getest (8 controles erbij). `.nojekyll` toegevoegd. Niet live gecontroleerd: de echte Pages-site (github.io is vanuit de container niet bereikbaar; het spel staat er pas na samenvoegen van PR #1 in `main`).
 - Werkpakketten: A–E klaar.
