@@ -1,0 +1,2790 @@
+{
+ "casus": "uwi-eerstelijn",
+ "versie": "1.9",
+ "seed": 20261114,
+ "factor": 1,
+ "episodes": [
+  {
+   "id": "E1",
+   "acties": 16,
+   "gespeeld": 74216,
+   "telling": {
+    "gezakt": 46172,
+    "geslaagd": 5490,
+    "onspeelbaar": 22554
+   },
+   "volgordes": [
+    "—"
+   ],
+   "volledig": [
+    {
+     "indeling": "compact",
+     "gespeeld": 65535,
+     "geslaagd": 880,
+     "kortste": "V2>V3+N1",
+     "langste": "G1+G2+O1+O2|V1+V2>V3+V3+N1|N2>V3+Ev1"
+    }
+   ],
+   "haalbaar": [
+    {
+     "volgorde": "—",
+     "slagers": 3970,
+     "gespeeld": 74216,
+     "kortste": {
+      "route": "V2>V4+N1",
+      "kaarten": 2,
+      "score": {
+       "duurzaamheid": 2,
+       "doelmatigheid": 3
+      },
+      "profiel": "Gedeelde regie"
+     }
+    }
+   ],
+   "speelAlles": [
+    {
+     "volgorde": "—",
+     "route": "V2>V3+N1+Ev1+N2>V3|V1+G1",
+     "kaarten": 6,
+     "score": {
+      "duurzaamheid": 2,
+      "doelmatigheid": 3
+     }
+    }
+   ],
+   "casus": [
+    {
+     "volgorde": "—",
+     "routes": [
+      {
+       "id": "E1-afwachten",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-afwachten-omgekeerd",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-uitgesteld",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-uitgesteld-middel",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-nitrofurantoine",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-nitrofurantoine-compleet",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-fosfomycine",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-trimethoprim",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-trimethoprim-omgekeerd",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-doelmatigheid-O1-O2",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-doelmatigheid-O1",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-doelmatigheid-O2",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-gegevens-gratis",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-G2-overbodig",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E1-fout-I1",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I1"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E1-fout-I1-leeg-na-N1-ontbreekt",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I1"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E1-fout-I3",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I3"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E1-fout-I4",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I4"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E1-fout-I4-V3-V5",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I4"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E1-fout-I1-I3-I4",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I1",
+        "I3",
+        "I4"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E1-fout-I3-I4",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I3",
+        "I4"
+       ],
+       "statusDoorspelen": "gezakt"
+      }
+     ],
+     "variantenZakken": []
+    }
+   ],
+   "onbedoeld": {
+    "minimaal": 19,
+    "zonderProfiel": 0,
+    "buitenCasus": 0,
+    "wachtend": 0,
+    "groepOntlopen": 0
+   },
+   "dekking": [
+    {
+     "id": "I1",
+     "geschonden": 23438,
+     "alleen": 1643,
+     "voorbeeld": ""
+    },
+    {
+     "id": "I3",
+     "geschonden": 11464,
+     "alleen": 468,
+     "voorbeeld": "V1+N1"
+    },
+    {
+     "id": "I4",
+     "geschonden": 43681,
+     "alleen": 16937,
+     "voorbeeld": "V2>V3+V2>V4+N1"
+    }
+   ]
+  },
+  {
+   "id": "E2",
+   "acties": 28,
+   "gespeeld": 10697,
+   "telling": {
+    "geslaagd": 3393,
+    "gezakt": 4965,
+    "onspeelbaar": 2339
+   },
+   "volgordes": [
+    "—"
+   ],
+   "volledig": null,
+   "haalbaar": [
+    {
+     "volgorde": "—",
+     "slagers": 1881,
+     "gespeeld": 10697,
+     "kortste": {
+      "route": "O1+V4+N1",
+      "kaarten": 3,
+      "score": {
+       "duurzaamheid": 3,
+       "doelmatigheid": 2
+      },
+      "profiel": "Kweekgestuurd, smal"
+     }
+    }
+   ],
+   "speelAlles": [
+    {
+     "volgorde": "—",
+     "route": "G2+O1+V5+G1|O2+N1+Ev1+N2>V5||V6>V5>halveren+B1>V4+N2>V4",
+     "kaarten": 11,
+     "score": {
+      "duurzaamheid": 3,
+      "doelmatigheid": 3
+     }
+    }
+   ],
+   "casus": [
+    {
+     "volgorde": "—",
+     "routes": [
+      {
+       "id": "E2-fosfomycine",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E2-fosfomycine-andere-volgorde",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E2-trimethoprim-bijgestuurd",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E2-onnodig-gewisseld",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E2-grens-I8-wissel-op-tweede-beurt",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E2-G2-te-laat",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E2-G2-nooit",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E2-fout-I1",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I1"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I4",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I4"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I5",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I5"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I5-zonderG2",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I5"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I6-geenKweek",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I6"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I6-afwachten",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I6"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I6-beide-varianten",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I6"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I7-kalium",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I7"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I7-halveren",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I7"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I7-te-vroeg-halveren",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I7"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I7-O2-te-laat",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I7"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I8",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I8"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I8-te-laat",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I8"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I7-I6",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I7",
+        "I6"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I5-I1",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I5",
+        "I1"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I6-I8",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I6",
+        "I8"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I17",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I17"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E2-fout-I18",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I18"
+       ],
+       "statusDoorspelen": "gezakt"
+      }
+     ],
+     "variantenZakken": [
+      {
+       "basis": "E2-fosfomycine",
+       "wat": "Dag 1 in de volgorde: Recente labwaarden opvragen (G2), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-fosfomycine",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Recente labwaarden opvragen (G2), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-fosfomycine",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Recente labwaarden opvragen (G2)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-fosfomycine",
+       "wat": "Urinekweek inzetten (O1) van dag 1 naar dag 2",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-trimethoprim-bijgestuurd",
+       "wat": "Dag 1 in de volgorde: Recente labwaarden opvragen (G2), Trimethoprim (V5), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-trimethoprim-bijgestuurd",
+       "wat": "Dag 1 in de volgorde: Trimethoprim (V5), Recente labwaarden opvragen (G2), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-trimethoprim-bijgestuurd",
+       "wat": "Dag 1 in de volgorde: Trimethoprim (V5), Urinekweek inzetten (O1), Recente labwaarden opvragen (G2)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-trimethoprim-bijgestuurd",
+       "wat": "Urinekweek inzetten (O1) van dag 1 naar dag 2",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-trimethoprim-bijgestuurd",
+       "wat": "Kalium bepalen (O2) van dag 2 naar dag 1",
+       "geschonden": [
+        "I7"
+       ]
+      },
+      {
+       "basis": "E2-onnodig-gewisseld",
+       "wat": "Dag 1 in de volgorde: Recente labwaarden opvragen (G2), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-onnodig-gewisseld",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Recente labwaarden opvragen (G2), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-onnodig-gewisseld",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Recente labwaarden opvragen (G2)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-onnodig-gewisseld",
+       "wat": "Urinekweek inzetten (O1) van dag 1 naar dag 2",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-grens-I8-wissel-op-tweede-beurt",
+       "wat": "Dag 1 in de volgorde: Recente labwaarden opvragen (G2), Trimethoprim (V5), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-grens-I8-wissel-op-tweede-beurt",
+       "wat": "Dag 1 in de volgorde: Trimethoprim (V5), Recente labwaarden opvragen (G2), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-grens-I8-wissel-op-tweede-beurt",
+       "wat": "Dag 1 in de volgorde: Trimethoprim (V5), Urinekweek inzetten (O1), Recente labwaarden opvragen (G2)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-grens-I8-wissel-op-tweede-beurt",
+       "wat": "Urinekweek inzetten (O1) van dag 1 naar dag 2",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-grens-I8-wissel-op-tweede-beurt",
+       "wat": "Trimethoprim (V5) van dag 1 naar dag 2",
+       "geschonden": [
+        "I7"
+       ]
+      },
+      {
+       "basis": "E2-grens-I8-wissel-op-tweede-beurt",
+       "wat": "Kalium bepalen (O2) van dag 2 naar dag 1",
+       "geschonden": [
+        "I7"
+       ]
+      },
+      {
+       "basis": "E2-grens-I8-wissel-op-tweede-beurt",
+       "wat": "Dosis aanpassen (V6) → Trimethoprim: halveren van dag 4 naar dag 3",
+       "geschonden": [
+        "I7"
+       ]
+      },
+      {
+       "basis": "E2-grens-I8-wissel-op-tweede-beurt",
+       "wat": "Antibioticum wisselen (B1) → Fosfomycine van dag 5 naar dag 6",
+       "geschonden": [
+        "I8"
+       ]
+      },
+      {
+       "basis": "E2-G2-te-laat",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Alarmsignalen bespreken (N1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-G2-te-laat",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Alarmsignalen bespreken (N1), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-G2-te-laat",
+       "wat": "Dag 1 in de volgorde: Alarmsignalen bespreken (N1), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-G2-te-laat",
+       "wat": "Urinekweek inzetten (O1) van dag 1 naar dag 2",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-G2-nooit",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Alarmsignalen bespreken (N1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-G2-nooit",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Alarmsignalen bespreken (N1), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-G2-nooit",
+       "wat": "Dag 1 in de volgorde: Alarmsignalen bespreken (N1), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E2-G2-nooit",
+       "wat": "Urinekweek inzetten (O1) van dag 1 naar dag 2",
+       "geschonden": [
+        "I6"
+       ]
+      }
+     ]
+    }
+   ],
+   "onbedoeld": {
+    "minimaal": 15,
+    "zonderProfiel": 0,
+    "buitenCasus": 499,
+    "wachtend": 0,
+    "groepOntlopen": 0
+   },
+   "dekking": [
+    {
+     "id": "I1",
+     "geschonden": 1419,
+     "alleen": 279,
+     "voorbeeld": "O1+V4"
+    },
+    {
+     "id": "I4",
+     "geschonden": 2039,
+     "alleen": 10,
+     "voorbeeld": "O1+V5+V4|O2+B2>V5+N1||V6>V5>halveren"
+    },
+    {
+     "id": "I5",
+     "geschonden": 2108,
+     "alleen": 123,
+     "voorbeeld": "O1+V3+N1"
+    },
+    {
+     "id": "I6",
+     "geschonden": 3896,
+     "alleen": 1282,
+     "voorbeeld": "N1"
+    },
+    {
+     "id": "I7",
+     "geschonden": 1580,
+     "alleen": 66,
+     "voorbeeld": "|||||||||||||O1+V5+N1"
+    },
+    {
+     "id": "I8",
+     "geschonden": 718,
+     "alleen": 42,
+     "voorbeeld": "O1+V5|O2+N1||V6>V5>halveren"
+    },
+    {
+     "id": "I17",
+     "geschonden": 708,
+     "alleen": 112,
+     "voorbeeld": "O1+V6>lisinopril>verdubbelen+V4||||||||||N1"
+    },
+    {
+     "id": "I18",
+     "geschonden": 334,
+     "alleen": 17,
+     "voorbeeld": "G2+O1|||||||||||||V4+N1+B1>V5+B1>V4"
+    }
+   ]
+  },
+  {
+   "id": "E3",
+   "acties": 66,
+   "gespeeld": 40071,
+   "telling": {
+    "geslaagd": 6040,
+    "gezakt": 15674,
+    "onspeelbaar": 14740,
+    "verloren": 3617
+   },
+   "volgordes": [
+    "A vóór B",
+    "B vóór A"
+   ],
+   "volledig": null,
+   "haalbaar": [
+    {
+     "volgorde": "A vóór B",
+     "slagers": 1753,
+     "gespeeld": 18538,
+     "kortste": {
+      "route": "O1+V4|N1+Ev2>spironolacton|B2>V4|Ev1|Ev3",
+      "kaarten": 7,
+      "score": {
+       "duurzaamheid": null,
+       "doelmatigheid": 2
+      },
+      "profiel": "Eigen route"
+     }
+    },
+    {
+     "volgorde": "B vóór A",
+     "slagers": 1517,
+     "gespeeld": 21533,
+     "kortste": {
+      "route": "O1+V4|N1+O2|N3+B3>spironolacton+V6>lisinopril>halveren|B1>V8+V6>V8>875/125 mg 2 dd|Ev1",
+      "kaarten": 10,
+      "score": {
+       "duurzaamheid": 2,
+       "doelmatigheid": 2
+      },
+      "profiel": "Kweekgestuurd"
+     }
+    }
+   ],
+   "speelAlles": [
+    {
+     "volgorde": "A vóór B",
+     "route": "G3+O1+V4|N1+O2+Ev2>spironolacton|O1+B1>V8+V6>V8>875/125 mg 2 dd|Ev1+Ev2>lisinopril+G1|B3>spironolacton+V6>lisinopril>halveren+N3|Ev1+B3>lisinopril+B5>lisinopril|B5>spironolacton+N2>V8",
+     "kaarten": 20,
+     "score": {
+      "duurzaamheid": 3,
+      "doelmatigheid": 3
+     }
+    },
+    {
+     "volgorde": "B vóór A",
+     "route": "G3+O1+V4|N1+O2+Ev2>spironolacton|B3>spironolacton+V6>lisinopril>halveren+N3|Ev1+G1+N2>V4|O1+B1>V8+V6>V8>875/125 mg 2 dd|Ev1+N2>V8+B5>spironolacton|B3>lisinopril+Ev2>lisinopril+B5>lisinopril",
+     "kaarten": 21,
+     "score": {
+      "duurzaamheid": 3,
+      "doelmatigheid": 3
+     }
+    }
+   ],
+   "casus": [
+    {
+     "volgorde": "A vóór B",
+     "routes": [
+      {
+       "id": "E3-amoxicilline-clavulaanzuur",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-sickday-omgekeerde-volgorde",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-hervatten-na-overleg",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-G3-te-laat",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-ciprofloxacine-B4",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-ciprofloxacine-B3-calcium",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-deescalatie-na-C",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-grens-I14-B4-volgende-beurt",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-verwijzen",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-fout-I1",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I1"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I17",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I18",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I19",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I19"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I4",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I4"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I5",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I5"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I6-geenKweek",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I6"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I6-afwachten",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I6"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I7",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I7"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I8",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I9-geen-O2-Ev2",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I9-B5-zonder-Ev2",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I9"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I10",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I11",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I11"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I12",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I12"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I13-verkeerde-dosis",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I13"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I13-geen-V6",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I13"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I14",
+       "soort": "fout",
+       "status": "verloren",
+       "geschonden": [
+        "I14",
+        "I16"
+       ],
+       "statusDoorspelen": "verloren"
+      },
+      {
+       "id": "E3-fout-I14-B4-te-laat",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I14"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I15",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I15"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I15-N3-te-laat",
+       "soort": "fout",
+       "status": "verloren",
+       "geschonden": [
+        "I15",
+        "I16"
+       ],
+       "statusDoorspelen": "verloren"
+      },
+      {
+       "id": "E3-fout-I16-geen-Ev1",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I16"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I16-geen-verwijzing",
+       "soort": "fout",
+       "status": "verloren",
+       "geschonden": [
+        "I16"
+       ],
+       "statusDoorspelen": "verloren"
+      },
+      {
+       "id": "E3-fout-I12-I1",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I12",
+        "I1"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I12-I5",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I12",
+        "I5"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I13-I11",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I8-I1",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I15-I9",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I9-I13",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I5-I10",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-niet-gereageerd",
+       "soort": "fout",
+       "status": "verloren",
+       "geschonden": [
+        "I10",
+        "I15",
+        "I16"
+       ],
+       "statusDoorspelen": "verloren"
+      },
+      {
+       "id": "E3-fout-geen-sickday",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      }
+     ],
+     "variantenZakken": [
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Urinekweek inzetten (O1), Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Urinekweek inzetten (O1) van dag 3 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd van dag 3 naar dag 4",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Medicatie tijdelijk stoppen (B3) → spironolacton van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dosis aanpassen (V6) → lisinopril: halveren van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Drinkadvies geven (N3) van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Urinekweek inzetten (O1), Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Urinekweek inzetten (O1) van dag 3 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd van dag 3 naar dag 4",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Drinkadvies geven (N3) van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dosis aanpassen (V6) → lisinopril: halveren van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Medicatie tijdelijk stoppen (B3) → spironolacton van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Urinekweek inzetten (O1), Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Urinekweek inzetten (O1) van dag 3 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd van dag 3 naar dag 4",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Medicatie tijdelijk stoppen (B3) → spironolacton van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dosis aanpassen (V6) → lisinopril: halveren van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Drinkadvies geven (N3) van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Urinekweek inzetten (O1), Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Urinekweek inzetten (O1) van dag 3 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd van dag 3 naar dag 4",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Medicatie tijdelijk stoppen (B3) → spironolacton van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dosis aanpassen (V6) → lisinopril: halveren van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Drinkadvies geven (N3) van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Urinekweek inzetten (O1), Innametijden aanpassen (B4) → Ciprofloxacine",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Innametijden aanpassen (B4) → Ciprofloxacine, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Urinekweek inzetten (O1) van dag 3 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Medicatie tijdelijk stoppen (B3) → spironolacton van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Dosis aanpassen (V6) → lisinopril: halveren van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Drinkadvies geven (N3) van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Urinekweek inzetten (O1), Medicatie tijdelijk stoppen (B3) → calcium/colecalciferol",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Medicatie tijdelijk stoppen (B3) → calcium/colecalciferol, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dag 3 in de volgorde: Medicatie tijdelijk stoppen (B3) → calcium/colecalciferol, Antibioticum wisselen (B1) → Ciprofloxacine, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Urinekweek inzetten (O1) van dag 3 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Antibioticum wisselen (B1) → Ciprofloxacine van dag 3 naar dag 4",
+       "geschonden": [
+        "I10"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Medicatie tijdelijk stoppen (B3) → spironolacton van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dosis aanpassen (V6) → lisinopril: halveren van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Drinkadvies geven (N3) van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Urinekweek inzetten (O1), Innametijden aanpassen (B4) → Ciprofloxacine",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Innametijden aanpassen (B4) → Ciprofloxacine, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Urinekweek inzetten (O1), Medicatieoverzicht nalopen (G1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dag 3 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Medicatieoverzicht nalopen (G1), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dag 3 in de volgorde: Medicatieoverzicht nalopen (G1), Antibioticum wisselen (B1) → Ciprofloxacine, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Urinekweek inzetten (O1) van dag 3 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Antibioticum wisselen (B1) → Ciprofloxacine van dag 3 naar dag 4",
+       "geschonden": [
+        "I10"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Medicatie tijdelijk stoppen (B3) → spironolacton van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dosis aanpassen (V6) → lisinopril: halveren van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Drinkadvies geven (N3) van dag 5 naar dag 4",
+       "geschonden": [
+        "I15"
+       ]
+      },
+      {
+       "basis": "E3-verwijzen",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-verwijzen",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-verwijzen",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-verwijzen",
+       "wat": "Antibioticum stoppen (B2) → Fosfomycine van dag 3 naar dag 4",
+       "geschonden": [
+        "I10"
+       ]
+      }
+     ]
+    },
+    {
+     "volgorde": "B vóór A",
+     "routes": [
+      {
+       "id": "E3-amoxicilline-clavulaanzuur",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-sickday-omgekeerde-volgorde",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-hervatten-na-overleg",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-G3-te-laat",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-ciprofloxacine-B4",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-ciprofloxacine-B3-calcium",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-deescalatie-na-C",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-grens-I14-B4-volgende-beurt",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-verwijzen",
+       "soort": "geldig",
+       "status": "geslaagd",
+       "geschonden": [],
+       "statusDoorspelen": "geslaagd"
+      },
+      {
+       "id": "E3-fout-I1",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I1"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I17",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I18",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I19",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I19"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I4",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I4"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I5",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I5"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I6-geenKweek",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I6"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I6-afwachten",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I6"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I7",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I7"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I8",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I9-geen-O2-Ev2",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I9-B5-zonder-Ev2",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I9"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I10",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I11",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I11"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I12",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I12"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I13-verkeerde-dosis",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I13"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I13-geen-V6",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I13"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I14",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I14"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I14-B4-te-laat",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I14"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I15",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I15"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I15-N3-te-laat",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I15"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I16-geen-Ev1",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I16"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I16-geen-verwijzing",
+       "soort": "fout",
+       "status": "verloren",
+       "geschonden": [
+        "I16"
+       ],
+       "statusDoorspelen": "verloren"
+      },
+      {
+       "id": "E3-fout-I12-I1",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I12",
+        "I1"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I12-I5",
+       "soort": "fout",
+       "status": "gezakt",
+       "geschonden": [
+        "I12",
+        "I5"
+       ],
+       "statusDoorspelen": "gezakt"
+      },
+      {
+       "id": "E3-fout-I13-I11",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I8-I1",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I15-I9",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I9-I13",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-I5-I10",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      },
+      {
+       "id": "E3-fout-niet-gereageerd",
+       "soort": "fout",
+       "status": "verloren",
+       "geschonden": [
+        "I10",
+        "I15",
+        "I16"
+       ],
+       "statusDoorspelen": "verloren"
+      },
+      {
+       "id": "E3-fout-geen-sickday",
+       "soort": "fout",
+       "status": "onspeelbaar",
+       "geschonden": [],
+       "statusDoorspelen": "onspeelbaar"
+      }
+     ],
+     "variantenZakken": [
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Urinekweek inzetten (O1), Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 6",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur van dag 5 naar dag 4",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd van dag 5 naar dag 6",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-amoxicilline-clavulaanzuur",
+       "wat": "Opvolgmoment afspreken (Ev1) van dag 6 naar dag 7",
+       "geschonden": [
+        "I16"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Urinekweek inzetten (O1), Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 6",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur van dag 5 naar dag 4",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd van dag 5 naar dag 6",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-sickday-omgekeerde-volgorde",
+       "wat": "Opvolgmoment afspreken (Ev1) van dag 6 naar dag 7",
+       "geschonden": [
+        "I16"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Urinekweek inzetten (O1), Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 6",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur van dag 5 naar dag 4",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd van dag 5 naar dag 6",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-hervatten-na-overleg",
+       "wat": "Opvolgmoment afspreken (Ev1) van dag 6 naar dag 7",
+       "geschonden": [
+        "I16"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Urinekweek inzetten (O1), Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur, Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 6",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Antibioticum wisselen (B1) → Amoxicilline/clavulaanzuur van dag 5 naar dag 4",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd van dag 5 naar dag 6",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-G3-te-laat",
+       "wat": "Opvolgmoment afspreken (Ev1) van dag 6 naar dag 7",
+       "geschonden": [
+        "I16"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Urinekweek inzetten (O1), Innametijden aanpassen (B4) → Ciprofloxacine",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Innametijden aanpassen (B4) → Ciprofloxacine, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 6",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B4",
+       "wat": "Opvolgmoment afspreken (Ev1) van dag 6 naar dag 7",
+       "geschonden": [
+        "I16"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Urinekweek inzetten (O1), Medicatie tijdelijk stoppen (B3) → calcium/colecalciferol",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Medicatie tijdelijk stoppen (B3) → calcium/colecalciferol, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Dag 5 in de volgorde: Medicatie tijdelijk stoppen (B3) → calcium/colecalciferol, Antibioticum wisselen (B1) → Ciprofloxacine, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 6",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Antibioticum wisselen (B1) → Ciprofloxacine van dag 5 naar dag 6",
+       "geschonden": [
+        "I10"
+       ]
+      },
+      {
+       "basis": "E3-ciprofloxacine-B3-calcium",
+       "wat": "Opvolgmoment afspreken (Ev1) van dag 6 naar dag 7",
+       "geschonden": [
+        "I16"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Urinekweek inzetten (O1), Innametijden aanpassen (B4) → Ciprofloxacine",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Innametijden aanpassen (B4) → Ciprofloxacine, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Opvolgmoment afspreken (Ev1) van dag 6 naar dag 7",
+       "geschonden": [
+        "I16"
+       ]
+      },
+      {
+       "basis": "E3-deescalatie-na-C",
+       "wat": "Dosis aanpassen (V6) → Amoxicilline/clavulaanzuur: 875/125 mg 2 dd van dag 6 naar dag 7",
+       "geschonden": [
+        "I13"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Urinekweek inzetten (O1), Medicatieoverzicht nalopen (G1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dag 5 in de volgorde: Antibioticum wisselen (B1) → Ciprofloxacine, Medicatieoverzicht nalopen (G1), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Dag 5 in de volgorde: Medicatieoverzicht nalopen (G1), Antibioticum wisselen (B1) → Ciprofloxacine, Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 4",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Urinekweek inzetten (O1) van dag 5 naar dag 6",
+       "geschonden": [
+        "I11"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Antibioticum wisselen (B1) → Ciprofloxacine van dag 5 naar dag 4",
+       "geschonden": [
+        "I14"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Antibioticum wisselen (B1) → Ciprofloxacine van dag 5 naar dag 6",
+       "geschonden": [
+        "I10"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Opvolgmoment afspreken (Ev1) van dag 6 naar dag 7",
+       "geschonden": [
+        "I16"
+       ]
+      },
+      {
+       "basis": "E3-grens-I14-B4-volgende-beurt",
+       "wat": "Innametijden aanpassen (B4) → Ciprofloxacine van dag 6 naar dag 7",
+       "geschonden": [
+        "I14",
+        "I16"
+       ]
+      },
+      {
+       "basis": "E3-verwijzen",
+       "wat": "Dag 1 in de volgorde: Eerdere kweekuitslagen opvragen (G3), Fosfomycine (V4), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-verwijzen",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Eerdere kweekuitslagen opvragen (G3), Urinekweek inzetten (O1)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-verwijzen",
+       "wat": "Dag 1 in de volgorde: Fosfomycine (V4), Urinekweek inzetten (O1), Eerdere kweekuitslagen opvragen (G3)",
+       "geschonden": [
+        "I6"
+       ]
+      },
+      {
+       "basis": "E3-verwijzen",
+       "wat": "Antibioticum stoppen (B2) → Fosfomycine van dag 5 naar dag 6",
+       "geschonden": [
+        "I10"
+       ]
+      },
+      {
+       "basis": "E3-verwijzen",
+       "wat": "Opvolgmoment afspreken (Ev1) van dag 6 naar dag 7",
+       "geschonden": [
+        "I16"
+       ]
+      },
+      {
+       "basis": "E3-verwijzen",
+       "wat": "Verwijzen (Ev3) van dag 7 naar dag 6",
+       "geschonden": [
+        "I19"
+       ]
+      }
+     ]
+    }
+   ],
+   "onbedoeld": {
+    "minimaal": 37,
+    "zonderProfiel": 0,
+    "buitenCasus": 775,
+    "wachtend": 0,
+    "groepOntlopen": 0
+   },
+   "dekking": [
+    {
+     "id": "I1",
+     "geschonden": 3972,
+     "alleen": 261,
+     "voorbeeld": "O1+V4|Ev2>spironolacton|B2>V4|Ev1|Ev3"
+    },
+    {
+     "id": "I4",
+     "geschonden": 6327,
+     "alleen": 139,
+     "voorbeeld": "O1+V4|N1+Ev2>spironolacton|O1+B1>V8+V6>V8>875/125 mg 2 dd|Ev1|V6>lisinopril>halveren+N3|Ev1+B3>spironolacton|||||||V10"
+    },
+    {
+     "id": "I5",
+     "geschonden": 2970,
+     "alleen": 84,
+     "voorbeeld": "G3+O1+V3|N1+O2+Ev2>spironolacton|O1+B1>V8+V6>V8>875/125 mg 2 dd|Ev1|B3>spironolacton+V6>lisinopril>halveren+N3|Ev1"
+    },
+    {
+     "id": "I6",
+     "geschonden": 7154,
+     "alleen": 836,
+     "voorbeeld": "V4|N1+Ev2>spironolacton|B2>V4|Ev1|Ev3"
+    },
+    {
+     "id": "I7",
+     "geschonden": 1934,
+     "alleen": 5,
+     "voorbeeld": "O1+G3+V4|Ev2>spironolacton+N1|B2>V4+O1|Ev1|V5+V6>lisinopril>halveren+N3|Ev3"
+    },
+    {
+     "id": "I8",
+     "geschonden": 195,
+     "alleen": 0,
+     "voorbeeld": null
+    },
+    {
+     "id": "I9",
+     "geschonden": 3001,
+     "alleen": 169,
+     "voorbeeld": "O1+V4|N1|B2>V4|Ev1|Ev3"
+    },
+    {
+     "id": "I10",
+     "geschonden": 2611,
+     "alleen": 177,
+     "voorbeeld": "O1+V4|N1+Ev2>spironolacton||Ev1|Ev3"
+    },
+    {
+     "id": "I11",
+     "geschonden": 3104,
+     "alleen": 356,
+     "voorbeeld": "O1+V4|N1+Ev2>spironolacton|N3+V6>lisinopril>halveren+B3>spironolacton||B1>V7+B4>V7|Ev1"
+    },
+    {
+     "id": "I12",
+     "geschonden": 2852,
+     "alleen": 109,
+     "voorbeeld": "G3+O1+V4|N1+B1>V9+Ev2>spironolacton|B3>spironolacton+N3|V6>lisinopril>halveren|O1+B1>V7+B4>V7|Ev1"
+    },
+    {
+     "id": "I13",
+     "geschonden": 2734,
+     "alleen": 170,
+     "voorbeeld": "O1+V4|N1+O2|N3+B3>spironolacton+V6>lisinopril>halveren|B1>V8|Ev1"
+    },
+    {
+     "id": "I14",
+     "geschonden": 2654,
+     "alleen": 95,
+     "voorbeeld": "O1+V4|N1+Ev2>spironolacton|V6>lisinopril>halveren+B3>spironolacton+N3||O1+B1>V7|Ev1+B1>V8+V6>V8>875/125 mg 2 dd"
+    },
+    {
+     "id": "I15",
+     "geschonden": 11173,
+     "alleen": 2728,
+     "voorbeeld": "O1+V4|N1+O2|B3>spironolacton+V6>lisinopril>halveren|B1>V8+V6>V8>875/125 mg 2 dd|Ev1"
+    },
+    {
+     "id": "I16",
+     "geschonden": 8500,
+     "alleen": 788,
+     "voorbeeld": "O1+V4|N1+Ev2>spironolacton|B2>V4||Ev3"
+    },
+    {
+     "id": "I17",
+     "geschonden": 697,
+     "alleen": 0,
+     "voorbeeld": null
+    },
+    {
+     "id": "I18",
+     "geschonden": 704,
+     "alleen": 93,
+     "voorbeeld": "G3+O1+V4|N1+Ev2>spironolacton|N3+V6>lisinopril>halveren+B3>spironolacton|Ev1|O1+B1>V7+B4>V7|Ev1|||B1>V10"
+    },
+    {
+     "id": "I19",
+     "geschonden": 2084,
+     "alleen": 302,
+     "voorbeeld": "G3+O1|N1+O2+Ev3"
+    }
+   ]
+  }
+ ]
+}

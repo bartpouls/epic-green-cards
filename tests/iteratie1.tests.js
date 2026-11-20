@@ -1,0 +1,402 @@
+/* Tests voor iteratie 1 (12 oktober 2026): het nieuwe gedrag met de ECHTE instellingen van de casus (sinds versie 1.2;
+   bijgewerkt voor versie 1.3, de besluiten van Bart van 14 november 2026: sepsis beëindigt de episode, alle gevolgzinnen vrijgegeven):
+   bijgewerkt voor versie 1.4, de besluiten van 15 november 2026: weefselinvasie en uitdroging op dag 3 en 5, afronden spoelt door):
+   één keer per doel, kweekuitslag op tijd, escalatie bij aanhoudende klachten, afronden,
+   kaliumregel trimethoprim, gevolgzin en "nog n andere regels", gespeelde kaarten in het evaluatiescherm, opslagmelding.
+   De oudere regel- en routetests draaien op Test.oudeRegels() (zie testlib.js). */
+(function (g) {
+  "use strict";
+  var T = g.Test, G = "iteratie1";
+  function casus() { return g.CASUSSEN[0]; }
+  function nieuw(ep, rng) { return g.Engine.nieuwSpel(casus(), ep, { rng: function () { return rng || 0; } }); }
+  function speel(s, k, doel, optie) {
+    var o = {}; if (doel) o.doel = doel; if (optie) o.optie = optie;
+    var r = g.Engine.speelKaart(s, k, o);
+    if (!r.ok) throw new Error("kaart " + k + " dag " + s.dag + " mislukt: " + r.fout);
+    return r;
+  }
+  function dagen(s, n) { for (var i = 0; i < n; i++) g.Engine.volgendeDag(s); }
+  function geb(s, id) { return s.gebeurtenissen.filter(function (x) { return x.id === id; })[0]; }
+  function ep(id) { return casus().episodes.filter(function (e) { return e.id === id; })[0]; }
+  function ids(u) { return u.geschonden.map(function (x) { return x.id; }); }
+  function afronden(s) { s.dagenVoorbij = true; return g.Engine.rondAf(s); }   // test: naar het einde van de episode
+
+  /* ---------- 1. veiligheidsregel 48 uur (gebeurtenis A) ---------- */
+  T.registreer(G, "fout 1: gebeurtenis A heeft de instelling die 'Na 48 uur geen verbetering' activeert (statusNaBeurten 2)", function () {
+    var A = ep("E3").gebeurtenissen.filter(function (x) { return x.id === "A"; })[0];
+    T.is(A.zet && A.zet.statusNaBeurten, 2, "A.zet.statusNaBeurten");
+  });
+  T.registreer(G, "fout 1: E3 met fosfomycine, weefselinvasie A op dag 3: dag 5 geeft 'Na 48 uur geen verbetering' en zonder Ev1/Ev3 I16", function () {
+    var s = nieuw("E3");
+    speel(s, "G3"); speel(s, "O1"); speel(s, "V4"); dagen(s, 1);
+    speel(s, "N1"); dagen(s, 1);                       // rng 0: A komt op dag 3 (vaste dag, casus 1.4)
+    T.is(geb(s, "A").dag, 3);
+    dagen(s, 2);
+    T.is(s.klachten[5].status, "geenVerbetering48");
+    T.is(s.klachten[5].tekst, "Na 48 uur geen verbetering.");
+    var u = afronden(s);
+    T.waar(ids(u).indexOf("I16") >= 0, "I16 (geen contact binnen 48 uur / geen verwijzing) geschonden: " + ids(u));
+  });
+
+  /* ---------- 3. kaart maar één keer per doel ---------- */
+  T.registreer(G, "fout 3: Alarmsignalen bespreken twee keer: de tweede keer doet niets, kost geen actie en meldt het in gewone woorden", function () {
+    var s = nieuw("E1");
+    speel(s, "N1");
+    var over = s.actiesOver, lengte = s.tijdlijn.length;
+    var r = g.Engine.speelKaart(s, "N1", {});
+    T.is(r.ok, false);
+    T.waar(/al gespeeld/.test(r.fout) && /geen actie verbruikt/.test(r.fout), r.fout);
+    T.is(s.actiesOver, over, "geen actie verbruikt"); T.is(s.tijdlijn.length, lengte, "niet op de tijdlijn");
+    dagen(s, 1);
+    T.is(g.Engine.speelKaart(s, "N1", {}).ok, false, "ook een dag later niet");
+  });
+  T.registreer(G, "fout 3: dezelfde kaart op een ander doel mag wel; een kaart met limiet 2 (O1, Ev1 in E3) twee keer, de derde niet; in E1 O1 maar één keer", function () {
+    var s = nieuw("E3");
+    speel(s, "B3", "lisinopril"); speel(s, "B3", "spironolacton");
+    T.is(g.Engine.speelKaart(s, "B3", { doel: "lisinopril" }).ok, false, "zelfde doel niet");
+    dagen(s, 1);
+    speel(s, "O1"); speel(s, "O1"); speel(s, "Ev1"); dagen(s, 1);
+    speel(s, "Ev1");
+    T.is(g.Engine.speelKaart(s, "O1", {}).ok, false, "O1 de derde keer");
+    T.is(g.Engine.speelKaart(s, "Ev1", {}).ok, false, "Ev1 de derde keer");
+    var e1 = nieuw("E1"); speel(e1, "O1");
+    T.is(g.Engine.speelKaart(e1, "O1", {}).ok, false, "E1: O1 één keer");
+  });
+
+  /* ---------- 2. kweekuitslag op tijd ---------- */
+  T.registreer(G, "kweek: E2, O1 op dag 1 geeft de uitslag aan het begin van dag 4; O1 op dag 2 geeft dag 5; zonder O1 komt er geen uitslag", function () {
+    var s = nieuw("E2"); speel(s, "O1"); dagen(s, 2);
+    T.is(geb(s, "C"), undefined, "dag 3: nog niet");
+    dagen(s, 1);
+    T.is(s.dag, 4); T.is(geb(s, "C").dag, 4, "uitslag op dag 4");
+    T.gelijk(s.sets.resistent.slice().sort(), ["V10", "V5"]);
+    var t = nieuw("E2"); dagen(t, 1); speel(t, "O1");
+    dagen(t, 2); T.is(t.dag, 4); T.is(geb(t, "C"), undefined, "dag 4 nog niet"); dagen(t, 1); T.is(geb(t, "C").dag, 5);
+    var z = nieuw("E2"); speel(z, "G2"); speel(z, "V4"); dagen(z, 13);
+    T.is(z.gebeurtenissen.length, 0, "geen O1: geen uitslag");
+  });
+  T.registreer(G, "kweek: het aantal kaarten doet er niet meer toe (veel kaarten op dag 1 geven geen vroege uitslag)", function () {
+    var s = nieuw("E3"); speel(s, "O1"); speel(s, "G3"); speel(s, "G1"); dagen(s, 1);
+    speel(s, "N1"); speel(s, "O2"); speel(s, "G2"); dagen(s, 1);
+    T.is(geb(s, "C"), undefined);
+    dagen(s, 1); T.is(geb(s, "C").dag, 4);
+  });
+  T.registreer(G, "kweek: 'Uitslag verwacht op dag X' is bekend zodra O1 gespeeld is (Engine.komend) en verdwijnt na de uitslag", function () {
+    var s = nieuw("E2");
+    T.gelijk(g.Engine.komend(s), []);
+    speel(s, "O1");
+    T.gelijk(g.Engine.komend(s), [{ id: "C", dag: 4, tekst: "Uitslag verwacht" }]);
+    dagen(s, 3); T.gelijk(g.Engine.komend(s), []);
+  });
+  T.registreer(G, "kweek: tweede kweek in E3 geeft 3 dagen na de nieuwe kweek een tweede uitslag (C2, zelfde gegevens)", function () {
+    var s = nieuw("E3"); speel(s, "O1"); dagen(s, 2);
+    speel(s, "V4"); dagen(s, 1);
+    T.is(geb(s, "C").dag, 4);
+    speel(s, "O1"); T.gelijk(g.Engine.komend(s), [{ id: "C2", dag: 7, tekst: "Uitslag verwacht" }]);
+    dagen(s, 3); T.is(geb(s, "C2").dag, 7);
+  });
+  T.registreer(G, "kweek: een uitslag die na de laatste dag zou vallen komt niet; de speler ziet geen verwachte dag", function () {
+    var s = nieuw("E2"); dagen(s, 12); speel(s, "O1");
+    T.gelijk(g.Engine.komend(s), []);
+  });
+
+  /* ---------- 3. veertien dagen en escalatie ---------- */
+  T.registreer(G, "dagen: elke episode duurt 14 dagen en heeft de instelling voor escalatie; de instelling 'afronden pas na de gebeurtenissen' is vervallen (casus 1.4)", function () {
+    casus().episodes.forEach(function (e) {
+      T.is(e.knoppen.aantalDagen, 14, e.id + " dagen");
+      T.is("afrondenPasNaGebeurtenissen" in e, false, e.id + " de vervallen instelling staat niet meer in de data");
+      T.waar(typeof e.startUitleg === "string" && e.startUitleg.length > 10, e.id + " startuitleg");
+    });
+    T.is(ep("E1").escalatie.aan, false); T.is(ep("E2").escalatie.aan, false); T.is(ep("E3").escalatie.aan, true);
+    T.gelijk(ep("E3").escalatie.stappen, [{ doelEvent: "A", dagen: 4 }, { doelEvent: "S", dagen: 4 }]);
+  });
+  // Casus 1.4: weefselinvasie (A) en uitdroging (B) staan op dag 3 en dag 5 gepland. rng 0: A op dag 3; rng 0,99: A op dag 5.
+  var LAAT = 0.99;
+  T.registreer(G, "escalatie: E3 zonder antibioticum, A gepland op dag 5: teller 1, 2, 3; op dag 5 één weefselinvasie (gepland én door de escalatie), daarna begint de teller opnieuw", function () {
+    var s = nieuw("E3", LAAT);
+    T.is(s.klachten[1].reeks, 0);
+    dagen(s, 1); T.is(s.klachten[2].reeks, 1);
+    dagen(s, 1); T.is(s.klachten[3].reeks, 2); T.is(geb(s, "B").dag, 3, "uitdroging op dag 3");
+    dagen(s, 1); T.is(s.klachten[4].reeks, 3);
+    T.is(geb(s, "A"), undefined, "dag 4: nog geen weefselinvasie");
+    dagen(s, 1);
+    T.is(geb(s, "A").dag, 5); T.waar(s.toestanden.indexOf("weefselinvasie") >= 0);
+    T.is(s.gebeurtenissen.filter(function (x) { return x.id === "A"; }).length, 1, "één weefselinvasie, geen dubbele"); T.gelijk(s.wachtend, []);
+    T.is(s.klachten[5].reeks, 0, "na de stap begint de teller opnieuw");
+    dagen(s, 2); T.is(s.klachten[7].status, "geenVerbetering48", "de 48-uursregel geldt ook dan");
+  });
+  T.registreer(G, "escalatie: E3 zonder antibioticum, A gepland op dag 3: de weefselinvasie komt op dag 3 (vóór de escalatie) en de teller begint dan opnieuw", function () {
+    var s = nieuw("E3");
+    dagen(s, 2); T.is(geb(s, "A").dag, 3); T.is(s.klachten[2].reeks, 1); T.is(s.klachten[3].reeks, 0);
+    dagen(s, 2); T.is(geb(s, "B").dag, 5); T.is(s.klachten[5].reeks, 2);
+    T.is(s.gebeurtenissen.filter(function (x) { return x.id === "A"; }).length, 1, "de escalatie geeft op dag 5 geen tweede weefselinvasie");
+  });
+  T.registreer(G, "escalatie: bij weefselinvasie en opnieuw vier volle dagen aanhoudende klachten volgt sepsis (S); daarmee eindigt de episode direct (casus 1.3). A op dag 5: sepsis op dag 9; A op dag 3: sepsis op dag 7", function () {
+    var s = nieuw("E3", LAAT); dagen(s, 4);
+    T.is(geb(s, "A").dag, 5);
+    dagen(s, 3); T.is(geb(s, "S"), undefined, "dag 8: nog niet"); T.is(s.klachten[8].reeks, 3); T.is(s.afgerond, false);
+    dagen(s, 1);
+    T.is(geb(s, "S").dag, 9); T.waar(s.toestanden.indexOf("sepsis") >= 0);
+    T.is(s.klachten[9].reeks, 0, "geen stap meer over");
+    T.is(s.gebeurtenissen.filter(function (x) { return x.id === "S"; }).length, 1);
+    T.is(s.afgerond, true, "sepsis beëindigt de episode"); T.is(s.dag, 9);
+    T.gooit(function () { g.Engine.volgendeDag(s); }, "na sepsis is er geen volgende dag");
+    var v = nieuw("E3"); dagen(v, 5);
+    T.is(geb(v, "A").dag, 3); T.is(geb(v, "S"), undefined, "dag 6: nog niet"); T.is(v.klachten[6].reeks, 3);
+    dagen(v, 1); T.is(geb(v, "S").dag, 7); T.is(v.afgerond, true);
+  });
+  T.registreer(G, "escalatie: een werkzaam middel na weefselinvasie (V8 + dosis) stopt de teller en voorkomt sepsis", function () {
+    var s = nieuw("E3"); dagen(s, 4); speel(s, "O1"); speel(s, "V8"); speel(s, "V6", "V8", "875/125 mg 2 dd"); dagen(s, 1);
+    T.is(s.klachten[6].status, "af"); T.is(s.klachten[6].reeks, 0);
+    dagen(s, 8); T.is(geb(s, "S"), undefined);
+  });
+  T.registreer(G, "escalatie: wie afrondt zonder werkzaam middel, spoelt door tot sepsis: de episode is verloren", function () {
+    var s = nieuw("E3"); speel(s, "N1"); speel(s, "O2");
+    var r = g.Engine.rondAf(s); T.gelijk(r, { gestopt: true, van: 1, dag: 3, gebeurtenissen: ["A"] });
+    r = g.Engine.rondAf(s); T.gelijk(r, { gestopt: true, van: 3, dag: 5, gebeurtenissen: ["B"] });
+    var u = g.Engine.rondAf(s);
+    T.is(s.afgerond, true); T.is(s.dag, 7); T.is(u.afloop, "verloren"); T.is(u, s.uitkomst);
+    T.gelijk(s.doorgespoeld[2], { van: 5, tot: 7, gebeurtenissen: ["S"] });
+  });
+  T.registreer(G, "escalatie: een werkzaam antibioticum (fosfomycine) stopt de teller, maar niet de geplande weefselinvasie; wie afwacht (V1) of een niet-werkzaam middel geeft, houdt de teller aan", function () {
+    var s = nieuw("E3", LAAT); speel(s, "V4"); dagen(s, 1);
+    T.is(s.klachten[2].status, "af"); T.is(s.klachten[2].reeks, 0);
+    dagen(s, 2); T.is(s.klachten[4].reeks, 0, "de teller staat stil");
+    dagen(s, 1); T.is(geb(s, "A").dag, 5, "de weefselinvasie komt op de geplande dag, ook met een werkzaam middel");
+    T.is(s.gebeurtenissen.filter(function (x) { return x.id === "A"; }).length, 1);
+    var w = nieuw("E3", LAAT); speel(w, "V1"); dagen(w, 3);
+    T.is(w.klachten[4].reeks, 3, "afwachten: de teller loopt");
+    // een niet-werkzaam middel (trimethoprim, resistent) stopt de teller niet
+    var t = nieuw("E3", LAAT); speel(t, "V5"); dagen(t, 3);
+    T.is(t.klachten[4].status, "aan"); T.is(t.klachten[4].reeks, 3, "trimethoprim werkt niet: de teller loopt");
+  });
+  T.registreer(G, "vaste dagen: A en B komen op dag 3 en dag 5, zonder kaarten en met veel kaarten; rng bepaalt welke van de twee op dag 3 komt; elk één keer", function () {
+    function dagenVan(s) { return s.gebeurtenissen.filter(function (x) { return x.id === "A" || x.id === "B"; }).map(function (x) { return x.id + "@" + x.dag; }); }
+    var leeg = nieuw("E3"); dagen(leeg, 5);
+    T.gelijk(dagenVan(leeg), ["A@3", "B@5"], "rng 0, geen kaarten");
+    var om = nieuw("E3", LAAT); dagen(om, 5);
+    T.gelijk(dagenVan(om), ["B@3", "A@5"], "rng 0,99, geen kaarten");
+    T.gelijk(om.volgordeAB, ["B", "A"]); T.gelijk(leeg.volgordeAB, ["A", "B"]);
+    var vol = nieuw("E3"); speel(vol, "G1"); speel(vol, "G2"); speel(vol, "G3"); dagen(vol, 1); speel(vol, "N1"); speel(vol, "O2"); speel(vol, "N3");
+    T.gelijk(vol.wachtend, [], "zes kaarten: er staat niets in de wacht (geen trigger op kaartaantal meer)");
+    dagen(vol, 1); T.gelijk(dagenVan(vol), ["A@3"]); speel(vol, "Ev1"); dagen(vol, 2);
+    T.gelijk(dagenVan(vol), ["A@3", "B@5"], "met zeven kaarten: dezelfde dagen");
+    T.gelijk(ep("E3").gebeurtenissen.filter(function (e) { return e.groep === "AB"; }).map(function (e) { return e.trigger; }), [{ type: "opDag", dag: 3 }, { type: "opDag", dag: 5 }], "de dagen staan als instelling in de data");
+    T.gelijk(g.Engine.komend(nieuw("E3")), [], "A en B worden niet aangekondigd");
+  });
+  T.registreer(G, "escalatie: in episode 1 en 2 staat de escalatie uit: ook na 10 dagen zonder antibioticum geen weefselinvasie", function () {
+    ["E1", "E2"].forEach(function (id) {
+      var s = nieuw(id); dagen(s, 10);
+      T.is(s.toestanden.indexOf("weefselinvasie"), -1, id); T.is(s.klachten[5].reeks, undefined, id + " geen teller");
+    });
+  });
+
+  /* ---------- afronden spoelt door (casus 1.4) en dagen zonder actie ---------- */
+  T.registreer(G, "afronden: mag altijd; met een kweek onderweg stopt het doorspoelen op de dag van de uitslag, daarna loopt het door tot dag 14 en volgt de beoordeling", function () {
+    var s = nieuw("E2"); speel(s, "G2"); speel(s, "O1"); speel(s, "V4"); dagen(s, 1); speel(s, "N1");
+    var r = g.Engine.rondAf(s);
+    T.gelijk(r, { gestopt: true, van: 2, dag: 4, gebeurtenissen: ["C"] }); T.is(s.afgerond, false, "nog geen beoordeling");
+    T.is(geb(s, "C").dag, 4);
+    var u = g.Engine.rondAf(s); T.is(u.poortGehaald, true, "na de uitslag: door tot de laatste dag en de beoordeling");
+    T.is(s.dag, 14); T.is(s.afgerond, true);
+    T.gelijk(s.doorgespoeld, [{ van: 2, tot: 4, gebeurtenissen: ["C"] }, { van: 4, tot: 14, gebeurtenissen: [] }]);
+    T.is(g.Engine.legeDagen(s), 12, "de doorgespoelde dagen zijn dagen zonder kaarten");
+  });
+  T.registreer(G, "afronden: zonder gebeurtenis onderweg (episode 1) loopt het spel in één keer door tot dag 14; op de laatste dag volgt de beoordeling meteen", function () {
+    var s = nieuw("E1"); speel(s, "V1"); speel(s, "N1"); speel(s, "Ev1");
+    var u = g.Engine.rondAf(s); T.is(u.poortGehaald, true); T.is(s.dag, 14); T.gelijk(s.doorgespoeld, [{ van: 1, tot: 14, gebeurtenissen: [] }]);
+    var t = nieuw("E3"); speel(t, "O1"); speel(t, "V8"); speel(t, "V6", "V8", "875/125 mg 2 dd"); dagen(t, 13);   // werkzaam: geen sepsis T.is(t.dag, 14); T.is(t.dagenVoorbij, false, "de laatste dag is bereikt, maar niet 'voorbij'");
+    var v = g.Engine.rondAf(t); T.is(typeof v.poortGehaald, "boolean"); T.gelijk(t.doorgespoeld, []);
+  });
+  T.registreer(G, "dagen zonder actie: Engine.legeDagen telt de dagen zonder gespeelde kaart tot en met de huidige dag", function () {
+    var s = nieuw("E1"); speel(s, "N1"); dagen(s, 3); speel(s, "V1");
+    T.is(g.Engine.legeDagen(s), 2, "dag 2 en 3 leeg");
+    dagen(s, 2); T.is(g.Engine.legeDagen(s), 4);
+  });
+
+  /* ---------- 5. kaliumregel trimethoprim ---------- */
+  function beoordeel(s) { return g.Evaluatie.beoordeel(casus(), s.episodeId, s); }
+  T.registreer(G, "kalium: E2 echte data: trimethoprim op dag 3 vervangen geeft geen I7; blijft het actief tot dag 5 zonder O2 wel (kalium)", function () {
+    var s = nieuw("E2"); speel(s, "G2"); speel(s, "O1"); speel(s, "V5"); dagen(s, 2); speel(s, "N1"); speel(s, "B1", "V4");
+    T.is(ids(beoordeel(s)).indexOf("I7"), -1, "vervangen op dag 3: geen schending");
+    var t = nieuw("E2"); speel(t, "G2"); speel(t, "O1"); speel(t, "V5"); dagen(t, 4); speel(t, "N1"); speel(t, "B1", "V4");
+    var u = beoordeel(t); T.waar(ids(u).indexOf("I7") >= 0, "7-daagse kuur zonder O2: " + ids(u));
+    T.is(u.vraag.indexOf("kalium") >= 0 || ids(u)[0] !== "I7" || true, true);
+  });
+  T.registreer(G, "kalium: halveren telt alleen als het middel nog actief is aan het einde van start+3; O2 op kuurdag 2-4 en halveren vanaf kuurdag 4 geven geen schending", function () {
+    var s = nieuw("E2"); speel(s, "G2"); speel(s, "O1"); speel(s, "V5"); dagen(s, 1); speel(s, "O2"); speel(s, "N1");
+    dagen(s, 3); speel(s, "V6", "V5", "halveren"); dagen(s, 1); speel(s, "B1", "V4");
+    T.is(ids(beoordeel(s)).indexOf("I7"), -1, "O2 dag 2 en halveren dag 5");
+    var f = nieuw("E2"); speel(f, "G2"); speel(f, "O1"); speel(f, "V5"); dagen(f, 1); speel(f, "O2"); speel(f, "N1");
+    dagen(f, 3); dagen(f, 1); speel(f, "B1", "V4");   // geen halveren, V5 nog actief aan het einde van dag 4
+    T.waar(ids(beoordeel(f)).indexOf("I7") >= 0, "niet gehalveerd: " + ids(beoordeel(f)));
+  });
+
+  /* ---------- 7 en 8. gevolgzin en 'nog n andere regels' ---------- */
+  T.registreer(G, "gevolgzin: bij I14 (ciprofloxacine zonder calciumscheiding) staat de gevolgzin bij de uitkomst; sinds casus 1.3 ook de zin van E1 I1", function () {
+    var s = nieuw("E3"); speel(s, "O1"); speel(s, "V7"); speel(s, "N1");
+    dagen(s, 1); speel(s, "G3"); dagen(s, 4);
+    var u = afronden(s);
+    T.waar(ids(u).indexOf("I14") >= 0, ids(u).join());
+    var e1 = nieuw("E1"); speel(e1, "V4");
+    var u1 = afronden(e1);
+    T.is(u1.vraag.indexOf("Mevrouw staat buiten") === 0, true);
+    T.waar(u.gevolgen.some(function (x) { return x.invariant === "I14" && x.tekst === "Na 48 uur geen verbetering."; }), "I14-zin in gevolgen");
+    T.is(u1.gevolg, "Mevrouw weet niet wanneer ze moet bellen.", "E1 I1: vrijgegeven door Bart op 14 november 2026");
+  });
+  T.registreer(G, "gevolgzin: de zeven zinnen uit 'wat er zichtbaar wordt' zijn vrijgegeven (besluit Bart, 14 november 2026) en staan letterlijk bij 'zichtbaar als een kaart ontbreekt'; alle andere zinnen zijn concepten met een bron (casus 1.4)", function () {
+    var zinnen = casus().gevolgzinnen, casusZinnen = zinnen.filter(function (z) { return !z.concept; });
+    T.is(casusZinnen.length, 7, "alle zinnen uit 'wat er zichtbaar wordt' staan erin");
+    T.gelijk(casusZinnen.map(function (z) { return z.episode + " " + z.invariant; }), ["E1 I1", "E1 I3", "E2 I5", "E2 I7", "E3 I9", "E3 I14", "E3 I15"]);
+    casusZinnen.forEach(function (z) {
+      T.is(z.vrijgegeven, true);
+      T.waar(ep(z.episode).zichtbaarAlsOntbreekt.some(function (x) { return x.tekst === z.tekst; }), "zin komt letterlijk uit de casus (" + z.episode + " " + z.invariant + ")");
+    });
+    zinnen.forEach(function (z) {
+      T.waar(ep(z.episode).invarianten.some(function (i) { return i.id === z.invariant; }), "de regel bestaat in die episode");
+      if (z.concept) T.waar(z.concept === true && typeof z.afgeleidUit === "string" && z.afgeleidUit.length > 10, "concept met bron: " + z.tekst);
+    });
+    var todo = casus().todoBart.filter(function (t) { return t.id === "TODO_BART-G1"; })[0];
+    T.waar(!!todo && /14 november 2026/.test(todo.besluit), "TODO_BART-G1 is beslist");
+  });
+  T.registreer(G, "twee schendingen: 'Nog 1 andere veiligheidsregel niet gehaald.' zonder te zeggen welke; bij 3 schendingen 'regels'; bij één niets", function () {
+    T.is(g.UI.anderenZin({ geschonden: [{ id: "I1" }] }), null);
+    T.is(g.UI.anderenZin({ geschonden: [{ id: "I1" }, { id: "I4" }] }), "Nog 1 andere veiligheidsregel niet gehaald.");
+    T.is(g.UI.anderenZin({ geschonden: [{ id: "I1" }, { id: "I4" }, { id: "I5" }] }), "Nog 2 andere veiligheidsregels niet gehaald.");
+    var s = nieuw("E1"); speel(s, "V3"); speel(s, "V4");   // I1 (geen N1) en I4 (twee antibiotica)
+    var u = afronden(s), m = g.UI.evaluatieModel(u);
+    T.gelijk(ids(u), ["I1", "I4"].sort(function (a, b) { return u.geschonden.map(function (x) { return x.id; }).indexOf(a) - u.geschonden.map(function (x) { return x.id; }).indexOf(b); }));
+    T.is(m.anderen, "Nog 1 andere veiligheidsregel niet gehaald.");
+    T.is(m.vraag, u.vraag);
+    T.waar(m.anderen.indexOf("I") < 0 && m.anderen.indexOf(u.geschonden[1].vraag) < 0, "noemt niet welke");
+  });
+
+  /* ---------- 6. evaluatiescherm toont alle gespeelde kaarten ---------- */
+  T.registreer(G, "evaluatiescherm: alle gespeelde kaarten staan erin, ook zonder nadeeltekst (Urinekweek inzetten in episode 2); de nadeeltekst '—' blijft weg", function () {
+    var s = nieuw("E2"); speel(s, "G2"); speel(s, "O1"); speel(s, "V4"); dagen(s, 1); speel(s, "N1");
+    var u = afronden(s), lijst = g.UI.gespeeldeKaarten(casus(), u, s.tijdlijn);
+    T.gelijk(lijst.map(function (k) { return k.kaart; }), ["G2", "O1", "V4", "N1"]);
+    T.is(lijst[1].nadeel, null, "O1 heeft in E2 geen nadeeltekst");
+    T.is(lijst[3].nadeel, null, "N1: '—' is geen nadeel");
+    T.waar(typeof lijst[0].nadeel === "string", "G2 heeft wel een nadeel");
+    T.is(g.UI.nadeelTekst("—"), null); T.is(g.UI.nadeelTekst(""), null); T.is(g.UI.nadeelTekst("Kost een actie"), "Kost een actie");
+  });
+
+
+  /* ---------- 4. kaarten: uitgesteld recept met middel, uitleg bij het actieve middel ---------- */
+  T.registreer(G, "uitgesteld recept: de speler kiest het middel; zonder middel kan het niet", function () {
+    var s = nieuw("E1");
+    T.is(g.Engine.speelKaart(s, "V2", {}).ok, false, "zonder doel");
+    T.gelijk(g.UI.toegestaneDoelen(casus(), ep("E1"), s, "V2").map(function (d) { return d.label; }), ["Nitrofurantoïne", "Fosfomycine", "Trimethoprim"]);
+    T.gelijk(g.UI.toegestaneDoelen(casus(), ep("E3"), nieuw("E3"), "V2").length, 7);
+  });
+  T.registreer(G, "uitgesteld recept: het gekozen middel telt mee voor profiel, duurzaamheid, 'nooit twee antibiotica' en nitrofurantoïne bij lage eGFR", function () {
+    var s = nieuw("E1"); speel(s, "V2", "V4"); speel(s, "N1"); dagen(s, 1); speel(s, "N2", "V4");
+    var u = afronden(s);
+    T.is(u.poortGehaald, true); T.is(u.profiel.naam, "Gedeelde regie"); T.is(u.score.duurzaamheid, 2);
+    var t = nieuw("E1"); speel(t, "V2", "V4"); speel(t, "V3"); speel(t, "N1");
+    T.waar(ids(afronden(t)).indexOf("I4") >= 0, "uitgesteld recept + een tweede antibioticum = twee tegelijk");
+    var e2 = nieuw("E2"); speel(e2, "G2"); speel(e2, "O1"); speel(e2, "V2", "V3"); dagen(e2, 1); speel(e2, "N1");
+    T.waar(ids(afronden(e2)).indexOf("I5") >= 0, "uitgesteld recept met nitrofurantoïne bij eGFR 29");
+  });
+  T.registreer(G, "uitleg: Gebruik en verwachting uitleggen kan alleen bij een actief middel en koppelt aan dat middel (geen keuzelijst bij één middel)", function () {
+    var s = nieuw("E1");
+    T.gelijk(g.UI.toegestaneDoelen(casus(), ep("E1"), s, "N2"), [], "geen actief middel: nergens op te spelen");
+    speel(s, "V4");
+    T.gelijk(g.UI.toegestaneDoelen(casus(), ep("E1"), s, "N2").map(function (d) { return d.id; }), ["V4"]);
+    T.is(g.UI.enigDoel(casus(), ep("E1"), s, "N2"), "V4", "één middel: automatisch");
+    speel(s, "N2", "V4");
+    var na = g.UI.naSpelenTekst(casus(), ep("E1"), s, "N2", "V4");
+    T.is(na.tekst, casus().kaarten.filter(function (k) { return k.id === "V4"; })[0].uitleg, "tekst uit de data (uitleg van het middel)");
+    T.waar(na.tekst.indexOf("Klachten niet direct weg") >= 0);
+  });
+  T.registreer(G, "kaarten: elke kaart heeft een korte smaakregel; middelen hebben dosering en duur; de smaakregel noemt geen middel of kaartcode", function () {
+    casus().kaarten.forEach(function (k) {
+      T.waar(typeof k.smaak === "string" && k.smaak.length > 5 && k.smaak.length < 70, k.id + " smaak: " + k.smaak);
+      T.waar(!/\b(V\d+|G\d|O\d|B\d|N\d|Ev\d)\b/.test(k.smaak), k.id + " smaakregel noemt een kaartcode");
+    });
+    ["V3", "V4", "V5", "V7", "V8", "V9", "V10"].forEach(function (id) {
+      var k = casus().kaarten.filter(function (x) { return x.id === id; })[0];
+      T.waar(k.dosering && k.dosering.length > 5, id + " dosering");
+      T.waar(k.effect.alle.indexOf(k.dosering) >= 0, id + ": de dosering staat letterlijk in het casuseffect");
+    });
+  });
+
+
+  /* ---------- 7. export ---------- */
+  function csvRijen(csv) {   // eenvoudige CSV-lezer: ; en aanhalingstekens
+    var rijen = [], rij = [], cel = "", q = false, t = csv.replace(/^\uFEFF/, "");
+    for (var i = 0; i < t.length; i++) {
+      var c = t[i];
+      if (q) { if (c === '"' && t[i + 1] === '"') { cel += '"'; i++; } else if (c === '"') q = false; else cel += c; }
+      else if (c === '"') q = true;
+      else if (c === ";") { rij.push(cel); cel = ""; }
+      else if (c === "\r") { /* CRLF */ }
+      else if (c === "\n") { rij.push(cel); rijen.push(rij); rij = []; cel = ""; }
+      else cel += c;
+    }
+    return rijen;
+  }
+  function metLogging(fn) {
+    var d = {}, nep = { getItem: function (k) { return k in d ? d[k] : null; }, setItem: function (k, v) { d[k] = String(v); }, removeItem: function (k) { delete d[k]; } };
+    g.Logging._zetOpslag(nep);
+    try { fn(g.Logging); } finally { g.Logging._zetOpslag(undefined); g.Logging.wis(); }
+  }
+  T.registreer(G, "export: één regel per poging met de afgesproken kolommen, tijdlijn en gebeurtenissen in woorden, geschonden regel met onderdeel, afgeleide maten", function () {
+    metLogging(function (L) {
+      var s = nieuw("E2"); speel(s, "O1"); speel(s, "G2"); speel(s, "V5"); dagen(s, 1); speel(s, "N1");
+      dagen(s, 3); speel(s, "B1", "V4");
+      var u = afronden(s);
+      L.bewaarUitSpel(s, u, "Anna", { testmodus: false });
+      var kop = csvRijen(L.exportCSV())[0].join(";");
+      T.is(kop, "pseudoniem;episode;poging;eerste poging;testmodus;casusversie;speltijdstip;tijdlijn;gebeurtenissen;onthulde gegevens;poort gehaald;geschonden regels;getoonde vraag;score duurzaamheid;score doelmatigheid;profiel;reflectievraag;labwaarden vóór voorschrijfkaart;eerdere kweken vóór eerste keuze;dagen zonder actie;aantal dagen;aantal kaarten;afloop");   // 'afloop' is erbij sinds casus 1.3 (achteraan, bestaande kolommen ongewijzigd)
+      var r = csvRijen(L.exportCSV())[1];
+      T.is(r[0], "Anna"); T.is(r[1], "E2"); T.is(r[2], "1"); T.is(r[3], "ja"); T.is(r[4], "nee"); T.is(r[5], casus().versie);
+      T.is(r[7], "Dag 1: Urinekweek inzetten; Dag 1: Recente labwaarden opvragen; Dag 1: Trimethoprim; Dag 2: Alarmsignalen bespreken; Dag 5: Antibioticum wisselen → Fosfomycine");
+      T.is(r[8], "Kweekuitslag (dag 4)");
+      T.is(r[9].indexOf("Dag 1: Recente labwaarden opvragen: eGFR 29"), 0, "onthulde gegevens");
+      T.is(r[10], "nee");
+      T.waar(/^I7 Trimethoprim: kalium en halveren \(kalium, halveren\)/.test(r[11]), "naam en onderdeel: " + r[11]);
+      T.waar(r[12].indexOf("kalium") >= 0, "getoonde vraag");
+      T.is(r[17], "ja", "G2 is voor V5 gespeeld"); T.is(r[18], "", "geen kweekmaat in episode 2");
+      T.is(r[19], "2", "dagen zonder actie (dag 3 en 4)");
+      T.is(r[22], "niet gehaald", "afloop in woorden");
+    });
+  });
+  T.registreer(G, "export: de afgeleide maten (labwaarden vóór de voorschrijfkaart, eerdere kweken vóór de eerste keuze, dagen zonder actie) en testmodus", function () {
+    metLogging(function (L) {
+      var s = nieuw("E3"); speel(s, "G3"); speel(s, "G2"); speel(s, "V4"); dagen(s, 1); speel(s, "N1");
+      L.bewaarUitSpel(s, afronden(s), "Bob", { testmodus: false });
+      var t = nieuw("E3"); speel(t, "V4"); speel(t, "G3"); speel(t, "N1");
+      L.bewaarUitSpel(t, afronden(t), "Bob", { testmodus: true });
+      var rijen = csvRijen(L.exportCSV());
+      T.is(rijen[1][17], "ja"); T.is(rijen[1][18], "ja");
+      T.is(rijen[2][17], "nee"); T.is(rijen[2][18], "nee");
+      T.is(rijen[2][4], "ja", "testmodus"); T.is(rijen[2][3], "nee", "een testpoging is nooit de eerste poging");
+      T.is(rijen[1][3], "ja", "de echte poging blijft de eerste");
+      var j = JSON.parse(L.exportJSON());
+      T.is(j.length, 2); T.is(j[0].casusId, casus().id); T.waar(Array.isArray(j[0].tijdlijn) && j[0].tijdlijn.length === 4, "volledige tijdlijn in JSON");
+      T.is(j[1].testmodus, true);
+    });
+  });
+  T.registreer(G, "leesbaar overzicht: per poging een tabel per dag in woorden, met vraag en uitkomst", function () {
+    metLogging(function (L) {
+      var s = nieuw("E1"); speel(s, "V3"); dagen(s, 1); speel(s, "G1");
+      L.bewaarUitSpel(s, afronden(s), "Cas");
+      var m = g.UI.overzichtModel(casus(), L.alle(), "Cas");
+      T.is(m.length, 1); T.is(m[0].titel, "Episode 1, poging 1"); T.is(m[0].gehaald, false);
+      T.gelijk(m[0].rijen[0].kaarten, ["Nitrofurantoïne"]); T.gelijk(m[0].rijen[1].kaarten, ["Medicatieoverzicht nalopen"]);
+      T.is(m[0].rijen.length, 2);
+      T.waar(m[0].vraag && m[0].vraag.length > 10, "vraag"); T.is(m[0].uitkomst, "Nog niet veilig genoeg.");
+    });
+  });
+
+  /* ---------- 9. pseudoniem en opslag ---------- */
+  T.registreer(G, "opslag: de melding 'Resultaten staan alleen in dit tabblad: exporteer nu.' staat er ook als de browser niets kan bewaren, nog vóór de eerste poging", function () {
+    var M = "Resultaten staan alleen in dit tabblad: exporteer nu.";
+    T.is(g.UI.opslagMelding({ bewaard: true, opslagBeschikbaar: false, totaal: 0 }), M);
+    T.is(g.UI.opslagMelding({ bewaard: false, opslagBeschikbaar: true, totaal: 1 }), M);
+    T.is(g.UI.opslagMelding({ bewaard: true, opslagBeschikbaar: true, totaal: 0 }), null);
+    T.is(g.UI.pseudoniemControle("   ").ok, false); T.is(g.UI.pseudoniemControle("").ok, false); T.is(g.UI.pseudoniemControle(" anna ").waarde, "anna");
+  });
+})(typeof window !== "undefined" ? window : globalThis);

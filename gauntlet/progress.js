@@ -1,0 +1,333 @@
+window.GAUNTLET = {
+ "goal": "Speelbaar prototype tutorialcasus UWI (Epic green cards)",
+ "bar": "Lat 1: casus-uwi.md (v1.1) als enige klinische bron + acceptatiecriteria A1–A8 (bouwopdracht §8): elke kaart, regel, gebeurtenis en feedbacktekst LETTERLIJK gelijk aan de casus; elke geldige route en foutroute geeft het verwachte resultaat; elke afwijking = FAIL. Lat 2: geen quiz, feedback zegt niet voor, labels verraden geen timing of oplossing; speel elke episode als student zonder voorkennis. Zie gauntlet/lat.md.",
+ "budget": "per stuk min 3 / max 5 rondes; stop ook bij 2 rondes zonder verbetering",
+ "level": "blind (verse criticus per ronde; A/B-labels procedureel verborgen, niet door aparte context)",
+ "status": "stopped",
+ "round": 5,
+ "maxRounds": 5,
+ "updated": "2026-10-12 01:19",
+ "units": [
+  {
+   "name": "S1 data-kaarten",
+   "round": 3,
+   "verdict": "PASS",
+   "evidence": "r3 PASS (min 3 rondes gehaald), BLIND=ONS, 0 letterlijke afwijkingen, 26 kaarten + doelen + V6-opties",
+   "artifact": ""
+  },
+  {
+   "name": "S2 data-e1",
+   "round": 4,
+   "verdict": "PASS",
+   "evidence": "r4 PASS, BLIND=ONS, 0 afwijkingen; 7 TODO_BART wachten op Bart",
+   "artifact": ""
+  },
+  {
+   "name": "S3 data-e2",
+   "round": 5,
+   "verdict": "PASS",
+   "evidence": "r5 PASS, BLIND=ONS, 0 afwijkingen; kleine observaties: TODO-teksten met jargon (A4/offset) en geval \"4e kaart op laatste dag\"",
+   "artifact": ""
+  },
+  {
+   "name": "S4 data-e3",
+   "round": 4,
+   "verdict": "FAIL",
+   "evidence": "r4 FAIL, 8 punten, BLIND=ONS; data en routes kloppen, 41 gedragsmutanten overleven zonder GOLD-pin; gestopt (geen ronde 5 gevraagd)",
+   "artifact": ""
+  },
+  {
+   "name": "S5 predicaten",
+   "round": 5,
+   "verdict": "FAIL",
+   "evidence": "max 5 rondes; code correct (BLIND=ONS); 4 ontbrekende testgaten door LEAD aangevuld op verzoek van de gebruiker (randgeval 1–4, elk groen op echte code en rood bij eigen mutant C58/D13/D14/D22) — NIET door een criticus beoordeeld",
+   "artifact": ""
+  },
+  {
+   "name": "S6 evaluatie+routes",
+   "round": 1,
+   "verdict": "PASS",
+   "evidence": "r1 PASS, BLIND=ONS, 0 afwijkingen (minimum 3 rondes vervallen op verzoek gebruiker); opmerkingen: UI toont zichtbaar/extraVragen niet bij schending; weglaatDownside ongebruikt",
+   "artifact": ""
+  },
+  {
+   "name": "S7 engine",
+   "round": 5,
+   "verdict": "FAIL",
+   "evidence": "max 5 rondes bereikt; gedrag correct (BLIND=ONS); onder de lat: de test die bewijst dat de engine géén casusnamen/drempels bevat is te omzeilen (17 echte omzeilingen); in de huidige engine zit aantoonbaar niets hardgecodeerd",
+   "artifact": ""
+  },
+  {
+   "name": "S8 overzicht",
+   "round": 2,
+   "verdict": "FAIL",
+   "evidence": "gestopt op verzoek van de gebruiker na ronde 2 (FAIL, 6 punten; wacht op stabiele S11-referentie)",
+   "artifact": ""
+  },
+  {
+   "name": "S9 ui",
+   "round": 1,
+   "verdict": "PENDING",
+   "evidence": "ronde 1 gebouwd (30 eigen tests; Playwright-speelscript 69/69); criticus op verzoek gestopt: GEEN onafhankelijk oordeel",
+   "artifact": ""
+  },
+  {
+   "name": "S10 logging",
+   "round": 3,
+   "verdict": "PASS",
+   "evidence": "r3 PASS (min 3 rondes gehaald), BLIND=ONS, 37/37 groen in Chromium; UI-koppeling nog te toetsen in S9",
+   "artifact": ""
+  },
+  {
+   "name": "S11 referentie",
+   "round": 1,
+   "verdict": "FAIL",
+   "evidence": "gestopt op verzoek van de gebruiker na ronde 1 (FAIL, 5 punten); bouwer r2 afgebroken, tussenstand van casussen/uwi-referentie.js staat in de repo (niet gereviewd)",
+   "artifact": ""
+  }
+ ],
+ "log": [
+  {
+   "round": 1,
+   "unit": "S10 logging",
+   "verdict": "FAIL",
+   "note": "tests wissen echte localStorage (F1); null-record crasht (F2); eerste-poging hoofdlettergevoelig/leeg pseudoniem (F3) → ronde 2"
+  },
+  {
+   "round": 1,
+   "unit": "S2 data-e1",
+   "verdict": "FAIL",
+   "note": "alleen N1 haalt poort (geen route-regel/TODO); V1+V2 inconsistente lezing; mutaties niet gevangen door tests; eigen bronkeuze raadplegen zonder TODO. BLIND=BRON (12/13 paren) → ronde 2"
+  },
+  {
+   "round": 1,
+   "unit": "S1 data-kaarten",
+   "verdict": "FAIL",
+   "note": "V3/V5 E2/E3-effect niet uit casus (F1); gekozenLezing K3 onjuist (F2); tests missen titel/labels/todo-inhoud (F3). BLIND=BRON → ronde 2"
+  },
+  {
+   "round": 2,
+   "unit": "S10 logging",
+   "verdict": "FAIL",
+   "note": "r1-punten weg; nieuw: tests.html rood in Chromium (download-test), kapotte velden crashen exportCSV, quota-verlies niet gemeld. BLIND=BRON → ronde 3"
+  },
+  {
+   "round": 1,
+   "unit": "S7 engine",
+   "verdict": "FAIL",
+   "note": "werkzaamheid hangt af van A/B-volgorde (F1); tests bewijzen M6/echte regeltaal niet (F2); naden: startToestanden, afrondenPasNa.., ontgrendeld. BLIND=ONS → ronde 2"
+  },
+  {
+   "round": 3,
+   "unit": "S10 logging",
+   "verdict": "PASS",
+   "note": "alle r1/r2-punten weg; 37/37 logging-tests groen in Node én Chromium; geen echte download; BLIND=ONS. Open: UI-koppeling bij S9"
+  },
+  {
+   "round": 1,
+   "unit": "S5 predicaten",
+   "verdict": "FAIL",
+   "note": "typfouten in platte vorm stil genegeerd (F1); uitSet/medicatieActief stil false/true (F2); volg-sortering en waar==-onbekend ongetest (F3); B1/B2/B3/B5 hardcoded (F4, vraagt casus.rollen). BLIND=ONS → ronde 2"
+  },
+  {
+   "round": 2,
+   "unit": "S2 data-e1",
+   "verdict": "FAIL",
+   "note": "medicatieTekst mist slotpunt (en test pint fout vast) (F1); raadplegen-bronnen zonder TODO (F2); TODO-markeringen niet vastgepind (F3); extern: rollen.pauzeer/pauze (F4). BLIND=BRON → ronde 3"
+  },
+  {
+   "round": 2,
+   "unit": "S1 data-kaarten",
+   "verdict": "FAIL",
+   "note": "data letterlijk correct (0 afwijkingen), maar doelenlijsten V6-E3/B2-E3/B5-E3/N2-E2/N2-E3 niet door tests bewaakt (F1, 13 overlevende mutanten); functie in data en verwijderde G2-TODO onopgemerkt (F2). BLIND=ONS → ronde 3"
+  },
+  {
+   "round": 1,
+   "unit": "S3 data-e2",
+   "verdict": "FAIL",
+   "note": "kop ontbreekt; episode.raadplegen nog aanwezig; brug hoofdletter; 3 TODO ontbreken (route zonder antibioticum, vroeg afronden vs I8, I7 bij vroege wissel); tests missen mutaties; verzonnen ontwerpnoot. BLIND=BRON → ronde 2"
+  },
+  {
+   "round": 2,
+   "unit": "S5 predicaten",
+   "verdict": "FAIL",
+   "note": "r1-punten weg; nieuw: validatie van verwijzingen hangt van spelstand af (stil false) (F1); PREDICATEN.md klopt daardoor niet (F2); testgaten (F3). Geen afwijking op casusdata. BLIND=ONS → ronde 3"
+  },
+  {
+   "round": 1,
+   "unit": "S4 data-e3",
+   "verdict": "FAIL",
+   "note": "medicatieregel slotpunt/medicatieTekst (F1); TODO-E3-8 laat (hypertensie) weg (F2); vroeg-afronden-TODO (F3); 4 TODO ontbreken (F4); 5 van 69 mutaties overleven (F5). Routes + invarianten I1,I4–I16 en 48-uursroute kloppen. BLIND=BRON → ronde 2"
+  },
+  {
+   "round": 2,
+   "unit": "S7 engine",
+   "verdict": "FAIL",
+   "note": "ontgrendeld negeert casusId (F1); volgendeDag niet atomisch (F2); >10 contractgedragingen ongetest, 27 overlevende mutaties (F3). Engine rekent correct in 9000 fuzz-spellen. BLIND=ONS → ronde 3"
+  },
+  {
+   "round": 3,
+   "unit": "S1 data-kaarten",
+   "verdict": "PASS",
+   "note": "230 controles 0 afwijkingen; 4637 mutaties, 1 equivalente overlever; 345 groen Node/371 Chromium; BLIND=ONS (15/15 paren byte-identiek)"
+  },
+  {
+   "round": 3,
+   "unit": "S5 predicaten",
+   "verdict": "FAIL",
+   "note": "geneste K.naGebeurtenis bij binnenBeurten stil false (F1); PREDICATEN.md claimt gevoelig altijd bekend (F2); hardcode-mutaties stop-rol/kaartUit-lijstnaam onzichtbaar (F3); 9 testgaten (F4); gestart op onbekend middel stil (F5). Naad: I7 E3 gebruikt van:2,tot:4 vs E2 1–3 (S4). BLIND=ONS → ronde 4"
+  },
+  {
+   "round": 2,
+   "unit": "S3 data-e2",
+   "verdict": "FAIL",
+   "note": "data letterlijk en gedragsmatig correct (60.000 routes, 0 verschillen); ontbrekende TODO ernst-volgorde en weglaatDownside (F1); geen I8-route/O2-zelfde-dag-test (F2); lab.datum ongetest (F3). BLIND=ONS → ronde 3"
+  },
+  {
+   "round": 3,
+   "unit": "S7 engine",
+   "verdict": "FAIL",
+   "note": "speelKaart/raadpleeg niet atomair; herkansing verliest afrondenPasNa..; ontgrendelen E3/herkansing latere episode onbewezen; 7 ongetest gedragingen; M6-bronscan omzeilbaar; foutmeldingen/casusVan ongetest; randgeval klachtenstatus (LEAD besliste). 21.000 fuzz-spellen 0 afwijkingen. BLIND=ONS → ronde 4"
+  },
+  {
+   "round": 2,
+   "unit": "S4 data-e3",
+   "verdict": "FAIL",
+   "note": "data inhoudelijk schoon (100 velden gelijk, 30 A/B-paren identiek, 1672 mutaties 0 overlevers); casus I15 \"monitoring binnen 1–3 dagen\" vs bouwopdracht \"binnen 2 beurten\" staat in geen TODO (F1). BLIND=ONS → ronde 3"
+  },
+  {
+   "round": 3,
+   "unit": "S3 data-e2",
+   "verdict": "FAIL",
+   "note": "data 0 afwijkingen (125.000 routes, 18 A/B-paren identiek); route-tests slagen leeg zonder Engine (F1); geen foutroute met B1 als start (I5/I7 via B1) (F2). BLIND=ONS → ronde 4"
+  },
+  {
+   "round": 4,
+   "unit": "S5 predicaten",
+   "verdict": "FAIL",
+   "note": "null als id stil geaccepteerd (F1); evalueer met lege ctx stil false (F2); 14 overlevende mutanten waaronder alsDan.als (F3); prestatie run-node 110 s was runner-probleem (vm-context) → door LEAD opgelost, suite nu 14 s / 479 groen. BLIND=ONS → ronde 5 (laatste)"
+  },
+  {
+   "round": 3,
+   "unit": "S2 data-e1",
+   "verdict": "FAIL",
+   "note": "data 0 afwijkingen, 20.000 reeksen 0 afwijkingen, BLIND=ONS; enige punt: eigen oracle in datatests (E1-6) — LEAD wijzigde E1-6 (oracle toegestaan als kruiscontrole). Nieuw gedetecteerd: risicogroep-uitleg staat in zichtbaar (E1, E3) → naar meta (ronde 4)"
+  },
+  {
+   "round": 3,
+   "unit": "S4 data-e3",
+   "verdict": "FAIL",
+   "note": "inhoud/gedrag correct (letterlijk 100%, 100.000 fuzz-plays 0 verschillen, 52 routes ok); vorm: geneste K (door LEAD toegestaan), TODO_BART-8 ontbreekt in data, risicogroep in zichtbaar, ontwerpnoten buiten meta, interne verwijzingen in TODO-teksten, slotpunt onthult; zonder pin 56 gedragsmutanten over. BLIND=ONS → ronde 4"
+  },
+  {
+   "round": 4,
+   "unit": "S3 data-e2",
+   "verdict": "FAIL",
+   "note": "statusteksten missen casus-slotpunt (spel aanwijsbaar in 2 A/B-paren); 4 E2-mutanten overleven (V3 in I4, I4 per moment, O2 zonder V5, terwijlKlachten). BLIND=BRON → ronde 5 (laatste)"
+  },
+  {
+   "round": 5,
+   "unit": "S5 predicaten",
+   "verdict": "FAIL",
+   "note": "code correct (5,2 mln evaluaties op echte Engine, 0 fouten; referentie-interpreter 0 verschillen; 188 beweringen waar; BLIND=ONS); 4 testgaten (zet met >1 id, pauze over wissel, twee gelijktijdige pauzes, K vóór anker) → maximum 5 rondes bereikt, gestopt"
+  },
+  {
+   "round": 4,
+   "unit": "S7 engine",
+   "verdict": "FAIL",
+   "note": "engine-gedrag correct (36.000 spellen, 14.000 geïnjecteerde fouten atomair, 120.000 ontgrendel-controles 0 afwijkingen); M6-bronscan nog te omzeilen (15/21 trucs; hardgecodeerde middelnamen glippen erdoor) (F1); 8 gedragingen ongetest o.a. gebeurtenis op laatste dag blijft in wachtend (F2). BLIND=ONS → ronde 5 (laatste)"
+  },
+  {
+   "round": 4,
+   "unit": "S2 data-e1",
+   "verdict": "PASS",
+   "note": "geen letterlijke afwijking; 20.000 reeksen 0 afwijkingen (ook tegen regels/evaluatie.js 3.000 afrondingen); 1133 mutaties, 2 equivalent; BLIND=ONS (16/16 paren identiek)"
+  },
+  {
+   "round": 1,
+   "unit": "S8 overzicht",
+   "verdict": "FAIL",
+   "note": "data-trouw maar niet casus-trouw: casuskolom Altijd fout (E1/E2), scorezinnen, Geldige routes/Brug/Bronconflict ontbreken in data; sectievolgorde/namen wijken af; hardgecodeerde tekst; jargon; geen index/zoek bij 56 vragen. BLIND=BRON → ronde 2 + nieuw stuk S11 (casusreferentie)"
+  },
+  {
+   "round": 5,
+   "unit": "S3 data-e2",
+   "verdict": "PASS",
+   "note": "0 afwijkingen; 60.000 routes 0 afwijkingen (ook tegen Evaluatie 6.000); zonder engine/predicaten 33 tests rood; 559 nieuwe mutaties; BLIND=ONS (23/24 paren identiek, 1 = bewuste meta-verberging)"
+  },
+  {
+   "round": 1,
+   "unit": "S11 referentie",
+   "verdict": "FAIL",
+   "note": "wat erin staat klopt (0 afwijkingen, 121 regels byte-identiek); ontbreekt: E2 kopbullet Kweekuitslag, E3 Trigger-kolom, Repertoire-alinea E2/E3 (F1,F2,F4); samengevoegde R3-string niet in casus (F3); sleutelvolgorde altijdFout ongetest (F5). BLIND=BRON → ronde 2"
+  },
+  {
+   "round": 2,
+   "unit": "S8 overzicht",
+   "verdict": "FAIL",
+   "note": "punten uit r1 grotendeels opgelost (geen hardcoded tekst, sectievolgorde, scorezinnen, zoekveld); referentie.js veranderde tijdens review (S11 r2): feedback-triggernamen, zichtbaar-als-ontbreekt-labels, patiëntkaartregels, repertoire, E3-gebeurtenissentabel, dubbele weergaven, verzonnen kolomkoppen, taalresten. BLIND=BRON → ronde 3 na S11"
+  },
+  {
+   "round": 0,
+   "unit": "(infra)",
+   "verdict": "PENDING",
+   "note": "API-spendlimiet bereikt: 4 agents afgebroken (S4 criticus r4, S6 criticus r1, S7 criticus r5, S11 bouwer r2); na reset herstart door LEAD"
+  },
+  {
+   "round": 5,
+   "unit": "S7 engine",
+   "verdict": "FAIL",
+   "note": "engine gedraagt zich goed (15.900 proeven 0 afwijkingen, 900 spellen met Evaluatie schoon, BLIND=ONS); bewijs voor M6/M8 niet waterdicht: scan omzeilbaar met opgebouwde id in rondAf/herkansing/ontgrendeld (F1), verstopte drempel 1 - -1 (F2), kaliumx/egfrmeting (F3), 5 ongeteste gedragingen (F4). Maximum 5 rondes bereikt, gestopt"
+  },
+  {
+   "round": 1,
+   "unit": "S6 evaluatie+routes",
+   "verdict": "PASS",
+   "note": "geen afwijking in poort/score/profiel/routetests; 118 eigen routes 177 runs 0 afwijkingen; 18.000 oracle-routes 0; 834 data-mutanten 0 overleefd door hele suite; BLIND=ONS (15/15 paren identiek). Minimum 3 rondes vervallen op verzoek van de gebruiker"
+  },
+  {
+   "round": 4,
+   "unit": "S4 data-e3",
+   "verdict": "FAIL",
+   "note": "teksten/TODO/routes foutloos (77 vergelijkingen 0 afwijkingen; 90 routes; oracle 7.611 plannen 0 verschillen; BLIND=ONS, 27/28 paren identiek); zonder GOLD-pin overleven 41 gedragsmutanten de hele suite (I11-keten 20, V-lijsten doelmatigheid 14, I8 3, onthul-sleutel 2, I6-vraagvariant 1, zichtbaar sick day 1). Geen ronde 5 gevraagd door gebruiker"
+  },
+  {
+   "round": 0,
+   "unit": "(eindcontrole)",
+   "verdict": "PASS",
+   "note": "data samengevoegd tot één casussen/uwi.js (82.114 tekens JSON identiek voor/na); suite 801 groen Node / 791 groen Chromium (tests.html, 0 paginafouten); UI-speelscript 69/69 incl. 121 routes via klikken; grep op klinische woorden in engine/regels/ui/index.html: 0 treffers; overzicht: 36 groen 7 rood (S8/S11 nog niet af)"
+  }
+ ],
+ "open": [
+  "TODO_BART-1…7 staan vooraf in gauntlet/contract.md §8; bouwers vullen aan (casus.todoBart)",
+  "TODO_BART-K1…K4 (S1): '—'-downsides N1/N2/N3/Ev1; E1-voorvoegsel V3/V5/O1; G2/O1/Ev1 ongesplitst; doelenlijsten afgeleid",
+  "S9 (UI) moet een pseudoniem afdwingen vóór Logging.bewaar (leeg pseudoniem geeft een fout)",
+  "S4 (E3-data): gebeurtenis A mist zet.statusNaBeurten:2 → geenVerbetering48 (I14/I16) werkt niet (gemeld door S7-criticus)",
+  "S9 moet bewaarUitSpel aanroepen, Logging.opslagStatus() melden ('Resultaten staan alleen in dit tabblad: exporteer nu.') en lege pseudoniem afvangen",
+  "Let op: bouwers mogen NIET git stash/pull/checkout gebruiken (gebeurde één keer, conflict hersteld door LEAD)",
+  "tests/data-e2.tests.js regel ~110 gebruikt k.effect.E2 → moet effect[ep] ?? effect.alle worden (S3 ronde 2); idem controleren in data-e1/e3, engine, UI, overzicht",
+  "TODO_BART-1 (I7 dag-lezing): LEAD koos cursusdag-lezing (O2 verschil 1–3; V6 halveren verschil ≥3) omdat de casusroute anders niet speelbaar is; Bart bevestigt",
+  "N2 (Gebruik en verwachting uitleggen) kan niet op V2/V1; route 'V2 (+ middel)' speelbaar alleen met extra V3/V4/V5 (hangt aan TODO_BART-5) — Bart",
+  "S9 geeft Logging.alle() gefilterd op pseudoniem mee aan Engine.ontgrendeld (API heeft bewust geen pseudoniem-parameter)",
+  "Opruimen bij integratie: mini-evaluators in tests/data-e1/e2/e3.tests.js vervangen door Evaluatie (S6); tests/data-e2: C komt niet als O1 de 5e kaart is (TODO_BART-E2-6, literale lezing)",
+  "TODO_BART-8: klachtenstatus na een werkzaam interlude — LEAD-keuze: geenVerbetering48 alleen in de eerste nul-periode (contract §3b)",
+  "TODO_BART-9: gebeurtenis die op de laatste dag triggert verschijnt nooit (blijft in state.wachtend); bijbehorende invarianten (I10/I11/I16/I15) gelden dan niet — LEAD-keuze, door Bart te bevestigen",
+  "LEAD-ingreep: in tests/data-kaarten.tests.js (S1, PASS) staat nu \"referentie\" in de toegestane casuskop-sleutels (mechanisch gevolg van S11); S1 wordt bij de eindcontrole nogmaals gedraaid",
+  "LEAD-ingreep 2: tests/engine.tests.js (S7) negeert nu casus.referentie bij het verzamelen van 'casuswoorden' (beschrijvende tekst, geen speldata); S7-criticus r5 ingelicht",
+  "LEAD-ingreep 2 (aangepast): tests/engine.tests.js (S7) negeert bij 'casuswoorden' nu casus.referentie, casus.todoBart en TODO_BART-sleutels (beschrijvende tekst, geen speldata) en de minimale woordenlijst is 400 (was 500); S7-criticus r5 wordt opnieuw gestart",
+  "Besluit gebruiker: S11, S8 en S9-criticus gestopt; S6/S9 max 2 rondes; S5 alleen 4 tests (gedaan)",
+  "Vraag aan Bart: moeten de zinnen uit \"Wat er zichtbaar wordt als een kaart ontbreekt\" (bv. \"Mevrouw weet niet wanneer ze moet bellen.\") ook bij een geschonden poort getoond worden, naast de ene Socratische vraag? Nu: nee (alleen vraag + downsides; zichtbaar-zinnen en extra vragen alleen bij gehaalde poort), waardoor die 7 zinnen de speler niet bereiken",
+  "Mogelijk ontbrekende TODO bij I16: Ev3 (verwijzen) mag ook vóór het 48-uursmoment; een route met Ev3 als eerste kaart haalt de poort terwijl de klachtenstatus 'geen verbetering' geldt (volgt bouwopdracht 6.1 letterlijk)",
+  "LEAD-ingreep 3: tests/ui.tests.js (S9): de nep-DOM-tests draaien alleen in Node (in een browser is window.document alleen-lezen); in de browser draait één rooktest op de echte DOM. Reden: 11 tests waren rood in tests.html (A3). Volledige speelcontrole: gauntlet/tools/speel-ui.js",
+  "Opmerking S4-criticus: de 3 E3-\"zichtbaar\"-zinnen zijn in het echte spel nooit te zien (UI toont ze alleen bij gehaalde poort; elke ontbrekende kaart in E3 schendt ook een invariant) — zelfde vraag aan Bart als hierboven"
+ ],
+ "belowBar": [
+  "S3 data-e2:: kleine restpunten (geen FAIL): enkele TODO-teksten bevatten nog jargon (A4, offset, in de data); TODO noemt het geval C-trigger op de laatste dag niet; medicatieTekst E2 zonder slotpunt (casus plaatst het na de verborgen ontwerpnotitie)",
+  "S5 predicaten:: de 4 testgaten zijn gedicht (door LEAD, niet blind beoordeeld, elk bewezen met de mutant van de criticus); 6 kleine punten zonder casusgevolg blijven (rapport S5_r5.md)",
+  "S11 referentie:: gestopt na ronde 1 FAIL (ontbrekende casustekst: E2-kopbullet, E3-gebeurtenissentabel, repertoire-alinea's; samengevoegde string); tussenstand niet gereviewd",
+  "S8 overzicht:: gestopt na ronde 2 FAIL: casusreferentie (feedbacktriggers, zichtbaar-als-ontbreekt-labels, patiëntkaartregels, repertoire, E3-gebeurtenissentabel) nog niet letterlijk getoond; dubbele weergaven; taalresten",
+  "S9 ui:: ronde 1 gebouwd maar NIET door een criticus beoordeeld (op verzoek gestopt)",
+  "S7 engine:: M6-bewijs (geen casusnamen/drempels in engine.js) niet waterdicht: de scan en de hernoemde-kopie-test sluiten een opgebouwde hardgecodeerde naam of drempel in rondAf/herkansing/ontgrendeld niet uit; 5 gedragingen ongetest; 11 ui-tests rood in Chromium (nep-DOM, hoort bij S9). De huidige engine bevat aantoonbaar geen casuswoorden (criticus: rename_check schoon).",
+  "S4 data-e3:: 41 gedragsmutaties overleven de hele suite zonder de snapshotpin (I11-keten, V-lijsten van doelmatigheid, I8-klachtendag, I6-vraagvariant, onthul-sleutel, zichtbaar-zin sick day); data-e3 roept Evaluatie.beoordeel niet zelf aan. Teksten en alle 90 criticusroutes zijn wel foutloos."
+ ]
+};
