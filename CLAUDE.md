@@ -48,4 +48,16 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 - Werkpakket D (20 nov) klaar: speelscript, docentenoverzicht, tests.html en casusbouwer groen in Chromium, Firefox en WebKit, via file:// én via een webserver zoals Pages. Hervatten na herladen en in een nieuw tabblad getest (8 controles erbij). `.nojekyll` toegevoegd. Niet live gecontroleerd: de echte Pages-site (github.io is vanuit de container niet bereikbaar; het spel staat er pas na samenvoegen van PR #1 in `main`).
 - Werkpakket F (20 nov) klaar: casusbouwer bijgewerkt naar casus 1.9. Nieuw (allemaal optioneel, met standaardwaarden): dagen en acties per dag als getal, gebeurtenissen op een vaste dag of x dagen na een kaart, escalatie met verloren episode, kaart die de episode stopt (met oordeelzinnen), keuzemenu bij doelkaarten, overbodige kaarten met ondergrens, restprofiel. Controle en markdown kennen die velden; oud werk (.json of opgeslagen in de browser) wordt bij openen aangevuld (`migreer`). Voorbeeld = casus 1.9. Niet in de bouwer: gevolgzinnen per episode voor overgeërfde regels, hintvarianten per voorwaarde (staan als extra feedback).
 - PR #2 (werkpakket F) samengevoegd in `main` op 21 nov 2026.
-- Werkpakketten: A–F klaar.
+- Werkpakketten: A–F klaar. Volgende: G (klaargezet 21 nov 2026, zie hieronder).
+
+## Werkpakket G: resultatenoverzicht na het testspelen
+Doel: na een testronde ziet Bart per episode waar studenten vastlopen, om te beslissen welke regel, kaart of tekst moet veranderen. Alleen de eerste poging telt als meting; pogingen in testmodus tellen niet mee.
+
+1. **Export aanvullen (klein, eerst).** De beoordeling kent `aftrek` (overbodige kaarten: `{ as, naam, delta, kaart, doel, tekst }`), maar `engine/logging.js` slaat die niet op. Voeg `aftrek` toe aan het JSON-record (alleen JSON; de CSV-kolommen blijven gelijk). Oude records zonder `aftrek`: lege lijst. Test in `tests/logging.tests.js`.
+2. **`tools/resultaten.html`**, zelfstandig zoals de casusbouwer (file://, geen internet, niets verstuurd; Capsule Pop-logo rechtsonder in de voettekst).
+   - Invoer: één of meer JSON-exportbestanden van het spel (slepen of kiezen). Dezelfde poging uit twee bestanden telt één keer (pseudoniem + episode + poging + speltijdstip). Kapotte bestanden geven een melding, geen crash. CSV hoeft niet.
+   - Per episode, alleen eerste pogingen zonder testmodus: aantal studenten; poort gehaald / niet gehaald / verloren (aantal en %); geschonden veiligheidsregels, gesorteerd op hoe vaak (met regelnaam uit `casussen/uwi.js`); verdeling van de voorschrijfprofielen (ook restprofiel); overbodige kaarten, gesorteerd op hoe vaak (alleen uit bestanden die `aftrek` hebben; zeg hoeveel bestanden dat niet hebben).
+   - Ook tonen: aantal ingelezen bestanden, pogingen en studenten, en hoeveel pogingen zijn overgeslagen (herkansing, testmodus).
+   - Niet doen: grafieken, cijfers per student, groepen vergelijken, opslaan in de browser.
+3. **Tests.** `gauntlet/tools/check-resultaten.js` (Playwright, `--browser=`), opnemen in `browsers.js`. Maak testexports door het spel te spelen met `speel-iteratie1.js`-stappen of door records op te bouwen met `Logging`; controleer de tellingen, het negeren van testmodus en herkansingen, dubbele bestanden en een kapot bestand. Draai alles ook met `--pages`.
+4. **Afronden.** README (één alinea onder "Wat staat waar"), `CLAUDE.md` Stand bijwerken, PR; samenvoegen alleen op Barts verzoek.
