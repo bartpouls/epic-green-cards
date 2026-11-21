@@ -70,6 +70,15 @@ async function losseControles(naam) {
     check("casusbouwer: geen fouten in de pagina", f.length === 0, f.join(" | "));
     await ctx.close();
 
+    // 2b. instructie voor studenten: opent, logo en link naar het spel werken
+    f = []; ({ ctx, page } = await pagina(browser, f));
+    await page.goto(url("instructie-studenten.html")); await page.waitForTimeout(300);
+    const logoOk = await page.evaluate(() => { const i = document.querySelector("footer img"); return !!i && i.complete && i.naturalWidth > 0; });
+    check("instructie: opent zonder fouten, logo zichtbaar", f.length === 0 && logoOk, f.join(" | "));
+    await page.click("a[href='index.html']"); await page.waitForSelector("#pseudoniem");
+    check("instructie: de link opent het spel", f.length === 0, f.join(" | "));
+    await ctx.close();
+
     // 3. routezoekerrapport opent zonder fouten
     f = []; ({ ctx, page } = await pagina(browser, f));
     await page.goto(url("tools/routezoeker-rapport.html")); await page.waitForTimeout(500);
