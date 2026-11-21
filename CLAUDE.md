@@ -10,7 +10,7 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 | `casussen/uwi-referentie.js` | Casustekst voor het docentenoverzicht. |
 | `engine/`, `regels/`, `ui/` | Spelmotor, regeltaal + evaluatie, weergave. `regels/PREDICATEN.md` beschrijft de regeltaal. |
 | `tests/` | Testsuite (ook in de browser via `tests/tests.html`). |
-| `tools/` | Docentenoverzicht, casusbouwer, routezoeker + rapport. |
+| `tools/` | Docentenoverzicht, casusbouwer, resultatenoverzicht, routezoeker + rapport. |
 | `gauntlet/tools/` | Hulpscripts (zie hieronder). `gauntlet/rapporten/` staat in `.gitignore`; oude rapporten staan op branch `archief/gauntlet-rapporten`. |
 
 ## Testen
@@ -18,8 +18,9 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 - Spelen via de interface: `node gauntlet/tools/speel-iteratie1.js | grep -v '^PASS'`.
 - Docentenoverzicht: `node gauntlet/tools/check-overzicht.js | grep -v '^PASS'`.
 - Casusbouwer: `node gauntlet/tools/check-casusbouwer.js | grep -v '^PASS'` (voorbeeld 1.9, alle stappen, oud werk aanvullen, controles).
+- Resultatenoverzicht: `node gauntlet/tools/check-resultaten.js | grep -v '^PASS'` (testexports met de echte `Logging`: tellingen, testmodus, herkansingen, dubbele en kapotte bestanden).
 - Routezoeker: `node tools/routezoeker.js` (alleen bij wijzigingen in regels, kaarten of dagverloop).
-- Andere browsers (werkpakket D): `node gauntlet/tools/browsers.js` draait tests.html, routezoekerrapport, speelscript, docentenoverzicht en de casusbouwercontrole in Chromium, Firefox en WebKit (Safari-motor). `--pages` doet hetzelfde via een lokale webserver onder `/epic-green-cards/`, zoals GitHub Pages. Losse scripts: `--browser=firefox|webkit`.
+- Andere browsers (werkpakket D): `node gauntlet/tools/browsers.js` draait tests.html, routezoekerrapport, speelscript, docentenoverzicht, de casusbouwercontrole en de resultatencontrole in Chromium, Firefox en WebKit (Safari-motor). `--pages` doet hetzelfde via een lokale webserver onder `/epic-green-cards/`, zoals GitHub Pages. Losse scripts: `--browser=firefox|webkit`.
   - Zet vooraf `export PLAYWRIGHT_BROWSERS_PATH=/opt/pw-extra`. Daar staan alle drie de browsers: het opstartscript van de omgeving "epic-green-cards" installeert Firefox en WebKit en linkt Chromium (sinds 21 nov 2026). Ontbreekt `/opt/pw-extra` (andere omgeving, of het script liep niet), installeer dan met hetzelfde script: `mkdir -p /opt/pw-extra`, dan `node /opt/node-tools/node_modules/playwright/cli.js install firefox webkit` en `... install-deps firefox webkit` met die `PLAYWRIGHT_BROWSERS_PATH`, en `ln -sfn /opt/pw-browsers/chromium* /opt/pw-extra/`. Dat vraagt de downloadserver van Playwright, die alleen de omgeving "epic-green-cards" toestaat.
   - Echte Safari (Mac/iPad) en Edge test Bart zelf met de hand; WebKit en Chromium dekken hun motoren.
 
@@ -48,9 +49,10 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 - Werkpakket D (20 nov) klaar: speelscript, docentenoverzicht, tests.html en casusbouwer groen in Chromium, Firefox en WebKit, via file:// én via een webserver zoals Pages. Hervatten na herladen en in een nieuw tabblad getest (8 controles erbij). `.nojekyll` toegevoegd. Niet live gecontroleerd: de echte Pages-site (github.io is vanuit de container niet bereikbaar; het spel staat er pas na samenvoegen van PR #1 in `main`).
 - Werkpakket F (20 nov) klaar: casusbouwer bijgewerkt naar casus 1.9. Nieuw (allemaal optioneel, met standaardwaarden): dagen en acties per dag als getal, gebeurtenissen op een vaste dag of x dagen na een kaart, escalatie met verloren episode, kaart die de episode stopt (met oordeelzinnen), keuzemenu bij doelkaarten, overbodige kaarten met ondergrens, restprofiel. Controle en markdown kennen die velden; oud werk (.json of opgeslagen in de browser) wordt bij openen aangevuld (`migreer`). Voorbeeld = casus 1.9. Niet in de bouwer: gevolgzinnen per episode voor overgeërfde regels, hintvarianten per voorwaarde (staan als extra feedback).
 - PR #2 (werkpakket F) samengevoegd in `main` op 21 nov 2026.
-- Werkpakketten: A–F klaar. Volgende: G (klaargezet 21 nov 2026, zie hieronder).
+- Werkpakket G (21 nov) klaar, PR open: `tools/resultaten.html` (resultatenoverzicht na het testspelen) en `aftrek` in de JSON-export. Records van vóór G houden geen `aftrek`-veld (zodat het overzicht ze herkent en meldt); daar tellen ze als lege lijst. Heeft een student in één episode twee eerste pogingen (twee apparaten), dan telt de vroegste.
+- Werkpakketten: A–G klaar.
 
-## Werkpakket G: resultatenoverzicht na het testspelen
+## Werkpakket G: resultatenoverzicht na het testspelen (klaar, 21 nov 2026)
 Doel: na een testronde ziet Bart per episode waar studenten vastlopen, om te beslissen welke regel, kaart of tekst moet veranderen. Alleen de eerste poging telt als meting; pogingen in testmodus tellen niet mee.
 
 1. **Export aanvullen (klein, eerst).** De beoordeling kent `aftrek` (overbodige kaarten: `{ as, naam, delta, kaart, doel, tekst }`), maar `engine/logging.js` slaat die niet op. Voeg `aftrek` toe aan het JSON-record (alleen JSON; de CSV-kolommen blijven gelijk). Oude records zonder `aftrek`: lege lijst. Test in `tests/logging.tests.js`.

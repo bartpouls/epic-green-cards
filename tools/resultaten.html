@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resultatenoverzicht — Epic green cards</title>
+<style>
+:root{
+  --bg:#f6f7f5; --kaart:#ffffff; --tekst:#1f2a24; --zacht:#5b675f; --lijn:#d9ded9;
+  --accent:#2f7d4f; --accent-licht:#e4f2ea; --waarschuw:#b45309; --waarschuw-licht:#fdf0dc;
+  --fout:#b42318; --fout-licht:#fde8e6;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#161a17;--kaart:#1f2521;--tekst:#e8ece9;--zacht:#a3afa7;--lijn:#334038;
+  --accent:#58b883;--accent-licht:#1d3a2a;--waarschuw:#f0a64a;--waarschuw-licht:#3a2c14;--fout:#ff8a80;--fout-licht:#3d1f1c;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tekst);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header.top{background:var(--kaart);border-bottom:1px solid var(--lijn);padding:12px 20px}
+header.top h1{font-size:18px;margin:0}
+header.top .sub{color:var(--zacht);font-size:13px;margin:2px 0 0}
+main{max-width:1100px;margin:0 auto;padding:20px}
+.paneel{background:var(--kaart);border:1px solid var(--lijn);border-radius:12px;padding:20px;margin:0 0 16px}
+.paneel h2{margin:0 0 4px;font-size:20px}
+.paneel h3{margin:18px 0 4px;font-size:16px}
+.zacht{color:var(--zacht);font-size:14px}
+#sleep{border:2px dashed var(--lijn);border-radius:12px;padding:22px;text-align:center}
+#sleep.boven{border-color:var(--accent);background:var(--accent-licht)}
+button,.knop{font:inherit;border:1px solid var(--lijn);background:var(--kaart);color:var(--tekst);padding:7px 12px;border-radius:8px;cursor:pointer}
+button:hover,.knop:hover{border-color:var(--accent)}
+.knop.primair{background:var(--accent);color:#fff;border-color:var(--accent)}
+.knop input{display:none}
+.melding{border-radius:8px;padding:8px 12px;margin:6px 0;font-size:14px}
+.melding.fout{background:var(--fout-licht);border:1px solid var(--fout)}
+.melding.let{background:var(--waarschuw-licht);border:1px solid var(--waarschuw)}
+table.t{border-collapse:collapse;width:100%;font-size:14px;margin:6px 0}
+table.t th,table.t td{border:1px solid var(--lijn);padding:6px 9px;text-align:left;vertical-align:top}
+table.t th{background:var(--accent-licht)}
+table.t td.getal,table.t th.getal{text-align:right;white-space:nowrap;width:7em}
+ul.kort{margin:6px 0;padding-left:20px}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Resultatenoverzicht</h1>
+  <p class="sub">Waar lopen studenten vast? Alleen de eerste poging per student telt; herkansingen en pogingen in testmodus tellen niet mee. De bestanden blijven op deze computer: er wordt niets verstuurd of bewaard.</p>
+</header>
+<main>
+  <section class="paneel">
+    <div id="sleep">
+      <p style="margin:0 0 10px">Sleep hier de JSON-bestanden die het spel heeft geëxporteerd (<em>resultaten_….json</em>), of kies ze.</p>
+      <label class="knop primair">Bestanden kiezen<input type="file" id="bestanden" accept=".json,application/json" multiple></label>
+      <button id="bOpnieuw" type="button">Opnieuw beginnen</button>
+    </div>
+    <div id="meldingen"></div>
+  </section>
+  <div id="uitkomst"></div>
+</main>
+<footer style="max-width:1100px;margin:0 auto;padding:0 20px 28px;color:var(--zacht);font-size:12px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px"><span>Onderwijsconcept, geen klinisch advies. Licentie: CC BY-NC-SA 4.0.</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="133 33 134 270" width="20" height="40" role="img" aria-label="Capsule Pop"><title>Capsule Pop logo, rust-stand</title><path d="M140,172 V100 A60,60 0 0 1 260,100 V172 Z" fill="#F28C28"/><path d="M140,172 H260 V236 A60,60 0 0 1 140,236 Z" fill="#1F8A9E"/><path d="M226,104 A30,30 0 0 0 212,76 L222,64 A42,42 0 0 1 242,104 V156 H226 Z" fill="#C2620E"/><path d="M242,176 H258 V236 A58,58 0 0 1 230,286 L223,274 A44,44 0 0 0 242,236 Z" fill="#14606F"/><circle cx="178" cy="198" r="5" fill="#8FD3DB"/><circle cx="200" cy="214" r="7" fill="#F6C343"/><circle cx="224" cy="196" r="4" fill="#FBF4E6"/><circle cx="186" cy="236" r="6" fill="#FBF4E6"/><circle cx="214" cy="248" r="5" fill="#8FD3DB"/><circle cx="174" cy="262" r="4" fill="#F6C343"/><circle cx="198" cy="272" r="6" fill="#8FD3DB"/><circle cx="228" cy="224" r="3.5" fill="#F6C343"/><path d="M172,86 A36,36 0 0 1 204,74" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/><circle cx="215" cy="79" r="3" fill="#FFFFFF"/><path d="M260.0,175.0 L260.0,100.0 L260.0,98.5 L259.9,97.1 L259.8,95.6 L259.7,94.1 L259.5,92.7 L259.4,91.2 L259.1,89.7 L258.8,88.3 L258.5,86.9 L258.2,85.4 L257.8,84.0 L257.4,82.6 L257.0,81.2 L256.5,79.8 L256.0,78.4 L255.4,77.0 L254.9,75.7 L254.2,74.3 L253.6,73.0 L252.9,71.7 L252.2,70.4 L251.5,69.2 L250.7,67.9 L249.9,66.7 L249.1,65.5 L248.2,64.3 L247.3,63.1 L246.4,61.9 L245.4,60.8 L244.5,59.7 L243.5,58.6 L242.4,57.6 L241.4,56.5 L240.3,55.5 L239.2,54.6 L238.1,53.6 L236.9,52.7 L235.7,51.8 L234.5,50.9 L233.3,50.1 L232.1,49.3 L230.8,48.5 L229.6,47.8 L228.3,47.1 L227.0,46.4 L225.7,45.8 L224.3,45.1 L223.0,44.6 L221.6,44.0 L220.2,43.5 L218.8,43.0 L217.4,42.6 L216.0,42.2 L214.6,41.8 L213.1,41.5 L211.7,41.2 L210.3,40.9 L208.8,40.6 L207.3,40.5 L205.9,40.3 L204.4,40.2 L202.9,40.1 L201.5,40.0 L200.0,40.0 L198.5,40.0 L197.1,40.1 L195.6,40.2 L194.1,40.3 L192.7,40.5 L191.2,40.6 L189.7,40.9 L188.3,41.2 L186.9,41.5 L185.4,41.8 L184.0,42.2 L182.6,42.6 L181.2,43.0 L179.8,43.5 L178.4,44.0 L177.0,44.6 L175.7,45.1 L174.3,45.8 L173.0,46.4 L171.7,47.1 L170.4,47.8 L169.2,48.5 L167.9,49.3 L166.7,50.1 L165.5,50.9 L164.3,51.8 L163.1,52.7 L161.9,53.6 L160.8,54.6 L159.7,55.5 L158.6,56.5 L157.6,57.6 L156.5,58.6 L155.5,59.7 L154.6,60.8 L153.6,61.9 L152.7,63.1 L151.8,64.3 L150.9,65.5 L150.1,66.7 L149.3,67.9 L148.5,69.2 L147.8,70.4 L147.1,71.7 L146.4,73.0 L145.8,74.3 L145.1,75.7 L144.6,77.0 L144.0,78.4 L143.5,79.8 L143.0,81.2 L142.6,82.6 L142.2,84.0 L141.8,85.4 L141.5,86.9 L141.2,88.3 L140.9,89.7 L140.6,91.2 L140.5,92.7 L140.3,94.1 L140.2,95.6 L140.1,97.1 L140.0,98.5 L140.0,100.0 L140.0,236.0 L140.0,237.5 L140.1,238.9 L140.2,240.4 L140.3,241.9 L140.5,243.3 L140.6,244.8 L140.9,246.3 L141.2,247.7 L141.5,249.1 L141.8,250.6 L142.2,252.0 L142.6,253.4 L143.0,254.8 L143.5,256.2 L144.0,257.6 L144.6,259.0 L145.1,260.3 L145.8,261.7 L146.4,263.0 L147.1,264.3 L147.8,265.6 L148.5,266.8 L149.3,268.1 L150.1,269.3 L150.9,270.5 L151.8,271.7 L152.7,272.9 L153.6,274.1 L154.6,275.2 L155.5,276.3 L156.5,277.4 L157.6,278.4 L158.6,279.5 L159.0,279.8 L159.0,175.0 Z M159.1,98.0 L159.2,96.0 L159.4,94.0 L159.8,92.0 L160.2,90.0 L160.8,88.1 L161.4,86.2 L162.1,84.3 L162.9,82.5 L163.8,80.7 L164.8,78.9 L165.9,77.2 L167.1,75.6 L168.3,74.0 L169.6,72.5 L171.0,71.0 L172.5,69.6 L174.0,68.3 L175.6,67.1 L177.2,65.9 L178.9,64.8 L180.7,63.8 L182.5,62.9 L184.3,62.1 L186.2,61.4 L188.1,60.8 L190.0,60.2 L192.0,59.8 L194.0,59.4 L196.0,59.2 L198.0,59.1 L200.0,59.0 L202.0,59.1 L204.0,59.2 L206.0,59.4 L208.0,59.8 L210.0,60.2 L211.9,60.8 L213.8,61.4 L215.7,62.1 L217.5,62.9 L219.3,63.8 L221.1,64.8 L222.8,65.9 L224.4,67.1 L226.0,68.3 L227.5,69.6 L229.0,71.0 L230.4,72.5 L231.7,74.0 L232.9,75.6 L234.1,77.2 L235.2,78.9 L236.2,80.7 L237.1,82.5 L237.9,84.3 L238.6,86.2 L239.2,88.1 L239.8,90.0 L240.2,92.0 L240.6,94.0 L240.8,96.0 L240.9,98.0 L241.0,100.1 L241.0,153.0 L159.0,153.0 L159.0,100.1 Z" fill="#1B2230" fill-rule="evenodd"/><path d="M259.0,171.0 L259.0,99.9 L258.9,97.1 L258.7,94.2 L258.4,91.3 L257.9,88.5 L257.2,85.7 L256.5,82.9 L255.6,80.1 L254.5,77.4 L253.3,74.8 L252.0,72.2 L250.6,69.7 L249.1,67.2 L247.4,64.9 L245.6,62.6 L243.7,60.4 L241.7,58.3 L239.6,56.3 L237.4,54.4 L235.1,52.6 L232.8,50.9 L230.3,49.4 L227.8,48.0 L225.2,46.7 L222.6,45.5 L219.9,44.4 L217.1,43.5 L214.3,42.8 L211.5,42.1 L208.7,41.6 L205.8,41.3 L202.9,41.1 L200.0,41.0 L197.1,41.1 L194.2,41.3 L191.3,41.6 L188.5,42.1 L185.7,42.8 L182.9,43.5 L180.1,44.4 L177.4,45.5 L174.8,46.7 L172.2,48.0 L169.7,49.4 L167.2,50.9 L164.9,52.6 L162.6,54.4 L160.4,56.3 L158.3,58.3 L156.3,60.4 L154.4,62.6 L152.6,64.9 L150.9,67.2 L149.4,69.7 L148.0,72.2 L146.7,74.8 L145.5,77.4 L144.4,80.1 L143.5,82.9 L142.8,85.7 L142.1,88.5 L141.6,91.3 L141.3,94.2 L141.1,97.1 L141.0,99.9 L141.0,246.9 L141.2,247.7 L141.5,249.1 L141.8,250.6 L142.2,252.0 L142.6,253.4 L143.0,254.8 L143.5,256.2 L144.0,257.6 L144.6,259.0 L145.1,260.3 L145.8,261.7 L146.4,263.0 L147.1,264.3 L147.8,265.6 L148.5,266.8 L149.3,268.1 L150.1,269.3 L150.9,270.5 L151.8,271.7 L152.7,272.9 L153.6,274.1 L154.6,275.2 L155.0,275.7 L155.0,171.0 Z M155.1,97.8 L155.2,95.6 L155.5,93.4 L155.9,91.2 L156.4,89.1 L156.9,86.9 L157.6,84.8 L158.4,82.8 L159.3,80.8 L160.3,78.8 L161.4,76.9 L162.6,75.0 L163.9,73.2 L165.2,71.5 L166.7,69.8 L168.2,68.2 L169.8,66.7 L171.5,65.2 L173.2,63.9 L175.0,62.6 L176.9,61.4 L178.8,60.3 L180.8,59.3 L182.8,58.4 L184.8,57.6 L186.9,56.9 L189.1,56.4 L191.2,55.9 L193.4,55.5 L195.6,55.2 L197.8,55.1 L200.0,55.0 L202.2,55.1 L204.4,55.2 L206.6,55.5 L208.8,55.9 L210.9,56.4 L213.1,56.9 L215.2,57.6 L217.2,58.4 L219.2,59.3 L221.2,60.3 L223.1,61.4 L225.0,62.6 L226.8,63.9 L228.5,65.2 L230.2,66.7 L231.8,68.2 L233.3,69.8 L234.8,71.5 L236.1,73.2 L237.4,75.0 L238.6,76.9 L239.7,78.8 L240.7,80.8 L241.6,82.8 L242.4,84.8 L243.1,86.9 L243.6,89.1 L244.1,91.2 L244.5,93.4 L244.8,95.6 L244.9,97.8 L245.0,100.1 L245.0,157.0 L155.0,157.0 L155.0,100.1 Z" fill="#FBF4E6" fill-rule="evenodd"/><path d="M140,236 V100 A60,60 0 0 1 260,100 V236 A60,60 0 0 1 140,236 Z" fill="none" stroke="#1B2230" stroke-width="5" stroke-linejoin="round"/></svg></footer>
+<script src="../casussen/uwi.js"></script>
+<script>
+/* Werkpakket G: resultatenoverzicht na het testspelen. Leest JSON-exportbestanden van het spel (engine/logging.js, exportJSON).
+   Alleen in het geheugen van dit tabblad: niets wordt verstuurd of in de browser bewaard.
+   Telregels:
+   - Dezelfde poging uit twee bestanden telt één keer (pseudoniem + casus + episode + poging + testmodus + speltijdstip).
+   - Meting = eerste poging zonder testmodus. Heeft een student in één episode toch meer dan één eerste poging (bv. op twee
+     apparaten gespeeld), dan telt de vroegste; de andere telt als herkansing.
+   - Overbodige kaarten komen uit het veld `aftrek`; records van vóór werkpakket G hebben dat niet (die tellen dan niet mee). */
+(function (g) {
+  "use strict";
+  var AFLOOP = [["gehaald", "Poort gehaald"], ["nietGehaald", "Poort niet gehaald"], ["verloren", "Verloren (episode gestopt)"]];
+  var bestanden = [];   // { naam, tekst }
+
+  function casus() { return (g.CASUSSEN && g.CASUSSEN[0]) || null; }
+  function schoon(s) { return (s === undefined || s === null) ? "" : String(s).trim(); }
+  function norm(s) { var t = schoon(s); try { t = t.normalize("NFC"); } catch (e) { /* oud */ } return t.toLowerCase(); }
+  function isObj(x) { return x !== null && typeof x === "object" && !Array.isArray(x); }
+  function lijst(x) { return Array.isArray(x) ? x : []; }
+
+  function episodesVan(c) { return c ? lijst(c.episodes) : []; }
+  function episodeTitel(c, id) {
+    var ep = episodesVan(c).filter(function (e) { return e.id === id; })[0];
+    var nr = String(id).replace(/^E/, "");
+    return ep && ep.titel ? ep.titel : (/^\d+$/.test(nr) ? "Episode " + nr : "Episode " + id);
+  }
+  function regelNaam(c, epId, id, detail) {
+    var r = (c ? lijst(c.regelnamen) : []).filter(function (x) { return x && x.episode === epId && x.invariant === id; })[0];
+    if (r && r.naam) return r.naam;
+    return detail || "";
+  }
+  function kaartLabel(c, epId, id) {
+    if (id === null || id === undefined) return "";
+    var k = (c ? lijst(c.kaarten) : []).filter(function (x) { return x.id === id; })[0];
+    if (k) return k.label;
+    var ep = episodesVan(c).filter(function (e) { return e.id === epId; })[0];
+    var m = lijst(ep && ep.patient && ep.patient.medicatie).filter(function (x) { return x.id === id; })[0];
+    return m ? m.label : String(id);
+  }
+  function afloopVan(r) {
+    if (r.afloop === "gehaald" || r.afloop === "nietGehaald" || r.afloop === "verloren") return r.afloop;
+    if (typeof r.poortGehaald === "boolean") return r.poortGehaald ? "gehaald" : "nietGehaald";
+    if (Array.isArray(r.geschonden)) return r.geschonden.length ? "nietGehaald" : "gehaald";
+    return "onbekend";
+  }
+
+  // Kern: bestanden [{ naam, tekst }] -> tellingen. Geen DOM; ook bruikbaar in de tests (window.__RES.analyseer).
+  function analyseer(lijstBestanden) {
+    var c = casus();
+    var uit = { bestanden: 0, kapot: [], pogingen: 0, studenten: 0, dubbel: 0, testmodus: 0, herkansing: 0, dubbeleEerste: 0,
+      onbruikbaar: 0, zonderAftrek: 0, episodes: [] };
+    var gezien = {}, alleStudenten = {}, eerste = {};   // eerste: episode -> student -> record
+    lijstBestanden.forEach(function (b) {
+      var data;
+      try { data = JSON.parse(String(b.tekst).replace(/^﻿/, "")); }
+      catch (e) { uit.kapot.push({ naam: b.naam, reden: "dit is geen leesbaar JSON-bestand" }); return; }
+      if (!Array.isArray(data)) {
+        uit.kapot.push({ naam: b.naam, reden: "dit is geen resultatenbestand van het spel (verwacht: een lijst pogingen)" }); return;
+      }
+      var records = data.filter(function (r) { return isObj(r) && schoon(r.pseudoniem) !== "" && schoon(r.episodeId) !== ""; });
+      uit.onbruikbaar += data.length - records.length;
+      if (data.length && !records.length) { uit.kapot.push({ naam: b.naam, reden: "er staan geen bruikbare pogingen in" }); return; }
+      uit.bestanden++;
+      var zonder = false;
+      records.forEach(function (r) {
+        var sleutel = [norm(r.pseudoniem), norm(r.casusId), norm(r.episodeId), r.pogingnummer, !!r.testmodus, schoon(r.tijdstempel)].join("\u0001");
+        if (gezien[sleutel]) { uit.dubbel++; return; }
+        gezien[sleutel] = true;
+        uit.pogingen++;
+        alleStudenten[norm(r.pseudoniem)] = true;
+        if (r.testmodus) { uit.testmodus++; return; }
+        var isEerste = typeof r.eerstePoging === "boolean" ? r.eerstePoging : r.pogingnummer === 1;
+        if (!isEerste) { uit.herkansing++; return; }
+        var ep = schoon(r.episodeId), st = norm(r.pseudoniem);
+        eerste[ep] = eerste[ep] || {};
+        var al = eerste[ep][st];
+        if (al) {
+          uit.herkansing++; uit.dubbeleEerste++;
+          if (schoon(r.tijdstempel) < schoon(al.tijdstempel)) eerste[ep][st] = r;
+        } else eerste[ep][st] = r;
+        if (!Array.isArray(r.aftrek)) zonder = true;
+      });
+      if (zonder) uit.zonderAftrek++;
+    });
+    uit.studenten = Object.keys(alleStudenten).length;
+
+    var volgorde = episodesVan(c).map(function (e) { return e.id; });
+    Object.keys(eerste).sort().forEach(function (id) { if (volgorde.indexOf(id) < 0) volgorde.push(id); });
+    volgorde.forEach(function (epId) {
+      var recs = Object.keys(eerste[epId] || {}).map(function (k) { return eerste[epId][k]; });
+      var ep = episodesVan(c).filter(function (e) { return e.id === epId; })[0];
+      var e = { id: epId, titel: episodeTitel(c, epId), studenten: recs.length, afloop: {}, geschonden: [], profielen: [],
+        overbodig: [], metAftrek: 0, gehaald: 0 };
+      AFLOOP.concat([["onbekend"]]).forEach(function (a) { e.afloop[a[0]] = 0; });
+      var gesch = {}, prof = {}, overb = {};
+      // alle profielen van de episode (ook als niemand ze kreeg), daarna het restprofiel
+      lijst(ep && ep.profielen).forEach(function (p) { prof[p.naam] = { naam: p.naam, n: 0, rest: false }; });
+      if (ep && c && isObj(c.restprofiel) && c.restprofiel.naam) prof[c.restprofiel.naam] = prof[c.restprofiel.naam] || { naam: c.restprofiel.naam, n: 0, rest: true };
+      recs.forEach(function (r) {
+        var af = afloopVan(r);
+        e.afloop[af]++;
+        var detail = {};
+        lijst(r.geschondenDetail).forEach(function (d) { if (isObj(d) && d.id) detail[d.id] = d.naam; });
+        var ids = {};
+        lijst(r.geschonden).forEach(function (x) { var id = isObj(x) ? x.id : x; if (id) ids[String(id)] = true; });
+        Object.keys(ids).forEach(function (id) {
+          gesch[id] = gesch[id] || { id: id, naam: regelNaam(c, epId, id, detail[id]), n: 0 };
+          gesch[id].n++;
+        });
+        if (af === "gehaald") e.gehaald++;
+        var pn = isObj(r.profiel) && r.profiel.naam ? String(r.profiel.naam) : null;
+        if (pn) { prof[pn] = prof[pn] || { naam: pn, n: 0, rest: !!r.profiel.rest }; prof[pn].n++; }
+        else if (af === "gehaald") { prof["\u0000"] = prof["\u0000"] || { naam: "(geen profiel vastgelegd)", n: 0, rest: false }; prof["\u0000"].n++; }
+        if (Array.isArray(r.aftrek)) {
+          e.metAftrek++;
+          var dezeKeer = {};
+          r.aftrek.forEach(function (a) {
+            if (!isObj(a)) return;
+            var k = a.naam ? "n:" + a.naam : "k:" + a.kaart + ">" + a.doel;
+            if (dezeKeer[k]) return;
+            dezeKeer[k] = true;
+            var kaart = kaartLabel(c, epId, a.kaart) + (a.doel !== null && a.doel !== undefined ? " (" + kaartLabel(c, epId, a.doel) + ")" : "");
+            overb[k] = overb[k] || { naam: a.naam || kaart, kaart: a.kaart || "", label: kaart, n: 0 };
+            overb[k].n++;
+          });
+        }
+      });
+      function sorteer(o) { return Object.keys(o).map(function (k) { return o[k]; }).sort(function (a, b) { return b.n - a.n || String(a.id || a.naam).localeCompare(String(b.id || b.naam), "nl", { numeric: true }); }); }
+      e.geschonden = sorteer(gesch);
+      e.profielen = Object.keys(prof).map(function (k) { return prof[k]; });   // volgorde van de casus; restprofiel en onbekende achteraan
+      e.overbodig = sorteer(overb);
+      uit.episodes.push(e);
+    });
+    return uit;
+  }
+
+  /* ---------- weergave ---------- */
+  function el(tag, attr, kinderen) {
+    var n = document.createElement(tag);
+    Object.keys(attr || {}).forEach(function (k) { if (k === "tekst") n.textContent = attr[k]; else n.setAttribute(k, attr[k]); });
+    lijst(kinderen).forEach(function (k) { if (k) n.appendChild(typeof k === "string" ? document.createTextNode(k) : k); });
+    return n;
+  }
+  function pct(n, totaal) { return totaal ? Math.round(100 * n / totaal) + "%" : "–"; }
+  function tabel(koppen, rijen, id) {
+    var t = el("table", { "class": "t" });
+    if (id) t.setAttribute("data-tabel", id);
+    t.appendChild(el("tr", {}, koppen.map(function (k, i) { return el("th", { tekst: k, "class": i ? "getal" : "" }); })));
+    rijen.forEach(function (r) { t.appendChild(el("tr", {}, r.map(function (c, i) { return el("td", { tekst: String(c), "class": i ? "getal" : "" }); }))); });
+    return t;
+  }
+
+  function toon() {
+    var res = analyseer(bestanden);
+    g.__RES.laatste = res;
+    var m = document.getElementById("meldingen"), u = document.getElementById("uitkomst");
+    m.innerHTML = ""; u.innerHTML = "";
+    res.kapot.forEach(function (k) { m.appendChild(el("div", { "class": "melding fout", "data-kapot": k.naam, tekst: "Niet ingelezen: " + k.naam + ": " + k.reden + "." })); });
+    if (!casus()) m.appendChild(el("div", { "class": "melding let", tekst: "De casus (casussen/uwi.js) kon niet worden geladen; regels en kaarten staan er alleen met hun code." }));
+    if (!res.bestanden) return;
+
+    var s = el("section", { "class": "paneel", id: "samenvatting" }, [el("h2", { tekst: "Ingelezen" })]);
+    var punten = [
+      res.bestanden + (res.bestanden === 1 ? " bestand" : " bestanden") + ", " + res.pogingen + (res.pogingen === 1 ? " poging" : " pogingen") + ", " + res.studenten + (res.studenten === 1 ? " student" : " studenten") + ".",
+      "Overgeslagen: " + res.herkansing + " herkansing" + (res.herkansing === 1 ? "" : "en") + ", " + res.testmodus + " in testmodus." +
+        (res.dubbeleEerste ? " (Daarvan " + res.dubbeleEerste + " keer een tweede eerste poging van dezelfde student, bv. op een ander apparaat: de vroegste telt.)" : ""),
+    ];
+    if (res.dubbel) punten.push(res.dubbel + (res.dubbel === 1 ? " poging stond" : " pogingen stonden") + " in meer dan één bestand en " + (res.dubbel === 1 ? "telt" : "tellen") + " één keer.");
+    if (res.onbruikbaar) punten.push(res.onbruikbaar + " onbruikbare regel" + (res.onbruikbaar === 1 ? "" : "s") + " (zonder pseudoniem of episode) overgeslagen.");
+    if (res.zonderAftrek) punten.push(res.zonderAftrek + (res.zonderAftrek === 1 ? " bestand bevat" : " bestanden bevatten") + " pogingen zonder gegevens over overbodige kaarten (export van vóór deze versie van het spel); die pogingen tellen bij overbodige kaarten niet mee.");
+    s.appendChild(el("ul", { "class": "kort" }, punten.map(function (p) { return el("li", { tekst: p }); })));
+    u.appendChild(s);
+
+    res.episodes.forEach(function (e) {
+      var p = el("section", { "class": "paneel", "data-episode": e.id }, [el("h2", { tekst: e.titel })]);
+      p.appendChild(el("p", { "class": "zacht", tekst: e.studenten + (e.studenten === 1 ? " student" : " studenten") + " (eerste poging, zonder testmodus)." }));
+      if (!e.studenten) { u.appendChild(p); return; }
+      var af = AFLOOP.map(function (a) { return [a[1], e.afloop[a[0]], pct(e.afloop[a[0]], e.studenten)]; });
+      if (e.afloop.onbekend) af.push(["Onbekend", e.afloop.onbekend, pct(e.afloop.onbekend, e.studenten)]);
+      p.appendChild(el("h3", { tekst: "Afloop" }));
+      p.appendChild(tabel(["Afloop", "Aantal", "%"], af, "afloop"));
+
+      p.appendChild(el("h3", { tekst: "Geschonden veiligheidsregels" }));
+      if (e.geschonden.length) p.appendChild(tabel(["Regel", "Aantal", "% van studenten"], e.geschonden.map(function (x) { return [x.id + (x.naam ? " " + x.naam : ""), x.n, pct(x.n, e.studenten)]; }), "geschonden"));
+      else p.appendChild(el("p", { "class": "zacht", tekst: "Geen." }));
+
+      p.appendChild(el("h3", { tekst: "Voorschrijfprofielen" }));
+      p.appendChild(el("p", { "class": "zacht", tekst: "Alleen bij een gehaalde poort (" + e.gehaald + ")." }));
+      if (e.profielen.length) p.appendChild(tabel(["Profiel", "Aantal", "% van gehaald"], e.profielen.map(function (x) { return [x.naam + (x.rest ? " (restprofiel)" : ""), x.n, pct(x.n, e.gehaald)]; }), "profielen"));
+
+      p.appendChild(el("h3", { tekst: "Overbodige kaarten" }));
+      p.appendChild(el("p", { "class": "zacht", tekst: "Uit " + e.metAftrek + " van " + e.studenten + " pogingen (de andere zijn geëxporteerd vóór deze gegevens werden bewaard). Alleen bij een gehaalde poort kosten deze kaarten punten." }));
+      if (e.overbodig.length) p.appendChild(tabel(["Overbodige kaart", "Aantal", "% van pogingen met gegevens"], e.overbodig.map(function (x) { return [x.naam + (x.label && x.label !== x.naam ? " — " + x.label : ""), x.n, pct(x.n, e.metAftrek)]; }), "overbodig"));
+      else p.appendChild(el("p", { "class": "zacht", tekst: "Geen." }));
+      u.appendChild(p);
+    });
+  }
+
+  function leesBestanden(files) {
+    var l = Array.prototype.slice.call(files || []), klaar = 0;
+    if (!l.length) return;
+    l.forEach(function (f) {
+      var r = new FileReader();
+      r.onload = function () { bestanden.push({ naam: f.name, tekst: String(r.result) }); if (++klaar === l.length) toon(); };
+      r.onerror = function () { bestanden.push({ naam: f.name, tekst: "\u0000" }); if (++klaar === l.length) toon(); };
+      r.readAsText(f);
+    });
+  }
+
+  g.__RES = { analyseer: analyseer, laatste: null, toon: toon,
+    voegToe: function (naam, tekst) { bestanden.push({ naam: naam, tekst: tekst }); toon(); },
+    wis: function () { bestanden = []; toon(); } };
+
+  var inv = document.getElementById("bestanden"), zone = document.getElementById("sleep");
+  inv.addEventListener("change", function () { leesBestanden(inv.files); inv.value = ""; });
+  document.getElementById("bOpnieuw").addEventListener("click", function () { g.__RES.wis(); });
+  ["dragenter", "dragover"].forEach(function (t) { document.addEventListener(t, function (ev) { ev.preventDefault(); zone.classList.add("boven"); }); });
+  document.addEventListener("dragleave", function (ev) { if (!ev.relatedTarget) zone.classList.remove("boven"); });
+  document.addEventListener("drop", function (ev) { ev.preventDefault(); zone.classList.remove("boven"); leesBestanden(ev.dataTransfer && ev.dataTransfer.files); });
+  toon();
+  g.RESULTATEN_KLAAR = true;
+})(window);
+</script>
+</body>
+</html>
