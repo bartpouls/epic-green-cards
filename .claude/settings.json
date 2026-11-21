@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh api -X PUT repos/bartpouls/epic-green-cards/pulls/*/merge*)",
+      "Bash(node gauntlet/tools/*)",
+      "Bash(PLAYWRIGHT_BROWSERS_PATH=/opt/pw-extra node gauntlet/tools/*)",
+      "Bash(node tools/routezoeker.js*)"
+    ]
+  }
+}
