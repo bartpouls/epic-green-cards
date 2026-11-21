@@ -25,7 +25,8 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 
 ## Omgeving en GitHub
 - Cloudomgeving "epic-green-cards" (persoonlijk): staat de downloadserver van Playwright toe en heeft een opstartscript voor Firefox en WebKit (zie Testen).
-- Samenvoegen met `main`: alleen als Bart erom vraagt. De veiligheidscontrole blokkeert dat, tenzij `.claude/settings.local.json` de regel `Bash(gh api -X PUT repos/bartpouls/epic-green-cards/pulls/*/merge*)` toestaat. Dat bestand is lokaal (niet in git) en verdwijnt met de sessie; plaats het alleen opnieuw met Barts toestemming, en sluit het uit via `.git/info/exclude`.
+- `.claude/settings.json` (door Bart geplaatst, 21 nov 2026) staat zonder vragen toe: PR's in deze repository samenvoegen, de hulpscripts in `gauntlet/tools/` (ook met `PLAYWRIGHT_BROWSERS_PATH=/opt/pw-extra` ervoor) en de routezoeker. Claude wijzigt dit bestand niet zelf: toestemmingsregels plaatst Bart.
+- Samenvoegen met `main`: alleen als Bart er in zijn bericht om vraagt.
 - GitHub Pages publiceert `main`: https://bartpouls.github.io/epic-green-cards/ (vanuit de container niet bereikbaar).
 
 ## Werkregels (budget)
