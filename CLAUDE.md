@@ -17,8 +17,9 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 - Unit: `node gauntlet/tools/run-node.js | grep -v '^PASS'` (toont alleen fouten + totaal). Groep: `--groep=tekst`.
 - Spelen via de interface: `node gauntlet/tools/speel-iteratie1.js | grep -v '^PASS'`.
 - Docentenoverzicht: `node gauntlet/tools/check-overzicht.js | grep -v '^PASS'`.
+- Casusbouwer: `node gauntlet/tools/check-casusbouwer.js | grep -v '^PASS'` (voorbeeld 1.9, alle stappen, oud werk aanvullen, controles).
 - Routezoeker: `node tools/routezoeker.js` (alleen bij wijzigingen in regels, kaarten of dagverloop).
-- Andere browsers (werkpakket D): `node gauntlet/tools/browsers.js` draait tests.html, casusbouwer, routezoekerrapport, speelscript en docentenoverzicht in Chromium, Firefox en WebKit (Safari-motor). `--pages` doet hetzelfde via een lokale webserver onder `/epic-green-cards/`, zoals GitHub Pages. Losse scripts: `--browser=firefox|webkit`.
+- Andere browsers (werkpakket D): `node gauntlet/tools/browsers.js` draait tests.html, routezoekerrapport, speelscript, docentenoverzicht en de casusbouwercontrole in Chromium, Firefox en WebKit (Safari-motor). `--pages` doet hetzelfde via een lokale webserver onder `/epic-green-cards/`, zoals GitHub Pages. Losse scripts: `--browser=firefox|webkit`.
   - Firefox en WebKit staan niet standaard in de container. De omgeving "epic-green-cards" staat de downloadserver van Playwright toe. Installeren (map naar keuze, buiten de repo): `export PLAYWRIGHT_BROWSERS_PATH=<map>; node /opt/node-tools/node_modules/playwright/cli.js install firefox webkit && node /opt/node-tools/node_modules/playwright/cli.js install-deps firefox webkit; ln -s /opt/pw-browsers/chromium* "$PLAYWRIGHT_BROWSERS_PATH"/`. Echte Safari (Mac/iPad) en Edge test Bart zelf met de hand; WebKit en Chromium dekken hun motoren.
 
 ## Werkregels (budget)
@@ -30,7 +31,7 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 6. Geen rapporten, logs of afbeeldingen committen.
 
 ## Stand
-- PR #1 (concept): speelbaar prototype, drie episodes, casus 1.9. Unit 952/952 groen; speelscript 57/57; docentenoverzicht 43/43.
+- PR #1 samengevoegd in `main` (20 nov 2026): speelbaar prototype, drie episodes, casus 1.9. Unit 952/952 groen; speelscript 57/57; docentenoverzicht 43/43; casusbouwer 37/37.
 - Werkpakket A (16 nov) en B (17 nov) klaar; zie `casus-uwi.md` sectie 12 en 13. Werkpakket C (20 nov) klaar: het docentenoverzicht toont nu ook smaakregel, dosering, regelnamen, gevolgzinnen, maten en restprofiel; `speel-ui.js` en `voeg-samen.js` verwijderd.
 - Besluiten 20 nov 2026 verwerkt (`casus-uwi.md` sectie 14): alle concepten goedgekeurd (C1–C4, C6–C11, sepsis, blaasontsteking); I18 ernst 3; C9 blijft; 4 acties per dag in E1/E2, 3 in E3.
 - Besluiten 20 nov 2026, tweede ronde (`casus-uwi.md` sectie 15): alle open vragen akkoord met de gekozen lezing (aanpassingen eventueel na testspelen); R7: overzicht toont alleen speldata.
@@ -38,4 +39,5 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 - C12 (vier reflectievragen) en C13 (overbodige kaarten g–k) goedgekeurd op 20 nov 2026 (slot van `casus-uwi.md` sectie 16). Geen open vragen meer.
 - Werkwijze: lees Barts besluiten ruim. Een besluit uit een eerdere sessie mag hij later bijstellen zonder het opnieuw uit te leggen.
 - Werkpakket D (20 nov) klaar: speelscript, docentenoverzicht, tests.html en casusbouwer groen in Chromium, Firefox en WebKit, via file:// én via een webserver zoals Pages. Hervatten na herladen en in een nieuw tabblad getest (8 controles erbij). `.nojekyll` toegevoegd. Niet live gecontroleerd: de echte Pages-site (github.io is vanuit de container niet bereikbaar; het spel staat er pas na samenvoegen van PR #1 in `main`).
-- Werkpakketten: A–E klaar.
+- Werkpakket F (20 nov) klaar: casusbouwer bijgewerkt naar casus 1.9. Nieuw (allemaal optioneel, met standaardwaarden): dagen en acties per dag als getal, gebeurtenissen op een vaste dag of x dagen na een kaart, escalatie met verloren episode, kaart die de episode stopt (met oordeelzinnen), keuzemenu bij doelkaarten, overbodige kaarten met ondergrens, restprofiel. Controle en markdown kennen die velden; oud werk (.json of opgeslagen in de browser) wordt bij openen aangevuld (`migreer`). Voorbeeld = casus 1.9. Niet in de bouwer: gevolgzinnen per episode voor overgeërfde regels, hintvarianten per voorwaarde (staan als extra feedback).
+- Werkpakketten: A–F klaar.

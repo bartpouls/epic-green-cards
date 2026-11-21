@@ -2,7 +2,7 @@
 // Gebruik: node gauntlet/tools/browsers.js [chromium] [firefox] [webkit] [--pages]   (zonder namen: alle drie)
 // --pages: niet via file:// maar via een lokale webserver onder /epic-green-cards/, zoals GitHub Pages de site serveert.
 // Per browser: tests/tests.html, de casusbouwer (laden, voorbeeld, bewaren na herladen), het routezoekerrapport,
-// daarna speel-iteratie1.js (het hele spel, met hervatten na herladen) en check-overzicht.js met --browser=<naam>.
+// daarna speel-iteratie1.js (het hele spel, met hervatten na herladen), check-overzicht.js en check-casusbouwer.js met --browser=<naam>.
 // Firefox en WebKit installeren: zie "Testen" in CLAUDE.md. Exitcode 1 bij een rode controle.
 const path = require("path"), { spawn } = require("child_process");
 const root = path.resolve(__dirname, "../..");
@@ -104,7 +104,7 @@ function script(naam, bestand) {
   for (const naam of BROWSERS) {
     const r = await losseControles(naam);
     if (r === null) { samen.push(naam + ": niet geïnstalleerd"); continue; }
-    const s = r + (await script(naam, "speel-iteratie1.js")) + (await script(naam, "check-overzicht.js"));
+    const s = r + (await script(naam, "speel-iteratie1.js")) + (await script(naam, "check-overzicht.js")) + (await script(naam, "check-casusbouwer.js"));
     samen.push(naam + ": " + (s ? "ROOD" : "groen"));
     fout += s;
   }
