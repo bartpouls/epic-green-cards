@@ -2,7 +2,7 @@
 // Gebruik: node gauntlet/tools/browsers.js [chromium] [firefox] [webkit] [--pages]   (zonder namen: alle drie)
 // --pages: niet via file:// maar via een lokale webserver onder /epic-green-cards/, zoals GitHub Pages de site serveert.
 // Per browser: tests/tests.html, de casusbouwer (laden, voorbeeld, bewaren na herladen), het routezoekerrapport,
-// daarna speel-iteratie1.js (het hele spel, met hervatten na herladen), check-overzicht.js en check-casusbouwer.js met --browser=<naam>.
+// daarna speel-iteratie1.js (het hele spel, met hervatten na herladen), check-overzicht.js, check-casusbouwer.js en check-resultaten.js (werkpakket G) met --browser=<naam>.
 // Firefox en WebKit installeren: zie "Testen" in CLAUDE.md. Exitcode 1 bij een rode controle.
 const path = require("path"), { spawn } = require("child_process");
 const root = path.resolve(__dirname, "../..");
@@ -70,6 +70,15 @@ async function losseControles(naam) {
     check("casusbouwer: geen fouten in de pagina", f.length === 0, f.join(" | "));
     await ctx.close();
 
+    // 2b. instructie voor studenten: opent, logo en link naar het spel werken
+    f = []; ({ ctx, page } = await pagina(browser, f));
+    await page.goto(url("instructie-studenten.html")); await page.waitForTimeout(300);
+    const logoOk = await page.evaluate(() => { const i = document.querySelector("footer img"); return !!i && i.complete && i.naturalWidth > 0; });
+    check("instructie: opent zonder fouten, logo zichtbaar", f.length === 0 && logoOk, f.join(" | "));
+    await page.click("a[href='index.html']"); await page.waitForSelector("#pseudoniem");
+    check("instructie: de link opent het spel", f.length === 0, f.join(" | "));
+    await ctx.close();
+
     // 3. routezoekerrapport opent zonder fouten
     f = []; ({ ctx, page } = await pagina(browser, f));
     await page.goto(url("tools/routezoeker-rapport.html")); await page.waitForTimeout(500);
@@ -104,7 +113,7 @@ function script(naam, bestand) {
   for (const naam of BROWSERS) {
     const r = await losseControles(naam);
     if (r === null) { samen.push(naam + ": niet geïnstalleerd"); continue; }
-    const s = r + (await script(naam, "speel-iteratie1.js")) + (await script(naam, "check-overzicht.js")) + (await script(naam, "check-casusbouwer.js"));
+    const s = r + (await script(naam, "speel-iteratie1.js")) + (await script(naam, "check-overzicht.js")) + (await script(naam, "check-casusbouwer.js")) + (await script(naam, "check-resultaten.js"));
     samen.push(naam + ": " + (s ? "ROOD" : "groen"));
     fout += s;
   }

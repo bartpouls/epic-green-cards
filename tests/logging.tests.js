@@ -374,6 +374,32 @@
     g.Test.is(L.opslagStatus().bewaard, true);
   });
 
+  // Werkpakket G: de overbodige kaarten (aftrek uit de beoordeling) staan in de JSON-export, niet in de CSV.
+  t("aftrek: maakPoging neemt de aftrek uit de beoordeling over en bewaar slaat die op", function (L) {
+    var uitkomst = { geschonden: [], poortGehaald: true, score: { duurzaamheid: 3, doelmatigheid: 2 }, profiel: { naam: "P" },
+      aftrek: [{ as: "doelmatigheid", naam: "Labwaarden opvragen terwijl het lab recent is", delta: -1, kaart: "G2", doel: null, tekst: null }] };
+    var rec = L.bewaar(L.maakPoging({ casusId: "uwi", episodeId: "E1", tijdlijn: [], onthuld: [] }, uitkomst, "abc"));
+    g.Test.gelijk(rec.aftrek, uitkomst.aftrek);
+    g.Test.gelijk(JSON.parse(L.exportJSON())[0].aftrek, uitkomst.aftrek);
+  });
+  t("aftrek: zonder aftrek of met kapotte elementen een (opgeschoonde) lijst", function (L) {
+    g.Test.gelijk(L.bewaar(basis()).aftrek, []);
+    g.Test.gelijk(L.bewaar(basis({ aftrek: "x" })).aftrek, []);
+    var r = L.bewaar(basis({ aftrek: [null, 3, { kaart: "G2", delta: -1 }] }));
+    g.Test.gelijk(r.aftrek, [{ as: null, naam: null, delta: -1, kaart: "G2", doel: null, tekst: null }]);
+  });
+  t("aftrek: niet in de CSV (kolommen ongewijzigd); een oud record zonder aftrek blijft zonder veld en de export crasht niet", function (L) {
+    g.Test.waar(L.KOLOMMEN.indexOf("aftrek") < 0, "aftrek staat in de CSV-kolommen");
+    g.Test.is(L.KOLOMMEN.length, 23);
+    L.bewaar(basis({ aftrek: [{ as: "doelmatigheid", naam: "N", delta: -1, kaart: "G2" }] }));
+    var oud = L.alle()[0]; delete oud.aftrek;
+    var o = nepOpslag(); o.setItem(L.SLEUTEL, JSON.stringify([oud])); L._zetOpslag(o);
+    var j = JSON.parse(L.exportJSON());
+    g.Test.waar(!("aftrek" in j[0]), "oud record kreeg een aftrekveld");
+    var csv = L.exportCSV();
+    g.Test.waar(csv.split("\r\n")[0].split(";").length === 23 && !/Labwaarden|"N"/.test(csv), "CSV veranderd");
+  });
+
   t("geen netwerk: bronbestand bevat geen fetch/XMLHttpRequest/sendBeacon/WebSocket", function (L) {
     var bron = String(g.Logging.download) + String(g.Logging.bewaar) + String(g.Logging.exportCSV);
     g.Test.waar(!/fetch\(|XMLHttpRequest|sendBeacon|WebSocket/.test(bron));

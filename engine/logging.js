@@ -143,7 +143,11 @@
       afloop: typeof poging.afloop === "string" && poging.afloop !== "" ? poging.afloop : null,
       eindTekst: typeof poging.eindTekst === "string" && poging.eindTekst !== "" ? poging.eindTekst : null,
       // Alleen in de JSON-export (de kolommen van de CSV zijn ongewijzigd): per keer doorspoelen { van, tot, gebeurtenissen }.
-      doorgespoeld: Array.isArray(poging.doorgespoeld) ? kopie(poging.doorgespoeld) : []
+      doorgespoeld: Array.isArray(poging.doorgespoeld) ? kopie(poging.doorgespoeld) : [],
+      aftrek: (Array.isArray(poging.aftrek) ? poging.aftrek : []).filter(function (x) { return x && typeof x === "object"; }).map(function (x) {
+        return { as: x.as === undefined ? null : x.as, naam: x.naam === undefined ? null : x.naam, delta: x.delta === undefined ? null : x.delta,
+          kaart: x.kaart === undefined ? null : x.kaart, doel: x.doel === undefined ? null : x.doel, tekst: x.tekst === undefined ? null : x.tekst };
+      })
     };
     lijst.push(rec);
     geheugen = kopie(lijst);
@@ -227,7 +231,8 @@
       onthuld: state.onthuld,
       geschonden: uitkomst.geschonden,
       score: uitkomst.score,
-      profiel: uitkomst.profiel
+      profiel: uitkomst.profiel,
+      aftrek: uitkomst.aftrek
     };
   }
 
