@@ -5,21 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Instructie testronde — Epic green cards</title>
 <style>
-:root{--bg:#f6f7f5;--kaart:#ffffff;--tekst:#1f2a24;--zacht:#5b675f;--lijn:#d9ded9;--accent:#2f7d4f}
-@media (prefers-color-scheme: dark){:root{--bg:#161a17;--kaart:#1f2521;--tekst:#e8ece9;--zacht:#a3afa7;--lijn:#334038;--accent:#58b883}}
+/* Stijlgids Vonk & Vloeistof: crème grond, petrol kop, Bricolage Grotesque voor de titel, Space Grotesk voor de rest (lokaal, OFL). */
+@font-face{font-family:"Bricolage Grotesque";font-weight:800;font-display:swap;src:url("assets/fonts/bricolage-grotesque-latin-800-normal.woff2") format("woff2")}
+@font-face{font-family:"Space Grotesk";font-weight:400;font-display:swap;src:url("assets/fonts/space-grotesk-latin-400-normal.woff2") format("woff2")}
+@font-face{font-family:"Space Grotesk";font-weight:700;font-display:swap;src:url("assets/fonts/space-grotesk-latin-700-normal.woff2") format("woff2")}
+:root{--bg:#FBF4E6;--kaart:#FFFFFF;--tekst:#1B2230;--zacht:#5B6474;--lijn:#D9CFBD;--accent:#14606F;color-scheme:light dark}
+@media (prefers-color-scheme: dark){:root{--bg:#141A24;--kaart:#1E2633;--tekst:#F4EEE2;--zacht:#A9B2C0;--lijn:#2F3A4A;--accent:#6CC7D6}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tekst);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{margin:0;background:var(--bg);color:var(--tekst);font:16px/1.6 "Space Grotesk",Bahnschrift,"DIN Alternate",system-ui,sans-serif}
 main{max-width:720px;margin:0 auto;padding:24px 16px}
-.paneel{background:var(--kaart);border:1px solid var(--lijn);border-radius:12px;padding:20px 24px}
-h1{font-size:22px;margin:0 0 4px}
-h2{font-size:17px;margin:20px 0 6px}
+.paneel{background:var(--kaart);border:1px solid var(--lijn);border-radius:16px;padding:20px 24px}
+h1{font-family:"Bricolage Grotesque",Bahnschrift,"DIN Alternate",system-ui,sans-serif;font-weight:800;font-size:28px;line-height:1.15;margin:-20px -24px 16px;padding:20px 24px;background:#14606F;color:#FBF4E6;border-radius:16px 16px 0 0}
+h2{font-size:18px;font-weight:700;margin:20px 0 6px}
 p,li{margin:4px 0}
 ol,ul{padding-left:22px;margin:6px 0}
 .zacht{color:var(--zacht)}
-a{color:var(--accent)}
-footer{max-width:720px;margin:0 auto;padding:0 16px 24px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;color:var(--zacht);font-size:13px}
+a{color:var(--accent);font-weight:700}
+a:focus-visible{outline:3px solid #A84F0A;outline-offset:2px}
+footer{max-width:720px;margin:0 auto;padding:0 16px 24px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;color:var(--zacht);font-size:14px}
 footer img{width:20px;height:40px}
-@media print{body{background:#fff}.paneel{border:0;padding:0}}
+@media print{body{background:#fff;color:#1B2230}.paneel{border:0;padding:0}h1{margin:0 0 16px;border-radius:12px}}
 </style>
 </head>
 <body>

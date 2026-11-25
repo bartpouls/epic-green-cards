@@ -742,7 +742,8 @@
       naarScherm("kies");
     }
     return h("main", { klasse: "smal start" },
-      fokusMarkeer(h("h1", { tabindex: "-1" }, app.casus.titel || "Epic green cards"), "kop"),
+      h("header", { klasse: "titelbalk" },
+        fokusMarkeer(h("h1", { tabindex: "-1" }, app.casus.titel || "Epic green cards"), "kop")),
       h("form", { klasse: "kaartvlak", verstuur: function (e) { if (e && e.preventDefault) e.preventDefault(); start(); } },
         h("label", { for: "pseudoniem" }, "Pseudoniem"),
         h("p", { id: "pseudoniem-uitleg", klasse: "uitleg" }, "Verzin een code om je resultaten te bewaren en gebruik daarvoor geen naam."),

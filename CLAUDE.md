@@ -13,6 +13,15 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 | `tools/` | Docentenoverzicht, casusbouwer, resultatenoverzicht, routezoeker + rapport. |
 | `gauntlet/tools/` | Hulpscripts (zie hieronder). `gauntlet/rapporten/` staat in `.gitignore`; oude rapporten staan op branch `archief/gauntlet-rapporten`. |
 
+## Vormgeving
+- Het spel en de studenteninstructie volgen de stijlgids **Vonk & Vloeistof**, niveau Vol (eigen spel). Bron: Barts Design System-artifact "Stijlgids Vonk & Vloeistof" (https://claude.ai/artifact/VvUU2zNVC1UzT2jhHzw8cC; lees `project/README.md` en `project/tokens.json`). Wijkt iets af van de stijlgids, dan wint de stijlgids, tenzij Bart anders besluit.
+- Kleuren staan als variabelen bovenaan `ui/stijl.css` (`--vv-*` = de stijlgidskleuren). `instructie-studenten.html` heeft een eigen stijlblok met dezelfde kleuren.
+- Lettertypes: Bricolage Grotesque 800 (titels) en Space Grotesk (de rest), lokaal in `assets/fonts/` (SIL OFL). Geen Google Fonts: het spel moet zonder internet werken.
+- Logo's zijn de echte bestanden uit de stijlgids, nooit natekenen: `assets/capsule-pop.svg` (rust-logo, voettekst rechtsonder, met colofonregel) en `assets/capsule-pop-powerup.svg` (één keer: titelbalk van het startscherm).
+- Vaste keuzes: rood (signaal) alleen voor patiëntveiligheid (geschonden veiligheidsregel, aanhoudende klachten); goed = teal-diep, fout = oranje; kopbalk petrol; één oranje hoofdknop per scherm; koppen in zinsvorm, geen hoofdletters; donkere modus volgt het systeem, papier en kaarten blijven licht.
+- Kaartsoorten (naam staat er altijd bij): gegevens nacht, onderzoek teal-diep, voorschrijven oranje, bijsturen oranje-diep, informeren geel, evalueren ink-muted.
+- Nog niet omgezet: de docententools in `tools/` (eigen stijlblokken).
+
 ## Testen
 - Unit: `node gauntlet/tools/run-node.js | grep -v '^PASS'` (toont alleen fouten + totaal). Groep: `--groep=tekst`.
 - Spelen via de interface: `node gauntlet/tools/speel-iteratie1.js | grep -v '^PASS'`.
@@ -51,6 +60,7 @@ Didactisch kaartspel (farmacotherapie, casus UWI). Eigenaar: Bart Pouls. Taal: N
 - PR #2 (werkpakket F) samengevoegd in `main` op 21 nov 2026.
 - Werkpakket G (21 nov) klaar, PR #6 samengevoegd in `main`: `tools/resultaten.html` (resultatenoverzicht na het testspelen) en `aftrek` in de JSON-export. Records van vóór G houden geen `aftrek`-veld (zodat het overzicht ze herkent en meldt); daar tellen ze als lege lijst. Heeft een student in één episode twee eerste pogingen (twee apparaten), dan telt de vroegste.
 - `instructie-studenten.html` (21 nov): instructie voor studenten bij een testronde (spelen, eerste poging telt, .json-bestand inleveren). Inleverplek staat er bewust niet in ("zoals je docent heeft afgesproken"). Gecontroleerd in `browsers.js` (opent, logo, link naar het spel).
+- Vormgeving (25 nov 2026): spel en studenteninstructie omgezet naar de stijlgids Vonk & Vloeistof (zie Vormgeving). Docententools nog niet.
 - Werkpakketten: A–G klaar.
 
 ## Werkpakket G: resultatenoverzicht na het testspelen (klaar, 21 nov 2026)

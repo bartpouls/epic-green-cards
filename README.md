@@ -24,6 +24,7 @@ Een didactisch kaartspel waarmee farmacie- en geneeskundestudenten die nog niet 
 | `tools/casusbouwer.html` | De casusbouwer: een formulier om een nieuwe casus in hetzelfde format te schrijven, met controle, een doorloopschema en een markdown-generator. |
 | `instructie-studenten.html` | Instructie voor studenten bij een testronde: spelen en het resultatenbestand inleveren. Te delen als link naast het spel. |
 | `tools/resultaten.html` | Resultatenoverzicht na het testspelen: waar lopen studenten vast, per episode. |
+| `ui/stijl.css`, `assets/` | Vormgeving volgens de stijlgids Vonk & Vloeistof: kleuren, de logo's Capsule Pop en de lettertypes Bricolage Grotesque en Space Grotesk (lokaal, licentie SIL OFL in `assets/fonts/`). |
 
 Het resultatenoverzicht (`tools/resultaten.html`) werkt net als de casusbouwer: dubbelklikken, geen internet nodig. Sleep de JSON-bestanden die studenten met "Exporteer resultaten" uit het spel halen in het venster, of kies ze. Per episode zie je dan hoeveel studenten de poort haalden, niet haalden of de episode verloren, welke veiligheidsregels het vaakst geschonden werden, welke voorschrijfprofielen voorkwamen en welke overbodige kaarten het vaakst gespeeld werden. Alleen de eerste poging van elke student telt; herkansingen en pogingen in testmodus tellen niet mee, en een poging die in twee bestanden staat telt één keer. De bestanden worden nergens heen gestuurd of bewaard.
 
