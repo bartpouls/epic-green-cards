@@ -121,7 +121,7 @@ p.fout:empty { display: none; }
 
 /* titelbalk op het startscherm: petrol, titel in Bricolage, power-up-logo één keer */
 .titelbalk { position: relative; background: var(--vv-petrol); color: var(--vv-creme); border-radius: 16px; padding: 22px 96px 22px 22px; min-height: 104px; display: flex; align-items: center; }
-.titelbalk h1 { font-size: 2.6rem; line-height: 1.1; }
+.titelbalk h1 { font-size: 2.15rem; line-height: 1.12; }
 /* power-up-logo als versiering (decoratief, dus in de stylesheet: het pad klopt dan vanaf elke pagina) */
 .titelbalk::after { content: ""; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); width: 66px; height: 90px;
   background: url("../assets/capsule-pop-powerup.svg") center / contain no-repeat; }
@@ -154,8 +154,9 @@ p.fout:empty { display: none; }
 .kop { display: grid; gap: 6px; }
 .episodes { list-style: none; padding: 0; display: grid; gap: 12px; }
 .episode { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
-.episode.dicht { background: var(--papier-2); }
-.episode.dicht h2 { color: var(--zacht); }
+/* vergrendeld: onopvallend, op de pagina zelf */
+.episode.dicht { background: transparent; border: 1.5px dashed var(--rand-sterk); box-shadow: none; }
+.episode.dicht h2, .episode.dicht .uitleg { color: var(--op-vilt-zacht); }
 /* episodelijst: één knop per episode; teal-diep zodat er per scherm één oranje hoofdknop overblijft */
 .episodes .knop.hoofd { background: var(--vv-teal-diep); color: var(--vv-creme); border-color: var(--vv-teal-diep); }
 .episodes .knop.hoofd:hover:not(:disabled) { box-shadow: 3px 3px 0 var(--vv-ink); }
@@ -250,9 +251,11 @@ p.fout:empty { display: none; }
 
 /* ---------- gebeurtenis als kaart ---------- */
 .gebeurteniskaart {
-  background: var(--papier); color: var(--tekst); border-radius: 12px; overflow: hidden; box-shadow: var(--schaduw);
+  background: var(--papier); color: var(--tekst); border-radius: 12px; overflow: hidden;
   border: 2px solid var(--vv-ink);
 }
+/* de gebeurtenis van vandaag valt op; die in de tijdlijn niet */
+.gebeurteniskaart.nu { box-shadow: var(--schaduw); }
 /* band als HUD-label: nacht met geel */
 .gb-band { margin: 0; padding: 3px 10px; font-size: .8rem; font-weight: 500; letter-spacing: .03em; background: var(--gebeurtenis); color: var(--vv-geel); }
 .gb-titel { padding: 6px 10px 0; font-weight: 700; }
@@ -283,13 +286,14 @@ p.fout:empty { display: none; }
 .kaart {
   position: relative; width: 154px; min-height: 76px; display: flex; flex-direction: column; justify-content: flex-start; gap: 3px;
   text-align: left; cursor: pointer; padding: 15px 10px 8px; border-radius: 12px; font-weight: 500; font-size: .9rem; line-height: 1.25;
-  background: var(--papier); color: var(--tekst); border: 2px solid var(--vv-ink); box-shadow: var(--schaduw); overflow: hidden;
+  background: var(--papier); color: var(--tekst); border: 2px solid var(--vv-ink); box-shadow: none; overflow: hidden;
   transition: transform .15s ease, box-shadow .15s ease;
-  hyphens: auto; overflow-wrap: break-word;
+  hyphens: auto; hyphenate-limit-chars: 12 6 6; overflow-wrap: break-word;
 }
 .kaart::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 7px; background: var(--cat); border-bottom: 1.5px solid var(--vv-ink); }
 .kaart::after { content: ""; position: absolute; right: 7px; bottom: 7px; width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--cat); opacity: .7; }
-.kaart:hover:not(:disabled), .kaart:focus-visible { transform: translate(-2px, -4px); box-shadow: var(--schaduw-hoog); }
+/* harde schaduw alleen onder de kaart waar je op staat */
+.kaart:hover:not(:disabled), .kaart:focus-visible { transform: translate(-2px, -3px); box-shadow: var(--schaduw); }
 .kaart .kaartnaam { display: block; padding-right: 4px; }
 .kaart .dosering {
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
@@ -417,7 +421,7 @@ p.fout:empty { display: none; }
 .tk-binnen { display: grid; transform-style: preserve-3d; transform: rotateY(180deg); }
 .tk-voor, .tk-achter {
   grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden;
-  border-radius: 12px; overflow: hidden; box-shadow: var(--schaduw); border: 2px solid var(--vv-ink); min-height: 112px;
+  border-radius: 12px; overflow: hidden; border: 2px solid var(--vv-ink); min-height: 112px;
 }
 .tk-voor { background: var(--papier); color: var(--tekst); }
 .tk-achter { transform: rotateY(180deg); background: var(--papier-2); color: var(--tekst); display: flex; flex-direction: column; }
